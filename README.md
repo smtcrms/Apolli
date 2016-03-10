@@ -1,2 +1,2 @@
-# appollo
+# apollo
 Ctrip Configuration Center
