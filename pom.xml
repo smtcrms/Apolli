@@ -11,7 +11,7 @@
 		<module>apollo-core</module>
 		<module>apollo-metaserver</module>
 		<module>apollo-client</module>
-		<module>apollo-server</module>
+		<module>apollo-configserver</module>
 		<module>apollo-portal</module>
 		<module>apollo-assembly</module>
 	</modules>
@@ -34,7 +34,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.ctrip.apollo</groupId>
-				<artifactId>apollo-server</artifactId>
+				<artifactId>apollo-configserver</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

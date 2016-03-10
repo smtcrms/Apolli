@@ -8,8 +8,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apollo-server</artifactId>
-	<name>Apollo Server</name>
+	<artifactId>apollo-configserver</artifactId>
+	<name>Apollo ConfigServer</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.ctrip.apollo</groupId>
@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
+			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
