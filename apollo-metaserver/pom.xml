@@ -9,11 +9,28 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>apollo-metaserver</artifactId>
-	<name>Apollo Metaserver</name>
+	<name>Apollo MetaServer</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.ctrip.apollo</groupId>
 			<artifactId>apollo-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

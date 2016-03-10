@@ -1,4 +1,4 @@
-package com.ctrip.apollo;
+package com.ctrip.apollo.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
