@@ -26,12 +26,8 @@ public class AppController {
   }
 
   @RequestMapping(value = "", method = RequestMethod.POST)
-  public App create() {
-    App ramdomApp = new App();
-    ramdomApp.setId(String.valueOf(System.currentTimeMillis()));
-    ramdomApp.setName("new app " + System.currentTimeMillis());
-    ramdomApp.setOwner("owner " + System.currentTimeMillis());
-    ramdomApp.setCreateTimestamp(new Date());
-    return appRepository.save(ramdomApp);
+  public App create(App app) {
+    app.setCreateTimestamp(new Date());
+    return appRepository.save(app);
   }
 }
