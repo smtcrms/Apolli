@@ -1,4 +1,4 @@
-package com.ctrip.apollo.portal.entities;
+package com.ctrip.apollo.portal.domain;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -10,7 +10,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.ctrip.apollo.portal.PortalApplicationTestConfiguration;
-import com.ctrip.apollo.portal.entities.App;
+import com.ctrip.apollo.portal.domain.App;
+import com.ctrip.apollo.portal.domain.AppRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PortalApplicationTestConfiguration.class)
