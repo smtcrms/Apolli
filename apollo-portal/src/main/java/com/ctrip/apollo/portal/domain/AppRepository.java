@@ -1,10 +1,8 @@
-package com.ctrip.apollo.portal.repository;
+package com.ctrip.apollo.portal.domain;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
-
-import com.ctrip.apollo.portal.entities.App;
 
 public interface AppRepository extends CrudRepository<App, String> {
 

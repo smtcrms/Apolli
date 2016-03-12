@@ -7,6 +7,57 @@
 	<version>0.0.1</version>
 	<name>Apollo</name>
 	<packaging>pom</packaging>
+	<description>Ctrip Configuration Center</description>
+	<url>https://github.com/ctripcorp/apollo</url>
+	<organization>
+		<name>Ctrip, Inc.</name>
+		<url>http://www.ctrip.com</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	<scm>
+		<url>https://github.com/ctripcorp/apollo</url>
+	</scm>
+	<developers>
+		<developer>
+			<id>yiming187</id>
+			<name>Billy(Yiming) Liu</name>
+			<email>liuyiming.vip at gmail.com</email>
+			<organization>Ctrip, Inc.</organization>
+			<organizationUrl>http://www.ctrip.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>nobodyiam</id>
+			<name>Jason(Shun) Song</name>
+			<email>nobodyiam at gmail.com</email>
+			<organization>Ctrip, Inc.</organization>
+			<organizationUrl>http://www.ctrip.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>lepdou</id>
+			<name>Le Zhang</name>
+			<email>lepdou at gmail.com</email>
+			<organization>Ctrip, Inc.</organization>
+			<organizationUrl>http://www.ctrip.com</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<properties>
+		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
 	<modules>
 		<module>apollo-core</module>
 		<module>apollo-metaserver</module>
@@ -29,13 +80,6 @@
 			</dependency>
 			<!--third party -->
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-parent</artifactId>
-				<version>Angel.SR6</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.38</version>
@@ -46,36 +90,67 @@
 				<artifactId>h2</artifactId>
 				<version>1.4.191</version>
 			</dependency>
+			<!-- declare Spring BOMs in order -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>1.3.3.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-config</artifactId>
+				<version>1.1.0.M5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>${java.source}</source>
-					<target>${java.target}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>1.3.3.RELEASE</version>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<configuration>
+						<source>${java.source}</source>
+						<target>${java.target}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>1.3.3.RELEASE</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<profiles>
 		<profile>
@@ -127,9 +202,5 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<properties>
-		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-	</properties>
 </project>
 
