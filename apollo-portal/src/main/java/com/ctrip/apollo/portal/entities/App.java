@@ -7,10 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import lombok.Data;
-
 @Entity
-@Data
 public class App implements Serializable {
 
   /**
@@ -38,4 +35,60 @@ public class App implements Serializable {
 
   @Column
   private Date lastUpdatedTimestamp;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+
+  public String getOwnerPhone() {
+    return ownerPhone;
+  }
+
+  public void setOwnerPhone(String ownerPhone) {
+    this.ownerPhone = ownerPhone;
+  }
+
+  public String getOwnerMail() {
+    return ownerMail;
+  }
+
+  public void setOwnerMail(String ownerMail) {
+    this.ownerMail = ownerMail;
+  }
+
+  public Date getCreateTimestamp() {
+    return createTimestamp;
+  }
+
+  public void setCreateTimestamp(Date createTimestamp) {
+    this.createTimestamp = createTimestamp;
+  }
+
+  public Date getLastUpdatedTimestamp() {
+    return lastUpdatedTimestamp;
+  }
+
+  public void setLastUpdatedTimestamp(Date lastUpdatedTimestamp) {
+    this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+  }
 }
