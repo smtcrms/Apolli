@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ctrip.apollo.portal.domain.App;
-import com.ctrip.apollo.portal.domain.AppRepository;
+import com.ctrip.apollo.portal.entity.App;
+import com.ctrip.apollo.portal.repository.AppRepository;
 
 @Service
 public class AppService {
@@ -22,6 +22,10 @@ public class AppService {
 
   public Page<App> list(Pageable pageable) {
     return appRepository.findAll(pageable);
+  }
+
+  public Iterable<App> list() {
+    return appRepository.findAll();
   }
 
   public App save(App app) {
