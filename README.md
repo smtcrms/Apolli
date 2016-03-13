@@ -4,3 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ctripcorp/apollo/badge.svg?branch=master)](https://coveralls.io/github/ctripcorp/apollo?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/56e3ce40df573d0043113a24/badge.svg)](https://www.versioneye.com/user/projects/56e3ce40df573d0043113a24) 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+<a href="https://scan.coverity.com/projects/ctripcorp-apollo">
+  <img alt="Coverity Scan Build Status"
+       src="https://img.shields.io/coverity/scan/8244.svg"/>
+</a>
