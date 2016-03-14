@@ -28,26 +28,26 @@ public class AppControllerTest extends AbstractPortalTest {
   @Test
   public void testCreate() throws URISyntaxException {
     App newApp = new App();
-    newApp.setId(String.valueOf(System.currentTimeMillis()));
+    newApp.setAppId(String.valueOf(System.currentTimeMillis()));
     newApp.setName("new app " + System.currentTimeMillis());
     newApp.setOwner("owner " + System.currentTimeMillis());
 
     URI uri = new URI("http://localhost:8080/apps");
     App createdApp = restTemplate.postForObject(uri, newApp, App.class);
 
-    Assert.assertEquals(newApp.getId(), createdApp.getId());
+    Assert.assertEquals(newApp.getAppId(), createdApp.getAppId());
     Assert.assertNull(newApp.getCreateTimestamp());
     Assert.assertNotNull(createdApp.getCreateTimestamp());
 
-    App foundApp = appRepository.findOne(newApp.getId());
+    App foundApp = appRepository.findOne(newApp.getAppId());
 
-    Assert.assertEquals(newApp.getId(), foundApp.getId());
+    Assert.assertEquals(newApp.getAppId(), foundApp.getAppId());
   }
 
   @Test
   public void testList() throws URISyntaxException {
     App newApp = new App();
-    newApp.setId(String.valueOf(System.currentTimeMillis()));
+    newApp.setAppId(String.valueOf(System.currentTimeMillis()));
     newApp.setName("new app " + System.currentTimeMillis());
     newApp.setOwner("owner " + System.currentTimeMillis());
     appRepository.save(newApp);
@@ -56,13 +56,13 @@ public class AppControllerTest extends AbstractPortalTest {
 
     App[] apps = restTemplate.getForObject(uri, App[].class);
     Assert.assertEquals(1, apps.length);
-    Assert.assertEquals(newApp.getId(), apps[0].getId());
+    Assert.assertEquals(newApp.getAppId(), apps[0].getAppId());
   }
 
   @Test
   public void testListOutOfRange() throws URISyntaxException {
     App newApp = new App();
-    newApp.setId(String.valueOf(System.currentTimeMillis()));
+    newApp.setAppId(String.valueOf(System.currentTimeMillis()));
     newApp.setName("new app " + System.currentTimeMillis());
     newApp.setOwner("owner " + System.currentTimeMillis());
     appRepository.save(newApp);

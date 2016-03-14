@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ctrip.framework</groupId>
 	<artifactId>framework-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<name>Ctrip Framework Parent</name>
 	<description>Ctrip Framework Parent</description>
@@ -15,7 +15,6 @@
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<build>
 		<pluginManagement>
@@ -26,12 +25,8 @@
 					<version>2.19.1</version>
 					<configuration>
 						<includes>
-							<include>**/*Tests.java</include>
-							<include>**/*Test.java</include>
+							<include>**/AllTests.java</include>
 						</includes>
-						<excludes>
-							<exclude>**/Abstract*.java</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -104,7 +99,7 @@
 										<exclude>javax.servlet:servlet-api</exclude>
 										<exclude>org.mortbay.jetty:servlet-api-2.5</exclude>
 									</excludes>
-									<message>** There are some banned dependencies.</message>
+									<message>** prefer javax.servlet:javax.servlet-api</message>
 								</bannedDependencies>
 							</rules>
 						</configuration>
@@ -156,12 +151,12 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>ctrip_fx_release</id>
-			<url>${ctrip.fx.release.repo}</url>
+			<id>releases</id>
+			<url>${releases.repo}</url>
 		</repository>
 		<snapshotRepository>
-			<id>ctrip_fx_snapshot</id>
-			<url>${ctrip.fx.snapshot.repo}</url>
+			<id>snapshots</id>
+			<url>${snapshots.repo}</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
