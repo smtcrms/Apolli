@@ -50,8 +50,8 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>[3.3.9,)</version>
-									<message>** projects must use Maven 3.3.9 or later version.</message>
+									<version>[3.2.5,)</version>
+									<message>** projects must use Maven 3.2.5 or later version.</message>
 								</requireMavenVersion>
 							</rules>
 						</configuration>
