@@ -11,9 +11,9 @@
 	<url>https://github.com/ctripcorp/apollo</url>
 	<parent>
 		<groupId>com.ctrip.framework</groupId>
-		<artifactId>framework-bom-parent</artifactId>
+		<artifactId>framework-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>framework-bom-parent</relativePath>
+		<relativePath>framework-parent</relativePath>
 	</parent>
 	<organization>
 		<name>Ctrip, Inc.</name>
@@ -61,7 +61,6 @@
 		</developer>
 	</developers>
 	<properties>
-		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
 	<modules>
