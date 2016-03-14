@@ -9,6 +9,12 @@
 	<packaging>pom</packaging>
 	<description>Ctrip Configuration Center</description>
 	<url>https://github.com/ctripcorp/apollo</url>
+	<parent>
+		<groupId>com.ctrip.framework</groupId>
+		<artifactId>framework-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>framework-parent</relativePath>
+	</parent>
 	<organization>
 		<name>Ctrip, Inc.</name>
 		<url>http://www.ctrip.com</url>
@@ -55,7 +61,6 @@
 		</developer>
 	</developers>
 	<properties>
-		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
 	<modules>
@@ -118,26 +123,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.5.1</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.0</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<version>1.3.3.RELEASE</version>
@@ -151,11 +136,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 	<profiles>
 		<profile>
@@ -187,16 +167,6 @@
 			</build>
 		</profile>
 	</profiles>
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<url>http://maven.dev.sh.ctripcorp.com:8081/nexus/content/repositories/fxrelease</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://maven.dev.sh.ctripcorp.com:8081/nexus/content/repositories/fxsnapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
