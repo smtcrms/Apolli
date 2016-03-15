@@ -1,0 +1,4 @@
+spring:
+  cloud:
+    zookeeper:
+      connectString: localhost:2181 
