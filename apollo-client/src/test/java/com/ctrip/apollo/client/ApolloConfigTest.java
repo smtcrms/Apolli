@@ -50,7 +50,7 @@ public class ApolloConfigTest {
     }
 
     @Test
-    public void testPreparePropertySourceSuccessful() {
+    public void testPreparePropertySourceSuccessfully() {
         CompositePropertySource somePropertySource = mock(CompositePropertySource.class);
         final ArgumentCaptor<CompositePropertySource> captor = ArgumentCaptor.forClass(CompositePropertySource.class);
 
