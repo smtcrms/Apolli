@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ctrip.apollo</groupId>
 	<artifactId>apollo</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Apollo</name>
 	<packaging>pom</packaging>
 	<description>Ctrip Configuration Center</description>
@@ -90,6 +90,11 @@
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.38</version>
 			</dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
+            </dependency>
 			<!--for test -->
 			<dependency>
 				<groupId>com.h2database</groupId>

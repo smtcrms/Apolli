@@ -2,6 +2,7 @@ package com.ctrip.apollo.client;
 
 import com.ctrip.apollo.client.loader.ConfigLoader;
 import com.ctrip.apollo.client.loader.ConfigLoaderFactory;
+import com.ctrip.apollo.client.util.ConfigUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -27,7 +28,7 @@ public class ApolloConfig implements BeanDefinitionRegistryPostProcessor, Priori
     private ConfigurableApplicationContext applicationContext;
 
     public ApolloConfig() {
-        this.configLoader = ConfigLoaderFactory.getInstance().getMockConfigLoader();
+        this.configLoader = ConfigLoaderFactory.getInstance().getRemoteConfigLoader();
     }
 
     @Override
@@ -37,10 +38,13 @@ public class ApolloConfig implements BeanDefinitionRegistryPostProcessor, Priori
                     String.format("ApplicationContext must implement ConfigurableApplicationContext, but found: %s", applicationContext.getClass().getName()));
         }
         this.applicationContext = (ConfigurableApplicationContext) applicationContext;
+        ConfigUtil.getInstance().setApplicationContext(applicationContext);
     }
 
     /**
-     * This is the first method invoked, so we could prepare the property sources here
+     * This is the first method invoked, so we could prepare the property sources here.
+     * Specifically we need to finish preparing property source before PropertySourcesPlaceholderConfigurer
+     * so that configurations could be injected correctly
      */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {

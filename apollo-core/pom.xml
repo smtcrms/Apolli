@@ -4,10 +4,24 @@
 	<parent>
 		<groupId>com.ctrip.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.0.1</version>
+		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>apollo-core</artifactId>
 	<name>Apollo Core</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<!-- json -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<!-- end of json -->
+	</dependencies>
 </project>

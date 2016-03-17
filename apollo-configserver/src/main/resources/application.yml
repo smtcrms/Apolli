@@ -1,10 +1,15 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: ssh://git@10.3.2.56:1022/spring-cloud-config-repo.git
+
 server:
   port: 8888
   
 logging:
   level:
     org.springframework.cloud: 'DEBUG'
+  file: /opt/logs/apollo-configserver.log
 
-spring:
-  profiles:
-    active: native
