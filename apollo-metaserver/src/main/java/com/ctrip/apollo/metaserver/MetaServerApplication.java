@@ -2,22 +2,25 @@ package com.ctrip.apollo.metaserver;
 
 import java.util.List;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import com.ctrip.apollo.metaserver.service.DiscoveryService;
+import com.netflix.appinfo.InstanceInfo;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+@EnableEurekaServer
+@EnableEurekaClient
 public class MetaServerApplication {
 
   public static void main(String[] args) {
-    ApplicationContext context = SpringApplication.run(MetaServerApplication.class, args);
-    List<ServiceInstance> metaServerServiceInstances =
-        context.getBean(DiscoveryService.class).getMetaServerServiceInstances();
-    System.out.println(metaServerServiceInstances);
+    ConfigurableApplicationContext context =
+        new SpringApplicationBuilder(MetaServerApplication.class).web(true).run(args);
+    DiscoveryService discoveryService = context.getBean(DiscoveryService.class);
+    List<InstanceInfo> instances = discoveryService.getMetaServerServiceInstance();
+    System.out.println(instances);
   }
 }

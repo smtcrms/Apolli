@@ -1,4 +1,10 @@
-spring:
-  cloud:
-    zookeeper:
-      connectString: 10.3.2.57:2181,10.3.2.58:2181,10.3.2.59:2181
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+  client:
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    healthcheck:
+      enabled: true

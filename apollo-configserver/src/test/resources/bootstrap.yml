@@ -1,7 +1,10 @@
-spring:
-  application:
-    name: apollo-configserver
-    
-  cloud:
-    zookeeper:
-      connectString:localhost:2181 
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+  client:
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    healthcheck:
+      enabled: true

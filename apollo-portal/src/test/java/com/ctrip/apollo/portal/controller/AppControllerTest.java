@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class AppControllerTest extends AbstractPortalTest {
   @Autowired
   AppRepository appRepository;
 
+  @Value("${server.port}")
+  String serverPort;
+
   @Test
   public void testCreate() throws URISyntaxException {
     App newApp = new App();
@@ -32,7 +36,7 @@ public class AppControllerTest extends AbstractPortalTest {
     newApp.setName("new app " + System.currentTimeMillis());
     newApp.setOwner("owner " + System.currentTimeMillis());
 
-    URI uri = new URI("http://localhost:8080/apps");
+    URI uri = new URI("http://localhost:" + serverPort + "/apps");
     App createdApp = restTemplate.postForObject(uri, newApp, App.class);
 
     Assert.assertEquals(newApp.getAppId(), createdApp.getAppId());
@@ -52,7 +56,7 @@ public class AppControllerTest extends AbstractPortalTest {
     newApp.setOwner("owner " + System.currentTimeMillis());
     appRepository.save(newApp);
 
-    URI uri = new URI("http://localhost:8080/apps");
+    URI uri = new URI("http://localhost:" + serverPort + "/apps");
 
     App[] apps = restTemplate.getForObject(uri, App[].class);
     Assert.assertEquals(1, apps.length);
@@ -67,7 +71,7 @@ public class AppControllerTest extends AbstractPortalTest {
     newApp.setOwner("owner " + System.currentTimeMillis());
     appRepository.save(newApp);
 
-    URI uri = new URI("http://localhost:8080/apps?page=2");
+    URI uri = new URI("http://localhost:" + serverPort + "/apps?page=2");
 
     ResponseEntity<App[]> entity = restTemplate.getForEntity(uri, App[].class);
     Assert.assertEquals(HttpStatus.NOT_FOUND, entity.getStatusCode());
