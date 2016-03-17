@@ -10,5 +10,7 @@ public interface PrivilegeRepository extends PagingAndSortingRepository<Privileg
 
   List<Privilege> findByAppId(String appId);
 
-  Privilege findByAppIdAndPrivilType(String appId, String privilType);
+  List<Privilege> findByAppIdAndPrivilType(String appId, String privilType);
+
+  Privilege findByAppIdAndNameAndPrivilType(String appId, String name, String privilType);
 }

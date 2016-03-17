@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: apollo-metaserver
+  profiles:
+    active: native
+    
+logging:
+  level:
+
+
+      

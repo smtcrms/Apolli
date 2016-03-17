@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.portal.entity.Privilege;
+import com.ctrip.apollo.portal.exception.NotFoundException;
 import com.ctrip.apollo.portal.repository.PrivilegeRepository;
 
 @Service
@@ -18,24 +19,32 @@ public class PrivilegeService {
   @Autowired
   private PrivilegeRepository privilRepo;
 
+  public Privilege addPrivilege(String appId, String name, PrivilType privilType) {
+    Privilege privil = privilRepo.findByAppIdAndNameAndPrivilType(appId, name, privilType.name());
+    if (privil == null) {
+      privil = new Privilege();
+      privil.setAppId(appId);
+      privil.setPrivilType(privilType.name());
+      privil.setName(name);
+      privilRepo.save(privil);
+    }
+    return privil;
+  }
+
   public boolean hasPrivilege(String appId, String name, PrivilType privilType) {
-    Privilege privil = privilRepo.findByAppIdAndPrivilType(appId, privilType.name());
-    if (privil != null && privil.getName().equals(name)) return true;
-    return false;
+    Privilege privil = privilRepo.findByAppIdAndNameAndPrivilType(appId, name, privilType.name());
+    return (privil != null) ? true : false;
   }
 
   public List<Privilege> listPrivileges(String appId) {
     return privilRepo.findByAppId(appId);
   }
 
-  public Privilege setPrivilege(String appId, String name, PrivilType privilType) {
-    Privilege privil = privilRepo.findByAppIdAndPrivilType(appId, privilType.name());
+  public void removePrivilege(String appId, String name, PrivilType privilType) {
+    Privilege privil = privilRepo.findByAppIdAndNameAndPrivilType(appId, name, privilType.name());
     if (privil == null) {
-      privil = new Privilege();
-      privil.setAppId(appId);
-      privil.setPrivilType(privilType.name());
+      throw new NotFoundException();
     }
-    privil.setName(name);
-    return privilRepo.save(privil);
+    privilRepo.delete(privil);
   }
 }

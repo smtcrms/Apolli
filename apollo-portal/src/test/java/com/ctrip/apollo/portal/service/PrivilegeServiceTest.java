@@ -19,19 +19,24 @@ public class PrivilegeServiceTest extends AbstractPortalTest {
   PrivilegeService privilService;
 
   @Test
-  public void testAddPrivilege() {
+  public void testAddAndRemovePrivilege() {
     App newApp = new App();
     newApp.setAppId(String.valueOf(System.currentTimeMillis()));
     newApp.setName("new app " + System.currentTimeMillis());
     newApp.setOwner("owner " + System.currentTimeMillis());
     appService.save(newApp);
 
-    privilService.setPrivilege(newApp.getAppId(), newApp.getOwner(),
+    privilService.addPrivilege(newApp.getAppId(), newApp.getOwner(),
         PrivilegeService.PrivilType.EDIT);
     List<Privilege> privileges = privilService.listPrivileges(newApp.getAppId());
     Assert.assertEquals(1, privileges.size());
     Assert.assertEquals(PrivilegeService.PrivilType.EDIT.name(), privileges.get(0).getPrivilType());
     Assert.assertEquals(newApp.getOwner(), privileges.get(0).getName());
+
+    privilService.removePrivilege(newApp.getAppId(), newApp.getOwner(),
+        PrivilegeService.PrivilType.EDIT);
+    privileges = privilService.listPrivileges(newApp.getAppId());
+    Assert.assertEquals(0, privileges.size());
   }
 
   @Test
@@ -42,7 +47,7 @@ public class PrivilegeServiceTest extends AbstractPortalTest {
     newApp.setOwner("owner " + System.currentTimeMillis());
     appService.save(newApp);
 
-    privilService.setPrivilege(newApp.getAppId(), newApp.getOwner(),
+    privilService.addPrivilege(newApp.getAppId(), newApp.getOwner(),
         PrivilegeService.PrivilType.EDIT);
     Assert.assertTrue(privilService.hasPrivilege(newApp.getAppId(), newApp.getOwner(),
         PrivilegeService.PrivilType.EDIT));
@@ -51,13 +56,13 @@ public class PrivilegeServiceTest extends AbstractPortalTest {
     Assert.assertFalse(privilService.hasPrivilege(newApp.getAppId(), newApp.getOwner(),
         PrivilegeService.PrivilType.RELEASE));
 
-    privilService.setPrivilege(newApp.getAppId(), "nobody", PrivilegeService.PrivilType.EDIT);
+    privilService.addPrivilege(newApp.getAppId(), "nobody", PrivilegeService.PrivilType.EDIT);
     Assert.assertTrue(
         privilService.hasPrivilege(newApp.getAppId(), "nobody", PrivilegeService.PrivilType.EDIT));
-    Assert.assertFalse(privilService.hasPrivilege(newApp.getAppId(), newApp.getOwner(),
+    Assert.assertTrue(privilService.hasPrivilege(newApp.getAppId(), newApp.getOwner(),
         PrivilegeService.PrivilType.EDIT));
 
-    privilService.setPrivilege(newApp.getAppId(), "nobody", PrivilegeService.PrivilType.RELEASE);
+    privilService.addPrivilege(newApp.getAppId(), "nobody", PrivilegeService.PrivilType.RELEASE);
     Assert.assertTrue(privilService.hasPrivilege(newApp.getAppId(), "nobody",
         PrivilegeService.PrivilType.RELEASE));
   }
