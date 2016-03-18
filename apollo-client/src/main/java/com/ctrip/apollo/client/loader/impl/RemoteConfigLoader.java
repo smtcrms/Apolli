@@ -3,8 +3,7 @@ package com.ctrip.apollo.client.loader.impl;
 import com.ctrip.apollo.client.loader.ConfigLoader;
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.environment.Environment;
-import com.ctrip.apollo.core.environment.PropertySource;
+import com.ctrip.apollo.core.model.ApolloConfig;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,54 +76,58 @@ public class RemoteConfigLoader implements ConfigLoader {
     }
 
     void doLoadRemoteApolloConfig(List<ApolloRegistry> apolloRegistries, CompositePropertySource compositePropertySource) throws Throwable {
-        List<Future<CompositePropertySource>> futures = Lists.newArrayList();
+        List<Future<MapPropertySource>> futures = Lists.newArrayList();
         for (final ApolloRegistry apolloRegistry : apolloRegistries) {
-            futures.add(executorService.submit(new Callable<CompositePropertySource>() {
+            futures.add(executorService.submit(new Callable<MapPropertySource>() {
                 @Override
-                public CompositePropertySource call() throws Exception {
+                public MapPropertySource call() throws Exception {
                     return loadSingleApolloConfig(apolloRegistry.getAppId(), apolloRegistry.getVersion());
                 }
             }));
         }
-        for (Future<CompositePropertySource> future : futures) {
+        for (Future<MapPropertySource> future : futures) {
             try {
-                compositePropertySource.addPropertySource(future.get());
+                MapPropertySource result = future.get();
+                if (result == null) {
+                    continue;
+                }
+                compositePropertySource.addPropertySource(result);
             } catch (ExecutionException e) {
                 throw e.getCause();
             }
         }
     }
 
-    CompositePropertySource loadSingleApolloConfig(String appId, String version) {
-        CompositePropertySource composite = new CompositePropertySource(appId + "-" + version);
-        Environment result =
-            this.getRemoteEnvironment(restTemplate, configUtil.getConfigServerUrl(), appId, configUtil.getCluster(), version);
+    MapPropertySource loadSingleApolloConfig(long appId, String version) {
+        ApolloConfig result =
+            this.getRemoteConfig(restTemplate, configUtil.getConfigServerUrl(), appId, configUtil.getCluster(), version);
         if (result == null) {
-            logger.error("Loaded environment as null...");
-            return composite;
+            logger.error("Loaded config null...");
+            return null;
         }
-        logger.info("Loaded environment: name={}, cluster={}, label={}, version={}", result.getName(), result.getProfiles(), result.getLabel(), result.getVersion());
+        logger.info("Loaded config: {}", result);
 
-        for (PropertySource source : result.getPropertySources()) {
-            composite.addPropertySource(new MapPropertySource(source.getName(), source.getSource()));
-        }
-        return composite;
+        return new MapPropertySource(assemblePropertySourceName(result), result.getConfigurations());
     }
 
-    Environment getRemoteEnvironment(RestTemplate restTemplate, String uri, String name, String cluster, String release) {
-        logger.info("Loading environment from {}, name={}, cluster={}, release={}", uri, name, cluster, release);
-        String path = "/{name}/{cluster}";
-        Object[] args = new String[] {name, cluster};
-        if (StringUtils.hasText(release)) {
-            args = new String[] {name, cluster, release};
-            path = path + "/{release}";
+    private String assemblePropertySourceName(ApolloConfig apolloConfig) {
+        return String.format("%d-%s-%s-%d", apolloConfig.getAppId(), apolloConfig.getCluster(), apolloConfig.getVersion(), apolloConfig.getReleaseId());
+    }
+
+    ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri, long appId, String cluster, String version) {
+        logger.info("Loading config from {}, appId={}, cluster={}, version={}", uri, appId, cluster, version);
+        String path = "/{appId}/{cluster}";
+        Object[] args = new String[] {String.valueOf(appId), cluster};
+        if (StringUtils.hasText(version)) {
+            args = new String[] {String.valueOf(appId), cluster, version};
+            path = path + "/{version}";
         }
-        ResponseEntity<Environment> response = null;
+        ResponseEntity<ApolloConfig> response = null;
 
         try {
             // TODO retry
             response = restTemplate.exchange(uri
-                + path, HttpMethod.GET, new HttpEntity<Void>((Void) null), Environment.class, args);
+                + path, HttpMethod.GET, new HttpEntity<Void>((Void) null), ApolloConfig.class, args);
         } catch (Exception e) {
             throw e;
         }
@@ -132,7 +135,7 @@ public class RemoteConfigLoader implements ConfigLoader {
         if (response == null || response.getStatusCode() != HttpStatus.OK) {
             return null;
         }
-        Environment result = response.getBody();
+        ApolloConfig result = response.getBody();
         return result;
     }
 

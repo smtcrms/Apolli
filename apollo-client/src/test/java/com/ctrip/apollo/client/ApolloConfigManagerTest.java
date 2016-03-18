@@ -14,15 +14,16 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ApolloConfigTest {
-    private ApolloConfig apolloConfig;
+public class ApolloConfigManagerTest {
+    private ApolloConfigManager apolloConfigManager;
     @Mock
     private ConfigLoader configLoader;
     @Mock
@@ -34,19 +35,19 @@ public class ApolloConfigTest {
 
     @Before
     public void setUp() {
-        apolloConfig = new ApolloConfig();
+        apolloConfigManager = new ApolloConfigManager();
 
         when(applicationContext.getEnvironment()).thenReturn(env);
         when(env.getPropertySources()).thenReturn(mutablePropertySources);
 
-        apolloConfig.setApplicationContext(applicationContext);
-        ReflectionTestUtils.setField(apolloConfig, "configLoader", configLoader);
+        apolloConfigManager.setApplicationContext(applicationContext);
+        ReflectionTestUtils.setField(apolloConfigManager, "configLoader", configLoader);
     }
 
     @Test(expected = RuntimeException.class)
     public void testInvalidApplicationContext() {
         ApplicationContext someInvalidApplication = mock(ApplicationContext.class);
-        apolloConfig.setApplicationContext(someInvalidApplication);
+        apolloConfigManager.setApplicationContext(someInvalidApplication);
     }
 
     @Test
@@ -56,14 +57,14 @@ public class ApolloConfigTest {
 
         when(configLoader.loadPropertySource()).thenReturn(somePropertySource);
 
-        apolloConfig.preparePropertySource();
+        apolloConfigManager.preparePropertySource();
 
         verify(configLoader, times(1)).loadPropertySource();
         verify(mutablePropertySources, times(1)).addFirst(captor.capture());
 
         final CompositePropertySource insertedPropertySource = captor.getValue();
 
-        assertEquals(ApolloConfig.APOLLO_PROPERTY_SOURCE_NAME, insertedPropertySource.getName());
+        assertEquals(ApolloConfigManager.APOLLO_PROPERTY_SOURCE_NAME, insertedPropertySource.getName());
         assertTrue(insertedPropertySource.getPropertySources().contains(somePropertySource));
     }
 

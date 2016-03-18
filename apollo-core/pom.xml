@@ -23,5 +23,11 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<!-- end of json -->
+		<!-- util -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<!-- end of util -->
 	</dependencies>
 </project>

@@ -30,7 +30,6 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <!-- end of spring -->
-        <!-- util -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-ApolloConfigTest.class, RemoteConfigLoaderTest.class, ConfigUtilTest.class
+ApolloConfigManagerTest.class, RemoteConfigLoaderTest.class, ConfigUtilTest.class
 })
 public class AllTests {
 
