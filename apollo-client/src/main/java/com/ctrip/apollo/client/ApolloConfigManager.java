@@ -20,14 +20,14 @@ import org.springframework.core.env.MutablePropertySources;
  *
  * @author Jason Song(song_s@ctrip.com)
  */
-public class ApolloConfig implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware {
+public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware {
     public static final String APOLLO_PROPERTY_SOURCE_NAME = "ApolloConfigProperties";
 
     private ConfigLoader configLoader;
 
     private ConfigurableApplicationContext applicationContext;
 
-    public ApolloConfig() {
+    public ApolloConfigManager() {
         this.configLoader = ConfigLoaderFactory.getInstance().getRemoteConfigLoader();
     }
 

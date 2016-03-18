@@ -17,7 +17,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -41,7 +42,7 @@ public class ConfigUtilTest {
         Properties someProperties = mock(Properties.class);
         preparePropertiesFromLocalResource(someProperties);
 
-        String someAppId = "someApp";
+        String someAppId = "1";
         String someVersionId = "someVersion";
 
         when(someProperties.containsKey(Constants.APP_ID)).thenReturn(true);
@@ -52,7 +53,7 @@ public class ConfigUtilTest {
 
         ApolloRegistry apolloRegistry = apolloRegistries.get(0);
         assertEquals(1, apolloRegistries.size());
-        assertEquals(someAppId, apolloRegistry.getAppId());
+        assertEquals(Long.parseLong(someAppId), apolloRegistry.getAppId());
         assertEquals(someVersionId, apolloRegistry.getVersion());
     }
 

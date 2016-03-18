@@ -2,10 +2,7 @@ package com.ctrip.apollo.client.loader.impl;
 
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.environment.Environment;
-import com.ctrip.apollo.core.environment.PropertySource;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import com.ctrip.apollo.core.model.ApolloConfig;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.Before;
@@ -14,9 +11,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.CompositePropertySource;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -41,10 +38,12 @@ public class RemoteConfigLoaderTest {
 
     @Test
     public void testLoadPropertySource() throws Exception {
-        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry("someAppId", "someVersion");
-        ApolloRegistry anotherApolloRegistry = assembleSomeApolloRegistry("anotherAppId", "anotherVersion");
-        CompositePropertySource somePropertySource = mock(CompositePropertySource.class);
-        CompositePropertySource anotherPropertySource = mock(CompositePropertySource.class);
+        long someAppId = 100;
+        long anotherAppId = 101;
+        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
+        ApolloRegistry anotherApolloRegistry = assembleSomeApolloRegistry(anotherAppId, "anotherVersion");
+        MapPropertySource somePropertySource = mock(MapPropertySource.class);
+        MapPropertySource anotherPropertySource = mock(MapPropertySource.class);
 
         doReturn(Lists.newArrayList(someApolloRegistry, anotherApolloRegistry)).when(configUtil).loadApolloRegistries();
         doReturn(somePropertySource).when(remoteConfigLoader).loadSingleApolloConfig(someApolloRegistry.getAppId(), someApolloRegistry.getVersion());
@@ -68,7 +67,8 @@ public class RemoteConfigLoaderTest {
     @Test(expected = RuntimeException.class)
     public void testLoadPropertySourceWithError() throws Exception {
         Exception someException = mock(Exception.class);
-        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry("someAppId", "someVersion");
+        long someAppId = 100;
+        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
         doReturn(Lists.newArrayList(someApolloRegistry)).when(configUtil).loadApolloRegistries();
 
         doThrow(someException).when(remoteConfigLoader).loadSingleApolloConfig(someApolloRegistry.getAppId(), someApolloRegistry.getVersion());
@@ -78,35 +78,19 @@ public class RemoteConfigLoaderTest {
 
     @Test
     public void testLoadSingleApolloConfig() throws Exception {
-        Environment someRemoteEnv = mock(Environment.class);
-        String someSourceName = "someSource";
-        String anotherSourceName = "anotherSource";
+        ApolloConfig someApolloConfig = mock(ApolloConfig.class);
         Map<String, Object> someMap = Maps.newHashMap();
-        PropertySource somePropertySource = mock(PropertySource.class);
-        PropertySource anotherPropertySource = mock(PropertySource.class);
 
-        when(somePropertySource.getSource()).thenReturn(someMap);
-        when(somePropertySource.getName()).thenReturn(someSourceName);
-        when(anotherPropertySource.getSource()).thenReturn(someMap);
-        when(anotherPropertySource.getName()).thenReturn(anotherSourceName);
-        when(someRemoteEnv.getPropertySources()).thenReturn(Lists.newArrayList(somePropertySource, anotherPropertySource));
-        doReturn(someRemoteEnv).when(remoteConfigLoader).getRemoteEnvironment(any(RestTemplate.class), anyString(), anyString(), anyString(), anyString());
+        when(someApolloConfig.getConfigurations()).thenReturn(someMap);
+        doReturn(someApolloConfig).when(remoteConfigLoader).getRemoteConfig(any(RestTemplate.class), anyString(), anyLong(), anyString(), anyString());
 
-        CompositePropertySource result = remoteConfigLoader.loadSingleApolloConfig("someAppId", "someVersion");
+        long someAppId = 100;
+        MapPropertySource result = remoteConfigLoader.loadSingleApolloConfig(someAppId, "someVersion");
 
-        assertEquals(2, result.getPropertySources().size());
-
-        List<String> resultPropertySourceNames = FluentIterable.from(result.getPropertySources()).transform(new Function<org.springframework.core.env.PropertySource<?>, String>() {
-            @Override
-            public String apply(org.springframework.core.env.PropertySource<?> input) {
-                return input.getName();
-            }
-        }).toList();
-
-        assertTrue(resultPropertySourceNames.containsAll(Lists.newArrayList(someSourceName, anotherSourceName)));
+        assertEquals(someMap, result.getSource());
     }
 
-    private ApolloRegistry assembleSomeApolloRegistry(String someAppId, String someVersion) {
+    private ApolloRegistry assembleSomeApolloRegistry(long someAppId, String someVersion) {
         ApolloRegistry someApolloRegistry = new ApolloRegistry();
         someApolloRegistry.setAppId(someAppId);
         someApolloRegistry.setVersion(someVersion);

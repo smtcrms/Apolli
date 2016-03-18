@@ -71,12 +71,18 @@
 		<module>apollo-portal</module>
 		<module>apollo-assembly</module>
 		<module>apollo-demo</module>
+		<module>apollo-biz</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.ctrip.apollo</groupId>
 				<artifactId>apollo-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ctrip.apollo</groupId>
+				<artifactId>apollo-biz</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

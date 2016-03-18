@@ -47,7 +47,7 @@ public class ConfigUtil {
 
     public List<ApolloRegistry> loadApolloRegistries() throws IOException {
         List<URL> resourceUrls =
-            Collections.list(Thread.currentThread().getContextClassLoader().getResources(APOLLO_PROPERTY));
+            Collections.list(ClassLoaderUtil.getLoader().getResources(APOLLO_PROPERTY));
         List<ApolloRegistry> registries =
             FluentIterable.from(resourceUrls).transform(new Function<URL, ApolloRegistry>() {
                 @Override
@@ -57,7 +57,7 @@ public class ConfigUtil {
                         return null;
                     }
                     ApolloRegistry registry = new ApolloRegistry();
-                    registry.setAppId(properties.getProperty(Constants.APP_ID));
+                    registry.setAppId(Long.parseLong(properties.getProperty(Constants.APP_ID)));
                     registry.setVersion(properties.getProperty(Constants.VERSION, Constants.DEFAULT_VERSION_NAME));
                     return registry;
                 }
