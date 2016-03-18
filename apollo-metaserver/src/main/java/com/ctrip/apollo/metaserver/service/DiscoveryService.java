@@ -1,5 +1,6 @@
 package com.ctrip.apollo.metaserver.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ public class DiscoveryService {
 
   public List<InstanceInfo> getConfigServerServiceInstance() {
     Application application = eurekaClient.getApplication(ServiceIdConsts.APOLLO_CONFIGSERVER);
-    return application.getInstances();
+    return application != null ? application.getInstances() : new ArrayList<>();
   }
 
   public List<InstanceInfo> getMetaServerServiceInstance() {
     Application application = eurekaClient.getApplication(ServiceIdConsts.APOLLO_METASERVER);
-    return application.getInstances();
+    return application != null ? application.getInstances() : new ArrayList<>();
   }
 
 }

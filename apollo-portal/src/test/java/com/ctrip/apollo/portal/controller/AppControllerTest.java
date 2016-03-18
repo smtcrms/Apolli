@@ -26,7 +26,7 @@ public class AppControllerTest extends AbstractPortalTest {
   @Autowired
   AppRepository appRepository;
 
-  @Value("${server.port}")
+  @Value("${local.server.port}")
   String serverPort;
 
   @Test

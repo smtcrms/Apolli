@@ -4,10 +4,11 @@ server:
 eureka:
   instance:
     hostname: localhost
-    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
   client:
-    fetchRegistry: false
+   # initialInstanceInfoReplicationIntervalSeconds: 1
+    registryFetchIntervalSeconds: 2
     serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port:8761}/eureka/
     healthcheck:
       enabled: true
