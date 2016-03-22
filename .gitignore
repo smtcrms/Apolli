@@ -23,3 +23,8 @@ target
 
 # git
 *.orig
+
+dev
+fat
+uat
+prd
