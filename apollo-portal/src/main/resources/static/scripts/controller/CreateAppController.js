@@ -1,4 +1,5 @@
-create_app_module.controller('CreateAppController', ['$scope', '$window', 'AppService', function ($scope, $window, AppService) {
+create_app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService',
+    function ($scope, $window, toastr, AppService) {
 
     //todo 便于测试，后续删掉
     $scope.app = {
@@ -11,10 +12,12 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'AppSe
 
     $scope.save = function(){
         AppService.add($scope.app).then(function(result){
-            $window.location.href = '/views/app/index.html?#appid=' + result.appId;
-
+            toastr.success('添加成功!');
+            setInterval(function(){
+                $window.location.href = '/views/app/index.html?#appid=' + result.appId;
+            },1000);
         },function(result){
-            alert('添加失败!');
+            toastr.error('添加失败!');
         });
     };
 
