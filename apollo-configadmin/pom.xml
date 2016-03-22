@@ -8,9 +8,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apollo-configserver</artifactId>
-	<name>Apollo ConfigServer</name>
-    <packaging>war</packaging>
+	<artifactId>apollo-configadmin</artifactId>
+	<name>Apollo ConfigAdmin</name>
 	<dependencies>
         <!-- apollo -->
 		<dependency>
@@ -42,7 +41,7 @@
         <!-- eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka-server</artifactId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
 		</dependency>
         <!-- end of eureka -->
         <!-- jsp -->

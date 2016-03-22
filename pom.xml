@@ -65,13 +65,12 @@
 	</properties>
 	<modules>
 		<module>apollo-core</module>
-		<module>apollo-metaserver</module>
 		<module>apollo-client</module>
-		<module>apollo-configserver</module>
-		<module>apollo-portal</module>
-		<module>apollo-assembly</module>
-		<module>apollo-demo</module>
 		<module>apollo-biz</module>
+		<module>apollo-configserver</module>
+		<module>apollo-configadmin</module>
+		<module>apollo-portal</module>
+		<module>apollo-demo</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
