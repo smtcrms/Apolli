@@ -1,12 +1,12 @@
 spring:
   application:
-    name: apollo-configserver
-
+    name: apollo-configadmin
+    
 server:
-  port: 80
+  port: 9080
   
 logging:
   level:
     org.springframework.cloud: 'DEBUG'
-  file: /opt/logs/apollo-configserver.log
+  file: /opt/logs/apollo-configadmin.log
 

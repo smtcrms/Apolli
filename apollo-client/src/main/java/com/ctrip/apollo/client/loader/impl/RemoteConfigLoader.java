@@ -1,10 +1,15 @@
 package com.ctrip.apollo.client.loader.impl;
 
-import com.ctrip.apollo.client.loader.ConfigLoader;
-import com.ctrip.apollo.client.model.ApolloRegistry;
-import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.model.ApolloConfig;
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.CompositePropertySource;
@@ -16,11 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import com.ctrip.apollo.client.loader.ConfigLoader;
+import com.ctrip.apollo.client.model.ApolloRegistry;
+import com.ctrip.apollo.client.util.ConfigUtil;
+import com.ctrip.apollo.core.model.ApolloConfig;
+import com.google.common.collect.Lists;
 
 /**
  * Load config from remote config server
@@ -116,7 +121,7 @@ public class RemoteConfigLoader implements ConfigLoader {
 
     ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri, long appId, String cluster, String version) {
         logger.info("Loading config from {}, appId={}, cluster={}, version={}", uri, appId, cluster, version);
-        String path = "/{appId}/{cluster}";
+        String path = "config/{appId}/{cluster}";
         Object[] args = new String[] {String.valueOf(appId), cluster};
         if (StringUtils.hasText(version)) {
             args = new String[] {String.valueOf(appId), cluster, version};
