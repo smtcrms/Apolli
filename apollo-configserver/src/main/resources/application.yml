@@ -1,7 +1,7 @@
 spring:
   application:
     name: apollo-configserver
-    
+
 server:
   port: 80
   

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apollo-biz</artifactId>
-    <name>Apollo BizLogic</name>
+    <name>Apollo Biz</name>
     <packaging>jar</packaging>
 
     <dependencies>

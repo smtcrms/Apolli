@@ -16,6 +16,7 @@ import java.io.IOException;
  * @author Jason Song(song_s@ctrip.com)
  */
 @RestController
+@RequestMapping("/config")
 public class ConfigController {
     @Resource(name = "configService")
     private ConfigService configService;
