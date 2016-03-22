@@ -2,7 +2,7 @@ package com.ctrip.apollo.configserver.controller;
 
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.model.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

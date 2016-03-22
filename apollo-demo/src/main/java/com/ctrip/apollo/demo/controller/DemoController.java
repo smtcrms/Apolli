@@ -35,13 +35,12 @@ public class DemoController {
 
     @RequestMapping(value = "/config/{configName:.*}", method = RequestMethod.GET)
     public Config queryConfig(@PathVariable String configName) {
-        String value;
-        if (configName.equals("foo")) {
-            value = demoService.getFoo();
-        } else {
-            value = env.getProperty(configName, "undefined");
-        }
-        return new Config(configName, value);
+        return new Config(configName, env.getProperty(configName, "undefined"));
+    }
+
+    @RequestMapping(value = "/injected/config", method = RequestMethod.GET)
+    public Config queryInjectedConfig() {
+        return new Config("apollo.foo", demoService.getFoo());
     }
 
     @RequestMapping(value = "/client/registries", method = RequestMethod.GET)

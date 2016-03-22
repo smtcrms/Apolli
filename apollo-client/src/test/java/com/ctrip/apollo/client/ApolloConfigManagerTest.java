@@ -1,7 +1,9 @@
 package com.ctrip.apollo.client;
 
 import com.ctrip.apollo.client.loader.ConfigLoader;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -15,6 +17,8 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +52,13 @@ public class ApolloConfigManagerTest {
         ReflectionTestUtils.setField(apolloConfigManager, "configLoader", configLoader);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        AtomicReference<ApolloConfigManager> singletonProtector =
+            (AtomicReference<ApolloConfigManager>)ReflectionTestUtils.getField(ApolloConfigManager.class, "singletonProtector");
+        singletonProtector.set(null);
+    }
+
     @Test(expected = RuntimeException.class)
     public void testInvalidApplicationContext() {
         ApplicationContext someInvalidApplication = mock(ApplicationContext.class);
@@ -61,7 +72,7 @@ public class ApolloConfigManagerTest {
 
         when(configLoader.loadPropertySource()).thenReturn(somePropertySource);
 
-        apolloConfigManager.preparePropertySource();
+        apolloConfigManager.initializePropertySource();
 
         verify(configLoader, times(1)).loadPropertySource();
         verify(mutablePropertySources, times(1)).addFirst(captor.capture());
@@ -74,7 +85,7 @@ public class ApolloConfigManagerTest {
 
     @Test
     public void testPostProcessBeanDefinitionRegistry() {
-        doNothing().when(apolloConfigManager).preparePropertySource();
+        doNothing().when(apolloConfigManager).initializePropertySource();
 
         apolloConfigManager.postProcessBeanDefinitionRegistry(beanDefinitionRegistry);
 

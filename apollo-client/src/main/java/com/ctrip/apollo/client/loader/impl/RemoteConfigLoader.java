@@ -1,15 +1,10 @@
 package com.ctrip.apollo.client.loader.impl;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicLong;
-
+import com.ctrip.apollo.client.loader.ConfigLoader;
+import com.ctrip.apollo.client.model.ApolloRegistry;
+import com.ctrip.apollo.client.util.ConfigUtil;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.CompositePropertySource;
@@ -21,11 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.client.loader.ConfigLoader;
-import com.ctrip.apollo.client.model.ApolloRegistry;
-import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.model.ApolloConfig;
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Load config from remote config server

@@ -2,7 +2,7 @@ package com.ctrip.apollo.configserver.controller;
 
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.model.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
