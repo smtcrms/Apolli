@@ -1,11 +1,11 @@
 package com.ctrip.apollo.demo.controller;
 
-import com.ctrip.apollo.client.ApolloConfigManager;
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.demo.model.Config;
+import com.ctrip.apollo.demo.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,20 +26,32 @@ public class DemoController {
     @Autowired
     private Environment env;
     @Autowired
-    private ApolloConfigManager apolloConfigManager;
-    //Apollo config client internal impl, not intended to be use by application, only for this test page
+    private DemoService demoService;
+    //Apollo config client internal impl, not intended to be used by application, only for this test page
     private ConfigUtil configUtil = ConfigUtil.getInstance();
 
-    @Value("${apollo.foo}")
-    private String foo;
+    @Autowired
+    private RefreshScope scope;
 
     @RequestMapping(value = "/config/{configName:.*}", method = RequestMethod.GET)
     public Config queryConfig(@PathVariable String configName) {
-        return new Config(configName, env.getProperty(configName, "undefined"));
+        String value;
+        if (configName.equals("foo")) {
+            value = demoService.getFoo();
+        } else {
+            value = env.getProperty(configName, "undefined");
+        }
+        return new Config(configName, value);
     }
 
     @RequestMapping(value = "/client/registries", method = RequestMethod.GET)
     public List<ApolloRegistry> loadApolloRegistries() throws IOException {
         return configUtil.loadApolloRegistries();
+    }
+
+    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
+    public String refreshBeans() {
+        this.scope.refreshAll();
+        return "ok";
     }
 }

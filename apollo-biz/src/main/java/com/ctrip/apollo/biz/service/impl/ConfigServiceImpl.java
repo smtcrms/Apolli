@@ -32,10 +32,21 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public ApolloConfig loadConfig(long appId, String clusterName, String versionName) {
-        Version version = versionRepository.findByAppIdAndName(appId, versionName);
+        Version version = loadVersionByAppIdAndVersionName(appId, versionName);
         if (version == null) {
             return null;
         }
+
+        return loadConfigByVersionAndClusterName(version, clusterName);
+    }
+
+    @Override
+    public Version loadVersionByAppIdAndVersionName(long appId, String versionName) {
+        return versionRepository.findByAppIdAndName(appId, versionName);
+    }
+
+    @Override
+    public ApolloConfig loadConfigByVersionAndClusterName(Version version, String clusterName) {
         ReleaseSnapShot releaseSnapShot =
             releaseSnapShotRepository.findByReleaseIdAndClusterName(version.getReleaseId(), clusterName);
         if (releaseSnapShot == null) {

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -66,7 +67,38 @@ public class ConfigServiceImplTest {
         assertEquals(someVersionName, result.getVersion());
         assertEquals(someReleaseId, result.getReleaseId());
         assertEquals(someMap, result.getConfigurations());
+    }
 
+    @Test
+    public void testLoadConfigWithVersionNotFound() throws Exception {
+        long someAppId = 1;
+        String someClusterName = "someClusterName";
+        String someVersionName = "someVersionName";
+
+        when(versionRepository.findByAppIdAndName(someAppId, someVersionName)).thenReturn(null);
+
+        ApolloConfig result = configService.loadConfig(someAppId, someClusterName, someVersionName);
+
+        assertNull(result);
+        verify(versionRepository, times(1)).findByAppIdAndName(someAppId, someVersionName);
+    }
+
+    @Test
+    public void testLoadConfigWithConfigNotFound() throws Exception {
+        long someAppId = 1;
+        String someClusterName = "someClusterName";
+        String someVersionName = "someVersionName";
+        long someReleaseId = 1;
+        Version someVersion = assembleVersion(someAppId, someVersionName, someReleaseId);
+
+        when(versionRepository.findByAppIdAndName(someAppId, someVersionName)).thenReturn(someVersion);
+        when(releaseSnapShotRepository.findByReleaseIdAndClusterName(someReleaseId, someClusterName)).thenReturn(null);
+
+        ApolloConfig result = configService.loadConfig(someAppId, someClusterName, someVersionName);
+
+        assertNull(result);
+        verify(versionRepository, times(1)).findByAppIdAndName(someAppId, someVersionName);
+        verify(releaseSnapShotRepository, times(1)).findByReleaseIdAndClusterName(someReleaseId, someClusterName);
     }
 
     private Version assembleVersion(long appId, String versionName, long releaseId) {

@@ -1,4 +1,4 @@
-package com.ctrip.apollo.server.config;
+package com.ctrip.apollo.configserver.config;
 
 import org.h2.server.web.WebServlet;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;

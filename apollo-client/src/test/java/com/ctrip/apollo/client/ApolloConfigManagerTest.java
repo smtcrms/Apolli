@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.CompositePropertySource;
@@ -32,10 +34,12 @@ public class ApolloConfigManagerTest {
     private ConfigurableEnvironment env;
     @Mock
     private MutablePropertySources mutablePropertySources;
+    @Mock
+    private BeanDefinitionRegistry beanDefinitionRegistry;
 
     @Before
     public void setUp() {
-        apolloConfigManager = new ApolloConfigManager();
+        apolloConfigManager = spy(new ApolloConfigManager());
 
         when(applicationContext.getEnvironment()).thenReturn(env);
         when(env.getPropertySources()).thenReturn(mutablePropertySources);
@@ -66,6 +70,15 @@ public class ApolloConfigManagerTest {
 
         assertEquals(ApolloConfigManager.APOLLO_PROPERTY_SOURCE_NAME, insertedPropertySource.getName());
         assertTrue(insertedPropertySource.getPropertySources().contains(somePropertySource));
+    }
+
+    @Test
+    public void testPostProcessBeanDefinitionRegistry() {
+        doNothing().when(apolloConfigManager).preparePropertySource();
+
+        apolloConfigManager.postProcessBeanDefinitionRegistry(beanDefinitionRegistry);
+
+        verify(beanDefinitionRegistry, times(2)).registerBeanDefinition(anyString(), any(BeanDefinition.class));
     }
 
 }

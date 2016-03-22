@@ -4,7 +4,6 @@ import com.ctrip.apollo.client.ApolloConfigManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -17,8 +16,13 @@ public class AppConfig {
         return new ApolloConfigManager();
     }
 
-    @Bean
-    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+//    @Bean
+//    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+//        return new PropertySourcesPlaceholderConfigurer();
+//    }
+//
+//    @Bean
+//    public static RefreshScope refreshScope() {
+//        return new RefreshScope();
+//    }
 }
