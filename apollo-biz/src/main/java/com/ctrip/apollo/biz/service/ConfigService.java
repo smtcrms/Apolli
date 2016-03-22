@@ -1,7 +1,7 @@
 package com.ctrip.apollo.biz.service;
 
 import com.ctrip.apollo.biz.entity.Version;
-import com.ctrip.apollo.core.model.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 
 /**
  * Config Service

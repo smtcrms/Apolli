@@ -2,7 +2,7 @@ package com.ctrip.apollo.client.loader.impl;
 
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.model.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.junit.Before;

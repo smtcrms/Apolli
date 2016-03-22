@@ -19,6 +19,8 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * Client side config manager
  *
@@ -26,12 +28,17 @@ import org.springframework.core.env.MutablePropertySources;
  */
 public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware {
     public static final String APOLLO_PROPERTY_SOURCE_NAME = "ApolloConfigProperties";
+    private static AtomicReference<ApolloConfigManager> singletonProtector = new AtomicReference<ApolloConfigManager>();
 
     private ConfigLoader configLoader;
-
     private ConfigurableApplicationContext applicationContext;
 
+    private CompositePropertySource currentPropertySource;
+
     public ApolloConfigManager() {
+        if(!singletonProtector.compareAndSet(null, this)) {
+           throw new IllegalStateException("There should be only one ApolloConfigManager instance!");
+        }
         this.configLoader = ConfigLoaderFactory.getInstance().getRemoteConfigLoader();
     }
 
@@ -53,7 +60,7 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         registerDependentBeans(registry);
-        preparePropertySource();
+        initializePropertySource();
     }
 
     /**
@@ -94,14 +101,19 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
      * First try to load from remote
      * If loading from remote failed, then fall back to local cached properties
      */
-    void preparePropertySource() {
-        MutablePropertySources currentPropertySources = applicationContext.getEnvironment().getPropertySources();
-        if (currentPropertySources.contains(APOLLO_PROPERTY_SOURCE_NAME)) {
-            currentPropertySources.remove(APOLLO_PROPERTY_SOURCE_NAME);
-        }
+    void initializePropertySource() {
+        currentPropertySource = loadPropertySource();
 
-        CompositePropertySource composite = new CompositePropertySource(APOLLO_PROPERTY_SOURCE_NAME);
-        composite.addPropertySource(configLoader.loadPropertySource());
-        currentPropertySources.addFirst(composite);
+        MutablePropertySources currentPropertySources = applicationContext.getEnvironment().getPropertySources();
+        if (currentPropertySources.contains(currentPropertySource.getName())) {
+            currentPropertySources.remove(currentPropertySource.getName());
+        }
+        currentPropertySources.addFirst(currentPropertySource);
+    }
+
+    CompositePropertySource loadPropertySource() {
+        CompositePropertySource compositePropertySource = new CompositePropertySource(APOLLO_PROPERTY_SOURCE_NAME);
+        compositePropertySource.addPropertySource(configLoader.loadPropertySource());
+        return compositePropertySource;
     }
 }

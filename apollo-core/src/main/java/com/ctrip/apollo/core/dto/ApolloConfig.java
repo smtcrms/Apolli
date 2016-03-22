@@ -1,4 +1,4 @@
-package com.ctrip.apollo.core.model;
+package com.ctrip.apollo.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

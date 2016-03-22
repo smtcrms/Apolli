@@ -4,7 +4,7 @@ import com.ctrip.apollo.biz.entity.ReleaseSnapShot;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ReleaseSnapShotRepository;
 import com.ctrip.apollo.biz.repository.VersionRepository;
-import com.ctrip.apollo.core.model.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;

@@ -14,14 +14,15 @@
             <tr ng-repeat="item in demoCtrl.registries">
                 <td>{{item.appId}}</td>
                 <td>{{item.version}}</td>
-            </tr.>
+            </tr>
             </tbody>
         </table>
     </div>
 
     <div id="load-config-wrapper">
         <h3>Load Config:</h3>
-        <form name="loadConfigForm" class="form-horizontal" novalidate ng-submit="demoCtrl.queryConfig()">
+        <form name="loadConfigForm" class="form-horizontal" novalidate
+              ng-submit="demoCtrl.queryConfig()">
             <div class="form-group"
                  ng-class="{ 'has-error' : loadConfigForm.configName.$invalid && loadConfigForm.configName.$dirty}">
                 <div id="input-config-wrapper" class="clearfix">
@@ -50,12 +51,31 @@
         </form>
     </div>
 
+
+    <div>
+        <h3>Load Injected Config:</h3>
+        <form name="loadInjectedConfigForm" class="form-horizontal" novalidate
+              ng-submit="demoCtrl.queryInjectedConfig()">
+            <div class="form-group">
+                <div class="clearfix">
+                    <label class="col-sm-2 control-label">apollo.foo</label>
+                    <div class="col-sm-3">
+                        <input type="text" name="injectedConfigValue" class="form-control"
+                               ng-model="demoCtrl.injectedConfigValue" readonly/>
+                    </div>
+
+                    <input type="submit" class="btn btn-primary col-sm-1" value="query"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!--<div id="refresh-config-wrapper">-->
-        <!--<h3>Refresh Config:</h3>-->
-        <!--<button type="button" class="btn btn-primary" ng-click="demoCtrl.refreshConfig()">Refresh Config</button>-->
-        <!--<div id="refresh-result">-->
-            <!--<strong>Changed Properties:</strong> {{demoCtrl.refreshResult}}-->
-        <!--</div>-->
+    <!--<h3>Refresh Config:</h3>-->
+    <!--<button type="button" class="btn btn-primary" ng-click="demoCtrl.refreshConfig()">Refresh Config</button>-->
+    <!--<div id="refresh-result">-->
+    <!--<strong>Changed Properties:</strong> {{demoCtrl.refreshResult}}-->
+    <!--</div>-->
     <!--</div>-->
 
 </div>

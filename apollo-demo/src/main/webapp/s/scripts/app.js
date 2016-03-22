@@ -12,6 +12,7 @@
         this.registries = {};
         this.configQuery = {};
         //this.refreshResult = NONE;
+        this.injectedConfigValue = '';
 
         var self = this;
 
@@ -32,6 +33,16 @@
                 })
                 .error(function(data, status) {
                     toastr.error((data && data.msg) || 'Load config failed');
+                });
+        };
+
+        this.queryInjectedConfig = function () {
+            $http.get("demo/injected/config")
+                .success(function(data) {
+                    self.injectedConfigValue = data.value;
+                })
+                .error(function(data, status) {
+                    toastr.error((data && data.msg) || 'Load injected config failed');
                 });
         };
 
