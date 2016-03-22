@@ -4,19 +4,23 @@ import com.ctrip.apollo.client.loader.ConfigLoader;
 import com.ctrip.apollo.client.loader.ConfigLoaderFactory;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
 /**
- * Client side config
+ * Client side config manager
  *
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -48,7 +52,25 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
      */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+        registerDependentBeans(registry);
         preparePropertySource();
+    }
+
+    /**
+     * Register beans needed for Apollo Config Client
+     * <li>
+     * - RefreshScope: used to refresh beans when configurations changes
+     * </li>
+     * <li>
+     * - PropertySourcesPlaceholderConfigurer: used to support placeholder configuration injection
+     * </li>
+     * @param registry
+     */
+    private void registerDependentBeans(BeanDefinitionRegistry registry) {
+        BeanDefinition refreshScope = BeanDefinitionBuilder.genericBeanDefinition(RefreshScope.class).getBeanDefinition();
+        registry.registerBeanDefinition("refreshScope", refreshScope);
+        BeanDefinition propertySourcesPlaceholderConfigurer = BeanDefinitionBuilder.genericBeanDefinition(PropertySourcesPlaceholderConfigurer.class).getBeanDefinition();
+        registry.registerBeanDefinition("propertySourcesPlaceholderConfigurer", propertySourcesPlaceholderConfigurer);
     }
 
     /**
@@ -58,11 +80,20 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
     }
 
+    /**
+     * Make sure this bean is called before other beans
+     * @return
+     */
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 1;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
+    /**
+     * Prepare property sources
+     * First try to load from remote
+     * If loading from remote failed, then fall back to local cached properties
+     */
     void preparePropertySource() {
         MutablePropertySources currentPropertySources = applicationContext.getEnvironment().getPropertySources();
         if (currentPropertySources.contains(APOLLO_PROPERTY_SOURCE_NAME)) {
