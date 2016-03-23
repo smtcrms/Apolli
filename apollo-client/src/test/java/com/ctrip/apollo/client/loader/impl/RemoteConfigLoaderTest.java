@@ -1,29 +1,35 @@
 package com.ctrip.apollo.client.loader.impl;
 
-import com.ctrip.apollo.client.model.ApolloRegistry;
-import com.ctrip.apollo.client.util.ConfigUtil;
-import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.MapPropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import com.ctrip.apollo.client.loader.ConfigServiceLocator;
+import com.ctrip.apollo.client.model.ApolloRegistry;
+import com.ctrip.apollo.client.util.ConfigUtil;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.serivce.ApolloService;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -35,12 +41,14 @@ public class RemoteConfigLoaderTest {
     private RestTemplate restTemplate;
     private ConfigUtil configUtil;
     @Mock
+    private ConfigServiceLocator serviceLocater;
+    @Mock
     private ResponseEntity<ApolloConfig> someResponse;
 
     @Before
     public void setUp() {
         configUtil = spy(ConfigUtil.getInstance());
-        remoteConfigLoader = spy(new RemoteConfigLoader(restTemplate, configUtil));
+        remoteConfigLoader = spy(new RemoteConfigLoader(restTemplate, configUtil, serviceLocater));
     }
 
     @Test
@@ -52,7 +60,12 @@ public class RemoteConfigLoaderTest {
         ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
         ApolloConfig previousConfig = null;
 
-        when(configUtil.getConfigServerUrl()).thenReturn(someServerUrl);
+        
+        ApolloService someService = new ApolloService();
+        someService.setHomepageUrl(someServerUrl);
+        List<ApolloService> someServices = new ArrayList<>();
+        someServices.add(someService);
+        when(serviceLocater.getConfigServices()).thenReturn(someServices);
         when(configUtil.getCluster()).thenReturn(someCluster);
         doReturn(apolloConfig).when(remoteConfigLoader)
             .getRemoteConfig(restTemplate, someServerUrl, someCluster, apolloRegistry, previousConfig);
@@ -115,7 +128,6 @@ public class RemoteConfigLoaderTest {
         ApolloConfig result = remoteConfigLoader.getRemoteConfig(restTemplate, someServerUrl, someClusterName, apolloRegistry, previousConfig);
 
         assertNull(result);
-
     }
 
     private ApolloRegistry assembleSomeApolloRegistry(long someAppId, String someVersion) {
