@@ -1,6 +1,10 @@
 package com.ctrip.apollo.client.loader;
 
+import com.ctrip.apollo.client.loader.impl.InMemoryConfigLoader;
+import com.ctrip.apollo.client.loader.impl.LocalFileConfigLoader;
 import com.ctrip.apollo.client.loader.impl.RemoteConfigLoader;
+import com.ctrip.apollo.client.util.ConfigUtil;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -15,7 +19,24 @@ public class ConfigLoaderFactory {
         return configLoaderFactory;
     }
 
+    public ConfigLoader getLocalFileConfigLoader() {
+        ConfigLoader configLoader = new LocalFileConfigLoader();
+        return configLoader;
+    }
+
+    public ConfigLoader getInMemoryConfigLoader() {
+        ConfigLoader inMemoryConfigLoader = new InMemoryConfigLoader();
+        inMemoryConfigLoader.setFallBackLoader(getLocalFileConfigLoader());
+        return inMemoryConfigLoader;
+    }
+
     public ConfigLoader getRemoteConfigLoader() {
-        return new RemoteConfigLoader();
+        ConfigLoader remoteConfigLoader = new RemoteConfigLoader(new RestTemplate(), ConfigUtil.getInstance());
+//        remoteConfigLoader.setFallBackLoader(getInMemoryConfigLoader());
+        return remoteConfigLoader;
+    }
+
+    public ConfigLoaderManager getConfigLoaderManager() {
+        return new ConfigLoaderManager(getRemoteConfigLoader(), ConfigUtil.getInstance());
     }
 }

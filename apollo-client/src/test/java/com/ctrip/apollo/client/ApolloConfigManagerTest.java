@@ -1,9 +1,10 @@
 package com.ctrip.apollo.client;
 
-import com.ctrip.apollo.client.loader.ConfigLoader;
+import com.ctrip.apollo.client.loader.ConfigLoaderManager;
+import com.ctrip.apollo.client.model.PropertyChange;
+import com.ctrip.apollo.client.model.PropertySourceReloadResult;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.CompositePropertySource;
@@ -18,10 +20,11 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -31,7 +34,7 @@ import static org.mockito.Mockito.*;
 public class ApolloConfigManagerTest {
     private ApolloConfigManager apolloConfigManager;
     @Mock
-    private ConfigLoader configLoader;
+    private ConfigLoaderManager configLoaderManager;
     @Mock
     private ConfigurableApplicationContext applicationContext;
     @Mock
@@ -40,6 +43,8 @@ public class ApolloConfigManagerTest {
     private MutablePropertySources mutablePropertySources;
     @Mock
     private BeanDefinitionRegistry beanDefinitionRegistry;
+    @Mock
+    private RefreshScope scope;
 
     @Before
     public void setUp() {
@@ -49,7 +54,8 @@ public class ApolloConfigManagerTest {
         when(env.getPropertySources()).thenReturn(mutablePropertySources);
 
         apolloConfigManager.setApplicationContext(applicationContext);
-        ReflectionTestUtils.setField(apolloConfigManager, "configLoader", configLoader);
+        ReflectionTestUtils.setField(apolloConfigManager, "configLoaderManager", configLoaderManager);
+        ReflectionTestUtils.setField(apolloConfigManager, "scope", scope);
     }
 
     @After
@@ -66,21 +72,20 @@ public class ApolloConfigManagerTest {
     }
 
     @Test
-    public void testPreparePropertySourceSuccessfully() {
+    public void testInitializePropertySourceSuccessfully() {
         CompositePropertySource somePropertySource = mock(CompositePropertySource.class);
         final ArgumentCaptor<CompositePropertySource> captor = ArgumentCaptor.forClass(CompositePropertySource.class);
 
-        when(configLoader.loadPropertySource()).thenReturn(somePropertySource);
+        when(configLoaderManager.loadPropertySource()).thenReturn(somePropertySource);
 
         apolloConfigManager.initializePropertySource();
 
-        verify(configLoader, times(1)).loadPropertySource();
+        verify(configLoaderManager, times(1)).loadPropertySource();
         verify(mutablePropertySources, times(1)).addFirst(captor.capture());
 
         final CompositePropertySource insertedPropertySource = captor.getValue();
 
-        assertEquals(ApolloConfigManager.APOLLO_PROPERTY_SOURCE_NAME, insertedPropertySource.getName());
-        assertTrue(insertedPropertySource.getPropertySources().contains(somePropertySource));
+        assertEquals(insertedPropertySource, somePropertySource);
     }
 
     @Test
@@ -92,4 +97,38 @@ public class ApolloConfigManagerTest {
         verify(beanDefinitionRegistry, times(2)).registerBeanDefinition(anyString(), any(BeanDefinition.class));
     }
 
+    @Test
+    public void testUpdatePropertySourceWithChanges() throws Exception {
+        PropertySourceReloadResult somePropertySourceReloadResult = mock(PropertySourceReloadResult.class);
+        CompositePropertySource somePropertySource = mock(CompositePropertySource.class);
+        List<PropertyChange> someChanges = mock(List.class);
+
+        when(somePropertySourceReloadResult.hasChanges()).thenReturn(true);
+        when(somePropertySourceReloadResult.getPropertySource()).thenReturn(somePropertySource);
+        when(somePropertySourceReloadResult.getChanges()).thenReturn(someChanges);
+        when(configLoaderManager.reloadPropertySource()).thenReturn(somePropertySourceReloadResult);
+
+        List<PropertyChange> result = apolloConfigManager.updatePropertySource();
+
+        assertEquals(someChanges, result);
+        verify(scope, times(1)).refreshAll();
+    }
+
+    @Test
+    public void testUpdatePropertySourceWithNoChange() throws Exception {
+        PropertySourceReloadResult somePropertySourceReloadResult = mock(PropertySourceReloadResult.class);
+        CompositePropertySource somePropertySource = mock(CompositePropertySource.class);
+        List<PropertyChange> emptyChanges = Collections.emptyList();
+
+        when(somePropertySourceReloadResult.hasChanges()).thenReturn(false);
+        when(somePropertySourceReloadResult.getPropertySource()).thenReturn(somePropertySource);
+        when(somePropertySourceReloadResult.getChanges()).thenReturn(emptyChanges);
+        when(configLoaderManager.reloadPropertySource()).thenReturn(somePropertySourceReloadResult);
+
+        List<PropertyChange> result = apolloConfigManager.updatePropertySource();
+
+        assertEquals(emptyChanges, result);
+        verify(scope, never()).refreshAll();
+
+    }
 }

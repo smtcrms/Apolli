@@ -1,6 +1,8 @@
 package com.ctrip.apollo.demo.controller;
 
+import com.ctrip.apollo.client.ApolloConfigManager;
 import com.ctrip.apollo.client.model.ApolloRegistry;
+import com.ctrip.apollo.client.model.PropertyChange;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.demo.model.Config;
 import com.ctrip.apollo.demo.service.DemoService;
@@ -27,11 +29,12 @@ public class DemoController {
     private Environment env;
     @Autowired
     private DemoService demoService;
-    //Apollo config client internal impl, not intended to be used by application, only for this test page
+    //Apollo config client internal impl, not intended to be used by application, only for this test page!
     private ConfigUtil configUtil = ConfigUtil.getInstance();
 
+    //ApolloConfigManager, not intended to be used by application, only for this test page!
     @Autowired
-    private RefreshScope scope;
+    private ApolloConfigManager apolloConfigManager;
 
     @RequestMapping(value = "/config/{configName:.*}", method = RequestMethod.GET)
     public Config queryConfig(@PathVariable String configName) {
@@ -49,8 +52,8 @@ public class DemoController {
     }
 
     @RequestMapping(value = "/refresh", method = RequestMethod.POST)
-    public String refreshBeans() {
-        this.scope.refreshAll();
-        return "ok";
+    public List<PropertyChange> refreshBeans() {
+        List<PropertyChange> changes = this.apolloConfigManager.updatePropertySource();
+        return changes;
     }
 }

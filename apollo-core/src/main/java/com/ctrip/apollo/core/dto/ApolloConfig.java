@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
+import java.util.Comparator;
 import java.util.Map;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class ApolloConfig {
+public class ApolloConfig implements Comparable<ApolloConfig> {
 
     private long appId;
 
@@ -20,6 +21,8 @@ public class ApolloConfig {
     private Map<String, Object> configurations;
 
     private long releaseId;
+
+    private int order;
 
     @JsonCreator
     public ApolloConfig(@JsonProperty("appId") long appId,
@@ -57,6 +60,14 @@ public class ApolloConfig {
         return releaseId;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -67,5 +78,16 @@ public class ApolloConfig {
                 .add("releaseId", releaseId)
                 .add("configurations", configurations)
                 .toString();
+    }
+
+    @Override
+    public int compareTo(ApolloConfig o) {
+        if (o == null || this.getOrder() > o.getOrder()) {
+            return 1;
+        }
+        if (o.getOrder() > this.getOrder()) {
+            return -1;
+        }
+        return 0;
     }
 }

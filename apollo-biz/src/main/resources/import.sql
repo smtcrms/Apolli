@@ -6,3 +6,4 @@ INSERT INTO Version (AppId, IsDeleted, Name, ReleaseId) VALUES (102, 0, '1.0', 2
 
 INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) VALUES ('default', 0, 1, '{"apollo.foo":"bar", "apollo.bar":"foo"}');
 INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) VALUES ('default', 0, 2, '{"demo.foo":"demo1", "demo.bar":"demo2"}');
+INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) VALUES ('default', 0, 3, '{"apollo.foo":"another bar", "apollo.bar_new":"foo"}');

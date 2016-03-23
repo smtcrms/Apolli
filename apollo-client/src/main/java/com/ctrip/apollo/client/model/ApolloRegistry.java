@@ -1,5 +1,7 @@
 package com.ctrip.apollo.client.model;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -21,5 +23,14 @@ public class ApolloRegistry {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .omitNullValues()
+                .add("appId", appId)
+                .add("version", version)
+                .toString();
     }
 }

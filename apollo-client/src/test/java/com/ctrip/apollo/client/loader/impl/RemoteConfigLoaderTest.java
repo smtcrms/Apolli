@@ -12,11 +12,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -29,6 +34,8 @@ public class RemoteConfigLoaderTest {
     @Mock
     private RestTemplate restTemplate;
     private ConfigUtil configUtil;
+    @Mock
+    private ResponseEntity<ApolloConfig> someResponse;
 
     @Before
     public void setUp() {
@@ -37,57 +44,78 @@ public class RemoteConfigLoaderTest {
     }
 
     @Test
-    public void testLoadPropertySource() throws Exception {
-        long someAppId = 100;
-        long anotherAppId = 101;
-        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
-        ApolloRegistry anotherApolloRegistry = assembleSomeApolloRegistry(anotherAppId, "anotherVersion");
-        MapPropertySource somePropertySource = mock(MapPropertySource.class);
-        MapPropertySource anotherPropertySource = mock(MapPropertySource.class);
+    public void testLoadApolloConfig() throws Exception {
+        String someServerUrl = "http://someUrl";
+        String someCluster = "some cluster";
+        ApolloConfig apolloConfig = mock(ApolloConfig.class);
+        long someAppId = 1;
+        ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
+        ApolloConfig previousConfig = null;
 
-        doReturn(Lists.newArrayList(someApolloRegistry, anotherApolloRegistry)).when(configUtil).loadApolloRegistries();
-        doReturn(somePropertySource).when(remoteConfigLoader).loadSingleApolloConfig(someApolloRegistry.getAppId(), someApolloRegistry.getVersion());
-        doReturn(anotherPropertySource).when(remoteConfigLoader).loadSingleApolloConfig(anotherApolloRegistry.getAppId(), anotherApolloRegistry.getVersion());
+        when(configUtil.getConfigServerUrl()).thenReturn(someServerUrl);
+        when(configUtil.getCluster()).thenReturn(someCluster);
+        doReturn(apolloConfig).when(remoteConfigLoader)
+            .getRemoteConfig(restTemplate, someServerUrl, someCluster, apolloRegistry, previousConfig);
 
-        CompositePropertySource result = remoteConfigLoader.loadPropertySource();
+        ApolloConfig result = remoteConfigLoader.loadApolloConfig(apolloRegistry, previousConfig);
 
-        assertEquals(2, result.getPropertySources().size());
-        assertTrue(result.getPropertySources().containsAll(Lists.newArrayList(somePropertySource, anotherPropertySource)));
+        assertEquals(apolloConfig, result);
     }
 
     @Test
-    public void testLoadPropertySourceWithNoApolloRegistry() throws Exception {
-        doReturn(null).when(configUtil).loadApolloRegistries();
+    public void testGetRemoteConfig() throws Exception {
+        long someAppId = 1;
+        String someServerUrl = "http://someServer";
+        String someClusterName = "someCluster";
+        String someVersionName = "someVersion";
+        ApolloConfig someApolloConfig = mock(ApolloConfig.class);
+        ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, someVersionName);
+        ApolloConfig previousConfig = null;
 
-        CompositePropertySource result = remoteConfigLoader.loadPropertySource();
+        when(someResponse.getStatusCode()).thenReturn(HttpStatus.OK);
+        when(someResponse.getBody()).thenReturn(someApolloConfig);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-        assertTrue(result.getPropertySources().isEmpty());
+        ApolloConfig result = remoteConfigLoader.getRemoteConfig(restTemplate, someServerUrl, someClusterName, apolloRegistry, previousConfig);
+
+        assertEquals(someApolloConfig, result);
     }
 
     @Test(expected = RuntimeException.class)
-    public void testLoadPropertySourceWithError() throws Exception {
-        Exception someException = mock(Exception.class);
-        long someAppId = 100;
-        ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
-        doReturn(Lists.newArrayList(someApolloRegistry)).when(configUtil).loadApolloRegistries();
+    public void testGetRemoteConfigWithServerError() throws Exception {
+        long someAppId = 1;
+        String someServerUrl = "http://someServer";
+        String someClusterName = "someCluster";
+        String someVersionName = "someVersion";
+        ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, someVersionName);
+        ApolloConfig previousConfig = null;
+        HttpStatus someErrorCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        doThrow(someException).when(remoteConfigLoader).loadSingleApolloConfig(someApolloRegistry.getAppId(), someApolloRegistry.getVersion());
+        when(someResponse.getStatusCode()).thenReturn(someErrorCode);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-        remoteConfigLoader.loadPropertySource();
+        remoteConfigLoader.getRemoteConfig(restTemplate, someServerUrl, someClusterName, apolloRegistry, previousConfig);
     }
 
     @Test
-    public void testLoadSingleApolloConfig() throws Exception {
-        ApolloConfig someApolloConfig = mock(ApolloConfig.class);
-        Map<String, Object> someMap = Maps.newHashMap();
+    public void testGetRemoteConfigWith304Response() throws Exception {
+        long someAppId = 1;
+        String someServerUrl = "http://someServer";
+        String someClusterName = "someCluster";
+        String someVersionName = "someVersion";
+        ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, someVersionName);
+        ApolloConfig previousConfig = null;
 
-        when(someApolloConfig.getConfigurations()).thenReturn(someMap);
-        doReturn(someApolloConfig).when(remoteConfigLoader).getRemoteConfig(any(RestTemplate.class), anyString(), anyLong(), anyString(), anyString());
+        when(someResponse.getStatusCode()).thenReturn(HttpStatus.NOT_MODIFIED);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-        long someAppId = 100;
-        MapPropertySource result = remoteConfigLoader.loadSingleApolloConfig(someAppId, "someVersion");
+        ApolloConfig result = remoteConfigLoader.getRemoteConfig(restTemplate, someServerUrl, someClusterName, apolloRegistry, previousConfig);
 
-        assertEquals(someMap, result.getSource());
+        assertNull(result);
+
     }
 
     private ApolloRegistry assembleSomeApolloRegistry(long someAppId, String someVersion) {
