@@ -1,8 +1,12 @@
 package com.ctrip.apollo.client;
 
-import com.ctrip.apollo.client.loader.ConfigLoader;
 import com.ctrip.apollo.client.loader.ConfigLoaderFactory;
+import com.ctrip.apollo.client.loader.ConfigLoaderManager;
+import com.ctrip.apollo.client.model.PropertyChange;
+import com.ctrip.apollo.client.model.PropertySourceReloadResult;
 import com.ctrip.apollo.client.util.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -19,6 +23,7 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -27,19 +32,18 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware {
-    public static final String APOLLO_PROPERTY_SOURCE_NAME = "ApolloConfigProperties";
+    private static final Logger logger = LoggerFactory.getLogger(ApolloConfigManager.class);
     private static AtomicReference<ApolloConfigManager> singletonProtector = new AtomicReference<ApolloConfigManager>();
 
-    private ConfigLoader configLoader;
+    private ConfigLoaderManager configLoaderManager;
     private ConfigurableApplicationContext applicationContext;
-
-    private CompositePropertySource currentPropertySource;
+    private RefreshScope scope;
 
     public ApolloConfigManager() {
         if(!singletonProtector.compareAndSet(null, this)) {
            throw new IllegalStateException("There should be only one ApolloConfigManager instance!");
         }
-        this.configLoader = ConfigLoaderFactory.getInstance().getRemoteConfigLoader();
+        this.configLoaderManager = ConfigLoaderFactory.getInstance().getConfigLoaderManager();
     }
 
     @Override
@@ -97,23 +101,42 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
     }
 
     /**
-     * Prepare property sources
-     * First try to load from remote
-     * If loading from remote failed, then fall back to local cached properties
+     * Initialize property sources
      */
     void initializePropertySource() {
-        currentPropertySource = loadPropertySource();
+        //TODO stop application from starting when config cannot be loaded?
+        CompositePropertySource result = this.configLoaderManager.loadPropertySource();
 
+        updateEnvironmentPropertySource(result);
+    }
+
+    private void updateEnvironmentPropertySource(CompositePropertySource currentPropertySource) {
         MutablePropertySources currentPropertySources = applicationContext.getEnvironment().getPropertySources();
         if (currentPropertySources.contains(currentPropertySource.getName())) {
-            currentPropertySources.remove(currentPropertySource.getName());
+            currentPropertySources.replace(currentPropertySource.getName(), currentPropertySource);
+            return;
         }
         currentPropertySources.addFirst(currentPropertySource);
     }
 
-    CompositePropertySource loadPropertySource() {
-        CompositePropertySource compositePropertySource = new CompositePropertySource(APOLLO_PROPERTY_SOURCE_NAME);
-        compositePropertySource.addPropertySource(configLoader.loadPropertySource());
-        return compositePropertySource;
+    public List<PropertyChange> updatePropertySource() {
+        PropertySourceReloadResult result = this.configLoaderManager.reloadPropertySource();
+        if (result.hasChanges()) {
+            updateEnvironmentPropertySource(result.getPropertySource());
+            refreshBeans();
+        }
+        return result.getChanges();
+    }
+
+    private void refreshBeans() {
+        if (this.scope == null) {
+            this.scope = applicationContext.getBean("refreshScope", RefreshScope.class);
+        }
+
+        if (this.scope == null) {
+            logger.error("Could not get refresh scope object, skip refresh beans");
+        }
+
+        this.scope.refreshAll();
     }
 }

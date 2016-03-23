@@ -7,11 +7,11 @@
     ]);
 
     app.controller('DemoController', function ($scope, $http, $modal, toastr) {
-        //var NONE = "none";
+        var NONE = "none";
 
         this.registries = {};
         this.configQuery = {};
-        //this.refreshResult = NONE;
+        this.refreshResult = NONE;
         this.injectedConfigValue = '';
 
         var self = this;
@@ -46,24 +46,26 @@
                 });
         };
 
-        //this.refreshConfig = function() {
-        //    $http.post("refresh")
-        //        .success(function(data) {
-        //            self.assembleRefreshResult(data);
-        //        })
-        //        .error(function(data, status) {
-        //            toastr.error((data && data.msg) || 'Refresh config failed');
-        //        });
-        //
-        //};
+        this.refreshConfig = function() {
+            $http.post("demo/refresh")
+                .success(function(data) {
+                    self.assembleRefreshResult(data);
+                })
+                .error(function(data, status) {
+                    toastr.error((data && data.msg) || 'Refresh config failed');
+                });
 
-        //this.assembleRefreshResult = function(changedPropertyArray) {
-        //    if(!changedPropertyArray || !changedPropertyArray.length) {
-        //        this.refreshResult = NONE;
-        //        return;
-        //    }
-        //    this.refreshResult = changedPropertyArray.join(',');
-        //};
+        };
+
+        this.assembleRefreshResult = function(changedPropertyArray) {
+            if(!changedPropertyArray || !changedPropertyArray.length) {
+                this.refreshResult = NONE;
+                return;
+            }
+            this.refreshResult = _.map(changedPropertyArray, function(propertyChange) {
+                return propertyChange.propertyName + '(' + propertyChange.changeType + ')';
+            });
+        };
 
         this.loadRegistries();
 

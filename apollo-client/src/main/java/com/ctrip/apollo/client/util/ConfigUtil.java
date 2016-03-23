@@ -33,7 +33,7 @@ public class ConfigUtil {
 
     public String getConfigServerUrl() {
         // TODO return the meta server url based on different environments
-        return "http://localhost:8888";
+        return "http://localhost";
     }
 
     public String getCluster() {

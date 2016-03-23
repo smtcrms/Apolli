@@ -3,10 +3,7 @@ package com.ctrip.apollo.configservice.controller;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.core.dto.ApolloConfig;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +18,7 @@ public class ConfigController {
     @Resource(name = "configService")
     private ConfigService configService;
 
-    @RequestMapping(value = "/{appId}/{clusterName}/{versionName:.*}")
+    @RequestMapping(value = "/{appId}/{clusterName}/{versionName:.*}", method = RequestMethod.GET)
     public ApolloConfig queryConfig(@PathVariable long appId,
                                     @PathVariable String clusterName,
                                     @PathVariable String versionName,
