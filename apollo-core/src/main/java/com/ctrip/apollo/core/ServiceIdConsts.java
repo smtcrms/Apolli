@@ -2,9 +2,11 @@ package com.ctrip.apollo.core;
 
 public class ServiceIdConsts {
 
-  public static final String APOLLO_METASERVER = "apollo-metaserver";
+  public static final String APOLLO_METASERVICE = "apollo-metaservice";
 
-  public static final String APOLLO_CONFIGSERVER = "apollo-configserver";
+  public static final String APOLLO_CONFIGSERVICE = "apollo-configservice";
 
+  public static final String APOLLO_ADMINSERVICE = "apollo-adminservice";
+  
   public static final String APOLLO_PORTAL = "apollo-portal";
 }

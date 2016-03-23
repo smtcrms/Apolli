@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: apollo-configservice
+
+server:
+  port: ${port:80}
+  
+logging:
+  level:
+    org.springframework.cloud: 'DEBUG'
+  file: /opt/logs/apollo-configservice.log
+

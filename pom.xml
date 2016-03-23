@@ -67,8 +67,8 @@
 		<module>apollo-core</module>
 		<module>apollo-client</module>
 		<module>apollo-biz</module>
-		<module>apollo-configserver</module>
-		<module>apollo-configadmin</module>
+		<module>apollo-configservice</module>
+		<module>apollo-adminservice</module>
 		<module>apollo-portal</module>
 		<module>apollo-demo</module>
 	</modules>
