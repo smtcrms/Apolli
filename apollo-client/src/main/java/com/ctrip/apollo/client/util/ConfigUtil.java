@@ -23,17 +23,12 @@ public class ConfigUtil {
     public static final String APOLLO_PROPERTY = "apollo.properties";
     private static ConfigUtil configUtil = new ConfigUtil();
     private ApplicationContext applicationContext;
-
+    
     private ConfigUtil() {
     }
 
     public static ConfigUtil getInstance() {
         return configUtil;
-    }
-
-    public String getConfigServerUrl() {
-        // TODO return the meta server url based on different environments
-        return "http://localhost";
     }
 
     public String getCluster() {
