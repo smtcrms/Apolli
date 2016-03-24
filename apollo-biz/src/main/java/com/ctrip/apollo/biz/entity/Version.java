@@ -22,7 +22,8 @@ public class Version {
 
     private long appId;
     private long releaseId;
-    private long parentVersion;
+    //parent version could be null
+    private Long parentVersion;
     private boolean isDeleted;
 
     public Version() {
@@ -60,19 +61,19 @@ public class Version {
         this.releaseId = releaseId;
     }
 
-    public long getParentVersion() {
-        return parentVersion;
-    }
-
-    public void setParentVersion(long parentVersion) {
-        this.parentVersion = parentVersion;
-    }
-
     public boolean isDeleted() {
         return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Long getParentVersion() {
+        return parentVersion;
+    }
+
+    public void setParentVersion(Long parentVersion) {
+        this.parentVersion = parentVersion;
     }
 }
