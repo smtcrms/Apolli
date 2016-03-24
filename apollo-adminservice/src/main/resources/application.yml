@@ -3,12 +3,12 @@ spring:
     name: apollo-adminservice
     
 server:
-  port: ${port:23646}
+  port: ${port:8090}
   
 logging:
   level:
     org.springframework.cloud: 'DEBUG'
-  file: /opt/logs/apollo-adminservice.log
+  file: /opt/logs/${ctrip.appid}/apollo-adminservice.log
 
 ctrip:
   appid: 100003172

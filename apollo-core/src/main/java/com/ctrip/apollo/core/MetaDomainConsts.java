@@ -7,21 +7,29 @@ import com.ctrip.apollo.Apollo.Env;
 
 public class MetaDomainConsts {
 
-  public static final String LOCAL = "http://localhost";
+  public static final String DEFAULT_PORT = "8080";
 
-  public static final String DEV = "http://ws.meta.apollo.fx.dev.nt.ctripcorp.com";
+  public static final String LOCAL = "http://localhost" + "/" + DEFAULT_PORT;
 
-  public static final String FAT = "http://ws.meta.apollo.fx.fat.nt.ctripcorp.com";;
+  public static final String DEV =
+      "http://ws.meta.apollo.fx.dev.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
 
-  public static final String FWS = "http://ws.meta.apollo.fx.fws.nt.ctripcorp.com";
+  public static final String FAT =
+      "http://ws.meta.apollo.fx.fat.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
 
-  public static final String UAT = "http://ws.meta.apollo.fx.uat.nt.ctripcorp.com";
+  public static final String FWS =
+      "http://ws.meta.apollo.fx.fws.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
 
-  public static final String LPT = "http://ws.meta.apollo.fx.lpt.nt.ctripcorp.com";
+  public static final String UAT =
+      "http://ws.meta.apollo.fx.uat.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
 
-  public static final String TOOLS = "http://ws.meta.apollo.fx.tools.ctripcorp.com";
+  public static final String LPT =
+      "http://ws.meta.apollo.fx.lpt.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
 
-  public static final String PRD = "http://ws.meta.apollo.fx.ctripcorp.com";
+  public static final String TOOLS =
+      "http://ws.meta.apollo.fx.tools.ctripcorp.com" + "/" + DEFAULT_PORT;
+
+  public static final String PRD = "http://ws.meta.apollo.fx.ctripcorp.com" + "/" + DEFAULT_PORT;
 
   private static Map<Env, String> domains = new HashMap<>();
 
