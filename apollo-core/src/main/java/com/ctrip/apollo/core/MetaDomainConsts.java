@@ -12,7 +12,7 @@ public class MetaDomainConsts {
   public static final String LOCAL = "http://localhost" + "/" + DEFAULT_PORT;
 
   public static final String DEV =
-      "http://ws.meta.apollo.fx.dev.nt.ctripcorp.com" + "/" + DEFAULT_PORT;
+      "http://10.3.2.56" + "/" + DEFAULT_PORT;
 
   public static final String FAT =
       "http://ws.meta.apollo.fx.fat.nt.ctripcorp.com" + "/" + DEFAULT_PORT;

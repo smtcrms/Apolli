@@ -135,6 +135,7 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
 
         if (this.scope == null) {
             logger.error("Could not get refresh scope object, skip refresh beans");
+            return;
         }
 
         this.scope.refreshAll();
