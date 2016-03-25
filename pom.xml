@@ -104,11 +104,11 @@
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.38</version>
 			</dependency>
-                        <dependency>
-                		<groupId>com.google.guava</groupId>
-        			<artifactId>guava</artifactId>
-                		<version>19.0</version>
-            		</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>19.0</version>
+			</dependency>
 			<!--for test -->
 			<dependency>
 				<groupId>com.h2database</groupId>
@@ -161,25 +161,31 @@
 						</execution>
 					</executions>
 				</plugin>
-                		<plugin>
-                    			<groupId>org.apache.maven.plugins</groupId>
-                    			<artifactId>maven-war-plugin</artifactId>
-                    			<version>2.3</version>
-                    			<configuration>
-                        			<failOnMissingWebXml>false</failOnMissingWebXml>
-                    			</configuration>
-                		</plugin>
-                		<plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.17</version>
 					<dependencies>
-            					<dependency>
-              						<groupId>com.puppycrawl.tools</groupId>
-              						<artifactId>checkstyle</artifactId>
-              						<version>6.16.1</version>
-            					</dependency>
-          				</dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>6.16.1</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<configLocation>google_checks.xml</configLocation>
+						<failOnViolation>false</failOnViolation>
+						<linkXRef>false</linkXRef>
+						<consoleOutput>true</consoleOutput>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -203,10 +209,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>google_checks.xml</configLocation>
-					<failOnViolation>false</failOnViolation>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -240,7 +242,7 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
@@ -256,10 +258,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>google_checks.xml</configLocation>
-					<failOnViolation>false</failOnViolation>
-				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
