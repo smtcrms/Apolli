@@ -7,7 +7,7 @@ before_install:
 
 after_success:
   - mvn clean cobertura:cobertura coveralls:report
-  - mvn clean site -X
+  - mvn clean site
   - codecov
 
 branches:

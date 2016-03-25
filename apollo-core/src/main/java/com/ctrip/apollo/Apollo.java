@@ -7,7 +7,7 @@ public class Apollo {
   private static Env m_env;
 
   public enum Env {
-      LOCAL, DEV, FWS, FAT, UAT, LPT, PROD, TOOLS
+      LOCAL, DEV, FWS, FAT, UAT, LPT, PRO, TOOLS
   }
 
   public static void initialize(Env env) {

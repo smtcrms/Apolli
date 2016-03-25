@@ -41,11 +41,7 @@ public class ClientEnvironment {
     if (env.get() == null) {
       Env resultEnv = Apollo.getEnv();
       Properties apolloProperties = null;
-      try {
-        apolloProperties = readConfigFile(DEFAULT_FILE, null);
-      } catch (IOException e) {
-        throw new IllegalArgumentException("Could not read Apollo properties");
-      }
+      apolloProperties = readConfigFile(DEFAULT_FILE, null);
       if (apolloProperties != null) {
         String strEnv = apolloProperties.getProperty(Constants.ENV);
         if (!StringUtils.isBlank(strEnv)) {
@@ -67,26 +63,38 @@ public class ClientEnvironment {
   }
 
   @SuppressWarnings("unchecked")
-  private Properties readConfigFile(String configPath, Properties defaults) throws IOException {
+  private Properties readConfigFile(String configPath, Properties defaults) {
     InputStream in = this.getClass().getResourceAsStream(configPath);
     logger.info("Reading config from resource {}", configPath);
-    if (in == null) {
-      // load outside resource under current user path
-      Path path = new File(System.getProperty("user.dir") + configPath).toPath();
-      if (Files.isReadable(path)) {
-        in = new FileInputStream(path.toFile());
-        logger.info("Reading config from file {} ", path);
+    Properties props = new Properties();
+    try {
+      if (in == null) {
+        // load outside resource under current user path
+        Path path = new File(System.getProperty("user.dir") + configPath).toPath();
+        if (Files.isReadable(path)) {
+          in = new FileInputStream(path.toFile());
+          logger.info("Reading config from file {} ", path);
+        }
+      }
+      if (defaults != null) {
+        props.putAll(defaults);
+      }
+
+      if (in != null) {
+        props.load(in);
+        in.close();
+      }
+    } catch (Exception e) {
+      logger.warn("Reading config failed: {}", e.getMessage());
+    } finally {
+      if (in != null) {
+        try {
+          in.close();
+        } catch (IOException e) {
+          logger.warn("Close config failed: {}", e.getMessage());
+        }
       }
     }
-    Properties props = new Properties();
-    if (defaults != null) {
-      props.putAll(defaults);
-    }
-
-    if (in != null) {
-      props.load(in);
-    }
-
     StringBuilder sb = new StringBuilder();
     for (Enumeration<String> e = (Enumeration<String>) props.propertyNames(); e
         .hasMoreElements();) {

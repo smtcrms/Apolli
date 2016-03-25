@@ -29,7 +29,7 @@ public class MetaDomainConsts {
   public static final String TOOLS =
       "http://ws.meta.apollo.fx.tools.ctripcorp.com" + ":" + DEFAULT_PORT;
 
-  public static final String PRD = "http://ws.meta.apollo.fx.ctripcorp.com" + ":" + DEFAULT_PORT;
+  public static final String PRO = "http://ws.meta.apollo.fx.ctripcorp.com" + ":" + DEFAULT_PORT;
 
   private static Map<Env, String> domains = new HashMap<>();
 
@@ -41,7 +41,7 @@ public class MetaDomainConsts {
     domains.put(Env.UAT, UAT);
     domains.put(Env.LPT, LPT);
     domains.put(Env.TOOLS, TOOLS);
-    domains.put(Env.PROD, PRD);
+    domains.put(Env.PRO, PRO);
   }
 
   public static String getDomain(Env env) {
