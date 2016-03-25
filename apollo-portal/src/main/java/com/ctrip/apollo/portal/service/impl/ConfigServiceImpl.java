@@ -3,6 +3,7 @@ package com.ctrip.apollo.portal.service.impl;
 import com.ctrip.apollo.core.Constants;
 import com.ctrip.apollo.core.dto.*;
 import com.ctrip.apollo.portal.RestUtils;
+import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.ctrip.apollo.portal.service.ConfigService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -164,7 +165,7 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, List<ConfigItemDTO>> groupedClusterConfigs = groupConfigByCluster(configItems);
 
         AppConfigVO appConfigVO =
-            AppConfigVO.newInstance(appId, Constants.LASTEST_VERSION_ID);
+            AppConfigVO.newInstance(appId, PortalConstants.LASTEST_VERSION_ID);
 
         groupConfigByAppAndEnrichDTO(groupedClusterConfigs, appConfigVO);
 

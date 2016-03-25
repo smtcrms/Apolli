@@ -1,8 +1,8 @@
 package com.ctrip.apollo.portal.service;
 
-import com.ctrip.apollo.core.Constants;
 import com.ctrip.apollo.core.dto.*;
 import com.ctrip.apollo.portal.RestUtils;
+import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.ctrip.apollo.portal.service.impl.ConfigServiceImpl;
 import org.junit.Before;
@@ -162,7 +162,7 @@ public class ConfigServiceTest {
         AppConfigVO appConfigVO = configService.loadLatestConfig(appId);
 
         assertEquals(appConfigVO.getAppId(), 6666);
-        assertEquals(appConfigVO.getVersionId(), Constants.LASTEST_VERSION_ID);
+        assertEquals(appConfigVO.getVersionId(), PortalConstants.LASTEST_VERSION_ID);
         assertEquals(appConfigVO.getDefaultClusterConfigs().size(), 3);
         assertEquals(appConfigVO.getOverrideAppConfigs().size(), 1);
         assertEquals(appConfigVO.getOverrideClusterConfigs().size(), 1);

@@ -1,6 +1,6 @@
 package com.ctrip.apollo.portal.controller;
 
-import com.ctrip.apollo.core.Constants;
+import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.ctrip.apollo.portal.exception.NotFoundException;
 import com.ctrip.apollo.portal.service.ConfigService;
@@ -23,7 +23,7 @@ public class ConfigController {
             throw new NotFoundException();
         }
 
-        if (versionId == Constants.LASTEST_VERSION_ID) {
+        if (versionId == PortalConstants.LASTEST_VERSION_ID) {
             return configService.loadLatestConfig(appId);
         } else if (versionId > 0) {
             return configService.loadReleaseConfig(appId, versionId);
