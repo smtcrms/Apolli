@@ -1,19 +1,22 @@
 package com.ctrip.apollo.portal.service;
 
-import com.ctrip.apollo.core.dto.ClusterDTO;
-import com.ctrip.apollo.core.dto.ConfigItemDTO;
-import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
-import com.ctrip.apollo.core.dto.VersionDTO;
-import com.ctrip.apollo.portal.RestUtils;
-import com.ctrip.apollo.portal.constants.PortalConstants;
-import com.ctrip.apollo.portal.entity.AppConfigVO;
-import com.ctrip.apollo.portal.service.impl.ConfigServiceImpl;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,10 +24,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.core.dto.ClusterDTO;
+import com.ctrip.apollo.core.dto.ConfigItemDTO;
+import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
+import com.ctrip.apollo.core.dto.VersionDTO;
+import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.portal.RestUtils;
+import com.ctrip.apollo.portal.constants.PortalConstants;
+import com.ctrip.apollo.portal.entity.AppConfigVO;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigServiceTest {
@@ -40,12 +48,20 @@ public class ConfigServiceTest {
   @Mock
   private ResponseEntity configItemResponse;
 
-  private ConfigServiceImpl configService;
+  @InjectMocks
+  private ConfigService configService;
+
+  @Spy
+  private ServiceLocator serviceLocator;
 
   @Before
   public void setUp() {
     ReflectionTestUtils.setField(RestUtils.class, "restTemplate", restTemplate);
-    configService = new ConfigServiceImpl();
+    ApolloService defaultAdminService = new ApolloService();
+    defaultAdminService.setHomepageUrl("http://localhost:8090");
+    List<ApolloService> services = new ArrayList<>();
+    services.add(defaultAdminService);
+    Mockito.doReturn(services).when(serviceLocator).getAdminServices(Env.DEV);
   }
 
   @Test
@@ -57,11 +73,11 @@ public class ConfigServiceTest {
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
     ReleaseSnapshotDTO[] someReleaseSnapShots = assembleReleaseSnapShots();
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/configs/release/"
-        + releaseId, ReleaseSnapshotDTO[].class, someReleaseSnapShots, releaseSnapShotResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+        ReleaseSnapshotDTO[].class, someReleaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/version/"
-        + versionId, VersionDTO.class, someVersion, versionResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+        someVersion, versionResponse);
 
     AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
 
@@ -80,15 +96,14 @@ public class ConfigServiceTest {
 
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
     ReleaseSnapshotDTO[] releaseSnapShots = new ReleaseSnapshotDTO[1];
-    releaseSnapShots[0] =
-        assembleReleaseSnapShot(11111, "default-cluster-name",
-            "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
+    releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
+        "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/configs/release/"
-        + releaseId, ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+        ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/version/"
-        + versionId, VersionDTO.class, someVersion, versionResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+        someVersion, versionResponse);
 
     AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
 
@@ -106,15 +121,14 @@ public class ConfigServiceTest {
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
     ReleaseSnapshotDTO[] releaseSnapShots = new ReleaseSnapshotDTO[1];
-    releaseSnapShots[0] =
-        assembleReleaseSnapShot(11111, "default-cluster-name",
-            "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\", \"5555.bar\":\"demo2\", \"22.bar\":\"demo2\"}");
+    releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
+        "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\", \"5555.bar\":\"demo2\", \"22.bar\":\"demo2\"}");
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/configs/release/"
-        + releaseId, ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+        ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/version/"
-        + versionId, VersionDTO.class, someVersion, versionResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+        someVersion, versionResponse);
 
     AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
 
@@ -132,18 +146,16 @@ public class ConfigServiceTest {
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
     ReleaseSnapshotDTO[] releaseSnapShots = new ReleaseSnapshotDTO[2];
-    releaseSnapShots[0] =
-        assembleReleaseSnapShot(11111, "default-cluster-name",
-            "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
-    releaseSnapShots[1] =
-        assembleReleaseSnapShot(11112, "cluster1",
-            "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
+    releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
+        "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
+    releaseSnapShots[1] = assembleReleaseSnapShot(11112, "cluster1",
+        "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/configs/release/"
-        + releaseId, ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+        ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/version/"
-        + versionId, VersionDTO.class, someVersion, versionResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+        someVersion, versionResponse);
 
     AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
 
@@ -160,12 +172,11 @@ public class ConfigServiceTest {
     ClusterDTO[] someClusters = assembleClusters();
     ConfigItemDTO[] someConfigItem = assembleConfigItems();
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST + "/cluster/app/"
-        + appId, ClusterDTO[].class, someClusters, clusterResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/cluster/app/" + appId, ClusterDTO[].class,
+        someClusters, clusterResponse);
 
-    restInvoke(ConfigServiceImpl.ADMIN_SERVICE_HOST
-            + "/configs/latest?clusterIds=100,101", ConfigItemDTO[].class, someConfigItem,
-        configItemResponse);
+    restInvoke(configService.getAdminServiceUrl() + "/configs/latest?clusterIds=100,101",
+        ConfigItemDTO[].class, someConfigItem, configItemResponse);
 
     AppConfigVO appConfigVO = configService.loadLatestConfig(appId);
 
@@ -177,10 +188,10 @@ public class ConfigServiceTest {
   }
 
   private <T> void restInvoke(String url, Class<T> responseType, T result,
-                              ResponseEntity someResponse) {
+      ResponseEntity someResponse) {
     when(
         restTemplate.exchange(eq(url), eq(HttpMethod.GET), any(HttpEntity.class), eq(responseType)))
-        .thenReturn(someResponse);
+            .thenReturn(someResponse);
     when(someResponse.getStatusCode()).thenReturn(HttpStatus.OK);
     when(someResponse.getBody()).thenReturn(result);
   }
@@ -195,18 +206,15 @@ public class ConfigServiceTest {
 
   private ReleaseSnapshotDTO[] assembleReleaseSnapShots() {
     ReleaseSnapshotDTO[] releaseSnapShots = new ReleaseSnapshotDTO[3];
-    releaseSnapShots[0] =
-        assembleReleaseSnapShot(11111, "default-cluster-name",
-            "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\",\"3333.foo\":\"1008\",\"4444.bar\":\"99901\"}");
-    releaseSnapShots[1] =
-        assembleReleaseSnapShot(11111, "cluster1", "{\"6666.foo\":\"demo1\"}");
-    releaseSnapShots[2] =
-        assembleReleaseSnapShot(11111, "cluster2", "{\"6666.bar\":\"bar2222\"}");
+    releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
+        "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\",\"3333.foo\":\"1008\",\"4444.bar\":\"99901\"}");
+    releaseSnapShots[1] = assembleReleaseSnapShot(11111, "cluster1", "{\"6666.foo\":\"demo1\"}");
+    releaseSnapShots[2] = assembleReleaseSnapShot(11111, "cluster2", "{\"6666.bar\":\"bar2222\"}");
     return releaseSnapShots;
   }
 
   private ReleaseSnapshotDTO assembleReleaseSnapShot(long releaseId, String clusterName,
-                                                     String configurations) {
+      String configurations) {
     ReleaseSnapshotDTO releaseSnapShot = new ReleaseSnapshotDTO();
     releaseSnapShot.setReleaseId(releaseId);
     releaseSnapShot.setClusterName(clusterName);
@@ -231,20 +239,16 @@ public class ConfigServiceTest {
 
   private ConfigItemDTO[] assembleConfigItems() {
     ConfigItemDTO[] configItems = new ConfigItemDTO[5];
-    configItems[0] =
-        assembleConfigItem(100, "default-cluster-name", 6666, "6666.k1", "6666.v1");
-    configItems[1] =
-        assembleConfigItem(100, "default-cluster-name", 6666, "6666.k2", "6666.v2");
-    configItems[2] =
-        assembleConfigItem(100, "default-cluster-name", 6666, "6666.k3", "6666.v3");
-    configItems[3] =
-        assembleConfigItem(100, "default-cluster-name", 5555, "5555.k1", "5555.v1");
+    configItems[0] = assembleConfigItem(100, "default-cluster-name", 6666, "6666.k1", "6666.v1");
+    configItems[1] = assembleConfigItem(100, "default-cluster-name", 6666, "6666.k2", "6666.v2");
+    configItems[2] = assembleConfigItem(100, "default-cluster-name", 6666, "6666.k3", "6666.v3");
+    configItems[3] = assembleConfigItem(100, "default-cluster-name", 5555, "5555.k1", "5555.v1");
     configItems[4] = assembleConfigItem(101, "cluster1", 6666, "6666.k1", "6666.v1");
     return configItems;
   }
 
   private ConfigItemDTO assembleConfigItem(long clusterId, String clusterName, int appId,
-                                           String key, String value) {
+      String key, String value) {
     ConfigItemDTO configItem = new ConfigItemDTO();
     configItem.setClusterName(clusterName);
     configItem.setClusterId(clusterId);
