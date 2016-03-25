@@ -24,6 +24,10 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.MutablePropertySources;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -37,6 +41,9 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
 
     private ConfigLoaderManager configLoaderManager;
     private ConfigurableApplicationContext applicationContext;
+    private ConfigUtil configUtil;
+    private ScheduledExecutorService executorService;
+    private AtomicLong counter;
     private RefreshScope scope;
 
     public ApolloConfigManager() {
@@ -44,6 +51,15 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
            throw new IllegalStateException("There should be only one ApolloConfigManager instance!");
         }
         this.configLoaderManager = ConfigLoaderFactory.getInstance().getConfigLoaderManager();
+        this.configUtil = ConfigUtil.getInstance();
+        this.counter = new AtomicLong();
+        executorService = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, "ApolloConfigManager-" + counter.incrementAndGet());
+                return thread;
+            }
+        });
     }
 
     @Override
@@ -53,7 +69,7 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
                     String.format("ApplicationContext must implement ConfigurableApplicationContext, but found: %s", applicationContext.getClass().getName()));
         }
         this.applicationContext = (ConfigurableApplicationContext) applicationContext;
-        ConfigUtil.getInstance().setApplicationContext(applicationContext);
+        this.configUtil.setApplicationContext(applicationContext);
     }
 
     /**
@@ -65,6 +81,7 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         registerDependentBeans(registry);
         initializePropertySource();
+        schedulePeriodicRefresh();
     }
 
     /**
@@ -119,9 +136,23 @@ public class ApolloConfigManager implements BeanDefinitionRegistryPostProcessor,
         currentPropertySources.addFirst(currentPropertySource);
     }
 
+    void schedulePeriodicRefresh() {
+      executorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updatePropertySource();
+                } catch (Throwable e) {
+                    logger.error("Refreshing config failed", e);
+                }
+            }
+        }, configUtil.getRefreshInterval(), configUtil.getRefreshInterval(), configUtil.getRefreshTimeUnit());
+    }
+
     public List<PropertyChange> updatePropertySource() {
         PropertySourceReloadResult result = this.configLoaderManager.reloadPropertySource();
         if (result.hasChanges()) {
+            logger.info("Found changes, refresh environment and refreshscope beans.");
             updateEnvironmentPropertySource(result.getPropertySource());
             refreshBeans();
         }
