@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class DemoService {
   private String foo;
 
-  @Value("${apollo.foo}")
+  @Value("${101.foo}")
   private void setFoo(String foo) {
     this.foo = foo;
   }
