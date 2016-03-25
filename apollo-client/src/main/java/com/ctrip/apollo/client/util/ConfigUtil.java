@@ -15,12 +15,17 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigUtil {
     public static final String APOLLO_PROPERTY = "apollo.properties";
+    //TODO read from config?
+    private static final int refreshInterval = 5;
+    private static final TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
+
     private static ConfigUtil configUtil = new ConfigUtil();
     private ApplicationContext applicationContext;
     
@@ -38,6 +43,14 @@ public class ConfigUtil {
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    public int getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public TimeUnit getRefreshTimeUnit() {
+        return refreshIntervalTimeUnit;
     }
 
     public List<ApolloRegistry> loadApolloRegistries() throws IOException {
