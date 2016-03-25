@@ -39,16 +39,16 @@ public class ConfigItem {
   @Column
   private String comment;
 
-  @Column
+  @Column(name = "DataChange_CreatedBy")
   private String dataChangeCreatedBy;
 
-  @Column
+  @Column(name = "DataChange_CreatedTime")
   private Date dataChangeCreatedTime;
 
-  @Column
+  @Column(name = "DataChange_LastModifiedBy")
   private String dataChangeLastModifiedBy;
 
-  @Column
+  @Column(name = "DataChange_LastTime")
   private Date dataChangeLastModifiedTime;
 
   @Column
