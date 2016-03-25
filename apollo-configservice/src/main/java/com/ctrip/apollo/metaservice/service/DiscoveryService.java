@@ -1,15 +1,15 @@
 package com.ctrip.apollo.metaservice.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.ctrip.apollo.core.ServiceNameConsts;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DiscoveryService {
@@ -27,7 +27,7 @@ public class DiscoveryService {
     return application != null ? application.getInstances() : new ArrayList<>();
   }
 
-  public List<InstanceInfo> getAdminServiceInstances(){
+  public List<InstanceInfo> getAdminServiceInstances() {
     Application application = eurekaClient.getApplication(ServiceNameConsts.APOLLO_ADMINSERVICE);
     return application != null ? application.getInstances() : new ArrayList<>();
   }

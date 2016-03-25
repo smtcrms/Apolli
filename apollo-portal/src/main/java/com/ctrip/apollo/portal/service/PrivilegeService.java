@@ -1,13 +1,13 @@
 package com.ctrip.apollo.portal.service;
 
-import java.util.List;
+import com.ctrip.apollo.portal.entity.Privilege;
+import com.ctrip.apollo.portal.exception.NotFoundException;
+import com.ctrip.apollo.portal.repository.PrivilegeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ctrip.apollo.portal.entity.Privilege;
-import com.ctrip.apollo.portal.exception.NotFoundException;
-import com.ctrip.apollo.portal.repository.PrivilegeRepository;
+import java.util.List;
 
 @Service
 public class PrivilegeService {

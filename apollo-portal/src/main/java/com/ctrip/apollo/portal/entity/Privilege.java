@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class Privilege implements Serializable {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = -430087307622435118L;
 

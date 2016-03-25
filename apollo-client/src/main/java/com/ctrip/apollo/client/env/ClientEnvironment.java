@@ -1,5 +1,14 @@
 package com.ctrip.apollo.client.env;
 
+import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.client.constants.Constants;
+import com.ctrip.apollo.core.MetaDomainConsts;
+import com.ctrip.apollo.core.utils.StringUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,20 +19,11 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.ctrip.apollo.Apollo;
-import com.ctrip.apollo.Apollo.Env;
-import com.ctrip.apollo.client.constants.Constants;
-import com.ctrip.apollo.core.MetaDomainConsts;
-import com.ctrip.apollo.core.utils.StringUtils;
-
 public class ClientEnvironment {
 
   private static final Logger logger = LoggerFactory.getLogger(ClientEnvironment.class);
 
-  private final static String DEFAULT_FILE = "/apollo.properties";
+  private static final String DEFAULT_FILE = "/apollo.properties";
 
   private AtomicReference<Env> env = new AtomicReference<Env>();
 
@@ -84,20 +84,20 @@ public class ClientEnvironment {
         props.load(in);
         in.close();
       }
-    } catch (Exception e) {
-      logger.warn("Reading config failed: {}", e.getMessage());
+    } catch (Exception ex) {
+      logger.warn("Reading config failed: {}", ex.getMessage());
     } finally {
       if (in != null) {
         try {
           in.close();
-        } catch (IOException e) {
-          logger.warn("Close config failed: {}", e.getMessage());
+        } catch (IOException ex) {
+          logger.warn("Close config failed: {}", ex.getMessage());
         }
       }
     }
     StringBuilder sb = new StringBuilder();
     for (Enumeration<String> e = (Enumeration<String>) props.propertyNames(); e
-        .hasMoreElements();) {
+        .hasMoreElements(); ) {
       String key = e.nextElement();
       String val = (String) props.getProperty(key);
       sb.append(key).append('=').append(val).append('\n');

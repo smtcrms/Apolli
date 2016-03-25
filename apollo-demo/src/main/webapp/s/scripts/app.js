@@ -16,7 +16,7 @@
 
         var self = this;
 
-        this.loadRegistries = function() {
+        this.loadRegistries = function () {
             $http.get("demo/client/registries")
                 .success(function (data) {
                     self.registries = data;
@@ -26,43 +26,43 @@
                 });
         };
 
-        this.queryConfig = function() {
+        this.queryConfig = function () {
             $http.get("demo/config/" + encodeURIComponent(this.configQuery.configName))
-                .success(function(data) {
+                .success(function (data) {
                     self.configQuery.configValue = data.value;
                 })
-                .error(function(data, status) {
+                .error(function (data, status) {
                     toastr.error((data && data.msg) || 'Load config failed');
                 });
         };
 
         this.queryInjectedConfig = function () {
             $http.get("demo/injected/config")
-                .success(function(data) {
+                .success(function (data) {
                     self.injectedConfigValue = data.value;
                 })
-                .error(function(data, status) {
+                .error(function (data, status) {
                     toastr.error((data && data.msg) || 'Load injected config failed');
                 });
         };
 
-        this.refreshConfig = function() {
+        this.refreshConfig = function () {
             $http.post("demo/refresh")
-                .success(function(data) {
+                .success(function (data) {
                     self.assembleRefreshResult(data);
                 })
-                .error(function(data, status) {
+                .error(function (data, status) {
                     toastr.error((data && data.msg) || 'Refresh config failed');
                 });
 
         };
 
-        this.assembleRefreshResult = function(changedPropertyArray) {
-            if(!changedPropertyArray || !changedPropertyArray.length) {
+        this.assembleRefreshResult = function (changedPropertyArray) {
+            if (!changedPropertyArray || !changedPropertyArray.length) {
                 this.refreshResult = NONE;
                 return;
             }
-            this.refreshResult = _.map(changedPropertyArray, function(propertyChange) {
+            this.refreshResult = _.map(changedPropertyArray, function (propertyChange) {
                 return propertyChange.propertyName + '(' + propertyChange.changeType + ')';
             });
         };

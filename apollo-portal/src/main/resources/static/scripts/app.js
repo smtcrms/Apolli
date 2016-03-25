@@ -16,11 +16,11 @@ application_module.config(['$stateProvider',
                 templateUrl: '../../views/app/config.html',
                 controller: 'AppConfigController'
             }).state('info', {
-                templateUrl: '../../views/app/info.html',
-                controller: 'AppInfoController'
-            }).state('setting', {
-                templateUrl: '../../views/app/setting.html'
-            });
+            templateUrl: '../../views/app/info.html',
+            controller: 'AppInfoController'
+        }).state('setting', {
+            templateUrl: '../../views/app/setting.html'
+        });
     }]).run(function ($state) {
     $state.go('config');
 });

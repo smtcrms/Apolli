@@ -5,7 +5,7 @@
             <PatternLayout pattern="[apollo-client][%t]%d %-5p [%c] %m%n"/>
         </Console>
         <Async name="Async" includeLocation="true">
-            <AppenderRef ref="Console" />
+            <AppenderRef ref="Console"/>
         </Async>
     </appenders>
     <loggers>

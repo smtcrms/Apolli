@@ -6,10 +6,10 @@ import com.ctrip.apollo.core.dto.ApolloConfig;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class InMemoryConfigLoader extends AbstractConfigLoader{
+public class InMemoryConfigLoader extends AbstractConfigLoader {
 
-    @Override
-    protected ApolloConfig doLoadApolloConfig(ApolloRegistry apolloRegistry, ApolloConfig previous) {
-        return null;
-    }
+  @Override
+  protected ApolloConfig doLoadApolloConfig(ApolloRegistry apolloRegistry, ApolloConfig previous) {
+    return null;
+  }
 }

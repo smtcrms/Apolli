@@ -6,8 +6,8 @@ import com.ctrip.apollo.client.model.PropertyChange;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.demo.model.Config;
 import com.ctrip.apollo.demo.service.DemoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,35 +25,35 @@ import java.util.List;
 @RequestMapping("/demo")
 @PropertySource("classpath:application.properties")
 public class DemoController {
-    @Autowired
-    private Environment env;
-    @Autowired
-    private DemoService demoService;
-    //Apollo config client internal impl, not intended to be used by application, only for this test page!
-    private ConfigUtil configUtil = ConfigUtil.getInstance();
+  @Autowired
+  private Environment env;
+  @Autowired
+  private DemoService demoService;
+  //Apollo config client internal impl, not intended to be used by application, only for this test page!
+  private ConfigUtil configUtil = ConfigUtil.getInstance();
 
-    //ApolloConfigManager, not intended to be used by application, only for this test page!
-    @Autowired
-    private ApolloConfigManager apolloConfigManager;
+  //ApolloConfigManager, not intended to be used by application, only for this test page!
+  @Autowired
+  private ApolloConfigManager apolloConfigManager;
 
-    @RequestMapping(value = "/config/{configName:.*}", method = RequestMethod.GET)
-    public Config queryConfig(@PathVariable String configName) {
-        return new Config(configName, env.getProperty(configName, "undefined"));
-    }
+  @RequestMapping(value = "/config/{configName:.*}", method = RequestMethod.GET)
+  public Config queryConfig(@PathVariable String configName) {
+    return new Config(configName, env.getProperty(configName, "undefined"));
+  }
 
-    @RequestMapping(value = "/injected/config", method = RequestMethod.GET)
-    public Config queryInjectedConfig() {
-        return new Config("apollo.foo", demoService.getFoo());
-    }
+  @RequestMapping(value = "/injected/config", method = RequestMethod.GET)
+  public Config queryInjectedConfig() {
+    return new Config("apollo.foo", demoService.getFoo());
+  }
 
-    @RequestMapping(value = "/client/registries", method = RequestMethod.GET)
-    public List<ApolloRegistry> loadApolloRegistries() throws IOException {
-        return configUtil.loadApolloRegistries();
-    }
+  @RequestMapping(value = "/client/registries", method = RequestMethod.GET)
+  public List<ApolloRegistry> loadApolloRegistries() throws IOException {
+    return configUtil.loadApolloRegistries();
+  }
 
-    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
-    public List<PropertyChange> refreshBeans() {
-        List<PropertyChange> changes = this.apolloConfigManager.updatePropertySource();
-        return changes;
-    }
+  @RequestMapping(value = "/refresh", method = RequestMethod.POST)
+  public List<PropertyChange> refreshBeans() {
+    List<PropertyChange> changes = this.apolloConfigManager.updatePropertySource();
+    return changes;
+  }
 }

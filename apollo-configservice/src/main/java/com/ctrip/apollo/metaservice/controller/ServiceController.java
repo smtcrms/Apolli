@@ -1,15 +1,15 @@
 package com.ctrip.apollo.metaservice.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.metaservice.service.DiscoveryService;
+import com.netflix.appinfo.InstanceInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ctrip.apollo.core.serivce.ApolloService;
-import com.ctrip.apollo.metaservice.service.DiscoveryService;
-import com.netflix.appinfo.InstanceInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/services")

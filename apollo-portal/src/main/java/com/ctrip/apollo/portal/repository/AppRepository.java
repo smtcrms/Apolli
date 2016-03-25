@@ -1,10 +1,10 @@
 package com.ctrip.apollo.portal.repository;
 
+import com.ctrip.apollo.portal.entity.App;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import com.ctrip.apollo.portal.entity.App;
 
 public interface AppRepository extends PagingAndSortingRepository<App, String> {
 

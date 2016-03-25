@@ -11,7 +11,7 @@ import javax.persistence.Id;
 public class App implements Serializable {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 7348554309210401557L;
 
