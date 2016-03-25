@@ -1,8 +1,8 @@
 package com.ctrip.apollo.portal.entity;
 
 
+import com.ctrip.apollo.Apollo.Env;
 import com.ctrip.apollo.core.dto.ConfigItemDTO;
-import com.ctrip.apollo.portal.enums.Env;
 
 import java.util.LinkedList;
 import java.util.List;
