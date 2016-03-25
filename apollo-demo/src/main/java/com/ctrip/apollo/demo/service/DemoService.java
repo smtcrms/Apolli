@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RefreshScope
 public class DemoService {
-    private String foo;
+  private String foo;
 
-    @Value("${apollo.foo}")
-    private void setFoo(String foo) {
-        this.foo = foo;
-    }
+  @Value("${apollo.foo}")
+  private void setFoo(String foo) {
+    this.foo = foo;
+  }
 
-    public String getFoo() {
-        return foo;
-    }
+  public String getFoo() {
+    return foo;
+  }
 }

@@ -1,6 +1,9 @@
 package com.ctrip.apollo.biz.service;
 
-import com.ctrip.apollo.core.dto.*;
+import com.ctrip.apollo.core.dto.ClusterDTO;
+import com.ctrip.apollo.core.dto.ConfigItemDTO;
+import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
+import com.ctrip.apollo.core.dto.VersionDTO;
 
 import java.util.List;
 
@@ -9,14 +12,14 @@ import java.util.List;
  */
 public interface AdminConfigService {
 
-    List<ReleaseSnapshotDTO> findReleaseSnapshotByReleaseId(long releaseId);
+  List<ReleaseSnapshotDTO> findReleaseSnapshotByReleaseId(long releaseId);
 
-    List<VersionDTO> findVersionsByApp(long appId);
+  List<VersionDTO> findVersionsByApp(long appId);
 
-    VersionDTO loadVersionById(long versionId);
+  VersionDTO loadVersionById(long versionId);
 
-    List<ClusterDTO> findClustersByApp(long appId);
+  List<ClusterDTO> findClustersByApp(long appId);
 
-    List<ConfigItemDTO> findConfigItemsByClusters(List<Long> clusterIds);
+  List<ConfigItemDTO> findConfigItemsByClusters(List<Long> clusterIds);
 
 }

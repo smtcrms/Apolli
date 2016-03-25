@@ -5,17 +5,17 @@ package com.ctrip.apollo.client.enums;
  * @author Jason Song(song_s@ctrip.com)
  */
 public enum PropertyChangeType {
-    NEW("New"),
-    MODIFIED("Modified"),
-    DELETED("Deleted");
+  NEW("New"),
+  MODIFIED("Modified"),
+  DELETED("Deleted");
 
-    private String type;
+  private String type;
 
-    PropertyChangeType(String type) {
-        this.type = type;
-    }
+  PropertyChangeType(String type) {
+    this.type = type;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 }

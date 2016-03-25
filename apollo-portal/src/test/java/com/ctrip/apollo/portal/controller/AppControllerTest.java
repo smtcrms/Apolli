@@ -1,7 +1,8 @@
 package com.ctrip.apollo.portal.controller;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.ctrip.apollo.portal.AbstractPortalTest;
+import com.ctrip.apollo.portal.entity.App;
+import com.ctrip.apollo.portal.repository.AppRepository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,9 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.portal.AbstractPortalTest;
-import com.ctrip.apollo.portal.entity.App;
-import com.ctrip.apollo.portal.repository.AppRepository;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 @WebIntegrationTest

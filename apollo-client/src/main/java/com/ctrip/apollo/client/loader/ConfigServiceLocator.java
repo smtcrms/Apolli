@@ -1,15 +1,15 @@
 package com.ctrip.apollo.client.loader;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import com.ctrip.apollo.client.env.ClientEnvironment;
+import com.ctrip.apollo.core.serivce.ApolloService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.client.env.ClientEnvironment;
-import com.ctrip.apollo.core.serivce.ApolloService;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigServiceLocator {
 
@@ -31,8 +31,8 @@ public class ConfigServiceLocator {
           serviceCaches.add(service);
         }
       }
-    } catch (Exception e) {
-      logger.warn(e.getMessage());
+    } catch (Exception ex) {
+      logger.warn(ex.getMessage());
     }
     return serviceCaches;
   }

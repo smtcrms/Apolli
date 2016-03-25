@@ -1,10 +1,10 @@
 package com.ctrip.apollo.portal.repository;
 
-import java.util.List;
+import com.ctrip.apollo.portal.entity.Privilege;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.ctrip.apollo.portal.entity.Privilege;
+import java.util.List;
 
 public interface PrivilegeRepository extends PagingAndSortingRepository<Privilege, Long> {
 

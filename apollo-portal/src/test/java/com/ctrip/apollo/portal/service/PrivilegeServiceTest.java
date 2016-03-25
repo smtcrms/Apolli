@@ -1,14 +1,14 @@
 package com.ctrip.apollo.portal.service;
 
-import java.util.List;
+import com.ctrip.apollo.portal.AbstractPortalTest;
+import com.ctrip.apollo.portal.entity.App;
+import com.ctrip.apollo.portal.entity.Privilege;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ctrip.apollo.portal.AbstractPortalTest;
-import com.ctrip.apollo.portal.entity.App;
-import com.ctrip.apollo.portal.entity.Privilege;
+import java.util.List;
 
 public class PrivilegeServiceTest extends AbstractPortalTest {
 

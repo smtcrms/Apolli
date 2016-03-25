@@ -1,79 +1,79 @@
 <?xml version="1.0"  encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>com.ctrip.apollo</groupId>
-		<artifactId>apollo</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apollo-configservice</artifactId>
-	<name>Apollo ConfigService</name>
-	<dependencies>
-		<!-- apollo -->
-		<dependency>
-			<groupId>com.ctrip.apollo</groupId>
-			<artifactId>apollo-biz</artifactId>
-		</dependency>
-		<!-- end of apollo -->
-		<!-- redis -->
-		<!-- <dependency> <groupId>org.springframework.data</groupId> <artifactId>spring-data-redis</artifactId> 
-			</dependency> <dependency> <groupId>redis.clients</groupId> <artifactId>jedis</artifactId> 
-			</dependency> -->
-		<!-- end of redis -->
-		<!-- eureka -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka-server</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>
-						spring-cloud-starter-archaius
-					</artifactId>
-					<groupId>org.springframework.cloud</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>spring-cloud-starter-ribbon</artifactId>
-					<groupId>org.springframework.cloud</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>ribbon-eureka</artifactId>
-					<groupId>com.netflix.ribbon</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>aws-java-sdk-core</artifactId>
-					<groupId>com.amazonaws</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>aws-java-sdk-ec2</artifactId>
-					<groupId>com.amazonaws</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>aws-java-sdk-autoscaling</artifactId>
-					<groupId>com.amazonaws</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>aws-java-sdk-sts</artifactId>
-					<groupId>com.amazonaws</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>aws-java-sdk-route53</artifactId>
-					<groupId>com.amazonaws</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- end of eureka -->
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<executable>true</executable>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.ctrip.apollo</groupId>
+        <artifactId>apollo</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>apollo-configservice</artifactId>
+    <name>Apollo ConfigService</name>
+    <dependencies>
+        <!-- apollo -->
+        <dependency>
+            <groupId>com.ctrip.apollo</groupId>
+            <artifactId>apollo-biz</artifactId>
+        </dependency>
+        <!-- end of apollo -->
+        <!-- redis -->
+        <!-- <dependency> <groupId>org.springframework.data</groupId> <artifactId>spring-data-redis</artifactId>
+            </dependency> <dependency> <groupId>redis.clients</groupId> <artifactId>jedis</artifactId>
+            </dependency> -->
+        <!-- end of redis -->
+        <!-- eureka -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>
+                        spring-cloud-starter-archaius
+                    </artifactId>
+                    <groupId>org.springframework.cloud</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-cloud-starter-ribbon</artifactId>
+                    <groupId>org.springframework.cloud</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>ribbon-eureka</artifactId>
+                    <groupId>com.netflix.ribbon</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aws-java-sdk-core</artifactId>
+                    <groupId>com.amazonaws</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aws-java-sdk-ec2</artifactId>
+                    <groupId>com.amazonaws</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aws-java-sdk-autoscaling</artifactId>
+                    <groupId>com.amazonaws</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aws-java-sdk-sts</artifactId>
+                    <groupId>com.amazonaws</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>aws-java-sdk-route53</artifactId>
+                    <groupId>com.amazonaws</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- end of eureka -->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,14 +1,14 @@
 package com.ctrip.apollo.portal.repository;
 
+import com.ctrip.apollo.portal.AbstractPortalTest;
+import com.ctrip.apollo.portal.entity.App;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ctrip.apollo.portal.AbstractPortalTest;
-import com.ctrip.apollo.portal.entity.App;
 
-
-public class AppRepositoryTest extends AbstractPortalTest{
+public class AppRepositoryTest extends AbstractPortalTest {
 
   @Autowired
   AppRepository repository;

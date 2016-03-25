@@ -4,7 +4,7 @@ application_module.controller("AppPageController", ['$rootScope', '$location',
 
         $rootScope.appId = $location.$$url.split("=")[1];
 
-        if(!$rootScope.appId){
+        if (!$rootScope.appId) {
             $rootScope.appId = 6666;
         }
 

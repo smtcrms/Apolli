@@ -2,6 +2,7 @@ package com.ctrip.apollo.demo.exception;
 
 import com.ctrip.apollo.demo.model.ErrorResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,12 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    ResponseEntity<ErrorResult> handleWebExceptions(Exception ex,
-                                                    WebRequest request) throws JsonProcessingException {
-        ErrorResult error = new ErrorResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
+  @ExceptionHandler(Exception.class)
+  ResponseEntity<ErrorResult> handleWebExceptions(Exception ex,
+                                                  WebRequest request)
+      throws JsonProcessingException {
+    ErrorResult error = new ErrorResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(error);
 
-    }
+  }
 }

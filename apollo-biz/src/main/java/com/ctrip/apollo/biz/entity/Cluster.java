@@ -1,6 +1,7 @@
 package com.ctrip.apollo.biz.entity;
 
 import com.ctrip.apollo.core.dto.ClusterDTO;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -16,58 +17,58 @@ import javax.persistence.Id;
 @Where(clause = "isDeleted = 0")
 @SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
 public class Cluster {
-    @Id
-    @GeneratedValue
-    private long id;
+  @Id
+  @GeneratedValue
+  private long id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    @Column(nullable = false)
-    private long appId;
+  @Column(nullable = false)
+  private long appId;
 
-    private boolean isDeleted;
+  private boolean isDeleted;
 
-    public Cluster() {
-    }
+  public Cluster() {
+  }
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public long getAppId() {
-        return appId;
-    }
+  public long getAppId() {
+    return appId;
+  }
 
-    public void setAppId(long appId) {
-        this.appId = appId;
-    }
+  public void setAppId(long appId) {
+    this.appId = appId;
+  }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
+  public boolean isDeleted() {
+    return isDeleted;
+  }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
+  public void setDeleted(boolean deleted) {
+    isDeleted = deleted;
+  }
 
-    public ClusterDTO toDTO(){
-        ClusterDTO dto = new ClusterDTO();
-        dto.setAppId(appId);
-        dto.setId(id);
-        dto.setName(name);
-        return dto;
-    }
+  public ClusterDTO toDTO() {
+    ClusterDTO dto = new ClusterDTO();
+    dto.setAppId(appId);
+    dto.setId(id);
+    dto.setName(name);
+    return dto;
+  }
 }

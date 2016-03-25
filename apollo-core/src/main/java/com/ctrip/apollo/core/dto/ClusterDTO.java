@@ -2,33 +2,33 @@ package com.ctrip.apollo.core.dto;
 
 public class ClusterDTO {
 
-    private long id;
+  private long id;
 
-    private String name;
+  private String name;
 
-    private long appId;
+  private long appId;
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+  public void setId(long id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public long getAppId() {
-        return appId;
-    }
+  public long getAppId() {
+    return appId;
+  }
 
-    public void setAppId(long appId) {
-        this.appId = appId;
-    }
+  public void setAppId(long appId) {
+    this.appId = appId;
+  }
 }

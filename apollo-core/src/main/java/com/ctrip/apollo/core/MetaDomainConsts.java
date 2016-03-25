@@ -1,9 +1,9 @@
 package com.ctrip.apollo.core;
 
+import com.ctrip.apollo.Apollo.Env;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.ctrip.apollo.Apollo.Env;
 
 public class MetaDomainConsts {
 

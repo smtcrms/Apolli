@@ -1,6 +1,7 @@
 package com.ctrip.apollo.demo;
 
 import com.ctrip.apollo.client.ApolloConfigManager;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(value = "com.ctrip.apollo.demo")
 public class AppConfig {
-    @Bean
-    public ApolloConfigManager apolloConfigManager() {
-        return new ApolloConfigManager();
-    }
+  @Bean
+  public ApolloConfigManager apolloConfigManager() {
+    return new ApolloConfigManager();
+  }
 
 //    @Bean
 //    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
