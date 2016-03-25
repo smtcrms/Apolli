@@ -14,9 +14,7 @@ import com.ctrip.apollo.core.MetaDomainConsts;
 import com.ctrip.apollo.core.serivce.ApolloService;
 
 /**
- * 
  * @author liuym
- *
  */
 @Service
 public class ServiceLocator {
@@ -29,6 +27,16 @@ public class ServiceLocator {
 
   public List<ApolloService> getAdminServices(Env env) {
     return getServices(env, "admin");
+  }
+
+  public String getAdminService(Env env) {
+  //本地测试用
+//    return "http://localhost:8090";
+    List<ApolloService> services = getAdminServices(env);
+    if (services.size() == 0) {
+      throw new RuntimeException("No available admin service");
+    }
+    return services.get(0).getHomepageUrl();
   }
 
   public List<ApolloService> getConfigServices(Env env) {

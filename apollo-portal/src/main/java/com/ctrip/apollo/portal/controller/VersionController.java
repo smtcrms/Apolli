@@ -1,5 +1,6 @@
 package com.ctrip.apollo.portal.controller;
 
+import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.core.dto.VersionDTO;
 import com.ctrip.apollo.portal.service.VersionService;
 
@@ -19,6 +20,6 @@ public class VersionController {
 
   @RequestMapping("/{appId}/{env}")
   public List<VersionDTO> versions(@PathVariable long appId, @PathVariable String env) {
-    return versionService.findVersionsByApp(appId, env);
+    return versionService.findVersionsByApp(Apollo.Env.DEV, appId);
   }
 }

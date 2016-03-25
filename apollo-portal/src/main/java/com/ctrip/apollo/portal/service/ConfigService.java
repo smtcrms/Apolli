@@ -31,23 +31,16 @@ public class ConfigService {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  public String getAdminServiceUrl() {
-    List<ApolloService> services = serviceLocator.getAdminServices(Env.DEV);
-    if (services.size() == 0) {
-      throw new RuntimeException("No available admin service");
-    }
-    return services.get(0).getHomepageUrl();
-  }
-
-  public AppConfigVO loadReleaseConfig(long appId, long versionId) {
+  public AppConfigVO loadReleaseConfig(Env env, long appId, long versionId) {
 
     if (appId <= 0 || versionId <= 0) {
       return null;
     }
 
-    long releaseId = getReleaseIdFromVersionId(versionId);
+    long releaseId = getReleaseIdFromVersionId(env, versionId);
 
-    String serviceHost = getAdminServiceUrl();
+    String serviceHost = serviceLocator.getAdminService(env);
+
     ReleaseSnapshotDTO[] releaseSnapShots = RestUtils
         .exchangeInGET(serviceHost + "/configs/release/" + releaseId, ReleaseSnapshotDTO[].class);
     if (releaseSnapShots == null || releaseSnapShots.length == 0) {
@@ -69,8 +62,8 @@ public class ConfigService {
     return appConfigVO;
   }
 
-  private long getReleaseIdFromVersionId(long versionId) {
-    String serviceHost = getAdminServiceUrl();
+  private long getReleaseIdFromVersionId(Env env, long versionId) {
+    String serviceHost = serviceLocator.getAdminService(env);
     VersionDTO version =
         RestUtils.exchangeInGET(serviceHost + "/version/" + versionId, VersionDTO.class);
     if (version == null) {
@@ -154,12 +147,12 @@ public class ConfigService {
     overrideClusterConfigs.add(overrideClusterConfig);
   }
 
-  public AppConfigVO loadLatestConfig(long appId) {
+  public AppConfigVO loadLatestConfig(Env env, long appId) {
     if (appId <= 0) {
       return null;
     }
 
-    String serviceHost = getAdminServiceUrl();
+    String serviceHost = serviceLocator.getAdminService(env);
     ClusterDTO[] clusters =
         RestUtils.exchangeInGET(serviceHost + "/cluster/app/" + appId, ClusterDTO[].class);
     if (clusters == null || clusters.length == 0) {
