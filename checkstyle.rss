@@ -26,7 +26,7 @@ under the License.
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
       <title>File: 5,
-             Errors: 48,
+             Errors: 54,
              Warnings: 0,
              Infos: 0
       </title>
@@ -69,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  15
+                  16
                 </td>
               </tr>
                           <tr>
@@ -97,7 +97,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  15
+                  17
                 </td>
               </tr>
                           <tr>
@@ -111,7 +111,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  8
                 </td>
               </tr>
                       </tbody>
