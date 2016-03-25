@@ -57,11 +57,8 @@ public class ConfigServiceTest {
   @Before
   public void setUp() {
     ReflectionTestUtils.setField(RestUtils.class, "restTemplate", restTemplate);
-    ApolloService defaultAdminService = new ApolloService();
-    defaultAdminService.setHomepageUrl("http://localhost:8090");
-    List<ApolloService> services = new ArrayList<>();
-    services.add(defaultAdminService);
-    Mockito.doReturn(services).when(serviceLocator).getAdminServices(Env.DEV);
+    String defaultAdminService = "http://localhost:8090";
+    Mockito.doReturn(defaultAdminService).when(serviceLocator).getAdminService(Env.DEV);
   }
 
   @Test
@@ -73,13 +70,13 @@ public class ConfigServiceTest {
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
     ReleaseSnapshotDTO[] someReleaseSnapShots = assembleReleaseSnapShots();
 
-    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/configs/release/" + releaseId,
         ReleaseSnapshotDTO[].class, someReleaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/version/" + versionId, VersionDTO.class,
         someVersion, versionResponse);
 
-    AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
+    AppConfigVO appConfigVO = configService.loadReleaseConfig(Env.DEV, appId, versionId);
 
     assertEquals(appConfigVO.getAppId(), appId);
     assertEquals(appConfigVO.getVersionId(), versionId);
@@ -99,13 +96,13 @@ public class ConfigServiceTest {
     releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
         "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
 
-    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/configs/release/" + releaseId,
         ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/version/" + versionId, VersionDTO.class,
         someVersion, versionResponse);
 
-    AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
+    AppConfigVO appConfigVO = configService.loadReleaseConfig(Env.DEV, appId, versionId);
 
     assertEquals(appConfigVO.getAppId(), appId);
     assertEquals(appConfigVO.getVersionId(), versionId);
@@ -124,13 +121,13 @@ public class ConfigServiceTest {
     releaseSnapShots[0] = assembleReleaseSnapShot(11111, "default-cluster-name",
         "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\", \"5555.bar\":\"demo2\", \"22.bar\":\"demo2\"}");
 
-    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/configs/release/" + releaseId,
         ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/version/" + versionId, VersionDTO.class,
         someVersion, versionResponse);
 
-    AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
+    AppConfigVO appConfigVO = configService.loadReleaseConfig(Env.DEV, appId, versionId);
 
     assertEquals(appConfigVO.getAppId(), appId);
     assertEquals(appConfigVO.getVersionId(), versionId);
@@ -151,13 +148,13 @@ public class ConfigServiceTest {
     releaseSnapShots[1] = assembleReleaseSnapShot(11112, "cluster1",
         "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
 
-    restInvoke(configService.getAdminServiceUrl() + "/configs/release/" + releaseId,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/configs/release/" + releaseId,
         ReleaseSnapshotDTO[].class, releaseSnapShots, releaseSnapShotResponse);
 
-    restInvoke(configService.getAdminServiceUrl() + "/version/" + versionId, VersionDTO.class,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/version/" + versionId, VersionDTO.class,
         someVersion, versionResponse);
 
-    AppConfigVO appConfigVO = configService.loadReleaseConfig(appId, versionId);
+    AppConfigVO appConfigVO = configService.loadReleaseConfig(Env.DEV, appId, versionId);
 
     assertEquals(appConfigVO.getAppId(), appId);
     assertEquals(appConfigVO.getVersionId(), versionId);
@@ -172,13 +169,13 @@ public class ConfigServiceTest {
     ClusterDTO[] someClusters = assembleClusters();
     ConfigItemDTO[] someConfigItem = assembleConfigItems();
 
-    restInvoke(configService.getAdminServiceUrl() + "/cluster/app/" + appId, ClusterDTO[].class,
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/cluster/app/" + appId, ClusterDTO[].class,
         someClusters, clusterResponse);
 
-    restInvoke(configService.getAdminServiceUrl() + "/configs/latest?clusterIds=100,101",
+    restInvoke(serviceLocator.getAdminService(Env.DEV) + "/configs/latest?clusterIds=100,101",
         ConfigItemDTO[].class, someConfigItem, configItemResponse);
 
-    AppConfigVO appConfigVO = configService.loadLatestConfig(appId);
+    AppConfigVO appConfigVO = configService.loadLatestConfig(Env.DEV, appId);
 
     assertEquals(appConfigVO.getAppId(), 6666);
     assertEquals(appConfigVO.getVersionId(), PortalConstants.LASTEST_VERSION_ID);
