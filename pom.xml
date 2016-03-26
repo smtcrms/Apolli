@@ -73,6 +73,7 @@
 		<github.global.oauth2Token>${env.GITHUB_OAUTH_TOKEN}</github.global.oauth2Token>
 	</properties>
 	<modules>
+		<module>apollo-buildtools</module>
 		<module>apollo-core</module>
 		<module>apollo-client</module>
 		<module>apollo-biz</module>
@@ -179,13 +180,23 @@
 							<artifactId>checkstyle</artifactId>
 							<version>6.16.1</version>
 						</dependency>
+						<dependency>
+							<groupId>com.ctrip.apollo</groupId>
+							<artifactId>apollo-buildtools</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
+						</dependency>
 					</dependencies>
 					<configuration>
 						<configLocation>google_checks.xml</configLocation>
+						<headerLocation>LICENSE-2.0.txt</headerLocation>
 						<failOnViolation>false</failOnViolation>
-						<linkXRef>false</linkXRef>
 						<consoleOutput>true</consoleOutput>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>3.0.3</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -209,6 +220,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -257,7 +272,44 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<configLocation>google_checks.xml</configLocation>
+					<headerLocation>LICENSE-2.0.txt</headerLocation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.19.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.6</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>pmd</report>
+							<report>cpd</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.3</version>
 			</plugin>
 		</plugins>
 	</reporting>
