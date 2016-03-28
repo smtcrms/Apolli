@@ -10,6 +10,7 @@ import com.ctrip.apollo.client.model.PropertyChange;
 import com.ctrip.apollo.client.model.PropertySourceReloadResult;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -38,7 +37,6 @@ public class ConfigLoaderManager {
   private ConfigLoader configLoader;
   private ConfigUtil configUtil;
   private final ExecutorService executorService;
-  private final AtomicLong counter;
   private Map<ApolloRegistry, ApolloConfig> currentApolloRegistryConfigCache;
   private Map<ApolloRegistry, ApolloConfig> previousApolloRegistryConfigCache;
   private List<ApolloRegistry> apolloRegistries;
@@ -46,14 +44,8 @@ public class ConfigLoaderManager {
   public ConfigLoaderManager(ConfigLoader configLoader, ConfigUtil configUtil) {
     this.configLoader = configLoader;
     this.configUtil = configUtil;
-    this.counter = new AtomicLong();
-    this.executorService = Executors.newFixedThreadPool(5, new ThreadFactory() {
-      @Override
-      public Thread newThread(Runnable runnable) {
-        Thread thread = new Thread(runnable, "ConfigLoaderManager-" + counter.incrementAndGet());
-        return thread;
-      }
-    });
+    this.executorService =
+        Executors.newFixedThreadPool(5, ApolloThreadFactory.create("ConfigLoaderManager", true));
     this.currentApolloRegistryConfigCache = Maps.newConcurrentMap();
   }
 
@@ -69,17 +61,15 @@ public class ConfigLoaderManager {
 
   public PropertySourceReloadResult reloadPropertySource() {
     CompositePropertySource composite = loadPropertySourceWithApolloRegistries(apolloRegistries);
-    List<ApolloConfig>
-        previous =
+    List<ApolloConfig> previous =
         Lists.newArrayList(this.previousApolloRegistryConfigCache.values());
     List<ApolloConfig> current = Lists.newArrayList(this.currentApolloRegistryConfigCache.values());
     return new PropertySourceReloadResult(composite, calcPropertyChanges(previous, current));
   }
 
   /**
-   * Load property source with apollo registries provided
-   * Should not be invoked in parallel since there are some operations like create/destroy cache,
-   * writing to files etc.
+   * Load property source with apollo registries provided Should not be invoked in parallel since
+   * there are some operations like create/destroy cache, writing to files etc.
    */
   private synchronized CompositePropertySource loadPropertySourceWithApolloRegistries(
       List<ApolloRegistry> apolloRegistries) {
@@ -104,7 +94,7 @@ public class ConfigLoaderManager {
   }
 
   List<PropertyChange> calcPropertyChanges(List<ApolloConfig> previous,
-                                           List<ApolloConfig> current) {
+      List<ApolloConfig> current) {
     Map<String, Object> previousMap = collectConfigurations(previous);
     Map<String, Object> currentMap = collectConfigurations(current);
 
@@ -130,9 +120,8 @@ public class ConfigLoaderManager {
       if (previousMap.get(commonKey).equals(currentMap.get(commonKey))) {
         continue;
       }
-      changes.add(
-          new PropertyChange(commonKey, previousMap.get(commonKey), currentMap.get(commonKey),
-              PropertyChangeType.MODIFIED));
+      changes.add(new PropertyChange(commonKey, previousMap.get(commonKey),
+          currentMap.get(commonKey), PropertyChangeType.MODIFIED));
     }
 
     return changes;
@@ -173,8 +162,7 @@ public class ConfigLoaderManager {
   }
 
   ApolloConfig loadSingleApolloConfig(ApolloRegistry apolloRegistry) {
-    ApolloConfig
-        result =
+    ApolloConfig result =
         configLoader.loadApolloConfig(apolloRegistry, getPreviousApolloConfig(apolloRegistry));
     if (result == null) {
       logger.error("Loaded config null...");
