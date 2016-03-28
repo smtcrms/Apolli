@@ -1,12 +1,15 @@
 package com.ctrip.apollo.portal.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,33 +19,38 @@ import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ConfigItemDTO;
 import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
 import com.ctrip.apollo.core.dto.VersionDTO;
-import com.ctrip.apollo.core.serivce.ApolloService;
-import com.ctrip.apollo.portal.RestUtils;
+import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.google.common.collect.Maps;
 
 @Service
 public class ConfigService {
 
+  private Logger logger = LoggerFactory.getLogger(ConfigService.class);
+
   @Autowired
-  private ServiceLocator serviceLocator;
+  private AdminServiceAPI.ConfigAPI configAPI;
+  @Autowired
+  private AdminServiceAPI.ClusterAPI clusterAPI;
+  @Autowired
+  private AdminServiceAPI.VersionAPI versionAPI;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
   public AppConfigVO loadReleaseConfig(Env env, long appId, long versionId) {
-
     if (appId <= 0 || versionId <= 0) {
       return null;
     }
 
     long releaseId = getReleaseIdFromVersionId(env, versionId);
+    if (releaseId == -1) {
+      return null;
+    }
 
-    String serviceHost = serviceLocator.getAdminService(env);
-
-    ReleaseSnapshotDTO[] releaseSnapShots = RestUtils
-        .exchangeInGET(serviceHost + "/configs/release/" + releaseId, ReleaseSnapshotDTO[].class);
+    ReleaseSnapshotDTO[] releaseSnapShots = configAPI.getConfigByReleaseId(Env.DEV, releaseId);
     if (releaseSnapShots == null || releaseSnapShots.length == 0) {
       return null;
     }
@@ -63,9 +71,7 @@ public class ConfigService {
   }
 
   private long getReleaseIdFromVersionId(Env env, long versionId) {
-    String serviceHost = serviceLocator.getAdminService(env);
-    VersionDTO version =
-        RestUtils.exchangeInGET(serviceHost + "/version/" + versionId, VersionDTO.class);
+    VersionDTO version = versionAPI.getVersionById(env, versionId);
     if (version == null) {
       return -1;
     }
@@ -73,7 +79,7 @@ public class ConfigService {
   }
 
   private void collectDefaultClusterConfigs(long appId, ReleaseSnapshotDTO snapShot,
-      AppConfigVO appConfigVO) {
+                                            AppConfigVO appConfigVO) {
 
     Map<Long, List<ConfigItemDTO>> groupedConfigs = groupConfigsByApp(snapShot.getConfigurations());
 
@@ -136,7 +142,7 @@ public class ConfigService {
   }
 
   private void collectSpecialClusterConfigs(long appId, ReleaseSnapshotDTO snapShot,
-      AppConfigVO appConfigVO) {
+                                            AppConfigVO appConfigVO) {
     List<AppConfigVO.OverrideClusterConfig> overrideClusterConfigs =
         appConfigVO.getOverrideClusterConfigs();
     AppConfigVO.OverrideClusterConfig overrideClusterConfig =
@@ -152,21 +158,17 @@ public class ConfigService {
       return null;
     }
 
-    String serviceHost = serviceLocator.getAdminService(env);
-    ClusterDTO[] clusters =
-        RestUtils.exchangeInGET(serviceHost + "/cluster/app/" + appId, ClusterDTO[].class);
+    ClusterDTO[] clusters = clusterAPI.getClustersByApp(env, appId);
     if (clusters == null || clusters.length == 0) {
       return null;
     }
 
-    StringBuilder sb = new StringBuilder();
+    List<Long> clusterIds = new ArrayList<>(clusters.length);
     for (ClusterDTO cluster : clusters) {
-      sb.append(cluster.getId()).append(",");
+      clusterIds.add(cluster.getId());
     }
 
-    ConfigItemDTO[] configItems = RestUtils.exchangeInGET(
-        serviceHost + "/configs/latest?clusterIds=" + sb.substring(0, sb.length() - 1),
-        ConfigItemDTO[].class);
+    ConfigItemDTO[] configItems = configAPI.getLatestConfigItemsByClusters(env, clusterIds);
 
     return buildAPPConfigVO(appId, Arrays.asList(configItems));
   }
@@ -203,7 +205,7 @@ public class ConfigService {
   }
 
   private void groupConfigByAppAndEnrichDTO(Map<String, List<ConfigItemDTO>> groupedClusterConfigs,
-      AppConfigVO appConfigVO) {
+                                            AppConfigVO appConfigVO) {
     long appId = appConfigVO.getAppId();
 
     List<ConfigItemDTO> defaultClusterConfigs = appConfigVO.getDefaultClusterConfigs();
@@ -222,7 +224,7 @@ public class ConfigService {
       if (Constants.DEFAULT_CLUSTER_NAME.equals(clusterName)) {
         // default cluster configs
         collectDefaultClusterConfigs(appId, clusterConfigs, defaultClusterConfigs,
-            overrideAppConfigs);
+                                     overrideAppConfigs);
       } else {
         // override cluster configs
         collectSpecialClusterConfigs(clusterName, clusterConfigs, overrideClusterConfigs);
@@ -231,8 +233,8 @@ public class ConfigService {
   }
 
   private void collectDefaultClusterConfigs(long appId, List<ConfigItemDTO> clusterConfigs,
-      List<ConfigItemDTO> defaultClusterConfigs,
-      List<AppConfigVO.OverrideAppConfig> overrideAppConfigs) {
+                                            List<ConfigItemDTO> defaultClusterConfigs,
+                                            List<AppConfigVO.OverrideAppConfig> overrideAppConfigs) {
 
     Map<Long, AppConfigVO.OverrideAppConfig> appIdMapOverrideAppConfig = null;
 
@@ -261,7 +263,7 @@ public class ConfigService {
   }
 
   private void collectSpecialClusterConfigs(String clusterName, List<ConfigItemDTO> clusterConfigs,
-      List<AppConfigVO.OverrideClusterConfig> overrideClusterConfigs) {
+                                            List<AppConfigVO.OverrideClusterConfig> overrideClusterConfigs) {
     AppConfigVO.OverrideClusterConfig overrideClusterConfig =
         new AppConfigVO.OverrideClusterConfig();
     overrideClusterConfig.setClusterName(clusterName);

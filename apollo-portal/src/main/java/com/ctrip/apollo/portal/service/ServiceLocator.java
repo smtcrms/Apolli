@@ -30,8 +30,6 @@ public class ServiceLocator {
   }
 
   public String getAdminService(Env env) {
-  //本地测试用
-//    return "http://localhost:8090";
     List<ApolloService> services = getAdminServices(env);
     if (services.size() == 0) {
       throw new RuntimeException("No available admin service");

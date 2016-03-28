@@ -77,6 +77,9 @@ public class AdminConfigServiceImpl implements AdminConfigService {
       return null;
     }
     Version version = versionRepository.findById(versionId);
+    if (version == null){
+      return null;
+    }
     return version.toDTO();
   }
 

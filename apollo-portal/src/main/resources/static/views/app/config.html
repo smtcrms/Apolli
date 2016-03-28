@@ -3,7 +3,7 @@
     <!--环境nav-->
     <ul class="nav nav-pills nav-justified">
         <li ng-repeat="env in envs" ng-class="{active:configLocation.env == env}">
-            <a href="#" ng-click="switchEnv(env)">{{env}}</a>
+            <a  ng-click="switchEnv(env)">{{env}}</a>
         </li>
     </ul>
 
@@ -14,12 +14,12 @@
             <ul class="nav nav-pills nav-stacked">
                 <li class="dropdown-header">未发布</li>
                 <li role="presentation" ng-class="{active:configLocation.versionId == -1}"
-                    ng-click="switchVersion(-1)"><a href="#">latest</a></li>
+                    ng-click="switchVersion(-1)"><a>latest</a></li>
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">已发布</li>
                 <li ng-repeat="version in releaseVersions"
                     ng-class="{active:configLocation.versionId == version.id}">
-                    <a href="#" ng-click="switchVersion(version.id)">{{version.name}}</a>
+                    <a ng-click="switchVersion(version.id)">{{version.name}}</a>
                 </li>
             </ul>
         </div>
@@ -31,13 +31,13 @@
                         <div class="col-md-6">项目的基本配置</div>
                         <div class="col-md-6" ng-show="!currentVersionIsRelease">
                             <p class="text-right">
-                                <a href="#" data-toggle="tooltip"
+                                <a data-toggle="tooltip"
                                    data-placement="top" title="下载配置">
                                                     <span class="glyphicon glyphicon-save"
                                                           aria-hidden="true"></span>
                                 </a>
                                 &nbsp;
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top" title="添加配置">
                                                     <span class="glyphicon glyphicon-plus"
                                                           aria-hidden="true"></span>
@@ -93,12 +93,12 @@
                             </td>
 
                             <td ng-show="!currentVersionIsRelease">
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top" title="修改">
                                                     <span class="glyphicon glyphicon-edit"
                                                           aria-hidden="true"></span>
                                 </a>
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top" title="删除">
                                                     <span class="glyphicon glyphicon-remove"
                                                           aria-hidden="true"></span>
@@ -110,17 +110,17 @@
                     <nav class="text-right">
                         <ul class="pagination">
                             <li>
-                                <a href="#" aria-label="Previous">
+                                <a  aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
+                            <li><a >1</a></li>
+                            <li><a >2</a></li>
+                            <li><a >3</a></li>
+                            <li><a >4</a></li>
+                            <li><a >5</a></li>
                             <li>
-                                <a href="#" aria-label="Next">
+                                <a  aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -135,18 +135,18 @@
                     <header class="panel-heading">
                         <div class="row">
                             <div class="col-md-6">重写<a
-                                    href="#">{{overrideAppConfig.appId}}</a>的配置
+                                    >{{overrideAppConfig.appId}}</a>的配置
                             </div>
                             <div class="col-md-6" ng-show="!currentVersionIsRelease">
                                 <p class="text-right">
-                                    <a href="#" data-toggle="tooltip"
+                                    <a  data-toggle="tooltip"
                                        data-placement="top"
                                        title="下载配置">
                                                             <span class="glyphicon glyphicon-save"
                                                                   aria-hidden="true"></span>
                                     </a>
                                     &nbsp;
-                                    <a href="#" data-toggle="tooltip"
+                                    <a  data-toggle="tooltip"
                                        data-placement="top"
                                        title="添加配置">
                                                             <span class="glyphicon glyphicon-plus"
@@ -202,13 +202,13 @@
                                 </td>
 
                                 <td ng-show="!currentVersionIsRelease">
-                                    <a href="#" data-toggle="tooltip"
+                                    <a  data-toggle="tooltip"
                                        data-placement="top"
                                        title="修改">
                                                                     <span class="glyphicon glyphicon-edit"
                                                                           aria-hidden="true"></span>
                                     </a>
-                                    <a href="#" data-toggle="tooltip"
+                                    <a  data-toggle="tooltip"
                                        data-placement="top"
                                        title="删除">
                                                                     <span class="glyphicon glyphicon-remove"
@@ -247,13 +247,13 @@
                         </div>
                         <div class="col-md-6" ng-show="!currentVersionIsRelease">
                             <p class="text-right">
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top" title="下载配置">
                                                     <span class="glyphicon glyphicon-save"
                                                           aria-hidden="true"></span>
                                 </a>
                                 &nbsp;
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top" title="添加配置">
                                                     <span class="glyphicon glyphicon-plus"
                                                           aria-hidden="true"></span>
@@ -308,13 +308,13 @@
                             </td>
 
                             <td ng-show="!currentVersionIsRelease">
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top"
                                    title="修改">
                                                                     <span class="glyphicon glyphicon-edit"
                                                                           aria-hidden="true"></span>
                                 </a>
-                                <a href="#" data-toggle="tooltip"
+                                <a  data-toggle="tooltip"
                                    data-placement="top"
                                    title="删除">
                                                                     <span class="glyphicon glyphicon-remove"
