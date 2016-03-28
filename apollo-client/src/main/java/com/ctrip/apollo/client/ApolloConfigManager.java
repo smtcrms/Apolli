@@ -5,6 +5,7 @@ import com.ctrip.apollo.client.loader.ConfigLoaderManager;
 import com.ctrip.apollo.client.model.PropertyChange;
 import com.ctrip.apollo.client.model.PropertySourceReloadResult;
 import com.ctrip.apollo.client.util.ConfigUtil;
+import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,6 @@ import org.springframework.core.env.MutablePropertySources;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -37,17 +36,18 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloConfigManager
-    implements BeanDefinitionRegistryPostProcessor, PriorityOrdered, ApplicationContextAware {
+    implements
+      BeanDefinitionRegistryPostProcessor,
+      PriorityOrdered,
+      ApplicationContextAware {
   private static final Logger logger = LoggerFactory.getLogger(ApolloConfigManager.class);
-  private static AtomicReference<ApolloConfigManager>
-      singletonProtector =
+  private static AtomicReference<ApolloConfigManager> singletonProtector =
       new AtomicReference<ApolloConfigManager>();
 
   private ConfigLoaderManager configLoaderManager;
   private ConfigurableApplicationContext applicationContext;
   private ConfigUtil configUtil;
   private ScheduledExecutorService executorService;
-  private AtomicLong counter;
   private RefreshScope scope;
 
   public ApolloConfigManager() {
@@ -56,32 +56,25 @@ public class ApolloConfigManager
     }
     this.configLoaderManager = ConfigLoaderFactory.getInstance().getConfigLoaderManager();
     this.configUtil = ConfigUtil.getInstance();
-    this.counter = new AtomicLong();
-    executorService = Executors.newScheduledThreadPool(1, new ThreadFactory() {
-      @Override
-      public Thread newThread(Runnable runnable) {
-        Thread thread = new Thread(runnable, "ApolloConfigManager-" + counter.incrementAndGet());
-        return thread;
-      }
-    });
+    executorService =
+        Executors.newScheduledThreadPool(1, ApolloThreadFactory.create("ConfigManager", true));
   }
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     if (!(applicationContext instanceof ConfigurableApplicationContext)) {
-      throw new RuntimeException(
-          String.format(
-              "ApplicationContext must implement ConfigurableApplicationContext, but found: %s",
-              applicationContext.getClass().getName()));
+      throw new RuntimeException(String.format(
+          "ApplicationContext must implement ConfigurableApplicationContext, but found: %s",
+          applicationContext.getClass().getName()));
     }
     this.applicationContext = (ConfigurableApplicationContext) applicationContext;
     this.configUtil.setApplicationContext(applicationContext);
   }
 
   /**
-   * This is the first method invoked, so we could prepare the property sources here.
-   * Specifically we need to finish preparing property source before PropertySourcesPlaceholderConfigurer
-   * so that configurations could be injected correctly
+   * This is the first method invoked, so we could prepare the property sources here. Specifically
+   * we need to finish preparing property source before PropertySourcesPlaceholderConfigurer so that
+   * configurations could be injected correctly
    */
   @Override
   public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
@@ -93,22 +86,16 @@ public class ApolloConfigManager
 
   /**
    * Register beans needed for Apollo Config Client
-   * <li>
-   * - RefreshScope: used to refresh beans when configurations changes
-   * </li>
-   * <li>
-   * - PropertySourcesPlaceholderConfigurer: used to support placeholder configuration injection
+   * <li>- RefreshScope: used to refresh beans when configurations changes</li>
+   * <li>- PropertySourcesPlaceholderConfigurer: used to support placeholder configuration injection
    * </li>
    */
   private void registerDependentBeans(BeanDefinitionRegistry registry) {
-    BeanDefinition
-        refreshScope =
+    BeanDefinition refreshScope =
         BeanDefinitionBuilder.genericBeanDefinition(RefreshScope.class).getBeanDefinition();
     registry.registerBeanDefinition("refreshScope", refreshScope);
-    BeanDefinition
-        propertySourcesPlaceholderConfigurer =
-        BeanDefinitionBuilder.genericBeanDefinition(PropertySourcesPlaceholderConfigurer.class)
-            .getBeanDefinition();
+    BeanDefinition propertySourcesPlaceholderConfigurer = BeanDefinitionBuilder
+        .genericBeanDefinition(PropertySourcesPlaceholderConfigurer.class).getBeanDefinition();
     registry.registerBeanDefinition("propertySourcesPlaceholderConfigurer",
         propertySourcesPlaceholderConfigurer);
   }
@@ -118,8 +105,7 @@ public class ApolloConfigManager
    */
   @Override
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
-      throws BeansException {
-  }
+      throws BeansException {}
 
   /**
    * Make sure this bean is called before other beans
@@ -133,15 +119,14 @@ public class ApolloConfigManager
    * Initialize property sources
    */
   void initializePropertySource() {
-    //TODO stop application from starting when config cannot be loaded?
+    // TODO stop application from starting when config cannot be loaded?
     CompositePropertySource result = this.configLoaderManager.loadPropertySource();
 
     updateEnvironmentPropertySource(result);
   }
 
   private void updateEnvironmentPropertySource(CompositePropertySource currentPropertySource) {
-    MutablePropertySources
-        currentPropertySources =
+    MutablePropertySources currentPropertySources =
         applicationContext.getEnvironment().getPropertySources();
     if (currentPropertySources.contains(currentPropertySource.getName())) {
       currentPropertySources.replace(currentPropertySource.getName(), currentPropertySource);
@@ -151,17 +136,16 @@ public class ApolloConfigManager
   }
 
   void schedulePeriodicRefresh() {
-    executorService.scheduleAtFixedRate(
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              updatePropertySource();
-            } catch (Throwable ex) {
-              logger.error("Refreshing config failed", ex);
-            }
-          }
-        }, configUtil.getRefreshInterval(), configUtil.getRefreshInterval(),
+    executorService.scheduleAtFixedRate(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          updatePropertySource();
+        } catch (Throwable ex) {
+          logger.error("Refreshing config failed", ex);
+        }
+      }
+    }, configUtil.getRefreshInterval(), configUtil.getRefreshInterval(),
         configUtil.getRefreshTimeUnit());
   }
 
