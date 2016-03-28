@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.Apollo.Env;
-import com.ctrip.apollo.core.Constants;
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ConfigItemDTO;
 import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
@@ -59,7 +59,7 @@ public class ConfigService {
 
     for (ReleaseSnapshotDTO snapShot : releaseSnapShots) {
       // default cluster
-      if (Constants.DEFAULT_CLUSTER_NAME.equals(snapShot.getClusterName())) {
+      if (ConfigConsts.DEFAULT_CLUSTER_NAME.equals(snapShot.getClusterName())) {
 
         collectDefaultClusterConfigs(appId, snapShot, appConfigVO);
 
@@ -221,7 +221,7 @@ public class ConfigService {
       clusterName = entry.getKey();
       clusterConfigs = entry.getValue();
 
-      if (Constants.DEFAULT_CLUSTER_NAME.equals(clusterName)) {
+      if (ConfigConsts.DEFAULT_CLUSTER_NAME.equals(clusterName)) {
         // default cluster configs
         collectDefaultClusterConfigs(appId, clusterConfigs, defaultClusterConfigs,
                                      overrideAppConfigs);

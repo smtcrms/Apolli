@@ -6,7 +6,7 @@ import com.ctrip.apollo.client.loader.ConfigServiceLocator;
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.core.dto.ServiceDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ public class RemoteConfigLoader extends AbstractConfigLoader {
   }
 
   private String getConfigServiceUrl() {
-    List<ApolloService> services = serviceLocator.getConfigServices();
+    List<ServiceDTO> services = serviceLocator.getConfigServices();
     if (services.size() == 0) {
       throw new RuntimeException("No available config service");
     }
