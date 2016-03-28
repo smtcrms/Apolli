@@ -1,7 +1,5 @@
 package com.ctrip.apollo.biz.entity;
 
-import com.ctrip.apollo.core.dto.ConfigItemDTO;
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -150,19 +148,4 @@ public class ConfigItem {
     this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
 
-  public ConfigItemDTO toDTO() {
-    ConfigItemDTO dto = new ConfigItemDTO();
-    dto.setAppId(appId);
-    dto.setId(id);
-    dto.setClusterId(clusterId);
-    dto.setClusterName(clusterName);
-    dto.setDataChangeCreatedBy(dataChangeCreatedBy);
-    dto.setDataChangeLastModifiedBy(dataChangeLastModifiedBy);
-    dto.setDataChangeCreatedTime(dataChangeCreatedTime);
-    dto.setDataChangeLastModifiedTime(dataChangeLastModifiedTime);
-    dto.setKey(key);
-    dto.setValue(value);
-    dto.setComment(comment);
-    return dto;
-  }
 }

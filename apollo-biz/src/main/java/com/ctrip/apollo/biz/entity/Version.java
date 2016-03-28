@@ -1,7 +1,5 @@
 package com.ctrip.apollo.biz.entity;
 
-import com.ctrip.apollo.core.dto.VersionDTO;
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -84,13 +82,4 @@ public class Version {
     this.parentVersion = parentVersion;
   }
 
-  public VersionDTO toDTO() {
-    VersionDTO dto = new VersionDTO();
-    dto.setAppId(this.appId);
-    dto.setId(this.id);
-    dto.setName(this.name);
-    dto.setParentVersion(this.parentVersion);
-    dto.setReleaseId(this.releaseId);
-    return dto;
-  }
 }

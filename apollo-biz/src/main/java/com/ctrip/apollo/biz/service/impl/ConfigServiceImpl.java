@@ -2,7 +2,7 @@ package com.ctrip.apollo.biz.service.impl;
 
 import com.google.common.collect.Maps;
 
-import com.ctrip.apollo.biz.entity.ReleaseSnapShot;
+import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ReleaseSnapShotRepository;
 import com.ctrip.apollo.biz.repository.VersionRepository;
@@ -49,7 +49,7 @@ public class ConfigServiceImpl implements ConfigService {
 
   @Override
   public ApolloConfig loadConfigByVersionAndClusterName(Version version, String clusterName) {
-    ReleaseSnapShot releaseSnapShot =
+    ReleaseSnapshot releaseSnapShot =
         releaseSnapShotRepository
             .findByReleaseIdAndClusterName(version.getReleaseId(), clusterName);
     if (releaseSnapShot == null) {
@@ -59,7 +59,7 @@ public class ConfigServiceImpl implements ConfigService {
     return assembleConfig(version, releaseSnapShot);
   }
 
-  private ApolloConfig assembleConfig(Version version, ReleaseSnapShot releaseSnapShot) {
+  private ApolloConfig assembleConfig(Version version, ReleaseSnapshot releaseSnapShot) {
     ApolloConfig config =
         new ApolloConfig(version.getAppId(), releaseSnapShot.getClusterName(), version.getName(),
             version.getReleaseId());
