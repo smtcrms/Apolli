@@ -2,7 +2,7 @@ package com.ctrip.apollo.biz.service.impl;
 
 import com.google.common.collect.Maps;
 
-import com.ctrip.apollo.biz.entity.ReleaseSnapShot;
+import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ReleaseSnapShotRepository;
 import com.ctrip.apollo.biz.repository.VersionRepository;
@@ -60,7 +60,7 @@ public class ConfigServiceImplTest {
     String someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
 
     Version someVersion = assembleVersion(someAppId, someVersionName, someReleaseId);
-    ReleaseSnapShot
+    ReleaseSnapshot
         someReleaseSnapShot =
         assembleReleaseSnapShot(someReleaseId, someClusterName, someValidConfiguration);
     Map<String, Object> someMap = Maps.newHashMap();
@@ -122,9 +122,9 @@ public class ConfigServiceImplTest {
     return version;
   }
 
-  private ReleaseSnapShot assembleReleaseSnapShot(long releaseId, String clusterName,
+  private ReleaseSnapshot assembleReleaseSnapShot(long releaseId, String clusterName,
                                                   String configurations) {
-    ReleaseSnapShot releaseSnapShot = new ReleaseSnapShot();
+    ReleaseSnapshot releaseSnapShot = new ReleaseSnapshot();
     releaseSnapShot.setReleaseId(releaseId);
     releaseSnapShot.setClusterName(clusterName);
     releaseSnapShot.setConfigurations(configurations);

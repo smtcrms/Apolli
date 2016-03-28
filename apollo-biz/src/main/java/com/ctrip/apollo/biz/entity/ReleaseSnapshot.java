@@ -1,7 +1,5 @@
 package com.ctrip.apollo.biz.entity;
 
-import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
-
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -16,7 +14,7 @@ import javax.persistence.Id;
 @Entity
 @Where(clause = "isDeleted = 0")
 @SQLDelete(sql = "Update ReleaseSnapShot set isDeleted = 1 where id = ?")
-public class ReleaseSnapShot {
+public class ReleaseSnapshot {
   @Id
   @GeneratedValue
   private long id;
@@ -32,7 +30,7 @@ public class ReleaseSnapShot {
 
   private boolean isDeleted;
 
-  public ReleaseSnapShot() {
+  public ReleaseSnapshot() {
   }
 
   public long getId() {
@@ -75,12 +73,4 @@ public class ReleaseSnapShot {
     isDeleted = deleted;
   }
 
-  public ReleaseSnapshotDTO toDTO() {
-    ReleaseSnapshotDTO dto = new ReleaseSnapshotDTO();
-    dto.setId(id);
-    dto.setClusterName(clusterName);
-    dto.setConfigurations(configurations);
-    dto.setReleaseId(releaseId);
-    return dto;
-  }
 }

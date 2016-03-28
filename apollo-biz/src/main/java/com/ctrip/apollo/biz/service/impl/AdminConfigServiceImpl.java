@@ -1,8 +1,9 @@
 package com.ctrip.apollo.biz.service.impl;
 
+import com.ctrip.apollo.biz.converter.EntityToDTOConverter;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.ConfigItem;
-import com.ctrip.apollo.biz.entity.ReleaseSnapShot;
+import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ClusterRepository;
 import com.ctrip.apollo.biz.repository.ConfigItemRepository;
@@ -39,15 +40,16 @@ public class AdminConfigServiceImpl implements AdminConfigService {
       return Collections.EMPTY_LIST;
     }
 
-    List<ReleaseSnapShot> releaseSnapShots = releaseSnapShotRepository.findByReleaseId(releaseId);
+    List<ReleaseSnapshot> releaseSnapShots = releaseSnapShotRepository.findByReleaseId(releaseId);
 
     if (releaseSnapShots == null || releaseSnapShots.size() == 0) {
       return Collections.EMPTY_LIST;
     }
 
     List<ReleaseSnapshotDTO> result = new ArrayList<>(releaseSnapShots.size());
-    for (ReleaseSnapShot releaseSnapShot : releaseSnapShots) {
-      result.add(releaseSnapShot.toDTO());
+    for (ReleaseSnapshot releaseSnapShot : releaseSnapShots) {
+      ReleaseSnapshotDTO dto = EntityToDTOConverter.convert(releaseSnapShot);
+      result.add(dto);
     }
     return result;
   }
@@ -66,7 +68,8 @@ public class AdminConfigServiceImpl implements AdminConfigService {
 
     List<VersionDTO> result = new ArrayList<>(versions.size());
     for (Version version : versions) {
-      result.add(version.toDTO());
+      VersionDTO dto = EntityToDTOConverter.convert(version);
+      result.add(dto);
     }
     return result;
   }
@@ -80,7 +83,8 @@ public class AdminConfigServiceImpl implements AdminConfigService {
     if (version == null){
       return null;
     }
-    return version.toDTO();
+    VersionDTO dto = EntityToDTOConverter.convert(version);
+    return dto;
   }
 
   @Override
@@ -112,7 +116,8 @@ public class AdminConfigServiceImpl implements AdminConfigService {
 
     List<ConfigItemDTO> result = new ArrayList<>(configItems.size());
     for (ConfigItem configItem : configItems) {
-      result.add(configItem.toDTO());
+      ConfigItemDTO dto = EntityToDTOConverter.convert(configItem);
+      result.add(dto);
     }
     return result;
   }
