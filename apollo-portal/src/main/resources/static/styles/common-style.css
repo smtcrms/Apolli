@@ -7,6 +7,10 @@ body {
     padding-bottom: 50px;
 }
 
+a{
+    cursor: pointer;
+}
+
 .container {
     width: 100%;
     min-height: 550px;

@@ -15,12 +15,12 @@ INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) 
 INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) VALUES ('cluster2', 0, 11111, '{"6666.bar":"bar2222"}');
 INSERT INTO RELEASESNAPSHOT (ClusterName, IsDeleted, ReleaseId, Configurations) VALUES ('default', 0, 11112, '{"6666.foo":"verson2.0", "6666.bar":"verson2.0","3333.foo":"1008","4444.bar":"99901"}');
 
-INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastModifiedTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k1', '6666.v1', 'comment1', 'lepdou', '2016-03-23 12:00:00', '王五', NOW(), 0);
+INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k1', '6666.v1', 'comment1', 'lepdou', '2016-03-23 12:00:00', '王五', NOW(), 0);
 
-INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastModifiedTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k2', '6666.v2', 'xxxx', 'lepdou', '2016-03-23 12:00:00', '王五1', NOW(),0);
+INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k2', '6666.v2', 'xxxx', 'lepdou', '2016-03-23 12:00:00', '王五1', NOW(),0);
 
-INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastModifiedTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k3', '6666.v3', 'yyyy', 'lepdou', '2016-03-23 12:00:00', '王五2', NOW(),0);
+INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastTime, IsDeleted) VALUES (100, 'default', 6666, '6666.k3', '6666.v3', 'yyyy', 'lepdou', '2016-03-23 12:00:00', '王五2', NOW(),0);
 
-INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastModifiedTime, IsDeleted) VALUES (100, 'default', 5555, '5555.k1', '5555.v11', 'zzzz', 'lepdou', '2016-03-23 12:00:00', '王五3', NOW(),0);
+INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastTime, IsDeleted) VALUES (100, 'default', 5555, '5555.k1', '5555.v11', 'zzzz', 'lepdou', '2016-03-23 12:00:00', '王五3', NOW(),0);
 
-INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastModifiedTime, IsDeleted) VALUES (101, 'cluster1', 6666, '6666.k1', '6666.v122', 'qqqqq', 'lepdou', '2016-03-23 12:00:00', '王五4', NOW(),0);
+INSERT INTO ConfigItem(ClusterId, ClusterName, AppId, Key, Value, comment, DataChange_CreatedBy, DataChange_CreatedTime, DataChange_LastModifiedBy, DataChange_LastTime, IsDeleted) VALUES (101, 'cluster1', 6666, '6666.k1', '6666.v122', 'qqqqq', 'lepdou', '2016-03-23 12:00:00', '王五4', NOW(),0);
