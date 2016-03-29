@@ -4,7 +4,7 @@ import com.ctrip.apollo.client.loader.ConfigServiceLocator;
 import com.ctrip.apollo.client.model.ApolloRegistry;
 import com.ctrip.apollo.client.util.ConfigUtil;
 import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.core.dto.ServiceDTO;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,9 +60,9 @@ public class RemoteConfigLoaderTest {
     ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     ApolloConfig previousConfig = null;
 
-    ApolloService someService = new ApolloService();
+    ServiceDTO someService = new ServiceDTO();
     someService.setHomepageUrl(someServerUrl);
-    List<ApolloService> someServices = new ArrayList<>();
+    List<ServiceDTO> someServices = new ArrayList<>();
     someServices.add(someService);
     when(serviceLocater.getConfigServices()).thenReturn(someServices);
     when(configUtil.getCluster()).thenReturn(someCluster);

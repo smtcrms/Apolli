@@ -1,7 +1,7 @@
 package com.ctrip.apollo.client.loader;
 
 import com.ctrip.apollo.client.env.ClientEnvironment;
-import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.core.dto.ServiceDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +17,17 @@ public class ConfigServiceLocator {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  private List<ApolloService> serviceCaches = new ArrayList<>();
+  private List<ServiceDTO> serviceCaches = new ArrayList<>();
 
-  public List<ApolloService> getConfigServices() {
+  public List<ServiceDTO> getConfigServices() {
     ClientEnvironment env = ClientEnvironment.getInstance();
     String domainName = env.getMetaServerDomainName();
     String url = domainName + "/services/config";
     try {
-      ApolloService[] services = restTemplate.getForObject(new URI(url), ApolloService[].class);
+      ServiceDTO[] services = restTemplate.getForObject(new URI(url), ServiceDTO[].class);
       if (services != null && services.length > 0) {
         serviceCaches.clear();
-        for (ApolloService service : services) {
+        for (ServiceDTO service : services) {
           serviceCaches.add(service);
         }
       }

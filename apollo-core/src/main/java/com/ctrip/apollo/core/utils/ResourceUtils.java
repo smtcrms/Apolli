@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class ResourceUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
-  
+
   @SuppressWarnings("unchecked")
   public static Properties readConfigFile(String configPath, Properties defaults) {
     InputStream in = ClassLoader.getSystemResourceAsStream(configPath);
@@ -28,6 +28,8 @@ public class ResourceUtils {
         if (Files.isReadable(path)) {
           in = new FileInputStream(path.toFile());
           logger.info("Reading config from file {} ", path);
+        } else {
+          logger.info("Could not find available config file");
         }
       }
       if (defaults != null) {
@@ -51,12 +53,16 @@ public class ResourceUtils {
     }
     StringBuilder sb = new StringBuilder();
     for (Enumeration<String> e = (Enumeration<String>) props.propertyNames(); e
-        .hasMoreElements(); ) {
+        .hasMoreElements();) {
       String key = e.nextElement();
       String val = (String) props.getProperty(key);
       sb.append(key).append('=').append(val).append('\n');
     }
-    logger.info("Reading properties: \n" + sb.toString());
+    if (sb.length() > 0) {
+      logger.info("Reading properties: \n" + sb.toString());
+    } else {
+      logger.info("No available properties");
+    }
     return props;
   }
 }

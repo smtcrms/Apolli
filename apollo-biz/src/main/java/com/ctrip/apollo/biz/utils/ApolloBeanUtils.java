@@ -1,5 +1,7 @@
 package com.ctrip.apollo.biz.utils;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
@@ -48,9 +50,21 @@ public class ApolloBeanUtils {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    org.springframework.beans.BeanUtils.copyProperties(src, instance, ConverterUtils
-        .getNullPropertyNames(src));
+    org.springframework.beans.BeanUtils.copyProperties(src, instance, getNullPropertyNames(src));
     return instance;
+  }
+
+  static String[] getNullPropertyNames(Object source) {
+    final BeanWrapper src = new BeanWrapperImpl(source);
+    java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+    Set<String> emptyNames = new HashSet<String>();
+    for (java.beans.PropertyDescriptor pd : pds) {
+      Object srcValue = src.getPropertyValue(pd.getName());
+      if (srcValue == null) emptyNames.add(pd.getName());
+    }
+    String[] result = new String[emptyNames.size()];
+    return emptyNames.toArray(result);
   }
 
   /**
@@ -92,7 +106,7 @@ public class ApolloBeanUtils {
    */
   public static <K, V> Map<K, List<V>> aggByKeyToList(String key, List list) {
     Map<K, List<V>> map = new HashMap<K, List<V>>();
-    if (CollectionUtils.isEmpty(list)) {//防止外面传入空list
+    if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
       return map;
     }
     try {
@@ -122,7 +136,7 @@ public class ApolloBeanUtils {
    */
   public static Set toPropertySet(String key, List list) {
     Set set = new HashSet();
-    if (CollectionUtils.isEmpty(list)) {//防止外面传入空list
+    if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
       return set;
     }
     try {
@@ -168,7 +182,7 @@ public class ApolloBeanUtils {
         return field.get(obj);
       }
     } catch (Exception e) {
-      //ig
+      // ig
     }
     return null;
   }
@@ -184,7 +198,7 @@ public class ApolloBeanUtils {
         field.set(obj, value);
       }
     } catch (Exception e) {
-      //ig
+      // ig
     }
   }
 

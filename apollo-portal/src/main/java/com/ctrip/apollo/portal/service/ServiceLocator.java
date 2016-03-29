@@ -11,7 +11,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.ctrip.apollo.Apollo.Env;
 import com.ctrip.apollo.core.MetaDomainConsts;
-import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.core.dto.ServiceDTO;
+import com.ctrip.apollo.core.exception.ServiceException;
 
 /**
  * @author liuym
@@ -23,32 +24,32 @@ public class ServiceLocator {
 
   private RestTemplate restTemplate = new RestTemplate();
 
-  private List<ApolloService> serviceCaches = new ArrayList<>();
+  private List<ServiceDTO> serviceCaches = new ArrayList<>();
 
-  public List<ApolloService> getAdminServices(Env env) {
-    return getServices(env, "admin");
-  }
-
-  public String getAdminService(Env env) {
-    List<ApolloService> services = getAdminServices(env);
+  public ServiceDTO getAdminService(Env env) throws ServiceException {
+    List<ServiceDTO> services = getServices(env, "admin");
     if (services.size() == 0) {
-      throw new RuntimeException("No available admin service");
+      throw new ServiceException("No available admin service");
     }
-    return services.get(0).getHomepageUrl();
+    return services.get(0);
   }
 
-  public List<ApolloService> getConfigServices(Env env) {
-    return getServices(env, "config");
+  public ServiceDTO getConfigService(Env env) throws ServiceException {
+    List<ServiceDTO> services = getServices(env, "config");
+    if (services.size() == 0) {
+      throw new ServiceException("No available config service");
+    }
+    return services.get(0);
   }
 
-  private List<ApolloService> getServices(Env env, String serviceUrl) {
+  private List<ServiceDTO> getServices(Env env, String serviceUrl) {
     String domainName = MetaDomainConsts.getDomain(env);
     String url = domainName + "/services/" + serviceUrl;
     try {
-      ApolloService[] services = restTemplate.getForObject(new URI(url), ApolloService[].class);
+      ServiceDTO[] services = restTemplate.getForObject(new URI(url), ServiceDTO[].class);
       if (services != null && services.length > 0) {
         serviceCaches.clear();
-        for (ApolloService service : services) {
+        for (ServiceDTO service : services) {
           serviceCaches.add(service);
         }
       }
