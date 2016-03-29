@@ -1,19 +1,12 @@
-package com.ctrip.apollo.biz.service.impl;
+package com.ctrip.apollo.biz.service;
 
 import com.google.common.base.Strings;
 
-import com.ctrip.apollo.biz.entity.Cluster;
-import com.ctrip.apollo.biz.entity.ConfigItem;
 import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
 import com.ctrip.apollo.biz.entity.Version;
-import com.ctrip.apollo.biz.repository.ClusterRepository;
-import com.ctrip.apollo.biz.repository.ConfigItemRepository;
 import com.ctrip.apollo.biz.repository.ReleaseSnapShotRepository;
 import com.ctrip.apollo.biz.repository.VersionRepository;
-import com.ctrip.apollo.biz.service.AdminConfigService;
 import com.ctrip.apollo.biz.utils.ApolloBeanUtils;
-import com.ctrip.apollo.core.dto.ClusterDTO;
-import com.ctrip.apollo.core.dto.ConfigItemDTO;
 import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
 import com.ctrip.apollo.core.dto.VersionDTO;
 
@@ -23,19 +16,16 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-@Service("adminConfigService")
-public class AdminConfigServiceImpl implements AdminConfigService {
-
-  @Autowired
-  private VersionRepository versionRepository;
+/**
+ * @author Jason Song(song_s@ctrip.com)
+ */
+@Service("adminReleaseService")
+public class AdminReleaseService {
   @Autowired
   private ReleaseSnapShotRepository releaseSnapShotRepository;
   @Autowired
-  private ClusterRepository clusterRepository;
-  @Autowired
-  private ConfigItemRepository configItemRepository;
+  private VersionRepository versionRepository;
 
-  @Override
   public List<ReleaseSnapshotDTO> findReleaseSnapshotByReleaseId(long releaseId) {
     if (releaseId <= 0) {
       return Collections.EMPTY_LIST;
@@ -50,8 +40,6 @@ public class AdminConfigServiceImpl implements AdminConfigService {
     return ApolloBeanUtils.batchTransform(ReleaseSnapshotDTO.class, releaseSnapShots);
   }
 
-
-  @Override
   public List<VersionDTO> findVersionsByApp(String appId) {
     if (Strings.isNullOrEmpty(appId)) {
       return Collections.EMPTY_LIST;
@@ -65,43 +53,15 @@ public class AdminConfigServiceImpl implements AdminConfigService {
     return ApolloBeanUtils.batchTransform(VersionDTO.class, versions);
   }
 
-  @Override
   public VersionDTO loadVersionById(long versionId) {
     if (versionId <= 0) {
       return null;
     }
     Version version = versionRepository.findById(versionId);
-    if (version == null){
+    if (version == null) {
       return null;
     }
     VersionDTO dto = ApolloBeanUtils.transfrom(VersionDTO.class, version);
     return dto;
   }
-
-  @Override
-  public List<ClusterDTO> findClustersByApp(String appId) {
-    if (Strings.isNullOrEmpty(appId)) {
-      return Collections.EMPTY_LIST;
-    }
-    List<Cluster> clusters = clusterRepository.findByAppId(appId);
-    if (clusters == null || clusters.size() == 0) {
-      return Collections.EMPTY_LIST;
-    }
-
-    return ApolloBeanUtils.batchTransform(ClusterDTO.class, clusters);
-  }
-
-  @Override
-  public List<ConfigItemDTO> findConfigItemsByClusters(List<Long> clusterIds) {
-    if (clusterIds == null || clusterIds.size() == 0) {
-      return Collections.EMPTY_LIST;
-    }
-    List<ConfigItem> configItems = configItemRepository.findByClusterIdIsIn(clusterIds);
-    if (configItems == null || configItems.size() == 0) {
-      return Collections.EMPTY_LIST;
-    }
-
-    return ApolloBeanUtils.batchTransform(ConfigItemDTO.class, configItems);
-  }
-
 }

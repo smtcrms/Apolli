@@ -4,6 +4,7 @@ import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/config")
 public class ConfigController {
-  @Resource(name = "configService")
+  @Autowired
   private ConfigService configService;
 
   @RequestMapping(value = "/{appId}/{clusterName}/{versionName:.*}", method = RequestMethod.GET)
