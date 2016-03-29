@@ -20,4 +20,4 @@ ctrip:
   
 apollo:
   portal:
-    env: dev,fws,uat
+    env: local,dev,fws,uat

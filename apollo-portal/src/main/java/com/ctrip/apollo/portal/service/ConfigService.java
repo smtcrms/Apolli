@@ -49,10 +49,11 @@ public class ConfigService {
 
     long releaseId = getReleaseIdFromVersionId(env, versionId);
     if (releaseId == -1) {
+      logger.warn("get release id error env:{}, app id:{}, version id:{}", env, appId, versionId);
       return null;
     }
 
-    ReleaseSnapshotDTO[] releaseSnapShots = configAPI.getConfigByReleaseId(Env.DEV, releaseId);
+    ReleaseSnapshotDTO[] releaseSnapShots = configAPI.getConfigByReleaseId(env, releaseId);
     if (releaseSnapShots == null || releaseSnapShots.length == 0) {
       return null;
     }
@@ -83,7 +84,8 @@ public class ConfigService {
   private void collectDefaultClusterConfigs(String appId, ReleaseSnapshotDTO snapShot,
                                             AppConfigVO appConfigVO) {
 
-    Map<String, List<ConfigItemDTO>> groupedConfigs = groupConfigsByApp(snapShot.getConfigurations());
+    Map<String, List<ConfigItemDTO>> groupedConfigs =
+        groupConfigsByApp(appId, snapShot.getConfigurations());
 
     List<AppConfigVO.OverrideAppConfig> overrideAppConfigs = appConfigVO.getOverrideAppConfigs();
 
@@ -107,7 +109,7 @@ public class ConfigService {
   /**
    * appId -> List<KV>
    */
-  private Map<String, List<ConfigItemDTO>> groupConfigsByApp(String configJson) {
+  private Map<String, List<ConfigItemDTO>> groupConfigsByApp(String selfAppId, String configJson) {
     if (configJson == null || "".equals(configJson)) {
       return Maps.newHashMap();
     }
@@ -120,8 +122,10 @@ public class ConfigService {
     try {
       kvMaps = objectMapper.readValue(configJson, Map.class);
     } catch (IOException e) {
-      // todo log
+      logger.error("parse release snapshot json error. app id:{}", selfAppId);
+      return Maps.newHashMap();
     }
+
     for (Map.Entry<String, String> entry : kvMaps.entrySet()) {
       key = entry.getKey();
       value = entry.getValue();
@@ -151,7 +155,7 @@ public class ConfigService {
         new AppConfigVO.OverrideClusterConfig();
     overrideClusterConfig.setClusterName(snapShot.getClusterName());
     // todo step1: cluster special config can't override other app config
-    overrideClusterConfig.setConfigs(groupConfigsByApp(snapShot.getConfigurations()).get(appId));
+    overrideClusterConfig.setConfigs(groupConfigsByApp(appId, snapShot.getConfigurations()).get(appId));
     overrideClusterConfigs.add(overrideClusterConfig);
   }
 
@@ -242,7 +246,7 @@ public class ConfigService {
 
     for (ConfigItemDTO config : clusterConfigs) {
       String targetAppId = config.getAppId();
-      if (appId == targetAppId) {// app self's configs
+      if (appId.equals(targetAppId)) {// app self's configs
         defaultClusterConfigs.add(config);
       } else {// override other app configs
         if (appIdMapOverrideAppConfig == null) {
