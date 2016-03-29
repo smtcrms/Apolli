@@ -1,4 +1,4 @@
-package com.ctrip.apollo.biz.service.impl;
+package com.ctrip.apollo.biz.service;
 
 import com.google.common.collect.Maps;
 
@@ -6,6 +6,7 @@ import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
 import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ReleaseSnapShotRepository;
 import com.ctrip.apollo.biz.repository.VersionRepository;
+import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,18 +34,18 @@ import static org.mockito.Mockito.when;
  * @author Jason Song(song_s@ctrip.com)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ConfigServiceImplTest {
+public class ConfigServiceTest {
   @Mock
   private VersionRepository versionRepository;
   @Mock
   private ReleaseSnapShotRepository releaseSnapShotRepository;
   @Mock
   private ObjectMapper objectMapper;
-  private ConfigServiceImpl configService;
+  private ConfigService configService;
 
   @Before
   public void setUp() throws Exception {
-    configService = new ConfigServiceImpl();
+    configService = new ConfigService();
     ReflectionTestUtils.setField(configService, "versionRepository", versionRepository);
     ReflectionTestUtils
         .setField(configService, "releaseSnapShotRepository", releaseSnapShotRepository);

@@ -39,6 +39,7 @@ public class RemoteConfigLoaderTest {
   private RemoteConfigLoader remoteConfigLoader;
   @Mock
   private RestTemplate restTemplate;
+  @Mock
   private ConfigUtil configUtil;
   @Mock
   private ConfigServiceLocator serviceLocater;
@@ -47,7 +48,6 @@ public class RemoteConfigLoaderTest {
 
   @Before
   public void setUp() {
-    configUtil = spy(ConfigUtil.getInstance());
     remoteConfigLoader = spy(new RemoteConfigLoader(restTemplate, configUtil, serviceLocater));
   }
 

@@ -18,7 +18,7 @@ public class ResourceUtils {
 
   @SuppressWarnings("unchecked")
   public static Properties readConfigFile(String configPath, Properties defaults) {
-    InputStream in = ClassLoader.getSystemResourceAsStream(configPath);
+    InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(configPath);
     logger.info("Reading config from resource {}", configPath);
     Properties props = new Properties();
     try {

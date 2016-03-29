@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 
 import com.ctrip.apollo.client.constants.Constants;
 import com.ctrip.apollo.client.model.ApolloRegistry;
+import com.ctrip.apollo.core.utils.ClassLoaderUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,14 +34,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigUtilTest {
   private ConfigUtil configUtil;
-  @Mock
-  private ConfigurableApplicationContext applicationContext;
 
   @Before
   public void setUp() throws Exception {
     configUtil = spy(ConfigUtil.getInstance());
-
-    configUtil.setApplicationContext(applicationContext);
   }
 
   @Test
@@ -75,7 +71,7 @@ public class ConfigUtilTest {
 
   private void preparePropertiesFromLocalResource(Properties someProperties) throws IOException {
     ClassLoader someClassLoader = mock(ClassLoader.class);
-    Thread.currentThread().setContextClassLoader(someClassLoader);
+    ReflectionTestUtils.setField(ClassLoaderUtil.class, "loader", someClassLoader);
     URL someUrl = new URL("http", "somepath/", "someFile");
     Enumeration<URL> someResourceUrls = Collections.enumeration(Lists.newArrayList(someUrl));
 

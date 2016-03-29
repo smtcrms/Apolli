@@ -68,7 +68,6 @@ public class ApolloConfigManager
           applicationContext.getClass().getName()));
     }
     this.applicationContext = (ConfigurableApplicationContext) applicationContext;
-    this.configUtil.setApplicationContext(applicationContext);
   }
 
   /**

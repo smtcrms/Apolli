@@ -1,6 +1,6 @@
 package com.ctrip.apollo.adminservice.controller;
 
-import com.ctrip.apollo.biz.service.AdminConfigService;
+import com.ctrip.apollo.biz.service.AdminReleaseService;
 import com.ctrip.apollo.core.dto.VersionDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +15,15 @@ import java.util.List;
 public class VersionController {
 
   @Autowired
-  private AdminConfigService adminConfigService;
+  private AdminReleaseService adminReleaseService;
 
   @RequestMapping("/app/{appId}")
   public List<VersionDTO> versions(@PathVariable String appId) {
-
-    return adminConfigService.findVersionsByApp(appId);
+    return adminReleaseService.findVersionsByApp(appId);
   }
 
   @RequestMapping("/{versionId}")
   public VersionDTO version(@PathVariable long versionId) {
-    return adminConfigService.loadVersionById(versionId);
+    return adminReleaseService.loadVersionById(versionId);
   }
-
-
 }
