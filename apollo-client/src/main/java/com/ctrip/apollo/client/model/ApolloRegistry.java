@@ -6,14 +6,14 @@ import com.google.common.base.MoreObjects;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloRegistry {
-  private long appId;
+  private String appId;
   private String version;
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

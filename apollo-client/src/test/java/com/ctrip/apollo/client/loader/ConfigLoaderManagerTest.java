@@ -51,8 +51,8 @@ public class ConfigLoaderManagerTest {
 
   @Test
   public void testLoadPropertySource() throws Exception {
-    long someAppId = 100;
-    long anotherAppId = 101;
+    String someAppId = "100";
+    String anotherAppId = "101";
     ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     ApolloRegistry
         anotherApolloRegistry =
@@ -92,7 +92,7 @@ public class ConfigLoaderManagerTest {
   @Test(expected = RuntimeException.class)
   public void testLoadPropertySourceWithError() throws Exception {
     Exception someException = mock(Exception.class);
-    long someAppId = 100;
+    String someAppId = "100";
     ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     when(configUtil.loadApolloRegistries()).thenReturn(Lists.newArrayList(someApolloRegistry));
 
@@ -114,7 +114,7 @@ public class ConfigLoaderManagerTest {
   public void testLoadSingleApolloConfig() throws Exception {
     ApolloConfig someApolloConfig = mock(ApolloConfig.class);
     Map<String, Object> someMap = Maps.newHashMap();
-    long someAppId = 100;
+    String someAppId = "100";
     ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     ApolloConfig previousConfig = null;
 
@@ -130,7 +130,7 @@ public class ConfigLoaderManagerTest {
 
   @Test
   public void testReloadPropertySource() throws Exception {
-    long someAppId = 100;
+    String someAppId = "100";
     ApolloRegistry someApolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     ApolloConfig someApolloConfig = mock(ApolloConfig.class);
     Map<String, Object> someMap = mock(Map.class);
@@ -162,7 +162,7 @@ public class ConfigLoaderManagerTest {
 
   @Test
   public void testCalcPropertyChanges() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     Map<String, Object> someConfig = Maps.newHashMap();
     someConfig.put("key1", "val1");
     someConfig.put("key2", "val2");
@@ -195,7 +195,7 @@ public class ConfigLoaderManagerTest {
         )));
   }
 
-  ApolloConfig assembleApolloConfig(long appId, Map<String, Object> configurations) {
+  ApolloConfig assembleApolloConfig(String appId, Map<String, Object> configurations) {
     String someCluster = "someCluster";
     String someVersion = "someVersion";
     long someReleaseId = 1;
@@ -207,7 +207,7 @@ public class ConfigLoaderManagerTest {
     return config;
   }
 
-  private ApolloRegistry assembleSomeApolloRegistry(long someAppId, String someVersion) {
+  private ApolloRegistry assembleSomeApolloRegistry(String someAppId, String someVersion) {
     ApolloRegistry someApolloRegistry = new ApolloRegistry();
     someApolloRegistry.setAppId(someAppId);
     someApolloRegistry.setVersion(someVersion);

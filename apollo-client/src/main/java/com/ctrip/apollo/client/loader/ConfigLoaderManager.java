@@ -188,7 +188,7 @@ public class ConfigLoaderManager {
   }
 
   private String assemblePropertySourceName(ApolloConfig apolloConfig) {
-    return String.format("%d-%s-%s-%d", apolloConfig.getAppId(), apolloConfig.getCluster(),
+    return String.format("%s-%s-%s-%d", apolloConfig.getAppId(), apolloConfig.getCluster(),
         apolloConfig.getVersion(), apolloConfig.getReleaseId());
   }
 }

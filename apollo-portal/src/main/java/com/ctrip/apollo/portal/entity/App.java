@@ -16,7 +16,7 @@ public class App implements Serializable {
   private static final long serialVersionUID = 7348554309210401557L;
 
   @Id
-  private long appId;
+  private String appId;
 
   @Column(nullable = false)
   private String name;
@@ -37,11 +37,11 @@ public class App implements Serializable {
   private Date lastUpdatedTimestamp;
 
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

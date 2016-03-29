@@ -9,7 +9,7 @@ import java.util.List;
 
 public class AppConfigVO {
 
-  private long appId;
+  private String appId;
 
   private Env env;
 
@@ -46,7 +46,7 @@ public class AppConfigVO {
 
   }
 
-  public static AppConfigVO newInstance(long appId, long versionId) {
+  public static AppConfigVO newInstance(String appId, long versionId) {
     AppConfigVO instance = new AppConfigVO();
     instance.setAppId(appId);
     instance.setVersionId(versionId);
@@ -62,18 +62,18 @@ public class AppConfigVO {
 
   public static class OverrideAppConfig {
 
-    private long appId;
+    private String appId;
     private List<ConfigItemDTO> configs;
 
     public OverrideAppConfig() {
 
     }
 
-    public long getAppId() {
+    public String getAppId() {
       return appId;
     }
 
-    public void setAppId(long appId) {
+    public void setAppId(String appId) {
       this.appId = appId;
     }
 
@@ -120,11 +120,11 @@ public class AppConfigVO {
   }
 
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

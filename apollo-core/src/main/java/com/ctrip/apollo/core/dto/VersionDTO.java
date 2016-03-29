@@ -6,7 +6,7 @@ public class VersionDTO {
 
   private String name;
 
-  private long appId;
+  private String appId;
 
   private long releaseId;
 
@@ -32,11 +32,11 @@ public class VersionDTO {
     this.name = name;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

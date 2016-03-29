@@ -53,7 +53,7 @@ public class ConfigServiceImplTest {
 
   @Test
   public void testLoadConfig() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersionName";
     long someReleaseId = 1;
@@ -82,7 +82,7 @@ public class ConfigServiceImplTest {
 
   @Test
   public void testLoadConfigWithVersionNotFound() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersionName";
 
@@ -96,7 +96,7 @@ public class ConfigServiceImplTest {
 
   @Test
   public void testLoadConfigWithConfigNotFound() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersionName";
     long someReleaseId = 1;
@@ -114,7 +114,7 @@ public class ConfigServiceImplTest {
         .findByReleaseIdAndClusterName(someReleaseId, someClusterName);
   }
 
-  private Version assembleVersion(long appId, String versionName, long releaseId) {
+  private Version assembleVersion(String appId, String versionName, long releaseId) {
     Version version = new Version();
     version.setAppId(appId);
     version.setName(versionName);

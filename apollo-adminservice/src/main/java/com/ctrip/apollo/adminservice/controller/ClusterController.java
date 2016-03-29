@@ -18,7 +18,7 @@ public class ClusterController {
   private AdminConfigService adminConfigService;
 
   @RequestMapping("/app/{appId}")
-  public List<ClusterDTO> findClustersByApp(@PathVariable long appId) {
+  public List<ClusterDTO> findClustersByApp(@PathVariable String appId) {
     return adminConfigService.findClustersByApp(appId);
   }
 }

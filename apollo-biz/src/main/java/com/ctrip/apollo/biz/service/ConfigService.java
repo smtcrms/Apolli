@@ -12,12 +12,12 @@ public interface ConfigService {
   /**
    * Load configuration from database
    */
-  ApolloConfig loadConfig(long appId, String clusterName, String versionName);
+  ApolloConfig loadConfig(String appId, String clusterName, String versionName);
 
   /**
    * Load Version by appId and versionName from database
    */
-  Version loadVersionByAppIdAndVersionName(long appId, String versionName);
+  Version loadVersionByAppIdAndVersionName(String appId, String versionName);
 
   /**
    * Load Config by version and clusterName from database

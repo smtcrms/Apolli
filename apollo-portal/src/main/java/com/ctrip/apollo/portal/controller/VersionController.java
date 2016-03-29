@@ -19,7 +19,7 @@ public class VersionController {
   private VersionService versionService;
 
   @RequestMapping("/{appId}/{env}")
-  public List<VersionDTO> versions(@PathVariable long appId, @PathVariable String env) {
+  public List<VersionDTO> versions(@PathVariable String appId, @PathVariable String env) {
     return versionService.findVersionsByApp(Apollo.Env.DEV, appId);
   }
 }

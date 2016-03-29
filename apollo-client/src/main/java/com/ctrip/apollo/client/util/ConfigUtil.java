@@ -67,7 +67,7 @@ public class ConfigUtil {
               return null;
             }
             ApolloRegistry registry = new ApolloRegistry();
-            registry.setAppId(Long.parseLong(properties.getProperty(Constants.APP_ID)));
+            registry.setAppId(properties.getProperty(Constants.APP_ID));
             registry.setVersion(
                 properties.getProperty(Constants.VERSION, Constants.DEFAULT_VERSION_NAME));
             return registry;

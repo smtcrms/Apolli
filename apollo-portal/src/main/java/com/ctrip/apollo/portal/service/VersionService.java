@@ -17,7 +17,7 @@ public class VersionService {
   @Autowired
   private AdminServiceAPI.VersionAPI versionAPI;
 
-  public List<VersionDTO> findVersionsByApp(Apollo.Env env, long appId) {
+  public List<VersionDTO> findVersionsByApp(Apollo.Env env, String appId) {
     VersionDTO[] versions = versionAPI.getVersionsByApp(env, appId);
 
     if (versions == null || versions.length == 0){

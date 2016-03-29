@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface PrivilegeRepository extends PagingAndSortingRepository<Privilege, Long> {
 
-  List<Privilege> findByAppId(long appId);
+  List<Privilege> findByAppId(String appId);
 
-  List<Privilege> findByAppIdAndPrivilType(long appId, String privilType);
+  List<Privilege> findByAppIdAndPrivilType(String appId, String privilType);
 
-  Privilege findByAppIdAndNameAndPrivilType(long appId, String name, String privilType);
+  Privilege findByAppIdAndNameAndPrivilType(String appId, String name, String privilType);
 }

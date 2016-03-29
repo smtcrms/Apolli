@@ -1,5 +1,7 @@
 package com.ctrip.apollo.biz.service.impl;
 
+import com.google.common.base.Strings;
+
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.ConfigItem;
 import com.ctrip.apollo.biz.entity.ReleaseSnapshot;
@@ -50,8 +52,8 @@ public class AdminConfigServiceImpl implements AdminConfigService {
 
 
   @Override
-  public List<VersionDTO> findVersionsByApp(long appId) {
-    if (appId <= 0) {
+  public List<VersionDTO> findVersionsByApp(String appId) {
+    if (Strings.isNullOrEmpty(appId)) {
       return Collections.EMPTY_LIST;
     }
 
@@ -77,8 +79,8 @@ public class AdminConfigServiceImpl implements AdminConfigService {
   }
 
   @Override
-  public List<ClusterDTO> findClustersByApp(long appId) {
-    if (appId <= 0) {
+  public List<ClusterDTO> findClustersByApp(String appId) {
+    if (Strings.isNullOrEmpty(appId)) {
       return Collections.EMPTY_LIST;
     }
     List<Cluster> clusters = clusterRepository.findByAppId(appId);

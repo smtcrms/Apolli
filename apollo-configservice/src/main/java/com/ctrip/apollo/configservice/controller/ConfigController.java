@@ -25,7 +25,7 @@ public class ConfigController {
   private ConfigService configService;
 
   @RequestMapping(value = "/{appId}/{clusterName}/{versionName:.*}", method = RequestMethod.GET)
-  public ApolloConfig queryConfig(@PathVariable long appId,
+  public ApolloConfig queryConfig(@PathVariable String appId,
                                   @PathVariable String clusterName,
                                   @PathVariable String versionName,
                                   @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
@@ -33,7 +33,7 @@ public class ConfigController {
     Version version = configService.loadVersionByAppIdAndVersionName(appId, versionName);
     if (version == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
-          String.format("Could not load version with appId: %d, versionName: %s", appId,
+          String.format("Could not load version with appId: %s, versionName: %s", appId,
               versionName));
       return null;
     }
