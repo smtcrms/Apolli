@@ -24,14 +24,20 @@ public class ConfigController {
   public AppConfigVO detail(@PathVariable String appId, @PathVariable String env,
                             @PathVariable long versionId) {
 
-    if (Strings.isNullOrEmpty(appId)) {
+    if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(env)) {
       throw new NotFoundException();
     }
 
+    Apollo.Env e = Apollo.Env.valueOf(env);
+
     if (versionId == PortalConstants.LASTEST_VERSION_ID) {
-      return configService.loadLatestConfig(Apollo.Env.DEV, appId);
+
+      return configService.loadLatestConfig(e, appId);
+
     } else if (versionId > 0) {
-      return configService.loadReleaseConfig(Apollo.Env.DEV, appId, versionId);
+
+      return configService.loadReleaseConfig(e, appId, versionId);
+
     } else {
       throw new NotFoundException();
     }

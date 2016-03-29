@@ -1,11 +1,11 @@
 application_module.controller("AppConfigController",
     ['$scope', '$rootScope', '$state', '$location', 'toastr',
-        'AppService', 'ConfigService', 'VersionService',
-        function ($scope, $rootScope, $state, $location, toastr, AppService, ConfigService, VersionService) {
+        'AppService', 'EnvService', 'ConfigService', 'VersionService',
+        function ($scope, $rootScope, $state, $location, toastr, AppService, EnvService, ConfigService, VersionService) {
 
             var configLocation = {
                 appId: $rootScope.appId,
-                env: 'uat',
+                env: 'LOCAL',
                 versionId: -1
             };
 
@@ -15,7 +15,11 @@ application_module.controller("AppConfigController",
             $scope.configLocation = configLocation;
 
             /**env*/
-            $scope.envs = ['dev', 'fws', 'fat', 'uat', 'lpt', 'prod', 'tools'];
+            EnvService.getAllEnvs().then(function(result){
+                $scope.envs = result;
+            }, function(result){
+                toastr.error("加载环境信息失败", result);
+            });
 
             $scope.switchEnv = function (selectedEnv) {
                 configLocation.env = selectedEnv;
