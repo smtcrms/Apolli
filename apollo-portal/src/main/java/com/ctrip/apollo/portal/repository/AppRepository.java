@@ -10,5 +10,5 @@ public interface AppRepository extends PagingAndSortingRepository<App, String> {
 
   Page<App> findAll(Pageable pageable);
 
-  App findByAppId(long appId);
+  App findByAppId(String appId);
 }

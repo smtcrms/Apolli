@@ -23,7 +23,7 @@ public class Version {
   private String name;
 
   @Column(nullable = false)
-  private long appId;
+  private String appId;
 
   @Column(nullable = false)
   private long releaseId;
@@ -50,11 +50,11 @@ public class Version {
     this.name = name;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

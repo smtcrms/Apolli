@@ -17,7 +17,7 @@ public class ClientEnvironment {
 
   private static final Logger logger = LoggerFactory.getLogger(ClientEnvironment.class);
 
-  private static final String DEFAULT_FILE = "/apollo.properties";
+  private static final String DEFAULT_FILE = "apollo.properties";
 
   private AtomicReference<Env> env = new AtomicReference<Env>();
 

@@ -10,7 +10,7 @@ public class ConfigItemDTO {
 
   private String clusterName;
 
-  private long appId;
+  private String appId;
 
   private String key;
 
@@ -59,11 +59,11 @@ public class ConfigItemDTO {
     this.clusterName = clusterName;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

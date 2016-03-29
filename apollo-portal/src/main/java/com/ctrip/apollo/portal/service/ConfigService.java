@@ -24,6 +24,7 @@ import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 @Service
@@ -40,8 +41,9 @@ public class ConfigService {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  public AppConfigVO loadReleaseConfig(Env env, long appId, long versionId) {
-    if (appId <= 0 || versionId <= 0) {
+  public AppConfigVO loadReleaseConfig(Env env, String appId, long versionId) {
+
+    if (Strings.isNullOrEmpty(appId) || versionId <= 0) {
       return null;
     }
 
@@ -78,18 +80,18 @@ public class ConfigService {
     return version.getReleaseId();
   }
 
-  private void collectDefaultClusterConfigs(long appId, ReleaseSnapshotDTO snapShot,
+  private void collectDefaultClusterConfigs(String appId, ReleaseSnapshotDTO snapShot,
                                             AppConfigVO appConfigVO) {
 
-    Map<Long, List<ConfigItemDTO>> groupedConfigs = groupConfigsByApp(snapShot.getConfigurations());
+    Map<String, List<ConfigItemDTO>> groupedConfigs = groupConfigsByApp(snapShot.getConfigurations());
 
     List<AppConfigVO.OverrideAppConfig> overrideAppConfigs = appConfigVO.getOverrideAppConfigs();
 
-    for (Map.Entry<Long, List<ConfigItemDTO>> entry : groupedConfigs.entrySet()) {
-      long configAppId = entry.getKey();
+    for (Map.Entry<String, List<ConfigItemDTO>> entry : groupedConfigs.entrySet()) {
+      String configAppId = entry.getKey();
       List<ConfigItemDTO> kvs = entry.getValue();
 
-      if (configAppId == appId) {
+      if (configAppId.equals(appId)) {
         appConfigVO.setDefaultClusterConfigs(kvs);
       } else {
 
@@ -105,12 +107,12 @@ public class ConfigService {
   /**
    * appId -> List<KV>
    */
-  private Map<Long, List<ConfigItemDTO>> groupConfigsByApp(String configJson) {
+  private Map<String, List<ConfigItemDTO>> groupConfigsByApp(String configJson) {
     if (configJson == null || "".equals(configJson)) {
       return Maps.newHashMap();
     }
 
-    Map<Long, List<ConfigItemDTO>> appIdMapKVs = new HashMap<>();
+    Map<String, List<ConfigItemDTO>> appIdMapKVs = new HashMap<>();
 
     String key;
     Object value;
@@ -124,7 +126,7 @@ public class ConfigService {
       key = entry.getKey();
       value = entry.getValue();
 
-      Long appId = getAppIdFromKey(key);
+      String appId = getAppIdFromKey(key);
       List<ConfigItemDTO> kvs = appIdMapKVs.get(appId);
       if (kvs == null) {
         kvs = new LinkedList<>();
@@ -137,11 +139,11 @@ public class ConfigService {
 
   }
 
-  private Long getAppIdFromKey(String key) {
-    return Long.valueOf(key.substring(0, key.indexOf(".")));
+  private String getAppIdFromKey(String key) {
+    return key.substring(0, key.indexOf("."));
   }
 
-  private void collectSpecialClusterConfigs(long appId, ReleaseSnapshotDTO snapShot,
+  private void collectSpecialClusterConfigs(String appId, ReleaseSnapshotDTO snapShot,
                                             AppConfigVO appConfigVO) {
     List<AppConfigVO.OverrideClusterConfig> overrideClusterConfigs =
         appConfigVO.getOverrideClusterConfigs();
@@ -153,8 +155,8 @@ public class ConfigService {
     overrideClusterConfigs.add(overrideClusterConfig);
   }
 
-  public AppConfigVO loadLatestConfig(Env env, long appId) {
-    if (appId <= 0) {
+  public AppConfigVO loadLatestConfig(Env env, String appId) {
+    if (Strings.isNullOrEmpty(appId)) {
       return null;
     }
 
@@ -173,7 +175,7 @@ public class ConfigService {
     return buildAPPConfigVO(appId, Arrays.asList(configItems));
   }
 
-  private AppConfigVO buildAPPConfigVO(long appId, List<ConfigItemDTO> configItems) {
+  private AppConfigVO buildAPPConfigVO(String appId, List<ConfigItemDTO> configItems) {
     if (configItems == null || configItems.size() == 0) {
       return null;
     }
@@ -206,7 +208,7 @@ public class ConfigService {
 
   private void groupConfigByAppAndEnrichDTO(Map<String, List<ConfigItemDTO>> groupedClusterConfigs,
                                             AppConfigVO appConfigVO) {
-    long appId = appConfigVO.getAppId();
+    String appId = appConfigVO.getAppId();
 
     List<ConfigItemDTO> defaultClusterConfigs = appConfigVO.getDefaultClusterConfigs();
 
@@ -232,14 +234,14 @@ public class ConfigService {
     }
   }
 
-  private void collectDefaultClusterConfigs(long appId, List<ConfigItemDTO> clusterConfigs,
+  private void collectDefaultClusterConfigs(String appId, List<ConfigItemDTO> clusterConfigs,
                                             List<ConfigItemDTO> defaultClusterConfigs,
                                             List<AppConfigVO.OverrideAppConfig> overrideAppConfigs) {
 
-    Map<Long, AppConfigVO.OverrideAppConfig> appIdMapOverrideAppConfig = null;
+    Map<String, AppConfigVO.OverrideAppConfig> appIdMapOverrideAppConfig = null;
 
     for (ConfigItemDTO config : clusterConfigs) {
-      long targetAppId = config.getAppId();
+      String targetAppId = config.getAppId();
       if (appId == targetAppId) {// app self's configs
         defaultClusterConfigs.add(config);
       } else {// override other app configs

@@ -18,7 +18,7 @@ public class VersionController {
   private AdminConfigService adminConfigService;
 
   @RequestMapping("/app/{appId}")
-  public List<VersionDTO> versions(@PathVariable long appId) {
+  public List<VersionDTO> versions(@PathVariable String appId) {
 
     return adminConfigService.findVersionsByApp(appId);
   }

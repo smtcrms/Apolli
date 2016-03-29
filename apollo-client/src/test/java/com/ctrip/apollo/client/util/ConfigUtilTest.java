@@ -60,7 +60,7 @@ public class ConfigUtilTest {
 
     ApolloRegistry apolloRegistry = apolloRegistries.get(0);
     assertEquals(1, apolloRegistries.size());
-    assertEquals(Long.parseLong(someAppId), apolloRegistry.getAppId());
+    assertEquals(someAppId, apolloRegistry.getAppId());
     assertEquals(someVersionId, apolloRegistry.getVersion());
   }
 

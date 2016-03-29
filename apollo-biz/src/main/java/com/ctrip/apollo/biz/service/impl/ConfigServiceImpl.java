@@ -33,7 +33,7 @@ public class ConfigServiceImpl implements ConfigService {
       };
 
   @Override
-  public ApolloConfig loadConfig(long appId, String clusterName, String versionName) {
+  public ApolloConfig loadConfig(String appId, String clusterName, String versionName) {
     Version version = loadVersionByAppIdAndVersionName(appId, versionName);
     if (version == null) {
       return null;
@@ -43,7 +43,7 @@ public class ConfigServiceImpl implements ConfigService {
   }
 
   @Override
-  public Version loadVersionByAppIdAndVersionName(long appId, String versionName) {
+  public Version loadVersionByAppIdAndVersionName(String appId, String versionName) {
     return versionRepository.findByAppIdAndName(appId, versionName);
   }
 

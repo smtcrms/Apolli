@@ -14,11 +14,11 @@ public interface AdminConfigService {
 
   List<ReleaseSnapshotDTO> findReleaseSnapshotByReleaseId(long releaseId);
 
-  List<VersionDTO> findVersionsByApp(long appId);
+  List<VersionDTO> findVersionsByApp(String appId);
 
   VersionDTO loadVersionById(long versionId);
 
-  List<ClusterDTO> findClustersByApp(long appId);
+  List<ClusterDTO> findClustersByApp(String appId);
 
   List<ConfigItemDTO> findConfigItemsByClusters(List<Long> clusterIds);
 

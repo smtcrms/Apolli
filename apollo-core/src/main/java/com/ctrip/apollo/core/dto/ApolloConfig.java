@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ApolloConfig implements Comparable<ApolloConfig> {
 
-  private long appId;
+  private String appId;
 
   private String cluster;
 
@@ -25,7 +25,7 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
   private int order;
 
   @JsonCreator
-  public ApolloConfig(@JsonProperty("appId") long appId,
+  public ApolloConfig(@JsonProperty("appId") String appId,
                       @JsonProperty("cluster") String cluster,
                       @JsonProperty("version") String version,
                       @JsonProperty("releaseId") long releaseId) {
@@ -44,7 +44,7 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
     this.configurations = configurations;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 

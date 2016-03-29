@@ -3,7 +3,6 @@ package com.ctrip.apollo.portal.service;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +62,7 @@ public class ConfigServiceTest {
 
   @Test
   public void testLoadReleaseConfig() {
-    long appId = 6666;
+    String appId = "6666";
     long versionId = 100;
     long releaseId = 11111;
 
@@ -84,7 +83,7 @@ public class ConfigServiceTest {
 
   @Test
   public void testLoadReleaseConfigOnlyDefaultConfigs() {
-    long appId = 6666;
+    String appId = "6666";
     long versionId = 100;
     long releaseId = 11111;
 
@@ -107,7 +106,7 @@ public class ConfigServiceTest {
 
   @Test
   public void testLoadReleaseConfigDefaultConfigsAndOverrideApp() {
-    long appId = 6666;
+    String appId = "6666";
     long versionId = 100;
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
@@ -129,7 +128,7 @@ public class ConfigServiceTest {
 
   @Test
   public void testLoadReleaseConfigDefaultConfigsAndOverrideCluster() {
-    long appId = 6666;
+    String appId = "6666";
     long versionId = 100;
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
@@ -153,7 +152,7 @@ public class ConfigServiceTest {
 
   @Test
   public void testLoadLastestConfig() {
-    long appId = 6666;
+    String appId = "6666";
     ClusterDTO[] someClusters = assembleClusters();
     ConfigItemDTO[] someConfigItem = assembleConfigItems();
 
@@ -163,14 +162,14 @@ public class ConfigServiceTest {
 
     AppConfigVO appConfigVO = configService.loadLatestConfig(Env.DEV, appId);
 
-    assertEquals(appConfigVO.getAppId(), 6666);
+    assertEquals(appConfigVO.getAppId(), "6666");
     assertEquals(appConfigVO.getVersionId(), PortalConstants.LASTEST_VERSION_ID);
     assertEquals(appConfigVO.getDefaultClusterConfigs().size(), 3);
     assertEquals(appConfigVO.getOverrideAppConfigs().size(), 1);
     assertEquals(appConfigVO.getOverrideClusterConfigs().size(), 1);
   }
 
-  private VersionDTO assembleVersion(long appId, String versionName, long releaseId) {
+  private VersionDTO assembleVersion(String appId, String versionName, long releaseId) {
     VersionDTO version = new VersionDTO();
     version.setAppId(appId);
     version.setName(versionName);
@@ -198,12 +197,12 @@ public class ConfigServiceTest {
 
   private ClusterDTO[] assembleClusters() {
     ClusterDTO[] clusters = new ClusterDTO[2];
-    clusters[0] = assembleCluster(100, 6666, Constants.DEFAULT_CLUSTER_NAME);
-    clusters[1] = assembleCluster(101, 6666, "cluster1");
+    clusters[0] = assembleCluster(100, "6666", Constants.DEFAULT_CLUSTER_NAME);
+    clusters[1] = assembleCluster(101, "6666", "cluster1");
     return clusters;
   }
 
-  private ClusterDTO assembleCluster(long id, long appId, String name) {
+  private ClusterDTO assembleCluster(long id, String appId, String name) {
     ClusterDTO cluster = new ClusterDTO();
     cluster.setAppId(appId);
     cluster.setId(id);
@@ -213,19 +212,15 @@ public class ConfigServiceTest {
 
   private ConfigItemDTO[] assembleConfigItems() {
     ConfigItemDTO[] configItems = new ConfigItemDTO[5];
-    configItems[0] =
-        assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, 6666, "6666.k1", "6666.v1");
-    configItems[1] =
-        assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, 6666, "6666.k2", "6666.v2");
-    configItems[2] =
-        assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, 6666, "6666.k3", "6666.v3");
-    configItems[3] =
-        assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, 5555, "5555.k1", "5555.v1");
-    configItems[4] = assembleConfigItem(101, "cluster1", 6666, "6666.k1", "6666.v1");
+    configItems[0] = assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, "6666", "6666.k1", "6666.v1");
+    configItems[1] = assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, "6666", "6666.k2", "6666.v2");
+    configItems[2] = assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, "6666", "6666.k3", "6666.v3");
+    configItems[3] = assembleConfigItem(100, Constants.DEFAULT_CLUSTER_NAME, "5555", "5555.k1", "5555.v1");
+    configItems[4] = assembleConfigItem(101, "cluster1", "6666", "6666.k1", "6666.v1");
     return configItems;
   }
 
-  private ConfigItemDTO assembleConfigItem(long clusterId, String clusterName, int appId,
+  private ConfigItemDTO assembleConfigItem(long clusterId, String clusterName, String appId,
                                            String key, String value) {
     ConfigItemDTO configItem = new ConfigItemDTO();
     configItem.setClusterName(clusterName);

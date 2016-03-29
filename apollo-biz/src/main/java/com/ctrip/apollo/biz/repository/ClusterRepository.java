@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface ClusterRepository extends PagingAndSortingRepository<Cluster, Long> {
 
-  List<Cluster> findByAppId(long appId);
+  List<Cluster> findByAppId(String appId);
 
 }

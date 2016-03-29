@@ -1,5 +1,7 @@
 package com.ctrip.apollo.portal.controller;
 
+import com.google.common.base.Strings;
+
 import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.portal.constants.PortalConstants;
 import com.ctrip.apollo.portal.entity.AppConfigVO;
@@ -19,10 +21,10 @@ public class ConfigController {
   private ConfigService configService;
 
   @RequestMapping("/{appId}/{env}/{versionId}")
-  public AppConfigVO detail(@PathVariable long appId, @PathVariable String env,
+  public AppConfigVO detail(@PathVariable String appId, @PathVariable String env,
                             @PathVariable long versionId) {
 
-    if (appId <= 0) {
+    if (Strings.isNullOrEmpty(appId)) {
       throw new NotFoundException();
     }
 

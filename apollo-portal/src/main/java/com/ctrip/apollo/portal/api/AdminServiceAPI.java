@@ -1,5 +1,7 @@
 package com.ctrip.apollo.portal.api;
 
+import com.google.common.base.Strings;
+
 import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ConfigItemDTO;
@@ -45,8 +47,8 @@ public class AdminServiceAPI {
 
     public static String CLUSTER_APP_API = "/cluster/app/";
 
-    public ClusterDTO[] getClustersByApp(Apollo.Env env, long appId) {
-      if (appId <= 0) {
+    public ClusterDTO[] getClustersByApp(Apollo.Env env, String appId) {
+      if (Strings.isNullOrEmpty(appId)) {
         return null;
       }
 
@@ -68,8 +70,8 @@ public class AdminServiceAPI {
       return restTemplate.getForObject(getAdminServiceHost(env) + VERSION_API + versionId, VersionDTO.class);
     }
 
-    public VersionDTO[] getVersionsByApp(Apollo.Env env, long appId){
-      if (appId <= 0){
+    public VersionDTO[] getVersionsByApp(Apollo.Env env, String appId){
+      if (Strings.isNullOrEmpty(appId)){
         return null;
       }
       return restTemplate.getForObject(getAdminServiceHost(env) + VERSION_APP_API + appId,

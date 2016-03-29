@@ -10,9 +10,9 @@ import java.util.List;
  * @author Jason Song(song_s@ctrip.com)
  */
 public interface VersionRepository extends PagingAndSortingRepository<Version, Long> {
-  Version findByAppIdAndName(long appId, String name);
+  Version findByAppIdAndName(String appId, String name);
 
   Version findById(long id);
 
-  List<Version> findByAppId(long appId);
+  List<Version> findByAppId(String appId);
 }

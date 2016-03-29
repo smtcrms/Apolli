@@ -40,7 +40,7 @@ public class RemoteConfigLoader extends AbstractConfigLoader {
 
   ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri, String cluster,
                                ApolloRegistry apolloRegistry, ApolloConfig previousConfig) {
-    long appId = apolloRegistry.getAppId();
+    String appId = apolloRegistry.getAppId();
     String version = apolloRegistry.getVersion();
 
     logger.info("Loading config from {}, appId={}, cluster={}, version={}", uri, appId, cluster,

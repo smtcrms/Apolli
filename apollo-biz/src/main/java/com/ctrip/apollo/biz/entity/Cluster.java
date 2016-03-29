@@ -25,7 +25,7 @@ public class Cluster {
   private String name;
 
   @Column(nullable = false)
-  private long appId;
+  private String appId;
 
   private boolean isDeleted;
 
@@ -48,11 +48,11 @@ public class Cluster {
     this.name = name;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

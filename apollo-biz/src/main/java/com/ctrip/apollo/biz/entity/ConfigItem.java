@@ -26,7 +26,7 @@ public class ConfigItem {
   private String clusterName;
 
   @Column(nullable = false)
-  private long appId;
+  private String appId;
 
   @Column(nullable = false)
   private String key;
@@ -76,11 +76,11 @@ public class ConfigItem {
     this.clusterName = clusterName;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

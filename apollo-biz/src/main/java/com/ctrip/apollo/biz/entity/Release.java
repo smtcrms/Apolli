@@ -19,7 +19,7 @@ public class Release {
   private long id;
 
   private String name;
-  private long appId;
+  private String appId;
   private String comment;
   private boolean isDeleted;
 
@@ -42,11 +42,11 @@ public class Release {
     this.name = name;
   }
 
-  public long getAppId() {
+  public String getAppId() {
     return appId;
   }
 
-  public void setAppId(long appId) {
+  public void setAppId(String appId) {
     this.appId = appId;
   }
 

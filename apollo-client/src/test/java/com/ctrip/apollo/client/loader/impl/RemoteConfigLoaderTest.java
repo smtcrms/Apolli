@@ -56,7 +56,7 @@ public class RemoteConfigLoaderTest {
     String someServerUrl = "http://someUrl";
     String someCluster = "some cluster";
     ApolloConfig apolloConfig = mock(ApolloConfig.class);
-    long someAppId = 1;
+    String someAppId = "1";
     ApolloRegistry apolloRegistry = assembleSomeApolloRegistry(someAppId, "someVersion");
     ApolloConfig previousConfig = null;
 
@@ -76,7 +76,7 @@ public class RemoteConfigLoaderTest {
 
   @Test
   public void testGetRemoteConfig() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someServerUrl = "http://someServer";
     String someClusterName = "someCluster";
     String someVersionName = "someVersion";
@@ -100,7 +100,7 @@ public class RemoteConfigLoaderTest {
 
   @Test(expected = RuntimeException.class)
   public void testGetRemoteConfigWithServerError() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someServerUrl = "http://someServer";
     String someClusterName = "someCluster";
     String someVersionName = "someVersion";
@@ -118,7 +118,7 @@ public class RemoteConfigLoaderTest {
 
   @Test
   public void testGetRemoteConfigWith304Response() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someServerUrl = "http://someServer";
     String someClusterName = "someCluster";
     String someVersionName = "someVersion";
@@ -138,7 +138,7 @@ public class RemoteConfigLoaderTest {
     assertNull(result);
   }
 
-  private ApolloRegistry assembleSomeApolloRegistry(long someAppId, String someVersion) {
+  private ApolloRegistry assembleSomeApolloRegistry(String someAppId, String someVersion) {
     ApolloRegistry someApolloRegistry = new ApolloRegistry();
     someApolloRegistry.setAppId(someAppId);
     someApolloRegistry.setVersion(someVersion);

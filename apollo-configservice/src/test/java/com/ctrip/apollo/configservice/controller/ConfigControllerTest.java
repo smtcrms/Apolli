@@ -42,7 +42,7 @@ public class ConfigControllerTest {
   @Test
   public void testQueryConfig() throws Exception {
     ApolloConfig someApolloConfig = mock(ApolloConfig.class);
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
@@ -69,7 +69,7 @@ public class ConfigControllerTest {
 
   @Test
   public void testQueryConfigWithVersionNotFound() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
@@ -90,7 +90,7 @@ public class ConfigControllerTest {
 
   @Test
   public void testQueryConfigWithApolloConfigNotFound() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
@@ -116,7 +116,7 @@ public class ConfigControllerTest {
 
   @Test
   public void testQueryConfigWithApolloConfigNotModified() throws Exception {
-    long someAppId = 1;
+    String someAppId = "1";
     String someClusterName = "someClusterName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
