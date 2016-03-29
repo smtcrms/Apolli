@@ -19,20 +19,20 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>Apollo Demo - Checkstyle report</title>
-    <link>http://maven.apache.org</link>
-    <description>Apollo Demo - Checkstyle report</description>
+    <title>Apollo BuildTools - Checkstyle report</title>
+    <link>https://ctripcorp.github.io/apollo/apollo-buildtools</link>
+    <description>Apollo BuildTools - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 9,
+      <title>File: 0,
              Errors: 0,
-             Warnings: 2,
+             Warnings: 0,
              Infos: 0
       </title>
-            <link>http://maven.apache.org/checkstyle.html</link>
+            <link>https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html</link>
       <description>
-        <p>Click <a href="http://maven.apache.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -44,132 +44,6 @@ under the License.
             </tr>
           </thead>
           <tbody>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.controller.DemoController.java">com/ctrip/apollo/demo/controller/DemoController.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#application.properties">application.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.service.DemoService.java">com/ctrip/apollo/demo/service/DemoService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.AppConfig.java">com/ctrip/apollo/demo/AppConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#apollo.properties">apollo.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.exception.RestExceptionHandler.java">com/ctrip/apollo/demo/exception/RestExceptionHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.WebConfig.java">com/ctrip/apollo/demo/WebConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.model.ErrorResult.java">com/ctrip/apollo/demo/model/ErrorResult.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.model.Config.java">com/ctrip/apollo/demo/model/Config.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
                       </tbody>
         </table>
         
