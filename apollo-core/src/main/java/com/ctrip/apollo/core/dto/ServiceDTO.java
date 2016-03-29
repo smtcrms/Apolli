@@ -1,6 +1,6 @@
-package com.ctrip.apollo.core.serivce;
+package com.ctrip.apollo.core.dto;
 
-public class ApolloService {
+public class ServiceDTO {
 
   private String appName;
 

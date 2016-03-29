@@ -1,6 +1,6 @@
 package com.ctrip.apollo.metaservice.controller;
 
-import com.ctrip.apollo.core.serivce.ApolloService;
+import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.metaservice.service.DiscoveryService;
 import com.netflix.appinfo.InstanceInfo;
 
@@ -20,11 +20,11 @@ public class ServiceController {
 
 
   @RequestMapping("/meta")
-  public List<ApolloService> getMetaService() {
+  public List<ServiceDTO> getMetaService() {
     List<InstanceInfo> instances = discoveryService.getMetaServiceInstances();
-    List<ApolloService> result = new ArrayList<ApolloService>();
+    List<ServiceDTO> result = new ArrayList<ServiceDTO>();
     for (InstanceInfo instance : instances) {
-      ApolloService service = new ApolloService();
+      ServiceDTO service = new ServiceDTO();
       service.setAppName(instance.getAppName());
       service.setInstanceId(instance.getInstanceId());
       service.setHomepageUrl(instance.getHomePageUrl());
@@ -34,11 +34,11 @@ public class ServiceController {
   }
 
   @RequestMapping("/config")
-  public List<ApolloService> getConfigService() {
+  public List<ServiceDTO> getConfigService() {
     List<InstanceInfo> instances = discoveryService.getConfigServiceInstances();
-    List<ApolloService> result = new ArrayList<ApolloService>();
+    List<ServiceDTO> result = new ArrayList<ServiceDTO>();
     for (InstanceInfo instance : instances) {
-      ApolloService service = new ApolloService();
+      ServiceDTO service = new ServiceDTO();
       service.setAppName(instance.getAppName());
       service.setInstanceId(instance.getInstanceId());
       service.setHomepageUrl(instance.getHomePageUrl());
@@ -48,11 +48,11 @@ public class ServiceController {
   }
 
   @RequestMapping("/admin")
-  public List<ApolloService> getAdminService() {
+  public List<ServiceDTO> getAdminService() {
     List<InstanceInfo> instances = discoveryService.getAdminServiceInstances();
-    List<ApolloService> result = new ArrayList<ApolloService>();
+    List<ServiceDTO> result = new ArrayList<ServiceDTO>();
     for (InstanceInfo instance : instances) {
-      ApolloService service = new ApolloService();
+      ServiceDTO service = new ServiceDTO();
       service.setAppName(instance.getAppName());
       service.setInstanceId(instance.getInstanceId());
       service.setHomepageUrl(instance.getHomePageUrl());

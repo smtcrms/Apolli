@@ -1,12 +1,12 @@
 package com.ctrip.apollo.core;
 
-public class ServiceNameConsts {
+public interface ServiceNameConsts {
 
-  public static final String APOLLO_METASERVICE = "apollo-metaservice";
+  final String APOLLO_METASERVICE = "apollo-metaservice";
 
-  public static final String APOLLO_CONFIGSERVICE = "apollo-configservice";
+  final String APOLLO_CONFIGSERVICE = "apollo-configservice";
 
-  public static final String APOLLO_ADMINSERVICE = "apollo-adminservice";
+  final String APOLLO_ADMINSERVICE = "apollo-adminservice";
 
-  public static final String APOLLO_PORTAL = "apollo-portal";
+  final String APOLLO_PORTAL = "apollo-portal";
 }

@@ -1,6 +1,6 @@
 package com.ctrip.apollo.core;
 
-public interface Constants {
+public interface ConfigConsts {
 
   String DEFAULT_CLUSTER_NAME = "default";
 
