@@ -24,8 +24,9 @@ public class VersionController {
   @RequestMapping("/{appId}/{env}")
   public List<VersionDTO> versions(@PathVariable String appId, @PathVariable String env) {
 
-    if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(env)){
-      return Collections.EMPTY_LIST;
+    if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(env)) {
+      throw new IllegalArgumentException(
+          String.format("app id and env can not be empty. app id:%s , env:%s", appId, env));
     }
 
     return versionService.findVersionsByApp(Apollo.Env.valueOf(env), appId);

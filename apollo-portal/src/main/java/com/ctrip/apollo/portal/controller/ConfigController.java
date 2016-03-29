@@ -25,7 +25,8 @@ public class ConfigController {
                             @PathVariable long versionId) {
 
     if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(env)) {
-      throw new NotFoundException();
+      throw new IllegalArgumentException(
+          String.format("app id and env can not be empty. app id:%s , env:%s", appId, env));
     }
 
     Apollo.Env e = Apollo.Env.valueOf(env);
