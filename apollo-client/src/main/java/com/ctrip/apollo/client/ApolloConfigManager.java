@@ -31,7 +31,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Client side config manager
+ * Apollo Config for Spring Application
+ * Requires Spring 3.1+
  *
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -57,7 +58,7 @@ public class ApolloConfigManager
     this.configLoaderManager = ConfigLoaderFactory.getInstance().getConfigLoaderManager();
     this.configUtil = ConfigUtil.getInstance();
     executorService =
-        Executors.newScheduledThreadPool(1, ApolloThreadFactory.create("ConfigManager", true));
+        Executors.newScheduledThreadPool(1, ApolloThreadFactory.create("ApolloConfigManager", true));
   }
 
   @Override
@@ -135,6 +136,8 @@ public class ApolloConfigManager
   }
 
   void schedulePeriodicRefresh() {
+    logger.info("Schedule periodic refresh with interval: {} {}",
+        configUtil.getRefreshInterval(), configUtil.getRefreshTimeUnit());
     executorService.scheduleAtFixedRate(new Runnable() {
       @Override
       public void run() {

@@ -11,7 +11,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     ApolloConfigManagerTest.class, ConfigLoaderManagerTest.class, RemoteConfigLoaderTest.class,
-    ConfigUtilTest.class
+    ConfigUtilTest.class, ApolloEnvironmentTest.class, ApolloEnvironmentManagerTest.class
 })
 public class AllTests {
 

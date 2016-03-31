@@ -1,61 +1,56 @@
-<?xml version="1.0"  encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>com.ctrip.apollo</groupId>
         <artifactId>apollo</artifactId>
+        <groupId>com.ctrip.apollo</groupId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>apollo-client</artifactId>
-    <name>Apollo Client</name>
-    <properties>
-        <java.version>1.7</java.version>
-    </properties>
+    <artifactId>apollo-spring-demo</artifactId>
+    <packaging>war</packaging>
+    <name>Apollo Spring Demo</name>
+    <url>http://maven.apache.org</url>
     <dependencies>
-        <!-- apollo -->
         <dependency>
             <groupId>com.ctrip.apollo</groupId>
-            <artifactId>apollo-core</artifactId>
+            <artifactId>apollo-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
-        <!-- end of apollo -->
-        <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <artifactId>spring-webmvc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-context</artifactId>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>4.0.4</version>
         </dependency>
-        <!-- end of spring -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
         </dependency>
-        <!-- end of util -->
-        <!-- test -->
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <scope>test</scope>
         </dependency>
-        <!-- end of test -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
     </dependencies>
+    <build>
+        <finalName>apollo-spring-demo</finalName>
+    </build>
 </project>
