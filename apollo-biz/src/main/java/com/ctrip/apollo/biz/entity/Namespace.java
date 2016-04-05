@@ -4,43 +4,29 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
 @Entity
-public class Release  extends BaseEntity{
+public class Namespace extends BaseEntity{
+
   @Id
   @GeneratedValue
   private long id;
 
   @Column(nullable = false)
   private String name;
-  
+
   @Column(nullable = false)
-  private long groupId;
-  
-  @Column(nullable = false)
-  @Lob
-  private String configurations;
-  
-  @Column(nullable = false)
+  private String appId;
+
+  @Column
   private String comment;
 
-  public Release() {
-  }
-
-  public long getGroupId() {
-    return groupId;
+  public String getAppId() {
+    return appId;
   }
 
   public String getComment() {
     return comment;
-  }
-
-  public String getConfigurations() {
-    return configurations;
   }
 
   public long getId() {
@@ -51,16 +37,12 @@ public class Release  extends BaseEntity{
     return name;
   }
 
-  public void setGroupId(long groupId) {
-    this.groupId = groupId;
+  public void setAppId(String appId) {
+    this.appId = appId;
   }
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public void setConfigurations(String configurations) {
-    this.configurations = configurations;
   }
 
   public void setId(long id) {
@@ -70,4 +52,5 @@ public class Release  extends BaseEntity{
   public void setName(String name) {
     this.name = name;
   }
+
 }

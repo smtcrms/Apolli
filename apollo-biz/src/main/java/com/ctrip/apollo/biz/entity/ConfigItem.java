@@ -1,32 +1,19 @@
 package com.ctrip.apollo.biz.entity;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-@Where(clause = "isDeleted = 0")
-@SQLDelete(sql = "Update ConfigItem set isDeleted = 1 where id = ?")
-public class ConfigItem {
+public class ConfigItem  extends BaseEntity {
 
   @Id
   @GeneratedValue
   private long id;
 
   @Column(nullable = false)
-  private long clusterId;
-
-  @Column(nullable = false)
-  private String clusterName;
-
-  @Column(nullable = false)
-  private String appId;
+  private long groupId;
 
   @Column(nullable = false)
   private String key;
@@ -37,21 +24,6 @@ public class ConfigItem {
   @Column
   private String comment;
 
-  @Column(name = "DataChange_CreatedBy")
-  private String dataChangeCreatedBy;
-
-  @Column(name = "DataChange_CreatedTime")
-  private Date dataChangeCreatedTime;
-
-  @Column(name = "DataChange_LastModifiedBy")
-  private String dataChangeLastModifiedBy;
-
-  @Column(name = "DataChange_LastTime")
-  private Date dataChangeLastModifiedTime;
-
-  @Column
-  private boolean IsDeleted;
-
   public long getId() {
     return id;
   }
@@ -60,28 +32,12 @@ public class ConfigItem {
     this.id = id;
   }
 
-  public long getClusterId() {
-    return clusterId;
+  public long getGroupId() {
+    return groupId;
   }
 
-  public void setClusterId(long clusterId) {
-    this.clusterId = clusterId;
-  }
-
-  public String getClusterName() {
-    return clusterName;
-  }
-
-  public void setClusterName(String clusterName) {
-    this.clusterName = clusterName;
-  }
-
-  public String getAppId() {
-    return appId;
-  }
-
-  public void setAppId(String appId) {
-    this.appId = appId;
+  public void setGroupId(long groupId) {
+    this.groupId = groupId;
   }
 
   public String getKey() {
@@ -106,46 +62,6 @@ public class ConfigItem {
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public String getDataChangeCreatedBy() {
-    return dataChangeCreatedBy;
-  }
-
-  public void setDataChangeCreatedBy(String dataChangeCreatedBy) {
-    this.dataChangeCreatedBy = dataChangeCreatedBy;
-  }
-
-  public Date getDataChangeCreatedTime() {
-    return dataChangeCreatedTime;
-  }
-
-  public void setDataChangeCreatedTime(Date dataChangeCreatedTime) {
-    this.dataChangeCreatedTime = dataChangeCreatedTime;
-  }
-
-  public String getDataChangeLastModifiedBy() {
-    return dataChangeLastModifiedBy;
-  }
-
-  public void setDataChangeLastModifiedBy(String dataChangeLastModifiedBy) {
-    this.dataChangeLastModifiedBy = dataChangeLastModifiedBy;
-  }
-
-  public boolean isDeleted() {
-    return IsDeleted;
-  }
-
-  public void setDeleted(boolean isDeleted) {
-    IsDeleted = isDeleted;
-  }
-
-  public Date getDataChangeLastModifiedTime() {
-    return dataChangeLastModifiedTime;
-  }
-
-  public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
-    this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
 
 }

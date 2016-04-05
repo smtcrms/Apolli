@@ -1,7 +1,6 @@
 package com.ctrip.apollo.biz.entity;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +11,7 @@ import javax.persistence.Id;
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@Where(clause = "isDeleted = 0")
-@SQLDelete(sql = "Update Version set isDeleted = 1 where id = ?")
-public class Version {
+public class Version extends BaseEntity {
   @Id
   @GeneratedValue
   private long id;
@@ -23,63 +20,54 @@ public class Version {
   private String name;
 
   @Column(nullable = false)
-  private String appId;
+  private String clusterId;
 
-  @Column(nullable = false)
-  private long releaseId;
-  //parent version could be null
+  // parent version could be null
+  @Column
   private Long parentVersion;
-  private boolean isDeleted;
 
-  public Version() {
+  private List<Release> releases;
+
+  public Version() {}
+
+  public String getClusterId() {
+    return clusterId;
   }
 
   public long getId() {
     return id;
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
   public String getName() {
     return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getAppId() {
-    return appId;
-  }
-
-  public void setAppId(String appId) {
-    this.appId = appId;
-  }
-
-  public long getReleaseId() {
-    return releaseId;
-  }
-
-  public void setReleaseId(long releaseId) {
-    this.releaseId = releaseId;
-  }
-
-  public boolean isDeleted() {
-    return isDeleted;
-  }
-
-  public void setDeleted(boolean deleted) {
-    isDeleted = deleted;
   }
 
   public Long getParentVersion() {
     return parentVersion;
   }
 
+  public List<Release> getReleases() {
+    return releases;
+  }
+
+  public void setClusterId(String clusterId) {
+    this.clusterId = clusterId;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public void setParentVersion(Long parentVersion) {
     this.parentVersion = parentVersion;
+  }
+
+  public void setReleases(List<Release> releases) {
+    this.releases = releases;
   }
 
 }
