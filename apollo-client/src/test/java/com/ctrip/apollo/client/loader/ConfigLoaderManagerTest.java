@@ -197,10 +197,11 @@ public class ConfigLoaderManagerTest {
 
   ApolloConfig assembleApolloConfig(String appId, Map<String, Object> configurations) {
     String someCluster = "someCluster";
+    String someGroup = "someGroup";
     String someVersion = "someVersion";
     long someReleaseId = 1;
 
-    ApolloConfig config = new ApolloConfig(appId, someCluster, someVersion, someReleaseId);
+    ApolloConfig config = new ApolloConfig(appId, someCluster, someGroup, someVersion, someReleaseId);
 
     config.setConfigurations(configurations);
 

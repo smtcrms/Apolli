@@ -1,21 +1,13 @@
-package com.ctrip.apollo.biz.entity;
+package com.ctrip.apollo.core.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+public class AppDTO {
 
-@Entity
-public class App extends BaseEntity {
-
-  @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
   private String appId;
 
-  @Column(nullable = false)
   private String ownerName;
 
-  @Column(nullable = false)
   private String ownerEmail;
 
   public String getAppId() {

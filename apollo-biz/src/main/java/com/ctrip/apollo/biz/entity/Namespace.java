@@ -2,15 +2,9 @@ package com.ctrip.apollo.biz.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 @Entity
 public class Namespace extends BaseEntity{
-
-  @Id
-  @GeneratedValue
-  private long id;
 
   @Column(nullable = false)
   private String name;
@@ -29,10 +23,6 @@ public class Namespace extends BaseEntity{
     return comment;
   }
 
-  public long getId() {
-    return id;
-  }
-
   public String getName() {
     return name;
   }
@@ -43,10 +33,6 @@ public class Namespace extends BaseEntity{
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public void setId(long id) {
-    this.id = id;
   }
 
   public void setName(String name) {

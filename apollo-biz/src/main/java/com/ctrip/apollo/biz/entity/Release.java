@@ -1,25 +1,26 @@
 package com.ctrip.apollo.biz.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
 public class Release  extends BaseEntity{
-  @Id
-  @GeneratedValue
-  private long id;
 
   @Column(nullable = false)
   private String name;
   
   @Column(nullable = false)
   private long groupId;
+  
+  @Column
+  private String groupName;
   
   @Column(nullable = false)
   @Lob
@@ -28,11 +29,21 @@ public class Release  extends BaseEntity{
   @Column(nullable = false)
   private String comment;
 
-  public Release() {
+  @ManyToMany
+  private List<Version> versions;
+  
+  @Column(nullable=false)
+  private String appId;
+  
+  @Column(nullable=false)
+  private String clusterName;
+  
+  public String getAppId() {
+    return appId;
   }
 
-  public long getGroupId() {
-    return groupId;
+  public String getClusterName() {
+    return clusterName;
   }
 
   public String getComment() {
@@ -43,16 +54,28 @@ public class Release  extends BaseEntity{
     return configurations;
   }
 
-  public long getId() {
-    return id;
+  public long getGroupId() {
+    return groupId;
+  }
+
+  public String getGroupName() {
+    return groupName;
   }
 
   public String getName() {
     return name;
   }
 
-  public void setGroupId(long groupId) {
-    this.groupId = groupId;
+  public List<Version> getVersions() {
+    return versions;
+  }
+
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
   }
 
   public void setComment(String comment) {
@@ -63,11 +86,19 @@ public class Release  extends BaseEntity{
     this.configurations = configurations;
   }
 
-  public void setId(long id) {
-    this.id = id;
+  public void setGroupId(long groupId) {
+    this.groupId = groupId;
+  }
+
+  public void setGroupName(String groupName) {
+    this.groupName = groupName;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setVersions(List<Version> versions) {
+    this.versions = versions;
   }
 }

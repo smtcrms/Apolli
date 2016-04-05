@@ -1,29 +1,36 @@
 package com.ctrip.apollo.adminservice.controller;
 
-import com.ctrip.apollo.biz.service.AdminReleaseService;
-import com.ctrip.apollo.core.dto.VersionDTO;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ctrip.apollo.biz.entity.Version;
+import com.ctrip.apollo.biz.service.VersionService;
+import com.ctrip.apollo.biz.service.ViewService;
+import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.core.dto.VersionDTO;
 
 @RestController
-@RequestMapping("/version")
 public class VersionController {
 
   @Autowired
-  private AdminReleaseService adminReleaseService;
+  private ViewService viewService;
 
-  @RequestMapping("/app/{appId}")
-  public List<VersionDTO> versions(@PathVariable String appId) {
-    return adminReleaseService.findVersionsByApp(appId);
+  @Autowired
+  private VersionService versionService;
+  
+  @RequestMapping("/app/{appId}/clusters/{clusterId}/versions")
+  public List<VersionDTO> findVersions(@PathVariable("appId") String appId, @PathVariable("clusterId") Long clusterId) {
+    List<Version> versions = viewService.findVersions(clusterId);
+    return BeanUtils.batchTransform(VersionDTO.class, versions);
   }
 
-  @RequestMapping("/{versionId}")
-  public VersionDTO version(@PathVariable long versionId) {
-    return adminReleaseService.loadVersionById(versionId);
+  @RequestMapping("/versions/{versionId}")
+  public VersionDTO findOne(@PathVariable("versionId") long versionId) {
+    Version version = versionService.findOne(versionId);
+    return BeanUtils.transfrom(VersionDTO.class, version);
   }
 }

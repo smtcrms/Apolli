@@ -3,6 +3,8 @@ package com.ctrip.apollo.biz.entity;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -11,8 +13,12 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
 public abstract class BaseEntity {
 
+  @Id
+  @GeneratedValue
+  private long id;
+
   private boolean isDeleted;
-  
+
   @Column(name = "DataChange_CreatedBy")
   private String dataChangeCreatedBy;
 
@@ -24,7 +30,7 @@ public abstract class BaseEntity {
 
   @Column(name = "DataChange_LastTime")
   private Date dataChangeLastModifiedTime;
-  
+
   public String getDataChangeCreatedBy() {
     return dataChangeCreatedBy;
   }
@@ -39,6 +45,10 @@ public abstract class BaseEntity {
 
   public Date getDataChangeLastModifiedTime() {
     return dataChangeLastModifiedTime;
+  }
+
+  public long getId() {
+    return id;
   }
 
   public boolean isDeleted() {
@@ -63,5 +73,9 @@ public abstract class BaseEntity {
 
   public void setDeleted(boolean deleted) {
     isDeleted = deleted;
+  }
+
+  public void setId(long id) {
+    this.id = id;
   }
 }

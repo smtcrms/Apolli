@@ -11,4 +11,5 @@ public interface ClusterRepository extends PagingAndSortingRepository<Cluster, L
 
   List<Cluster> findByAppId(String appId);
 
+  Cluster findByAppIdAndName(String appId, String name);
 }

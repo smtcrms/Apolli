@@ -2,15 +2,9 @@ package com.ctrip.apollo.biz.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 @Entity
-public class ConfigItem  extends BaseEntity {
-
-  @Id
-  @GeneratedValue
-  private long id;
+public class Item  extends BaseEntity {
 
   @Column(nullable = false)
   private long groupId;
@@ -23,14 +17,6 @@ public class ConfigItem  extends BaseEntity {
 
   @Column
   private String comment;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
 
   public long getGroupId() {
     return groupId;

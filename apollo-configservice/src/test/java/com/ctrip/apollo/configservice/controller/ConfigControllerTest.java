@@ -1,6 +1,6 @@
 package com.ctrip.apollo.configservice.controller;
 
-import com.ctrip.apollo.biz.entity.Version;
+import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 
@@ -44,45 +44,42 @@ public class ConfigControllerTest {
     ApolloConfig someApolloConfig = mock(ApolloConfig.class);
     String someAppId = "1";
     String someClusterName = "someClusterName";
+    String someGroupName = "someGroupName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
     long someServerSideNewReleaseId = 2;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
-    Version someVersion = mock(Version.class);
+    Release someRelease = mock(Release.class);
 
-    when(configService.loadVersionByAppIdAndVersionName(someAppId, someVersionName))
-        .thenReturn(someVersion);
-    when(someVersion.getReleaseId()).thenReturn(someServerSideNewReleaseId);
-    when(configService.loadConfigByVersionAndClusterName(someVersion, someClusterName))
+    when(configService.findRelease(someAppId, someClusterName, someGroupName, someVersionName))
+        .thenReturn(someRelease);
+    when(someRelease.getId()).thenReturn(someServerSideNewReleaseId);
+    when(configService.loadConfig(someRelease, someGroupName, someVersionName))
         .thenReturn(someApolloConfig);
 
-    ApolloConfig
-        result =
-        configController
-            .queryConfig(someAppId, someClusterName, someVersionName, someClientSideReleaseId,
-                someResponse);
+    ApolloConfig result = configController.queryConfig(someAppId, someClusterName, someGroupName,
+        someVersionName, someClientSideReleaseId, someResponse);
 
     assertEquals(someApolloConfig, result);
-    verify(configService, times(1)).loadVersionByAppIdAndVersionName(someAppId, someVersionName);
-    verify(configService, times(1)).loadConfigByVersionAndClusterName(someVersion, someClusterName);
+    verify(configService, times(1)).findRelease(someAppId, someClusterName, someGroupName,
+        someVersionName);
+    verify(configService, times(1)).loadConfig(someRelease, someGroupName, someVersionName);
   }
 
   @Test
   public void testQueryConfigWithVersionNotFound() throws Exception {
     String someAppId = "1";
     String someClusterName = "someClusterName";
+    String someGroupName = "someGroupName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
 
-    when(configService.loadVersionByAppIdAndVersionName(someAppId, someVersionName))
+    when(configService.findRelease(someAppId, someClusterName, someGroupName, someVersionName))
         .thenReturn(null);
 
-    ApolloConfig
-        result =
-        configController
-            .queryConfig(someAppId, someClusterName, someVersionName, someClientSideReleaseId,
-                someResponse);
+    ApolloConfig result = configController.queryConfig(someAppId, someClusterName, someGroupName,
+        someVersionName, someClientSideReleaseId, someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
@@ -92,23 +89,20 @@ public class ConfigControllerTest {
   public void testQueryConfigWithApolloConfigNotFound() throws Exception {
     String someAppId = "1";
     String someClusterName = "someClusterName";
+    String someGroupName = "someGroupName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
     long someServerSideNewReleaseId = 2;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
-    Version someVersion = mock(Version.class);
+    Release someRelease = mock(Release.class);
 
-    when(configService.loadVersionByAppIdAndVersionName(someAppId, someVersionName))
-        .thenReturn(someVersion);
-    when(someVersion.getReleaseId()).thenReturn(someServerSideNewReleaseId);
-    when(configService.loadConfigByVersionAndClusterName(someVersion, someClusterName))
-        .thenReturn(null);
+    when(configService.findRelease(someAppId, someClusterName, someGroupName, someVersionName))
+        .thenReturn(someRelease);
+    when(someRelease.getId()).thenReturn(someServerSideNewReleaseId);
+    when(configService.loadConfig(someRelease, someGroupName, someVersionName)).thenReturn(null);
 
-    ApolloConfig
-        result =
-        configController
-            .queryConfig(someAppId, someClusterName, someVersionName, someClientSideReleaseId,
-                someResponse);
+    ApolloConfig result = configController.queryConfig(someAppId, someClusterName, someGroupName,
+        someVersionName, someClientSideReleaseId, someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
@@ -118,25 +112,22 @@ public class ConfigControllerTest {
   public void testQueryConfigWithApolloConfigNotModified() throws Exception {
     String someAppId = "1";
     String someClusterName = "someClusterName";
+    String someGroupName = "someGroupName";
     String someVersionName = "someVersion";
     long someClientSideReleaseId = 1;
     long someServerSideReleaseId = someClientSideReleaseId;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
-    Version someVersion = mock(Version.class);
+    Release someRelease = mock(Release.class);
 
-    when(configService.loadVersionByAppIdAndVersionName(someAppId, someVersionName))
-        .thenReturn(someVersion);
-    when(someVersion.getReleaseId()).thenReturn(someServerSideReleaseId);
+    when(configService.findRelease(someAppId, someClusterName, someGroupName, someVersionName))
+        .thenReturn(someRelease);
+    when(someRelease.getId()).thenReturn(someServerSideReleaseId);
 
-    ApolloConfig
-        result =
-        configController
-            .queryConfig(someAppId, someClusterName, someVersionName, someClientSideReleaseId,
-                someResponse);
+    ApolloConfig result = configController.queryConfig(someAppId, someClusterName, someGroupName,
+        someVersionName, someClientSideReleaseId, someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-    verify(configService, never())
-        .loadConfigByVersionAndClusterName(any(Version.class), anyString());
+    verify(configService, never()).loadConfig(any(Release.class), anyString(), anyString());
   }
 }

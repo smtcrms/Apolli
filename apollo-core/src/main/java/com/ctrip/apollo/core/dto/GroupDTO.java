@@ -1,22 +1,21 @@
-package com.ctrip.apollo.biz.entity;
+package com.ctrip.apollo.core.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+public class GroupDTO {
 
-@Entity
-public class Group extends BaseEntity {
-
-  @Column(nullable = false)
+  private long id;
+  
   private long clusterId;
 
-  @Column(nullable = false)
   private long namespaceId;
 
-  @Column(nullable = false)
   private String name;
 
   public long getClusterId() {
     return clusterId;
+  }
+
+  public long getId() {
+    return id;
   }
 
   public String getName() {
@@ -31,6 +30,10 @@ public class Group extends BaseEntity {
     this.clusterId = clusterId;
   }
 
+  public void setId(long id) {
+    this.id = id;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -38,5 +41,4 @@ public class Group extends BaseEntity {
   public void setNamespaceId(long namespaceId) {
     this.namespaceId = namespaceId;
   }
-
 }

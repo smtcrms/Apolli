@@ -1,18 +1,17 @@
 package com.ctrip.apollo.biz.repository;
 
-import com.ctrip.apollo.biz.entity.Version;
+import java.util.List;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
+import com.ctrip.apollo.biz.entity.Version;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public interface VersionRepository extends PagingAndSortingRepository<Version, Long> {
-  Version findByAppIdAndName(String appId, String name);
 
-  Version findById(long id);
+  Version findByClusterIdAndName(Long id, String name);
 
-  List<Version> findByAppId(String appId);
+  List<Version> findByClusterId(Long clusterId);
 }

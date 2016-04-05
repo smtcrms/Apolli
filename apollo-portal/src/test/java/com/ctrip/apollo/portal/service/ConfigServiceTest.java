@@ -17,8 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import com.ctrip.apollo.Apollo.Env;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ClusterDTO;
-import com.ctrip.apollo.core.dto.ConfigItemDTO;
-import com.ctrip.apollo.core.dto.ReleaseSnapshotDTO;
+import com.ctrip.apollo.core.dto.ItemDTO;
+import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.core.dto.VersionDTO;
 import com.ctrip.apollo.core.exception.ServiceException;
@@ -71,7 +71,7 @@ public class ConfigServiceTest {
     long releaseId = 11111;
 
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
-    ReleaseSnapshotDTO[] someReleaseSnapShots = assembleReleaseSnapShots();
+    ReleaseDTO[] someReleaseSnapShots = assembleReleaseSnapShots();
 
     when(versionAPI.getVersionById(Env.DEV, versionId)).thenReturn(someVersion);
     when(configAPI.getConfigByReleaseId(Env.DEV, releaseId)).thenReturn(someReleaseSnapShots);
@@ -92,7 +92,7 @@ public class ConfigServiceTest {
     long releaseId = 11111;
 
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
-    ReleaseSnapshotDTO[] someReleaseSnapShots = new ReleaseSnapshotDTO[1];
+    ReleaseDTO[] someReleaseSnapShots = new ReleaseDTO[1];
     someReleaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.DEFAULT_CLUSTER_NAME,
                                                   "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
 
@@ -114,7 +114,7 @@ public class ConfigServiceTest {
     long versionId = 100;
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
-    ReleaseSnapshotDTO[] someReleaseSnapShots = new ReleaseSnapshotDTO[1];
+    ReleaseDTO[] someReleaseSnapShots = new ReleaseDTO[1];
     someReleaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.DEFAULT_CLUSTER_NAME,
                                                   "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\", \"5555.bar\":\"demo2\", \"22.bar\":\"demo2\"}");
 
@@ -136,7 +136,7 @@ public class ConfigServiceTest {
     long versionId = 100;
     long releaseId = 11111;
     VersionDTO someVersion = assembleVersion(appId, "1.0", releaseId);
-    ReleaseSnapshotDTO[] someReleaseSnapShots = new ReleaseSnapshotDTO[2];
+    ReleaseDTO[] someReleaseSnapShots = new ReleaseDTO[2];
     someReleaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.DEFAULT_CLUSTER_NAME,
                                                   "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\"}");
     someReleaseSnapShots[1] = assembleReleaseSnapShot(11112, "cluster1",
@@ -158,7 +158,7 @@ public class ConfigServiceTest {
   public void testLoadLastestConfig() {
     String appId = "6666";
     ClusterDTO[] someClusters = assembleClusters();
-    ConfigItemDTO[] someConfigItem = assembleConfigItems();
+    ItemDTO[] someConfigItem = assembleConfigItems();
 
     when(clusterAPI.getClustersByApp(Env.DEV, appId)).thenReturn(someClusters);
     when(configAPI.getLatestConfigItemsByClusters(Env.DEV, Arrays
@@ -181,8 +181,8 @@ public class ConfigServiceTest {
     return version;
   }
 
-  private ReleaseSnapshotDTO[] assembleReleaseSnapShots() {
-    ReleaseSnapshotDTO[] releaseSnapShots = new ReleaseSnapshotDTO[3];
+  private ReleaseDTO[] assembleReleaseSnapShots() {
+    ReleaseDTO[] releaseSnapShots = new ReleaseDTO[3];
     releaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.DEFAULT_CLUSTER_NAME,
                                                   "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\",\"3333.foo\":\"1008\",\"4444.bar\":\"99901\"}");
     releaseSnapShots[1] = assembleReleaseSnapShot(11111, "cluster1", "{\"6666.foo\":\"demo1\"}");
@@ -190,9 +190,9 @@ public class ConfigServiceTest {
     return releaseSnapShots;
   }
 
-  private ReleaseSnapshotDTO assembleReleaseSnapShot(long releaseId, String clusterName,
+  private ReleaseDTO assembleReleaseSnapShot(long releaseId, String clusterName,
                                                      String configurations) {
-    ReleaseSnapshotDTO releaseSnapShot = new ReleaseSnapshotDTO();
+    ReleaseDTO releaseSnapShot = new ReleaseDTO();
     releaseSnapShot.setReleaseId(releaseId);
     releaseSnapShot.setClusterName(clusterName);
     releaseSnapShot.setConfigurations(configurations);
@@ -214,8 +214,8 @@ public class ConfigServiceTest {
     return cluster;
   }
 
-  private ConfigItemDTO[] assembleConfigItems() {
-    ConfigItemDTO[] configItems = new ConfigItemDTO[5];
+  private ItemDTO[] assembleConfigItems() {
+    ItemDTO[] configItems = new ItemDTO[5];
     configItems[0] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k1", "6666.v1");
     configItems[1] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k2", "6666.v2");
     configItems[2] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k3", "6666.v3");
@@ -224,9 +224,9 @@ public class ConfigServiceTest {
     return configItems;
   }
 
-  private ConfigItemDTO assembleConfigItem(long clusterId, String clusterName, String appId,
+  private ItemDTO assembleConfigItem(long clusterId, String clusterName, String appId,
                                            String key, String value) {
-    ConfigItemDTO configItem = new ConfigItemDTO();
+    ItemDTO configItem = new ItemDTO();
     configItem.setClusterName(clusterName);
     configItem.setClusterId(clusterId);
     configItem.setAppId(appId);

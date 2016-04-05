@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class ApolloBeanUtils {
+public class BeanUtils {
 
   /**
    * <pre>

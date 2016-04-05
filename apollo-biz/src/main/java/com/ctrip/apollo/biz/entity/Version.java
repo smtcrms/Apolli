@@ -4,38 +4,29 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
 public class Version extends BaseEntity {
-  @Id
-  @GeneratedValue
-  private long id;
 
   @Column(nullable = false)
   private String name;
 
   @Column(nullable = false)
-  private String clusterId;
+  private long clusterId;
 
   // parent version could be null
   @Column
   private Long parentVersion;
 
-  private List<Release> releases;
-
-  public Version() {}
-
-  public String getClusterId() {
+  @ManyToMany
+  private List<Release> releases; 
+  
+  public long getClusterId() {
     return clusterId;
-  }
-
-  public long getId() {
-    return id;
   }
 
   public String getName() {
@@ -50,12 +41,9 @@ public class Version extends BaseEntity {
     return releases;
   }
 
-  public void setClusterId(String clusterId) {
-    this.clusterId = clusterId;
-  }
 
-  public void setId(long id) {
-    this.id = id;
+  public void setClusterId(long clusterId) {
+    this.clusterId = clusterId;
   }
 
   public void setName(String name) {

@@ -16,6 +16,8 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
 
   private String cluster;
 
+  private String group;
+  
   private String version;
 
   private Map<String, Object> configurations;
@@ -27,21 +29,26 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
   @JsonCreator
   public ApolloConfig(@JsonProperty("appId") String appId,
                       @JsonProperty("cluster") String cluster,
+                      @JsonProperty("group") String group,
                       @JsonProperty("version") String version,
                       @JsonProperty("releaseId") long releaseId) {
     super();
     this.appId = appId;
     this.cluster = cluster;
+    this.group = group;
     this.version = version;
     this.releaseId = releaseId;
   }
 
-  public Map<String, Object> getConfigurations() {
-    return configurations;
-  }
-
-  public void setConfigurations(Map<String, Object> configurations) {
-    this.configurations = configurations;
+  @Override
+  public int compareTo(ApolloConfig toCompare) {
+    if (toCompare == null || this.getOrder() > toCompare.getOrder()) {
+      return 1;
+    }
+    if (toCompare.getOrder() > this.getOrder()) {
+      return -1;
+    }
+    return 0;
   }
 
   public String getAppId() {
@@ -52,16 +59,32 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
     return cluster;
   }
 
-  public String getVersion() {
-    return version;
+  public Map<String, Object> getConfigurations() {
+    return configurations;
+  }
+
+  public String getGroup() {
+    return group;
+  }
+
+  public int getOrder() {
+    return order;
   }
 
   public long getReleaseId() {
     return releaseId;
   }
 
-  public int getOrder() {
-    return order;
+  public String getVersion() {
+    return version;
+  }
+
+  public void setConfigurations(Map<String, Object> configurations) {
+    this.configurations = configurations;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
   }
 
   public void setOrder(int order) {
@@ -74,20 +97,10 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
         .omitNullValues()
         .add("appId", appId)
         .add("cluster", cluster)
+        .add("group", group)
         .add("version", version)
         .add("releaseId", releaseId)
         .add("configurations", configurations)
         .toString();
-  }
-
-  @Override
-  public int compareTo(ApolloConfig toCompare) {
-    if (toCompare == null || this.getOrder() > toCompare.getOrder()) {
-      return 1;
-    }
-    if (toCompare.getOrder() > this.getOrder()) {
-      return -1;
-    }
-    return 0;
   }
 }
