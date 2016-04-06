@@ -15,21 +15,22 @@ import com.ctrip.apollo.core.dto.GroupDTO;
 
 @RestController
 public class GroupController {
-  
+
   @Autowired
   private ViewService viewService;
 
   @Autowired
   private GroupService groupService;
-  
-  @RequestMapping("/apps/{appId}/clusters/{clusterId}/groups")
-  public List<GroupDTO> findGroups(@PathVariable("clusterId") Long clusterId) {
-    List<Group> groups = viewService.findGroups(clusterId);
+
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/groups")
+  public List<GroupDTO> findGroups(@PathVariable("appId") String appId,
+      @PathVariable("clusterName") String clusterName) {
+    List<Group> groups = viewService.findGroups(appId, clusterName);
     return BeanUtils.batchTransform(GroupDTO.class, groups);
   }
-  
+
   @RequestMapping("/groups/{groupId}")
-  public GroupDTO findOne(@PathVariable("groupId") Long groupId){
+  public GroupDTO findOne(@PathVariable("groupId") Long groupId) {
     Group group = groupService.findOne(groupId);
     return BeanUtils.transfrom(GroupDTO.class, group);
   }

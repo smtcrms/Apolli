@@ -8,6 +8,7 @@ import com.ctrip.apollo.biz.entity.Group;
 
 public interface GroupRepository extends PagingAndSortingRepository<Group, Long> {
 
-  List<Group> findByClusterId(Long clusterId);
+  List<Group> findByAppIdAndClusterName(String appId, String clusterName);
 
+  Group findByAppIdAndClusterNameAndGroupName(String appId, String clusterName, String groupName);
 }

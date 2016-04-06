@@ -10,16 +10,30 @@ import org.hibernate.annotations.SQLDelete;
 public class Group extends BaseEntity {
 
   @Column(nullable = false)
+  private String name;
+
+  @Column(nullable = false)
+  private String appId;
+
+  @Column(nullable = false)
   private long clusterId;
+
+  @Column(nullable = false)
+  private String clusterName;
 
   @Column(nullable = false)
   private long namespaceId;
 
-  @Column(nullable = false)
-  private String name;
+  public String getAppId() {
+    return appId;
+  }
 
   public long getClusterId() {
     return clusterId;
+  }
+
+  public String getClusterName() {
+    return clusterName;
   }
 
   public String getName() {
@@ -30,8 +44,16 @@ public class Group extends BaseEntity {
     return namespaceId;
   }
 
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
   public void setClusterId(long clusterId) {
     this.clusterId = clusterId;
+  }
+
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
   }
 
   public void setName(String name) {

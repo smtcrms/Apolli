@@ -10,12 +10,10 @@ import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.Group;
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ClusterRepository;
 import com.ctrip.apollo.biz.repository.GroupRepository;
 import com.ctrip.apollo.biz.repository.ItemRepository;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
-import com.ctrip.apollo.biz.repository.VersionRepository;
 import com.google.common.base.Strings;
 
 /**
@@ -31,11 +29,8 @@ public class ViewService {
   private GroupRepository groupRepository;
 
   @Autowired
-  private VersionRepository versionRepository;
-
-  @Autowired
   private ItemRepository itemRepository;
-  
+
   @Autowired
   private ReleaseRepository releaseRepository;
 
@@ -51,22 +46,24 @@ public class ViewService {
     return clusters;
   }
 
-  public List<Group> findGroups(Long clusterId) {
-    List<Group> groups = groupRepository.findByClusterId(clusterId);
+  public List<Group> findGroups(String appId, String clusterName) {
+    List<Group> groups = groupRepository.findByAppIdAndClusterName(appId, clusterName);
     if (groups == null) {
       return Collections.EMPTY_LIST;
     }
     return groups;
   }
 
-  public List<Version> findVersions(Long clusterId) {
-    List<Version> versions = versionRepository.findByClusterId(clusterId);
-    if (versions == null) {
+  public List<Item> findItems(String appId, String clusterName, String groupName) {
+    Group group =
+        groupRepository.findByAppIdAndClusterNameAndGroupName(appId, clusterName, groupName);
+    if (group != null) {
+      return findItems(group.getId());
+    } else {
       return Collections.EMPTY_LIST;
     }
-    return versions;
   }
-  
+
   public List<Item> findItems(Long groupId) {
     List<Item> items = itemRepository.findByGroupId(groupId);
     if (items == null) {
@@ -74,12 +71,13 @@ public class ViewService {
     }
     return items;
   }
-  
-  public List<Release> findReleases(Long groupId){
+
+  public List<Release> findReleases(Long groupId) {
     List<Release> releases = releaseRepository.findByGroupId(groupId);
-    if(releases==null){
+    if (releases == null) {
       return Collections.EMPTY_LIST;
     }
     return releases;
   }
+
 }

@@ -13,8 +13,9 @@ import com.ctrip.apollo.biz.entity.Release;
  */
 public interface ReleaseRepository extends PagingAndSortingRepository<Release, Long> {
 
-  @Query("SELECT r FROM VersionReleaseMapping m INNER JOIN Release r on m.releaseId = r.Id INNER JOIN Version v on m.versionId = v.id WHERE r.id = :versionId AND r.groupName = :groupName")
-  Release findByGroupNameAndVersionId(@Param("groupName") String groupName, @Param("versionId") long versionId);
+  @Query("SELECT r FROM Release r WHERE r.appId = :appId AND r.clusterName = :clusterName AND r.groupName = :groupName order by id desc litmit 1")
+  Release findLatest(@Param("appId") String appId, @Param("clusterName") String clusterName,
+      @Param("groupName") String groupName);
 
   List<Release> findByGroupId(Long groupId);
 }

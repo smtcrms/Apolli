@@ -29,7 +29,7 @@ public class ConfigController {
       @PathVariable String groupName, @PathVariable String versionName,
       @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
       HttpServletResponse response) throws IOException {
-    Release release = configService.findRelease(appId, clusterName, groupName, versionName);
+    Release release = configService.findRelease(appId, clusterName, groupName);
     if (release == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           String.format(

@@ -1,11 +1,8 @@
 package com.ctrip.apollo.biz.entity;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.SQLDelete;
 
@@ -14,33 +11,27 @@ import org.hibernate.annotations.SQLDelete;
  */
 @Entity
 @SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
-public class Release  extends BaseEntity{
+public class Release extends BaseEntity {
 
   @Column(nullable = false)
   private String name;
-  
+
   @Column(nullable = false)
-  private long groupId;
-  
+  private String appId;
+
+  @Column(nullable = false)
+  private String clusterName;
+
   @Column
   private String groupName;
-  
+
   @Column(nullable = false)
   @Lob
   private String configurations;
-  
+
   @Column(nullable = false)
   private String comment;
 
-  @ManyToMany
-  private List<Version> versions;
-  
-  @Column(nullable=false)
-  private String appId;
-  
-  @Column(nullable=false)
-  private String clusterName;
-  
   public String getAppId() {
     return appId;
   }
@@ -57,20 +48,12 @@ public class Release  extends BaseEntity{
     return configurations;
   }
 
-  public long getGroupId() {
-    return groupId;
-  }
-
   public String getGroupName() {
     return groupName;
   }
 
   public String getName() {
     return name;
-  }
-
-  public List<Version> getVersions() {
-    return versions;
   }
 
   public void setAppId(String appId) {
@@ -89,10 +72,6 @@ public class Release  extends BaseEntity{
     this.configurations = configurations;
   }
 
-  public void setGroupId(long groupId) {
-    this.groupId = groupId;
-  }
-
   public void setGroupName(String groupName) {
     this.groupName = groupName;
   }
@@ -101,7 +80,4 @@ public class Release  extends BaseEntity{
     this.name = name;
   }
 
-  public void setVersions(List<Version> versions) {
-    this.versions = versions;
-  }
 }

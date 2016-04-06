@@ -2,11 +2,8 @@ package com.ctrip.apollo.biz.service;
 
 import com.google.common.collect.Maps;
 import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.entity.Version;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
-import com.ctrip.apollo.biz.repository.VersionRepository;
 import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.eq;
@@ -35,8 +31,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigServiceTest {
   @Mock
-  private VersionRepository versionRepository;
-  @Mock
   private ReleaseRepository releaseRepository;
   @Mock
   private ObjectMapper objectMapper;
@@ -45,7 +39,6 @@ public class ConfigServiceTest {
   @Before
   public void setUp() throws Exception {
     configService = new ConfigService();
-    ReflectionTestUtils.setField(configService, "versionRepository", versionRepository);
     ReflectionTestUtils
         .setField(configService, "releaseRepository", releaseRepository);
     ReflectionTestUtils.setField(configService, "objectMapper", objectMapper);
