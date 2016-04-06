@@ -1,15 +1,15 @@
 package com.ctrip.apollo.biz.repository;
 
-import com.ctrip.apollo.biz.entity.Item;
+import java.util.List;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
+import com.ctrip.apollo.biz.entity.Item;
 
 public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
 
-  List<Item> findByGroupIdIsIn(List<Long> groupIds);
+  List<Item> findByNamespaceIdIsIn(List<Long> namespaceIds);
 
-  List<Item> findByGroupId(Long groupId);
+  List<Item> findByNamespaceId(Long namespaceId);
 
 }

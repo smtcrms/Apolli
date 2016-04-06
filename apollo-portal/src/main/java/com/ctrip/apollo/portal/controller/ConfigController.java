@@ -3,8 +3,8 @@ package com.ctrip.apollo.portal.controller;
 import com.google.common.base.Strings;
 
 import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.dto.AppConfigVO;
 import com.ctrip.apollo.portal.constants.PortalConstants;
-import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.ctrip.apollo.portal.exception.NotFoundException;
 import com.ctrip.apollo.portal.service.ConfigService;
 
@@ -35,11 +35,12 @@ public class ConfigController {
 
       return configService.loadLatestConfig(e, appId);
 
-    } else if (versionId > 0) {
-
-      return configService.loadReleaseConfig(e, appId, versionId);
-
-    } else {
+//    } else if (versionId > 0) {
+//
+//      return configService.loadReleaseConfig(e, appId, versionId);
+//
+    }
+    else {
       throw new NotFoundException();
     }
   }

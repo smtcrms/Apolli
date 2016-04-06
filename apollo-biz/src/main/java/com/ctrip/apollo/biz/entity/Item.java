@@ -4,13 +4,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @SQLDelete(sql = "Update Item set isDeleted = 1 where id = ?")
+@Where(clause = "isDeleted = 0")
 public class Item extends BaseEntity {
 
   @Column(nullable = false)
-  private long groupId;
+  private long namespaceId;
 
   @Column(nullable = false)
   private String key;
@@ -21,36 +23,36 @@ public class Item extends BaseEntity {
   @Column
   private String comment;
 
-  public long getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(long groupId) {
-    this.groupId = groupId;
+  public String getComment() {
+    return comment;
   }
 
   public String getKey() {
     return key;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+  public long getNamespaceId() {
+    return namespaceId;
   }
 
   public String getValue() {
     return value;
   }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public void setNamespaceId(long namespaceId) {
+    this.namespaceId = namespaceId;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
   }
 
 }

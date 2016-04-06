@@ -18,19 +18,21 @@ public class ReleaseController {
 
   @Autowired
   private ViewService viewSerivce;
-  
+
   @Autowired
   private ReleaseService releaseService;
-  
+
   @RequestMapping("/release/{releaseId}")
   public ReleaseDTO findOne(@PathVariable("releaseId") long releaseId) {
     Release release = releaseService.findOne(releaseId);
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
-  
-  @RequestMapping("/apps/{appId}/clusters/{clusterId}/groups/{groupId}/releases")
-  public List<ReleaseDTO> findReleases(@PathVariable("groupId") Long groupId){
-    List<Release> releases = viewSerivce.findReleases(groupId);
+
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases")
+  public List<ReleaseDTO> findReleases(@PathVariable("appId") String appId,
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName) {
+    List<Release> releases = viewSerivce.findReleases(appId, clusterName, namespaceName);
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 }

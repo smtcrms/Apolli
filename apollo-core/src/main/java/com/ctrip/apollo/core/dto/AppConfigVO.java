@@ -1,8 +1,7 @@
-package com.ctrip.apollo.portal.entity;
+package com.ctrip.apollo.core.dto;
 
 
 import com.ctrip.apollo.Apollo.Env;
-import com.ctrip.apollo.core.dto.ItemDTO;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -3,10 +3,10 @@ package com.ctrip.apollo.portal.api;
 import com.google.common.base.Strings;
 
 import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
-import com.ctrip.apollo.core.dto.VersionDTO;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,15 @@ import java.util.List;
 
 @Service
 public class AdminServiceAPI {
+
+  @Service
+  public static class AppAPI extends API {
+    public static String APP_API = "/apps";
+
+    public AppDTO[] getApps(Apollo.Env env) {
+      return restTemplate.getForObject(getAdminServiceHost(env) + APP_API, AppDTO[].class);
+    }
+  }
 
   @Service
   public static class ConfigAPI extends API {
@@ -25,7 +34,7 @@ public class AdminServiceAPI {
       }
 
       return restTemplate.getForObject(getAdminServiceHost(env) + CONFIG_RELEASE_API + releaseId,
-                                       ReleaseDTO[].class);
+          ReleaseDTO[].class);
     }
 
     public ItemDTO[] getLatestConfigItemsByClusters(Apollo.Env env, List<Long> clusterIds) {
@@ -37,8 +46,8 @@ public class AdminServiceAPI {
         sb.append(clusterId).append(",");
       }
 
-      return restTemplate.getForObject(getAdminServiceHost(env) + "/configs/latest?clusterIds=" + sb
-          .substring(0, sb.length() - 1), ItemDTO[].class);
+      return restTemplate.getForObject(getAdminServiceHost(env) + "/configs/latest?clusterIds="
+          + sb.substring(0, sb.length() - 1), ItemDTO[].class);
     }
   }
 
@@ -52,30 +61,8 @@ public class AdminServiceAPI {
         return null;
       }
 
-      return restTemplate
-          .getForObject(getAdminServiceHost(env) + CLUSTER_APP_API + appId, ClusterDTO[].class);
-    }
-  }
-
-  @Service
-  public static class VersionAPI extends API{
-
-    public static String VERSION_API = "/version/";
-    public static String VERSION_APP_API = "/version/app/";
-
-    public VersionDTO getVersionById(Apollo.Env env, long versionId){
-      if (versionId <= 0){
-        return null;
-      }
-      return restTemplate.getForObject(getAdminServiceHost(env) + VERSION_API + versionId, VersionDTO.class);
-    }
-
-    public VersionDTO[] getVersionsByApp(Apollo.Env env, String appId){
-      if (Strings.isNullOrEmpty(appId)){
-        return null;
-      }
-      return restTemplate.getForObject(getAdminServiceHost(env) + VERSION_APP_API + appId,
-                                       VersionDTO[].class);
+      return restTemplate.getForObject(getAdminServiceHost(env) + CLUSTER_APP_API + appId,
+          ClusterDTO[].class);
     }
   }
 

@@ -10,7 +10,7 @@ import com.ctrip.apollo.biz.entity.App;
 
 public interface AppRepository extends PagingAndSortingRepository<App, Long> {
 
-  @Query("SELECT a from App a WHERE a.name LIKE %':name'%")
+  @Query("SELECT a from App a WHERE a.name LIKE %:name%")
   List<App> findByName(@Param("name") String name);
 
   App findByAppId(String appId);

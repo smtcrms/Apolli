@@ -21,15 +21,15 @@ public class ItemController {
 
   @Autowired
   private ItemService itemService;
-  
-  @RequestMapping("/apps/{appId}/clusters/{clusterName}/groups/{groupName}/items")
+
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items")
   public List<ItemDTO> findItems(@PathVariable("appId") String appId,
-                                 @PathVariable("clusterName") String clusterName,
-      @PathVariable("groupName") String groupName) {
-    List<Item> items = viewService.findItems(appId, clusterName,groupName);
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName) {
+    List<Item> items = viewService.findItems(appId, clusterName, namespaceName);
     return BeanUtils.batchTransform(ItemDTO.class, items);
   }
- 
+
   @RequestMapping("/items/{itemId}")
   public ItemDTO findOne(@PathVariable("itemId") long itemId) {
     Item item = itemService.findOne(itemId);
