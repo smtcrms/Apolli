@@ -24,26 +24,25 @@ public class ConfigService {
   @Autowired
   private ReleaseRepository releaseRepository;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   private TypeReference<Map<String, Object>> configurationTypeReference =
       new TypeReference<Map<String, Object>>() {};
 
-  public Release findRelease(String appId, String clusterName, String groupName) {
-    Release release = releaseRepository.findLatest(appId, clusterName, groupName);
+  public Release findRelease(String appId, String clusterName, String namespaceName) {
+    Release release = releaseRepository.findLatest(appId, clusterName, namespaceName);
     return release;
   }
 
   /**
    * Load configuration from database
    */
-  public ApolloConfig loadConfig(Release release, String groupName, String versionName) {
+  public ApolloConfig loadConfig(Release release, String namespaceName, String versionName) {
     if (release == null) {
       return null;
     }
-    ApolloConfig config = new ApolloConfig(release.getAppId(), release.getClusterName(), groupName,
-        versionName, release.getId());
+    ApolloConfig config = new ApolloConfig(release.getAppId(), release.getClusterName(),
+        namespaceName, versionName, release.getId());
     config.setConfigurations(transformConfigurationToMap(release.getConfigurations()));
     return config;
   }

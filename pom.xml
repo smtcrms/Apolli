@@ -275,12 +275,6 @@
 			</build>
 		</profile>
 		<profile>
-			<id>local</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
 			<id>ctrip</id>
 			<dependencies>
 				<dependency>

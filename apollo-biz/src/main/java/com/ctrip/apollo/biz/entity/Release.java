@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
 @SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
+@Where(clause = "isDeleted = 0")
 public class Release extends BaseEntity {
 
   @Column(nullable = false)
@@ -23,7 +25,7 @@ public class Release extends BaseEntity {
   private String clusterName;
 
   @Column
-  private String groupName;
+  private String namespaceName;
 
   @Column(nullable = false)
   @Lob
@@ -48,8 +50,8 @@ public class Release extends BaseEntity {
     return configurations;
   }
 
-  public String getGroupName() {
-    return groupName;
+  public String getNamespaceName() {
+    return namespaceName;
   }
 
   public String getName() {
@@ -72,8 +74,8 @@ public class Release extends BaseEntity {
     this.configurations = configurations;
   }
 
-  public void setGroupName(String groupName) {
-    this.groupName = groupName;
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 
   public void setName(String name) {

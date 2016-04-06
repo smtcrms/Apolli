@@ -1,7 +1,5 @@
 package com.ctrip.apollo.core.dto;
 
-import java.util.Date;
-
 public class ItemDTO {
 
   private long id;

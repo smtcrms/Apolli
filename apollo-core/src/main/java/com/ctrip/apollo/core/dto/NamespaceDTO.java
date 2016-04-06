@@ -1,6 +1,6 @@
 package com.ctrip.apollo.core.dto;
 
-public class GroupDTO {
+public class NamespaceDTO {
 
   private long id;
   

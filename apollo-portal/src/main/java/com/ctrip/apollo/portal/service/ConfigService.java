@@ -15,13 +15,12 @@ import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.Apollo.Env;
 import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.AppConfigVO;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
-import com.ctrip.apollo.core.dto.VersionDTO;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.constants.PortalConstants;
-import com.ctrip.apollo.portal.entity.AppConfigVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.google.common.base.Strings;
@@ -36,50 +35,34 @@ public class ConfigService {
   private AdminServiceAPI.ConfigAPI configAPI;
   @Autowired
   private AdminServiceAPI.ClusterAPI clusterAPI;
-  @Autowired
-  private AdminServiceAPI.VersionAPI versionAPI;
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  public AppConfigVO loadReleaseConfig(Env env, String appId, long versionId) {
-
-    if (Strings.isNullOrEmpty(appId) || versionId <= 0) {
-      return null;
-    }
-
-    long releaseId = getReleaseIdFromVersionId(env, versionId);
-    if (releaseId == -1) {
-      logger.warn("get release id error env:{}, app id:{}, version id:{}", env, appId, versionId);
-      return null;
-    }
-
-    ReleaseDTO[] releaseSnapShots = configAPI.getConfigByReleaseId(env, releaseId);
-    if (releaseSnapShots == null || releaseSnapShots.length == 0) {
-      return null;
-    }
-
-    AppConfigVO appConfigVO = AppConfigVO.newInstance(appId, versionId);
-
-    for (ReleaseDTO snapShot : releaseSnapShots) {
-      // default cluster
-      if (ConfigConsts.DEFAULT_CLUSTER_NAME.equals(snapShot.getClusterName())) {
-
-        collectDefaultClusterConfigs(appId, snapShot, appConfigVO);
-
-      } else {// cluster special configs
-        collectSpecialClusterConfigs(appId, snapShot, appConfigVO);
-      }
-    }
-    return appConfigVO;
-  }
-
-  private long getReleaseIdFromVersionId(Env env, long versionId) {
-    VersionDTO version = versionAPI.getVersionById(env, versionId);
-    if (version == null) {
-      return -1;
-    }
-    return version.getReleaseId();
-  }
+//  public AppConfigVO loadReleaseConfig(Env env, String appId, String cluster, String namespace) {
+//
+//    if (Strings.isNullOrEmpty(appId) || Strings.isNullOrEmpty(cluster) || Strings.isNullOrEmpty(namespace)) {
+//      return null;
+//    }
+//
+//    ReleaseDTO[] releaseSnapShots = configAPI.getConfigByReleaseId(env, releaseId);
+//    if (releaseSnapShots == null || releaseSnapShots.length == 0) {
+//      return null;
+//    }
+//
+//    AppConfigVO appConfigVO = AppConfigVO.newInstance(appId, versionId);
+//
+//    for (ReleaseDTO snapShot : releaseSnapShots) {
+//      // default cluster
+//      if (ConfigConsts.DEFAULT_CLUSTER_NAME.equals(snapShot.getClusterName())) {
+//
+//        collectDefaultClusterConfigs(appId, snapShot, appConfigVO);
+//
+//      } else {// cluster special configs
+//        collectSpecialClusterConfigs(appId, snapShot, appConfigVO);
+//      }
+//    }
+//    return appConfigVO;
+//  }
 
   private void collectDefaultClusterConfigs(String appId, ReleaseDTO snapShot,
                                             AppConfigVO appConfigVO) {

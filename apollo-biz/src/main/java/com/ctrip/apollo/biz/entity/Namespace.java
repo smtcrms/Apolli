@@ -4,42 +4,44 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @SQLDelete(sql = "Update Namespace set isDeleted = 1 where id = ?")
-public class Namespace extends BaseEntity{
-
-  @Column(nullable = false)
-  private String name;
+@Where(clause = "isDeleted = 0")
+public class Namespace extends BaseEntity {
 
   @Column(nullable = false)
   private String appId;
 
-  @Column
-  private String comment;
+  @Column(nullable = false)
+  private String clusterName;
+
+  @Column(nullable = false)
+  private String namespaceName;
 
   public String getAppId() {
     return appId;
   }
 
-  public String getComment() {
-    return comment;
+  public String getClusterName() {
+    return clusterName;
   }
 
-  public String getName() {
-    return name;
+  public String getNamespaceName() {
+    return namespaceName;
   }
 
   public void setAppId(String appId) {
     this.appId = appId;
   }
 
-  public void setComment(String comment) {
-    this.comment = comment;
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 
 }

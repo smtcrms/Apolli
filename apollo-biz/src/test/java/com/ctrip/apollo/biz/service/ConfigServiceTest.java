@@ -121,7 +121,7 @@ public class ConfigServiceTest {
     Release release = new Release();
     release.setId(releaseId);
     release.setClusterName(clusterName);
-    release.setGroupName(groupName);
+    release.setNamespaceName(groupName);
     release.setConfigurations(configurations);
     return release;
   }
