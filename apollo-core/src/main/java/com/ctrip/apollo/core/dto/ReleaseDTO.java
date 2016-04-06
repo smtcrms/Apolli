@@ -1,6 +1,6 @@
 package com.ctrip.apollo.core.dto;
 
-public class ReleaseSnapshotDTO {
+public class ReleaseDTO {
 
   private long id;
 
@@ -10,7 +10,7 @@ public class ReleaseSnapshotDTO {
 
   private String configurations;
 
-  public ReleaseSnapshotDTO() {
+  public ReleaseDTO() {
   }
 
   public long getId() {

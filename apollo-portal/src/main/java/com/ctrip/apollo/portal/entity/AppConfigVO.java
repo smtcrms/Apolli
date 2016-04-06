@@ -2,7 +2,7 @@ package com.ctrip.apollo.portal.entity;
 
 
 import com.ctrip.apollo.Apollo.Env;
-import com.ctrip.apollo.core.dto.ConfigItemDTO;
+import com.ctrip.apollo.core.dto.ItemDTO;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class AppConfigVO {
   /**
    * default cluster and app self’s configs
    */
-  private List<ConfigItemDTO> defaultClusterConfigs;
+  private List<ItemDTO> defaultClusterConfigs;
 
   /**
    * default cluster and override other app configs
@@ -63,7 +63,7 @@ public class AppConfigVO {
   public static class OverrideAppConfig {
 
     private String appId;
-    private List<ConfigItemDTO> configs;
+    private List<ItemDTO> configs;
 
     public OverrideAppConfig() {
 
@@ -77,15 +77,15 @@ public class AppConfigVO {
       this.appId = appId;
     }
 
-    public List<ConfigItemDTO> getConfigs() {
+    public List<ItemDTO> getConfigs() {
       return configs;
     }
 
-    public void setConfigs(List<ConfigItemDTO> configs) {
+    public void setConfigs(List<ItemDTO> configs) {
       this.configs = configs;
     }
 
-    public void addConfig(ConfigItemDTO config) {
+    public void addConfig(ItemDTO config) {
       if (configs == null) {
         configs = new LinkedList<>();
       }
@@ -97,7 +97,7 @@ public class AppConfigVO {
   public static class OverrideClusterConfig {
 
     private String clusterName;
-    private List<ConfigItemDTO> configs;
+    private List<ItemDTO> configs;
 
     public OverrideClusterConfig() {
     }
@@ -110,11 +110,11 @@ public class AppConfigVO {
       this.clusterName = clusterName;
     }
 
-    public List<ConfigItemDTO> getConfigs() {
+    public List<ItemDTO> getConfigs() {
       return configs;
     }
 
-    public void setConfigs(List<ConfigItemDTO> configs) {
+    public void setConfigs(List<ItemDTO> configs) {
       this.configs = configs;
     }
   }
@@ -144,11 +144,11 @@ public class AppConfigVO {
     this.versionId = versionId;
   }
 
-  public List<ConfigItemDTO> getDefaultClusterConfigs() {
+  public List<ItemDTO> getDefaultClusterConfigs() {
     return defaultClusterConfigs;
   }
 
-  public void setDefaultClusterConfigs(List<ConfigItemDTO> defaultClusterConfigs) {
+  public void setDefaultClusterConfigs(List<ItemDTO> defaultClusterConfigs) {
     this.defaultClusterConfigs = defaultClusterConfigs;
   }
 

@@ -1,68 +1,83 @@
 package com.ctrip.apollo.biz.entity;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.Lob;
+
+import org.hibernate.annotations.SQLDelete;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@Where(clause = "isDeleted = 0")
 @SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
-public class Release {
-  @Id
-  @GeneratedValue
-  private long id;
+public class Release extends BaseEntity {
 
+  @Column(nullable = false)
   private String name;
+
+  @Column(nullable = false)
   private String appId;
+
+  @Column(nullable = false)
+  private String clusterName;
+
+  @Column
+  private String groupName;
+
+  @Column(nullable = false)
+  @Lob
+  private String configurations;
+
+  @Column(nullable = false)
   private String comment;
-  private boolean isDeleted;
-
-  public Release() {
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
 
   public String getAppId() {
     return appId;
   }
 
-  public void setAppId(String appId) {
-    this.appId = appId;
+  public String getClusterName() {
+    return clusterName;
   }
 
   public String getComment() {
     return comment;
   }
 
+  public String getConfigurations() {
+    return configurations;
+  }
+
+  public String getGroupName() {
+    return groupName;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
+  }
+
   public void setComment(String comment) {
     this.comment = comment;
   }
 
-  public boolean isDeleted() {
-    return isDeleted;
+  public void setConfigurations(String configurations) {
+    this.configurations = configurations;
   }
 
-  public void setDeleted(boolean deleted) {
-    isDeleted = deleted;
+  public void setGroupName(String groupName) {
+    this.groupName = groupName;
   }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
 }

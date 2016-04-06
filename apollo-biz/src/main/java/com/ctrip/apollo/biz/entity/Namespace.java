@@ -5,12 +5,9 @@ import javax.persistence.Entity;
 
 import org.hibernate.annotations.SQLDelete;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
 @Entity
-@SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
-public class Cluster extends BaseEntity {
+@SQLDelete(sql = "Update Namespace set isDeleted = 1 where id = ?")
+public class Namespace extends BaseEntity{
 
   @Column(nullable = false)
   private String name;
@@ -18,8 +15,15 @@ public class Cluster extends BaseEntity {
   @Column(nullable = false)
   private String appId;
 
+  @Column
+  private String comment;
+
   public String getAppId() {
     return appId;
+  }
+
+  public String getComment() {
+    return comment;
   }
 
   public String getName() {
@@ -28,6 +32,10 @@ public class Cluster extends BaseEntity {
 
   public void setAppId(String appId) {
     this.appId = appId;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public void setName(String name) {

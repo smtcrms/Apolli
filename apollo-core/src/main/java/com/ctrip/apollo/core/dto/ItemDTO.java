@@ -2,7 +2,7 @@ package com.ctrip.apollo.core.dto;
 
 import java.util.Date;
 
-public class ConfigItemDTO {
+public class ItemDTO {
 
   private long id;
 
@@ -18,19 +18,11 @@ public class ConfigItemDTO {
 
   private String comment;
 
-  private String dataChangeCreatedBy;
-
-  private Date dataChangeCreatedTime;
-
-  private String dataChangeLastModifiedBy;
-
-  private Date dataChangeLastModifiedTime;
-
-  public ConfigItemDTO() {
+  public ItemDTO() {
 
   }
 
-  public ConfigItemDTO(String key, String value) {
+  public ItemDTO(String key, String value) {
     this.key = key;
     this.value = value;
   }
@@ -81,38 +73,6 @@ public class ConfigItemDTO {
 
   public void setValue(String value) {
     this.value = value;
-  }
-
-  public String getDataChangeCreatedBy() {
-    return dataChangeCreatedBy;
-  }
-
-  public void setDataChangeCreatedBy(String dataChangeCreatedBy) {
-    this.dataChangeCreatedBy = dataChangeCreatedBy;
-  }
-
-  public Date getDataChangeCreatedTime() {
-    return dataChangeCreatedTime;
-  }
-
-  public void setDataChangeCreatedTime(Date dataChangeCreatedTime) {
-    this.dataChangeCreatedTime = dataChangeCreatedTime;
-  }
-
-  public String getDataChangeLastModifiedBy() {
-    return dataChangeLastModifiedBy;
-  }
-
-  public void setDataChangeLastModifiedBy(String dataChangeLastModifiedBy) {
-    this.dataChangeLastModifiedBy = dataChangeLastModifiedBy;
-  }
-
-  public Date getDataChangeLastModifiedTime() {
-    return dataChangeLastModifiedTime;
-  }
-
-  public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
-    this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
 
   public String getComment() {
