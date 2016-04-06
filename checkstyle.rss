@@ -19,20 +19,20 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>Apollo Portal - Checkstyle report</title>
-    <link>https://ctripcorp.github.io/apollo/apollo-portal</link>
-    <description>Apollo Portal - Checkstyle report</description>
+    <title>Apollo Spring Demo - Checkstyle report</title>
+    <link>http://maven.apache.org</link>
+    <description>Apollo Spring Demo - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 11,
+      <title>File: 9,
              Errors: 0,
-             Warnings: 69,
+             Warnings: 2,
              Infos: 0
       </title>
-            <link>https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html</link>
+            <link>http://maven.apache.org/checkstyle.html</link>
       <description>
-        <p>Click <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="http://maven.apache.org/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,77 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.PortalApplication.java">com/ctrip/apollo/portal/PortalApplication.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.service.ConfigService.java">com/ctrip/apollo/portal/service/ConfigService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  35
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.service.ServiceLocator.java">com/ctrip/apollo/portal/service/ServiceLocator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  11
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.PortalSettings.java">com/ctrip/apollo/portal/PortalSettings.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.controller.GlobalDefaultExceptionHandler.java">com/ctrip/apollo/portal/controller/GlobalDefaultExceptionHandler.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.exception.NotFoundException.java">com/ctrip/apollo/portal/exception/NotFoundException.java</a>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.controller.DemoController.java">com/ctrip/apollo/demo/controller/DemoController.java</a>
                 </td>
                 <td>
                   0
@@ -130,13 +60,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.api.AdminServiceAPI.java">com/ctrip/apollo/portal/api/AdminServiceAPI.java</a>
+                  <a href="http://maven.apache.org/checkstyle.html#application.properties">application.properties</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  7
+                  0
                 </td>
                 <td>
                   0
@@ -144,7 +74,63 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.controller.EnvController.java">com/ctrip/apollo/portal/controller/EnvController.java</a>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.service.DemoService.java">com/ctrip/apollo/demo/service/DemoService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.AppConfig.java">com/ctrip/apollo/demo/AppConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://maven.apache.org/checkstyle.html#apollo.properties">apollo.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.exception.RestExceptionHandler.java">com/ctrip/apollo/demo/exception/RestExceptionHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.WebConfig.java">com/ctrip/apollo/demo/WebConfig.java</a>
                 </td>
                 <td>
                   0
@@ -158,21 +144,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.api.API.java">com/ctrip/apollo/portal/api/API.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.constants.PortalConstants.java">com/ctrip/apollo/portal/constants/PortalConstants.java</a>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.model.ErrorResult.java">com/ctrip/apollo/demo/model/ErrorResult.java</a>
                 </td>
                 <td>
                   0
@@ -186,13 +158,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.controller.ConfigController.java">com/ctrip/apollo/portal/controller/ConfigController.java</a>
+                  <a href="http://maven.apache.org/checkstyle.html#com.ctrip.apollo.demo.model.Config.java">com/ctrip/apollo/demo/model/Config.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  4
+                  0
                 </td>
                 <td>
                   0
