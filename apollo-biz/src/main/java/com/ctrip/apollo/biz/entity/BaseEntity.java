@@ -6,11 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Where(clause = "isDeleted = 0")
-@SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
 public abstract class BaseEntity {
 
   @Id

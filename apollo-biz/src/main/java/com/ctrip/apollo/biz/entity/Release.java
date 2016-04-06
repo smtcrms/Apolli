@@ -7,10 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.SQLDelete;
+
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
+@SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
 public class Release  extends BaseEntity{
 
   @Column(nullable = false)

@@ -6,10 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.SQLDelete;
+
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
+@SQLDelete(sql = "Update Version set isDeleted = 1 where id = ?")
 public class Version extends BaseEntity {
 
   @Column(nullable = false)
@@ -20,7 +23,7 @@ public class Version extends BaseEntity {
 
   // parent version could be null
   @Column
-  private Long parentVersion;
+  private Long parentVersionId;
 
   @ManyToMany
   private List<Release> releases; 
@@ -33,8 +36,8 @@ public class Version extends BaseEntity {
     return name;
   }
 
-  public Long getParentVersion() {
-    return parentVersion;
+  public Long getParentVersionId() {
+    return parentVersionId;
   }
 
   public List<Release> getReleases() {
@@ -50,8 +53,8 @@ public class Version extends BaseEntity {
     this.name = name;
   }
 
-  public void setParentVersion(Long parentVersion) {
-    this.parentVersion = parentVersion;
+  public void setParentVersionId(Long parentVersionId) {
+    this.parentVersionId = parentVersionId;
   }
 
   public void setReleases(List<Release> releases) {

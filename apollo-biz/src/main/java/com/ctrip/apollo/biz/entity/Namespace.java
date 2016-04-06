@@ -3,7 +3,10 @@ package com.ctrip.apollo.biz.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 @Entity
+@SQLDelete(sql = "Update Namespace set isDeleted = 1 where id = ?")
 public class Namespace extends BaseEntity{
 
   @Column(nullable = false)

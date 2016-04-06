@@ -3,10 +3,13 @@ package com.ctrip.apollo.biz.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
+@SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
 public class Cluster extends BaseEntity {
 
   @Column(nullable = false)

@@ -3,8 +3,11 @@ package com.ctrip.apollo.biz.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.hibernate.annotations.SQLDelete;
+
 @Entity
-public class Item  extends BaseEntity {
+@SQLDelete(sql = "Update Item set isDeleted = 1 where id = ?")
+public class Item extends BaseEntity {
 
   @Column(nullable = false)
   private long groupId;
