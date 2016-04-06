@@ -19,20 +19,20 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>Apollo ConfigService - Checkstyle report</title>
-    <link>https://ctripcorp.github.io/apollo/apollo-configservice</link>
-    <description>Apollo ConfigService - Checkstyle report</description>
+    <title>Apollo AdminService - Checkstyle report</title>
+    <link>https://ctripcorp.github.io/apollo/apollo-adminservice</link>
+    <description>Apollo AdminService - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 5,
+      <title>File: 7,
              Errors: 0,
-             Warnings: 15,
+             Warnings: 48,
              Infos: 0
       </title>
-            <link>https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html</link>
+            <link>https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html</link>
       <description>
-        <p>Click <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,21 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.metaservice.controller.ServiceController.java">com/ctrip/apollo/metaservice/controller/ServiceController.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.metaservice.service.DiscoveryService.java">com/ctrip/apollo/metaservice/service/DiscoveryService.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.PrivilegeController.java">com/ctrip/apollo/adminservice/controller/PrivilegeController.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.ServletInitializer.java">com/ctrip/apollo/ServletInitializer.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.AdminServiceApplication.java">com/ctrip/apollo/AdminServiceApplication.java</a>
                 </td>
                 <td>
                   0
@@ -88,13 +74,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.configservice.controller.ConfigController.java">com/ctrip/apollo/configservice/controller/ConfigController.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  12
+                  8
                 </td>
                 <td>
                   0
@@ -102,13 +88,55 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.ServerApplication.java">com/ctrip/apollo/ServerApplication.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ReleaseController.java">com/ctrip/apollo/adminservice/controller/ReleaseController.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
+                  9
+                </td>
+                <td>
                   0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.AppController.java">com/ctrip/apollo/adminservice/controller/AppController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ItemController.java">com/ctrip/apollo/adminservice/controller/ItemController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.GroupController.java">com/ctrip/apollo/adminservice/controller/GroupController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
                 </td>
                 <td>
                   0
