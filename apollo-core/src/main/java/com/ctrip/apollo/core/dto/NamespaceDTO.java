@@ -4,41 +4,41 @@ public class NamespaceDTO {
 
   private long id;
   
-  private long clusterId;
+  private String appId;
+  
+  private String clusterName;
 
-  private long namespaceId;
+  private String namespaceName;
 
-  private String name;
+  public String getAppId() {
+    return appId;
+  }
 
-  public long getClusterId() {
-    return clusterId;
+  public String getClusterId() {
+    return clusterName;
   }
 
   public long getId() {
     return id;
   }
 
-  public String getName() {
-    return name;
+  public String getNamespaceName() {
+    return namespaceName;
   }
 
-  public long getNamespaceId() {
-    return namespaceId;
+  public void setAppId(String appId) {
+    this.appId = appId;
   }
 
-  public void setClusterId(long clusterId) {
-    this.clusterId = clusterId;
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
   }
 
   public void setId(long id) {
     this.id = id;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setNamespaceId(long namespaceId) {
-    this.namespaceId = namespaceId;
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 }

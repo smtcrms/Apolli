@@ -180,16 +180,16 @@ public class ConfigService {
   private Map<String, List<ItemDTO>> groupConfigByCluster(List<ItemDTO> configItems) {
     Map<String, List<ItemDTO>> groupedClusterConfigs = new HashMap<>();
 
-    String clusterName;
-    for (ItemDTO configItem : configItems) {
-      clusterName = configItem.getClusterName();
-      List<ItemDTO> clusterConfigs = groupedClusterConfigs.get(clusterName);
-      if (clusterConfigs == null) {
-        clusterConfigs = new LinkedList<>();
-        groupedClusterConfigs.put(clusterName, clusterConfigs);
-      }
-      clusterConfigs.add(configItem);
-    }
+//    String clusterName;
+//    for (ItemDTO configItem : configItems) {
+//      clusterName = configItem.getClusterName();
+//      List<ItemDTO> clusterConfigs = groupedClusterConfigs.get(clusterName);
+//      if (clusterConfigs == null) {
+//        clusterConfigs = new LinkedList<>();
+//        groupedClusterConfigs.put(clusterName, clusterConfigs);
+//      }
+//      clusterConfigs.add(configItem);
+//    }
     return groupedClusterConfigs;
   }
 
@@ -227,28 +227,28 @@ public class ConfigService {
 
     Map<String, AppConfigVO.OverrideAppConfig> appIdMapOverrideAppConfig = null;
 
-    for (ItemDTO config : clusterConfigs) {
-      String targetAppId = config.getAppId();
-      if (appId.equals(targetAppId)) {// app self's configs
-        defaultClusterConfigs.add(config);
-      } else {// override other app configs
-        if (appIdMapOverrideAppConfig == null) {
-          appIdMapOverrideAppConfig = new HashMap<>();
-        }
-
-        AppConfigVO.OverrideAppConfig overrideAppConfig =
-            appIdMapOverrideAppConfig.get(targetAppId);
-
-        if (overrideAppConfig == null) {
-          overrideAppConfig = new AppConfigVO.OverrideAppConfig();
-          appIdMapOverrideAppConfig.put(targetAppId, overrideAppConfig);
-          overrideAppConfigs.add(overrideAppConfig);
-        }
-
-        overrideAppConfig.setAppId(targetAppId);
-        overrideAppConfig.addConfig(config);
-      }
-    }
+//    for (ItemDTO config : clusterConfigs) {
+//      String targetAppId = config.getAppId();
+//      if (appId.equals(targetAppId)) {// app self's configs
+//        defaultClusterConfigs.add(config);
+//      } else {// override other app configs
+//        if (appIdMapOverrideAppConfig == null) {
+//          appIdMapOverrideAppConfig = new HashMap<>();
+//        }
+//
+//        AppConfigVO.OverrideAppConfig overrideAppConfig =
+//            appIdMapOverrideAppConfig.get(targetAppId);
+//
+//        if (overrideAppConfig == null) {
+//          overrideAppConfig = new AppConfigVO.OverrideAppConfig();
+//          appIdMapOverrideAppConfig.put(targetAppId, overrideAppConfig);
+//          overrideAppConfigs.add(overrideAppConfig);
+//        }
+//
+//        overrideAppConfig.setAppId(targetAppId);
+//        overrideAppConfig.addConfig(config);
+//      }
+//    }
   }
 
   private void collectSpecialClusterConfigs(String clusterName, List<ItemDTO> clusterConfigs,

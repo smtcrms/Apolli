@@ -29,7 +29,7 @@ public class AppService {
     return appRepository.findByName(name);
   }
   
-  public App findByAppId(String appId){
+  public App findOne(String appId){
     return appRepository.findByAppId(appId);
   }
 }

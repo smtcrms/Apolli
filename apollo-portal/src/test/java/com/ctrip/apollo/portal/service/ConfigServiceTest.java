@@ -187,7 +187,7 @@ public class ConfigServiceTest {
   private ReleaseDTO assembleReleaseSnapShot(long releaseId, String clusterName,
                                                      String configurations) {
     ReleaseDTO releaseSnapShot = new ReleaseDTO();
-    releaseSnapShot.setReleaseId(releaseId);
+//    releaseSnapShot.setReleaseId(releaseId);
     releaseSnapShot.setClusterName(clusterName);
     releaseSnapShot.setConfigurations(configurations);
     return releaseSnapShot;
@@ -221,9 +221,9 @@ public class ConfigServiceTest {
   private ItemDTO assembleConfigItem(long clusterId, String clusterName, String appId,
                                            String key, String value) {
     ItemDTO configItem = new ItemDTO();
-    configItem.setClusterName(clusterName);
-    configItem.setClusterId(clusterId);
-    configItem.setAppId(appId);
+//    configItem.setClusterName(clusterName);
+//    configItem.setClusterId(clusterId);
+//    configItem.setAppId(appId);
     configItem.setKey(key);
     configItem.setValue(value);
     return configItem;

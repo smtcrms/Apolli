@@ -2,6 +2,8 @@ package com.ctrip.apollo.core.dto;
 
 public class AppDTO {
 
+  private long id;
+  
   private String name;
 
   private String appId;
@@ -12,6 +14,10 @@ public class AppDTO {
 
   public String getAppId() {
     return appId;
+  }
+
+  public long getId() {
+    return id;
   }
 
   public String getName() {
@@ -28,6 +34,10 @@ public class AppDTO {
 
   public void setAppId(String appId) {
     this.appId = appId;
+  }
+
+  public void setId(long id) {
+    this.id = id;
   }
 
   public void setName(String name) {
