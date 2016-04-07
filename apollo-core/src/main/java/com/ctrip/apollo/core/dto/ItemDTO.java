@@ -4,11 +4,7 @@ public class ItemDTO {
 
   private long id;
 
-  private long clusterId;
-
-  private String clusterName;
-
-  private String appId;
+  private long namespaceId;
 
   private String key;
 
@@ -25,59 +21,43 @@ public class ItemDTO {
     this.value = value;
   }
 
+  public String getComment() {
+    return comment;
+  }
+
   public long getId() {
     return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public long getClusterId() {
-    return clusterId;
-  }
-
-  public void setClusterId(long clusterId) {
-    this.clusterId = clusterId;
-  }
-
-  public String getClusterName() {
-    return clusterName;
-  }
-
-  public void setClusterName(String clusterName) {
-    this.clusterName = clusterName;
-  }
-
-  public String getAppId() {
-    return appId;
-  }
-
-  public void setAppId(String appId) {
-    this.appId = appId;
   }
 
   public String getKey() {
     return key;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+  public long getNamespaceId() {
+    return namespaceId;
   }
 
   public String getValue() {
     return value;
   }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public void setNamespaceId(long namespaceId) {
+    this.namespaceId = namespaceId;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
   }
 }

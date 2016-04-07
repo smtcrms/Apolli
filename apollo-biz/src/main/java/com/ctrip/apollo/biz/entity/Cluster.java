@@ -10,8 +10,8 @@ import org.hibernate.annotations.Where;
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
-@Where(clause = "isDeleted = 0")
+@SQLDelete(sql = "Update Cluster set isDeleted = 'false' where id = ?")
+@Where(clause = "isDeleted = 'false'")
 public class Cluster extends BaseEntity {
 
   @Column(nullable = false)

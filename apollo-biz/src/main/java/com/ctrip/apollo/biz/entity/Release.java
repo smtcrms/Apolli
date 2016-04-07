@@ -11,8 +11,8 @@ import org.hibernate.annotations.Where;
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
-@Where(clause = "isDeleted = 0")
+@SQLDelete(sql = "Update Release set isDeleted = 'false' where id = ?")
+@Where(clause = "isDeleted = 'false'")
 public class Release extends BaseEntity {
 
   @Column(nullable = false)

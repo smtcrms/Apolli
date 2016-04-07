@@ -11,8 +11,14 @@ public class NamespaceService {
 
   @Autowired
   private NamespaceRepository namespaceRepository;
-  
-  public Namespace findOne(Long namespaceId){
+
+  public Namespace findOne(Long namespaceId) {
     return namespaceRepository.findOne(namespaceId);
+  }
+
+  public Namespace findOne(String appId, String clusterName,
+      String namespaceName) {
+    return namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId, clusterName,
+        namespaceName);
   }
 }

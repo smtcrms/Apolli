@@ -4,45 +4,72 @@ public class ReleaseDTO {
 
   private long id;
 
-  private long releaseId;
+  private String name;
+
+  private String appId;
 
   private String clusterName;
 
+  private String namespaceName;
+
   private String configurations;
 
-  public ReleaseDTO() {
-  }
+  private String comment;
 
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public long getReleaseId() {
-    return releaseId;
-  }
-
-  public void setReleaseId(long releaseId) {
-    this.releaseId = releaseId;
+  public String getAppId() {
+    return appId;
   }
 
   public String getClusterName() {
     return clusterName;
   }
 
-  public void setClusterName(String clusterName) {
-    this.clusterName = clusterName;
+  public String getComment() {
+    return comment;
   }
 
   public String getConfigurations() {
     return configurations;
   }
 
+  public long getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getNamespaceName() {
+    return namespaceName;
+  }
+
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
+  public void setClusterName(String clusterName) {
+    this.clusterName = clusterName;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
   public void setConfigurations(String configurations) {
     this.configurations = configurations;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 
 }

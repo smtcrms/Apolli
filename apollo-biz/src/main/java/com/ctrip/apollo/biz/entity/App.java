@@ -7,14 +7,14 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@SQLDelete(sql = "Update App set isDeleted = 1 where id = ?")
-@Where(clause = "isDeleted = 0")
+@SQLDelete(sql = "Update App set isDeleted = 'false' where id = ?")
+@Where(clause = "isDeleted = 'false'")
 public class App extends BaseEntity {
 
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String appId;
 
   @Column(nullable = false)

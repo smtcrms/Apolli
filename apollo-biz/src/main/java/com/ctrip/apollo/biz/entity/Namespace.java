@@ -7,8 +7,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@SQLDelete(sql = "Update Namespace set isDeleted = 1 where id = ?")
-@Where(clause = "isDeleted = 0")
+@SQLDelete(sql = "Update Namespace set isDeleted = 'false' where id = ?")
+@Where(clause = "isDeleted = 'false'")
 public class Namespace extends BaseEntity {
 
   @Column(nullable = false)
