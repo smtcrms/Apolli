@@ -8,7 +8,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @SQLDelete(sql = "Update App set isDeleted = 'false' where id = ?")
-@Where(clause = "isDeleted = 'false'")
+@Where(clause = "isDeleted = 0")
 public class App extends BaseEntity {
 
   @Column(nullable = false)

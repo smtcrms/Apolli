@@ -8,10 +8,10 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @SQLDelete(sql = "Update AppNamespace set isDeleted = 'false' where id = ?")
-@Where(clause = "isDeleted = 'false'")
+@Where(clause = "isDeleted = 0")
 public class AppNamespace extends BaseEntity{
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String name;
 
   @Column(nullable = false)
