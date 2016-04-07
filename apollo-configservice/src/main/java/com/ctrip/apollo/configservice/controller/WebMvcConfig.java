@@ -1,4 +1,4 @@
-package com.ctrip.apollo.adminservice.controller;
+package com.ctrip.apollo.configservice.controller;
 
 import java.util.List;
 
