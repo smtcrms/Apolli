@@ -43,7 +43,10 @@ public class BeanUtils {
    *      return BeanUtil.transform(UserDTO.class, userBean);
    * </pre>
    */
-  public static <T> T transfrom(Class<T> clazz, Object src) {
+  public static <T> T transfrom(Class<T>  clazz, Object src) {
+    if (src == null){
+      return null;
+    }
     T instance = null;
     try {
       instance = clazz.newInstance();
