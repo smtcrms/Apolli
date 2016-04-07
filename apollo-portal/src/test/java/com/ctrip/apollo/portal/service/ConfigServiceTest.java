@@ -40,23 +40,23 @@ public class ConfigServiceTest {
   private ServiceLocator serviceLocator;
   @Spy
   private AdminServiceAPI.ClusterAPI clusterAPI;
-  @Spy
-  private AdminServiceAPI.ConfigAPI configAPI;
+//  @Spy
+//  private AdminServiceAPI.ConfigAPI configAPI;
 
 
 
   @Before
   public void setUp() throws ServiceException {
-    ReflectionTestUtils.setField(clusterAPI, "restTemplate", restTemplate);
-    ReflectionTestUtils.setField(configAPI, "restTemplate", restTemplate);
-
-    ReflectionTestUtils.setField(clusterAPI, "serviceLocator", serviceLocator);
-    ReflectionTestUtils.setField(configAPI, "serviceLocator", serviceLocator);
-
-    String defaultAdminService = "http://localhost:8090";
-    ServiceDTO service = new ServiceDTO();
-    service.setHomepageUrl(defaultAdminService);
-    Mockito.doReturn(service).when(serviceLocator).getAdminService(Env.DEV);
+//    ReflectionTestUtils.setField(clusterAPI, "restTemplate", restTemplate);
+//    ReflectionTestUtils.setField(configAPI, "restTemplate", restTemplate);
+//
+//    ReflectionTestUtils.setField(clusterAPI, "serviceLocator", serviceLocator);
+//    ReflectionTestUtils.setField(configAPI, "serviceLocator", serviceLocator);
+//
+//    String defaultAdminService = "http://localhost:8090";
+//    ServiceDTO service = new ServiceDTO();
+//    service.setHomepageUrl(defaultAdminService);
+//    Mockito.doReturn(service).when(serviceLocator).getAdminService(Env.DEV);
   }
 
 //  @Test

@@ -31,6 +31,20 @@ public class StringUtils {
     return str == null || str.length() == 0;
   }
 
+
+  public static boolean isContainEmpty(String... args){
+    if (args == null){
+      return false;
+    }
+
+    for (String arg: args){
+      if (arg == null || "".equals(arg)){
+        return true;
+      }
+    }
+
+    return false;
+  }
   /**
    * <p>
    * Checks if a String is whitespace, empty ("") or null.
