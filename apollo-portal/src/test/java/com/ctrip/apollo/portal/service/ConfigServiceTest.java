@@ -177,7 +177,7 @@ public class ConfigServiceTest {
 
   private ReleaseDTO[] assembleReleaseSnapShots() {
     ReleaseDTO[] releaseSnapShots = new ReleaseDTO[3];
-    releaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.DEFAULT_CLUSTER_NAME,
+    releaseSnapShots[0] = assembleReleaseSnapShot(11111, ConfigConsts.CLUSTER_NAME_DEFAULT,
                                                   "{\"6666.foo\":\"demo1\", \"6666.bar\":\"demo2\",\"3333.foo\":\"1008\",\"4444.bar\":\"99901\"}");
     releaseSnapShots[1] = assembleReleaseSnapShot(11111, "cluster1", "{\"6666.foo\":\"demo1\"}");
     releaseSnapShots[2] = assembleReleaseSnapShot(11111, "cluster2", "{\"6666.bar\":\"bar2222\"}");
@@ -195,7 +195,7 @@ public class ConfigServiceTest {
 
   private ClusterDTO[] assembleClusters() {
     ClusterDTO[] clusters = new ClusterDTO[2];
-    clusters[0] = assembleCluster(100, "6666", ConfigConsts.DEFAULT_CLUSTER_NAME);
+    clusters[0] = assembleCluster(100, "6666", ConfigConsts.CLUSTER_NAME_DEFAULT);
     clusters[1] = assembleCluster(101, "6666", "cluster1");
     return clusters;
   }
@@ -210,10 +210,10 @@ public class ConfigServiceTest {
 
   private ItemDTO[] assembleConfigItems() {
     ItemDTO[] configItems = new ItemDTO[5];
-    configItems[0] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k1", "6666.v1");
-    configItems[1] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k2", "6666.v2");
-    configItems[2] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "6666", "6666.k3", "6666.v3");
-    configItems[3] = assembleConfigItem(100, ConfigConsts.DEFAULT_CLUSTER_NAME, "5555", "5555.k1", "5555.v1");
+    configItems[0] = assembleConfigItem(100, ConfigConsts.CLUSTER_NAME_DEFAULT, "6666", "6666.k1", "6666.v1");
+    configItems[1] = assembleConfigItem(100, ConfigConsts.CLUSTER_NAME_DEFAULT, "6666", "6666.k2", "6666.v2");
+    configItems[2] = assembleConfigItem(100, ConfigConsts.CLUSTER_NAME_DEFAULT, "6666", "6666.k3", "6666.v3");
+    configItems[3] = assembleConfigItem(100, ConfigConsts.CLUSTER_NAME_DEFAULT, "5555", "5555.k1", "5555.v1");
     configItems[4] = assembleConfigItem(101, "cluster1", "6666", "6666.k1", "6666.v1");
     return configItems;
   }

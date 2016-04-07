@@ -1,4 +1,5 @@
-import com.ctrip.apollo.client.ApolloEnvironment;
+import com.ctrip.apollo.client.ConfigService;
+import com.ctrip.apollo.client.config.Config;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,15 +9,14 @@ import java.io.InputStreamReader;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloConfigDemo {
-  private ApolloEnvironment env;
+  private Config config;
 
   public ApolloConfigDemo() {
-    env = ApolloEnvironment.getInstance();
-    env.init();
+    config = ConfigService.getConfig();
   }
 
   private String getConfig(String key) {
-    String result = env.getProperty(key, "undefined");
+    String result = config.getProperty(key, "undefined");
     System.out.println(String.format("Loading key: %s with value: %s", key, result));
     return result;
   }

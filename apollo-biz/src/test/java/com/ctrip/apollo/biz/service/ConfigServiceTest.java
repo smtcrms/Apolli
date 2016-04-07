@@ -134,7 +134,7 @@ public class ConfigServiceTest {
     when(objectMapper.readValue(eq(someValidConfiguration), (TypeReference) anyObject()))
         .thenReturn(someMap);
 
-    Map<String, Object> result = configService.transformConfigurationToMap(someValidConfiguration);
+    Map<String, String> result = configService.transformConfigurationToMap(someValidConfiguration);
 
     assertEquals(someMap, result);
     verify(objectMapper, times(1))
@@ -147,7 +147,7 @@ public class ConfigServiceTest {
     when(objectMapper.readValue(eq(someInvalidConfiguration), (TypeReference) anyObject()))
         .thenThrow(IOException.class);
 
-    Map<String, Object>
+    Map<String, String>
         result =
         configService.transformConfigurationToMap(someInvalidConfiguration);
 

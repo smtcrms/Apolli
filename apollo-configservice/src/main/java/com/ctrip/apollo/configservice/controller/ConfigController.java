@@ -1,8 +1,9 @@
 package com.ctrip.apollo.configservice.controller;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
+import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.service.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.ApolloConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.dto.ApolloConfig;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -24,17 +25,25 @@ public class ConfigController {
   @Autowired
   private ConfigService configService;
 
-  @RequestMapping(value = "/{appId}/{clusterName}/{groupName}/{versionName:.*}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
-      @PathVariable String groupName, @PathVariable String versionName,
-      @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
-      HttpServletResponse response) throws IOException {
-    Release release = configService.findRelease(appId, clusterName, groupName);
+                                  @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
+                                  HttpServletResponse response) throws IOException {
+    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_APPLICATION, clientSideReleaseId,
+            response);
+  }
+
+  @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
+  public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
+                                  @PathVariable String namespace,
+                                  @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
+                                  HttpServletResponse response) throws IOException {
+    Release release = configService.findRelease(appId, clusterName, namespace);
     if (release == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           String.format(
-              "Could not load version with appId: %s, clusterName: %s, groupName: %s, versionName: %s",
-              appId, clusterName, groupName, versionName));
+              "Could not load version with appId: %s, clusterName: %s, namespace: %s",
+              appId, clusterName, namespace));
       return null;
     }
     if (release.getId() == clientSideReleaseId) {
@@ -43,12 +52,12 @@ public class ConfigController {
       return null;
     }
 
-    ApolloConfig apolloConfig = configService.loadConfig(release, groupName, versionName);
+    ApolloConfig apolloConfig = configService.loadConfig(release, namespace);
 
     if (apolloConfig == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           String.format("Could not load config with releaseId: %d, clusterName: %s",
-            release.getId(), clusterName));
+              release.getId(), clusterName));
       return null;
     }
 

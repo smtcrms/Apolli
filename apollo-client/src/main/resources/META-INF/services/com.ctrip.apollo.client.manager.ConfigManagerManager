@@ -1,0 +1,2 @@
+com.ctrip.apollo.client.manager.impl.RemoteConfigManagerManager
+com.ctrip.apollo.client.manager.impl.LocalFileConfigManagerManager
