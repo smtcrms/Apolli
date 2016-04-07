@@ -3,7 +3,6 @@ package com.ctrip.apollo.biz.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -12,9 +11,8 @@ import org.hibernate.annotations.Where;
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@Table(name = "\"Release\"")
 @SQLDelete(sql = "Update Release set isDeleted = 'false' where id = ?")
-@Where(clause = "isDeleted = 'false'")
+@Where(clause = "isDeleted = 0")
 public class Release extends BaseEntity {
 
   @Column(nullable = false)
