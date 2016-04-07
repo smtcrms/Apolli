@@ -11,21 +11,21 @@ INSERT INTO Cluster (AppId, Name) VALUES ('100003173', 'default');
 INSERT INTO Cluster (AppId, Name) VALUES ('100003173', 'cluster3');
 INSERT INTO Cluster (AppId, Name) VALUES ('fxhermesproducer', 'default');
 
-INSERT INTO AppNamespace (AppId, Name) VALUES ('100003171', 'apollo-config-service');
-INSERT INTO AppNamespace (AppId, Name) VALUES ('100003172', 'apollo-admin-service');
-INSERT INTO AppNamespace (AppId, Name) VALUES ('100003173', 'apollo-portal-service');
-INSERT INTO AppNamespace (AppID, Name) VALUES ('fxhermesproducer', 'fx-hermes-producer');
+INSERT INTO AppNamespace (AppId, Name) VALUES ('100003171', 'application');
+INSERT INTO AppNamespace (AppId, Name) VALUES ('100003172', 'application');
+INSERT INTO AppNamespace (AppId, Name) VALUES ('100003173', 'application');
+INSERT INTO AppNamespace (AppID, Name) VALUES ('fxhermesproducer', 'application');
 
-INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (1, '100003171', 'default', 'apollo-config-service');
-INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (2, 'fxhermesproducer', 'default', 'fx-hermes-producer');
-INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (3, '100003172', 'default', 'apollo-admin-service');
-INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (4, '100003173', 'default', 'apollo-portal');
-INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (5, '100003171', 'default', 'fx-hermes-producer');
+INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (1, '100003171', 'default', 'application');
+INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (2, 'fxhermesproducer', 'default', 'application');
+INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (3, '100003172', 'default', 'application');
+INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (4, '100003173', 'default', 'application');
+INSERT INTO Namespace (Id, AppId, ClusterName, NamespaceName) VALUES (5, '100003171', 'default', 'application');
 
 INSERT INTO Item (GroupId, `Key`, Value, Comment) VALUES (1, 'k1', 'v1', 'comment1');
 INSERT INTO Item (GroupId, `Key`, Value, Comment) VALUES (1, 'k2', 'v2', 'comment2');
 INSERT INTO Item (GroupId, `Key`, Value, Comment) VALUES (2, 'k3', 'v3', 'comment3');
 INSERT INTO Item (GroupId, `Key`, Value, Comment) VALUES (5, 'k3', 'v4', 'comment4');
 
-INSERT INTO `RELEASE` (Name, Comment, AppId, ClusterName, GroupName, Configurations) VALUES ('REV1','First Release','100003171', 'default', 'apollo-config-service', '{"k1":"v1"}');
+INSERT INTO `RELEASE` (Name, Comment, AppId, ClusterName, NamespaceName, Configurations) VALUES ('REV1','First Release','100003171', 'default', 'application', '{"k1":"v1"}');
 
