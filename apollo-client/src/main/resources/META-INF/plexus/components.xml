@@ -1,0 +1,30 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.ctrip.apollo.internals.ConfigManager</role>
+			<implementation>com.ctrip.apollo.internals.DefaultConfigManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.ctrip.apollo.spi.ConfigFactoryManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.ctrip.apollo.spi.ConfigFactory</role>
+			<implementation>com.ctrip.apollo.spi.DefaultConfigFactory</implementation>
+		</component>
+		<component>
+			<role>com.ctrip.apollo.spi.ConfigRegistry</role>
+			<implementation>com.ctrip.apollo.spi.DefaultConfigRegistry</implementation>
+		</component>
+		<component>
+			<role>com.ctrip.apollo.spi.ConfigFactoryManager</role>
+			<implementation>com.ctrip.apollo.spi.DefaultConfigFactoryManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.ctrip.apollo.spi.ConfigRegistry</role>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</plexus>

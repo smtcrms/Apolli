@@ -28,31 +28,30 @@ import java.util.Map;
 public class RemoteConfigLoader extends AbstractConfigLoader {
   private static final Logger logger = LoggerFactory.getLogger(RemoteConfigLoader.class);
   private final RestTemplate restTemplate;
-  private final ConfigUtil configUtil;
   private final ConfigServiceLocator serviceLocator;
 
-  public RemoteConfigLoader(RestTemplate restTemplate, ConfigUtil configUtil,
+  public RemoteConfigLoader(RestTemplate restTemplate,
                             ConfigServiceLocator locator) {
     this.restTemplate = restTemplate;
-    this.configUtil = configUtil;
     this.serviceLocator = locator;
   }
 
-  ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri, String cluster,
+  ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri,
                                ApolloRegistry apolloRegistry, ApolloConfig previousConfig) {
     String appId = apolloRegistry.getAppId();
-    String version = apolloRegistry.getVersion();
+    String cluster = apolloRegistry.getClusterName();
+    String namespace = apolloRegistry.getNamespace();
 
-    logger.info("Loading config from {}, appId={}, cluster={}, version={}", uri, appId, cluster,
-        version);
+    logger.info("Loading config from {}, appId={}, cluster={}, namespace={}", uri, appId, cluster,
+        namespace);
     String path = "/config/{appId}/{cluster}";
     Map<String, Object> paramMap = Maps.newHashMap();
     paramMap.put("appId", appId);
     paramMap.put("cluster", cluster);
 
-    if (StringUtils.hasText(version)) {
-      path = path + "/{version}";
-      paramMap.put("version", version);
+    if (StringUtils.hasText(namespace)) {
+      path = path + "/{namespace}";
+      paramMap.put("namespace", namespace);
     }
     if (previousConfig != null) {
       path = path + "?releaseId={releaseId}";
@@ -89,8 +88,7 @@ public class RemoteConfigLoader extends AbstractConfigLoader {
   @Override
   protected ApolloConfig doLoadApolloConfig(ApolloRegistry apolloRegistry, ApolloConfig previous) {
     ApolloConfig result = this.getRemoteConfig(restTemplate,
-        getConfigServiceUrl(), configUtil.getCluster(),
-        apolloRegistry, previous);
+        getConfigServiceUrl(), apolloRegistry, previous);
     //When remote server return 304, we need to return the previous result
     return result == null ? previous : result;
   }

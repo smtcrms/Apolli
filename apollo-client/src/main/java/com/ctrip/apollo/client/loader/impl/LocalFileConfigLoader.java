@@ -11,6 +11,6 @@ import com.ctrip.apollo.core.dto.ApolloConfig;
 public class LocalFileConfigLoader extends AbstractConfigLoader {
   @Override
   public ApolloConfig doLoadApolloConfig(ApolloRegistry apolloRegistry, ApolloConfig previous) {
-    return null;
+    throw new IllegalStateException("Not implemented yet!");
   }
 }

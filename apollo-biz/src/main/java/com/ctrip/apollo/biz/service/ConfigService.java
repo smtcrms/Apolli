@@ -26,8 +26,8 @@ public class ConfigService {
 
   private ObjectMapper objectMapper = new ObjectMapper();
 
-  private TypeReference<Map<String, Object>> configurationTypeReference =
-      new TypeReference<Map<String, Object>>() {};
+  private TypeReference<Map<String, String>> configurationTypeReference =
+      new TypeReference<Map<String, String>>() {};
 
   public Release findRelease(String appId, String clusterName, String namespaceName) {
     Release release = releaseRepository.findLatest(appId, clusterName, namespaceName);
@@ -37,17 +37,17 @@ public class ConfigService {
   /**
    * Load configuration from database
    */
-  public ApolloConfig loadConfig(Release release, String namespaceName, String versionName) {
+  public ApolloConfig loadConfig(Release release, String namespaceName) {
     if (release == null) {
       return null;
     }
     ApolloConfig config = new ApolloConfig(release.getAppId(), release.getClusterName(),
-        namespaceName, versionName, release.getId());
+        namespaceName, release.getId());
     config.setConfigurations(transformConfigurationToMap(release.getConfigurations()));
     return config;
   }
 
-  Map<String, Object> transformConfigurationToMap(String configurations) {
+  Map<String, String> transformConfigurationToMap(String configurations) {
     try {
       return objectMapper.readValue(configurations, configurationTypeReference);
     } catch (IOException e) {

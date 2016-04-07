@@ -210,7 +210,7 @@ public class ConfigService {
       clusterName = entry.getKey();
       clusterConfigs = entry.getValue();
 
-      if (ConfigConsts.DEFAULT_CLUSTER_NAME.equals(clusterName)) {
+      if (ConfigConsts.CLUSTER_NAME_DEFAULT.equals(clusterName)) {
         // default cluster configs
         collectDefaultClusterConfigs(appId, clusterConfigs, defaultClusterConfigs,
                                      overrideAppConfigs);

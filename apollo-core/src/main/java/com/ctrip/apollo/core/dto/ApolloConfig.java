@@ -10,45 +10,28 @@ import java.util.Map;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class ApolloConfig implements Comparable<ApolloConfig> {
+public class ApolloConfig {
 
   private String appId;
 
   private String cluster;
 
-  private String group;
-  
-  private String version;
+  private String namespace;
 
-  private Map<String, Object> configurations;
+  private Map<String, String> configurations;
 
   private long releaseId;
-
-  private int order;
 
   @JsonCreator
   public ApolloConfig(@JsonProperty("appId") String appId,
                       @JsonProperty("cluster") String cluster,
-                      @JsonProperty("group") String group,
-                      @JsonProperty("version") String version,
+                      @JsonProperty("namespace") String namespace,
                       @JsonProperty("releaseId") long releaseId) {
     super();
     this.appId = appId;
     this.cluster = cluster;
-    this.group = group;
-    this.version = version;
+    this.namespace = namespace;
     this.releaseId = releaseId;
-  }
-
-  @Override
-  public int compareTo(ApolloConfig toCompare) {
-    if (toCompare == null || this.getOrder() > toCompare.getOrder()) {
-      return 1;
-    }
-    if (toCompare.getOrder() > this.getOrder()) {
-      return -1;
-    }
-    return 0;
   }
 
   public String getAppId() {
@@ -59,36 +42,20 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
     return cluster;
   }
 
-  public Map<String, Object> getConfigurations() {
-    return configurations;
-  }
-
-  public String getGroup() {
-    return group;
-  }
-
-  public int getOrder() {
-    return order;
+  public String getNamespace() {
+    return namespace;
   }
 
   public long getReleaseId() {
     return releaseId;
   }
 
-  public String getVersion() {
-    return version;
-  }
-
-  public void setConfigurations(Map<String, Object> configurations) {
+  public void setConfigurations(Map<String, String> configurations) {
     this.configurations = configurations;
   }
 
-  public void setGroup(String group) {
-    this.group = group;
-  }
-
-  public void setOrder(int order) {
-    this.order = order;
+  public String getProperty(String key) {
+    return this.configurations.get(key);
   }
 
   @Override
@@ -97,8 +64,7 @@ public class ApolloConfig implements Comparable<ApolloConfig> {
         .omitNullValues()
         .add("appId", appId)
         .add("cluster", cluster)
-        .add("group", group)
-        .add("version", version)
+        .add("namespace", namespace)
         .add("releaseId", releaseId)
         .add("configurations", configurations)
         .toString();

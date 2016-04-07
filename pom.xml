@@ -93,7 +93,6 @@
 		<module>apollo-configservice</module>
 		<module>apollo-adminservice</module>
 		<module>apollo-portal</module>
-		<module>apollo-spring-demo</module>
 		<module>apollo-demo</module>
 	</modules>
 

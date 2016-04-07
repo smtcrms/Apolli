@@ -7,22 +7,25 @@ import com.google.common.base.MoreObjects;
  */
 public class ApolloRegistry {
   private String appId;
-  private String version;
+  private String clusterName;
+  private String namespace;
+
+  public ApolloRegistry(String appId, String clusterName, String namespace) {
+    this.appId = appId;
+    this.clusterName = clusterName;
+    this.namespace = namespace;
+  }
 
   public String getAppId() {
     return appId;
   }
 
-  public void setAppId(String appId) {
-    this.appId = appId;
+  public String getClusterName() {
+    return clusterName;
   }
 
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
+  public String getNamespace() {
+    return namespace;
   }
 
   @Override
@@ -30,7 +33,8 @@ public class ApolloRegistry {
     return MoreObjects.toStringHelper(this)
         .omitNullValues()
         .add("appId", appId)
-        .add("version", version)
+        .add("clusterName", clusterName)
+        .add("namespace", namespace)
         .toString();
   }
 }

@@ -2,6 +2,8 @@ package com.ctrip.apollo.core;
 
 public interface ConfigConsts {
 
-  String DEFAULT_CLUSTER_NAME = "default";
+  String CLUSTER_NAME_DEFAULT = "default";
+
+  String NAMESPACE_APPLICATION = "application";
 
 }
