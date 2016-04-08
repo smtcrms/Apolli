@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ServiceDTO;
+import com.ctrip.apollo.util.ConfigUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,8 @@ public class RemoteConfigTest {
   private String someNamespace;
   @Mock
   private ResponseEntity<ApolloConfig> someResponse;
+  @Mock
+  private ConfigUtil someConfigUtil;
 
   @Before
   public void setUp() throws Exception {
@@ -47,6 +50,11 @@ public class RemoteConfigTest {
 
     String someServerUrl = "http://someServer";
     mockConfigServiceLocator(someServerUrl);
+
+    String someAppId = "someApp";
+    String someCluster = "someCluster";
+    when(someConfigUtil.getAppId()).thenReturn(someAppId);
+    when(someConfigUtil.getCluster()).thenReturn(someCluster);
   }
 
   @Test
@@ -64,7 +72,7 @@ public class RemoteConfigTest {
     when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
         eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace);
+    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
 
     assertEquals(someValue, remoteConfig.getProperty(someKey, null));
     assertEquals(someDefaultValue, remoteConfig.getProperty(someKeyNotExisted, someDefaultValue));
@@ -77,7 +85,7 @@ public class RemoteConfigTest {
     when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
         eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace);
+    new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
   }
 
   @Test
@@ -94,7 +102,7 @@ public class RemoteConfigTest {
         eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
 
-    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace);
+    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
 
     Properties config = remoteConfig.loadConfig();
 

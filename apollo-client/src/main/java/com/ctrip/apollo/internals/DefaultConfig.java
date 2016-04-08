@@ -2,12 +2,16 @@ package com.ctrip.apollo.internals;
 
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
+import com.ctrip.apollo.util.ConfigUtil;
 import com.dianping.cat.Cat;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 /**
@@ -19,12 +23,14 @@ public class DefaultConfig implements Config, ConfigLoader {
   private Properties m_resourceProperties;
   private Properties m_fileProperties;
   private ConfigLoader m_fallbackLoader;
+  private ConfigUtil m_configUtil;
 
-  public DefaultConfig(File baseDir, String namespace, ConfigLoader fallbackLoader) {
+  public DefaultConfig(File baseDir, String namespace, ConfigLoader fallbackLoader, ConfigUtil configUtil) {
     m_namespace = namespace;
     m_baseDir = baseDir;
     m_resourceProperties = loadFromResource(m_namespace);
     m_fallbackLoader = fallbackLoader;
+    m_configUtil = configUtil;
     this.initLocalConfig();
   }
 
@@ -81,12 +87,29 @@ public class DefaultConfig implements Config, ConfigLoader {
     return properties;
   }
 
-  private Properties loadFromFile(File baseDir, String namespace) {
+  void initLocalConfig() {
+    m_fileProperties = this.loadFromLocalCacheFile(m_baseDir, m_namespace);
+    //TODO check if local file is expired
+    if (m_fileProperties != null) {
+      return;
+    }
+    if (m_fallbackLoader != null) {
+      m_fileProperties = m_fallbackLoader.loadConfig();
+    }
+    if (m_fileProperties == null) {
+      throw new RuntimeException(
+          String.format("Init Apollo Local Config failed - namespace: %s",
+              m_namespace));
+    }
+    persistLocalCacheFile(m_baseDir, m_namespace);
+  }
+
+  private Properties loadFromLocalCacheFile(File baseDir, String namespace) {
     if (baseDir == null) {
       return null;
     }
 
-    File file = new File(baseDir, namespace + ".properties");
+    File file = assembleLocalCacheFile(baseDir, namespace);
     Properties properties = null;
 
     if (file.isFile() && file.canRead()) {
@@ -108,23 +131,43 @@ public class DefaultConfig implements Config, ConfigLoader {
           // ignore
         }
       }
+    } else {
+      //TODO error handling
     }
 
     return properties;
   }
 
-  void initLocalConfig() {
-    m_fileProperties = this.loadFromFile(m_baseDir, m_namespace);
-    //TODO check if local file is expired
-    if (m_fileProperties == null && m_fallbackLoader != null) {
-      m_fileProperties = m_fallbackLoader.loadConfig();
+  void persistLocalCacheFile(File baseDir, String namespace) {
+    if (baseDir == null) {
+      return;
     }
-    if (m_fileProperties == null) {
-      throw new RuntimeException(
-          String.format("Init Apollo Local Config failed - namespace: %s",
-              m_namespace));
+    File file = assembleLocalCacheFile(baseDir, namespace);
+
+    OutputStream out = null;
+
+    try {
+      out = new FileOutputStream(file);
+      m_fileProperties.store(out, "Persisted by DefaultConfig");
+    } catch (FileNotFoundException ex) {
+      Cat.logError(ex);
+    } catch (IOException ex) {
+      Cat.logError(ex);
+    } finally {
+      if (out != null) {
+        try {
+          out.close();
+        } catch (IOException e) {
+          //ignore
+        }
+      }
     }
-    //TODO persist file
+  }
+
+  File assembleLocalCacheFile(File baseDir, String namespace) {
+    String fileName = String.format("%s-%s-%s.properties", m_configUtil.getAppId(),
+        m_configUtil.getCluster(), namespace);
+    return new File(baseDir, fileName);
   }
 
   @Override
