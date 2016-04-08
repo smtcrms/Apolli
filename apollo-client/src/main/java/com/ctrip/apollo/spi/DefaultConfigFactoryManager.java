@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@Named(type = ConfigFactoryManager.class)
+@Named(type = ConfigFactoryManager.class, value = "default")
 public class DefaultConfigFactoryManager extends ContainerHolder implements ConfigFactoryManager {
   @Inject
   private ConfigRegistry m_registry;
@@ -40,7 +40,6 @@ public class DefaultConfigFactoryManager extends ContainerHolder implements Conf
       factory = lookup(ConfigFactory.class, namespace);
     } catch (LookupException e) {
       // ignore it
-      e.printStackTrace();
     }
 
     // step 4: check default config factory

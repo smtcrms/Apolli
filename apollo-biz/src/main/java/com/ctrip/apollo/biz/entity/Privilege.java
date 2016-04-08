@@ -7,7 +7,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@SQLDelete(sql = "Update Privilege set isDeleted = 'false' where id = ?")
+@SQLDelete(sql = "Update Privilege set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Privilege extends BaseEntity {
 

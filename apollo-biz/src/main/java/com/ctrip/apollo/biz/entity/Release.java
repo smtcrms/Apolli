@@ -1,17 +1,17 @@
 package com.ctrip.apollo.biz.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
-@SQLDelete(sql = "Update Release set isDeleted = 'false' where id = ?")
+@SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Release extends BaseEntity {
 

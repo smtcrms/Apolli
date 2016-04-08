@@ -1,11 +1,13 @@
 package com.ctrip.apollo;
 
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.spi.ConfigFactory;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -21,22 +23,37 @@ public class ConfigServiceTest extends ComponentTestCase {
 
   @Test
   public void testHackConfig() {
-    ConfigService.setConfig(new MockConfig("hack"));
+    String someNamespace = "hack";
+    String someKey = "first";
+    ConfigService.setConfig(new MockConfig(someNamespace));
 
     Config config = ConfigService.getConfig();
 
-    Assert.assertEquals("hack:first", config.getProperty("first", null));
-    Assert.assertEquals(null, config.getProperty("unknown", null));
+    assertEquals(someNamespace + ":" + someKey, config.getProperty(someKey, null));
+    assertEquals(null, config.getProperty("unknown", null));
+  }
+
+  @Test
+  public void testHackConfigFactory() throws Exception {
+    String someKey = "someKey";
+    ConfigService.setConfigFactory(new MockConfigFactory());
+
+    Config config = ConfigService.getConfig();
+
+    assertEquals(ConfigConsts.NAMESPACE_APPLICATION + ":" + someKey,
+        config.getProperty(someKey, null));
   }
 
   @Test
   public void testMockConfigFactory() throws Exception {
-    defineComponent(ConfigFactory.class, "mock", MockConfigFactory.class);
+    String someNamespace = "mock";
+    String someKey = "someKey";
+    defineComponent(ConfigFactory.class, someNamespace, MockConfigFactory.class);
 
-    Config config = ConfigService.getConfig("mock");
+    Config config = ConfigService.getConfig(someNamespace);
 
-    Assert.assertEquals("mock:first", config.getProperty("first", null));
-    Assert.assertEquals(null, config.getProperty("unknown", null));
+    assertEquals(someNamespace + ":" + someKey, config.getProperty(someKey, null));
+    assertEquals(null, config.getProperty("unknown", null));
   }
 
   private static class MockConfig implements Config {

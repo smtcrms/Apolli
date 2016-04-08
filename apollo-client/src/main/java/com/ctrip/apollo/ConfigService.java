@@ -10,6 +10,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.unidal.lookup.ContainerLoader;
 
 /**
+ * Entry point for client config use
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigService {
@@ -21,10 +22,19 @@ public class ConfigService {
     m_container = ContainerLoader.getDefaultContainer();
   }
 
+  /**
+   * Get the config instance with default namespace
+   * @return config instance
+   */
   public static Config getConfig() {
     return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
+  /**
+   * Get the config instance for the namespace
+   * @param namespace the namespace of the config
+   * @return config instance
+   */
   public static Config getConfig(String namespace) {
     return getManager().getConfig(namespace);
   }

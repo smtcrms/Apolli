@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@Named(type = ConfigRegistry.class)
+@Named(type = ConfigRegistry.class, value = "default")
 public class DefaultConfigRegistry implements ConfigRegistry, LogEnabled {
   private Map<String, ConfigFactory> m_instances = Maps.newConcurrentMap();
 
