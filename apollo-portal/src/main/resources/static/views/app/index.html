@@ -64,13 +64,16 @@
                                             </div>
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn">文本
+                                                        class="btn btn-default btn-sm J_tableview_btn"
+                                                        ng-click="switchView(namespace, 'textarea')">文本
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn">表格
+                                                        class="btn btn-default btn-sm J_tableview_btn"
+                                                        ng-click="switchView(namespace, 'table')">表格
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-default btn-sm J_historyview_btn">
+                                                        class="btn btn-default btn-sm J_historyview_btn"
+                                                        ng-click="switchView(namespace, 'history')">
                                                     更改日志
                                                 </button>
                                             </div>
@@ -86,8 +89,13 @@
                                 </div>
                             </header>
 
+                            <div ng-show="namespace.viewType == 'textarea'">
+                                <textarea class="form-control" rows="20">
+{{namespace.text}}
+                                </textarea>
+                            </div>
 
-                            <table class="table table-bordered text-center table-hover">
+                            <table class="table table-bordered text-center table-hover" ng-show="namespace.viewType == 'table'">
                                 <thead>
                                 <tr>
                                     <th>
@@ -100,10 +108,10 @@
                                         备注
                                     </th>
                                     <th>
-                                    最后修改人
+                                        最后修改人
                                     </th>
                                     <th>
-                                    最后修改时间
+                                        最后修改时间
                                     </th>
                                 </tr>
                                 </thead>
@@ -114,23 +122,30 @@
                                         {{config.item.key}}
                                     </td>
                                     <td>
+                                        <button data-placement="top" title="查看旧值"
+                                                class="glyphicon glyphicon-eye-open"
+                                                aria-hidden="true" data-toggle="modal" data-target="#oldValue"
+                                                ng-show="config.modified"
+                                                ng-click="queryOldValue(config.item.key, config.oldValue)"></button>
                                         {{config.item.value}}
                                     </td>
                                     <td>
                                         {{config.item.comment}}
                                     </td>
                                     <td>
-                                    {{config.item.dataChangeLastModifiedBy}}
+                                        {{config.item.dataChangeLastModifiedBy}}
                                     </td>
                                     <td>
-                                    {{config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                        {{config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'}}
                                     </td>
 
                                 </tr>
                                 </tbody>
                             </table>
+
+
                             <!--历史修改视图-->
-                            <div class="J_historyview Hide historyview">
+                            <div class="J_historyview historyview" ng-show="namespace.viewType == 'history'">
                                 <div class="row">
                                     <div class="col-md-11 col-md-offset-1 list" style="">
                                         <div class="media">
@@ -180,11 +195,32 @@
             </div>
 
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade " id="oldValue" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header panel-primary">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">旧值</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{OldValue}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 
+
 <div ng-include="'../common/footer.html'"></div>
+
 
 <!-- jquery.js -->
 <script src="../../vendor/jquery.js" type="text/javascript"></script>
@@ -217,5 +253,11 @@
 <!--controller-->
 <script type="application/javascript" src="../../scripts/controller/app/AppConfigController.js"></script>
 
+
+<script type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 </body>
 </html>
