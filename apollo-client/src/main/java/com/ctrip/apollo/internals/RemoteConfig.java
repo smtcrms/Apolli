@@ -28,14 +28,15 @@ public class RemoteConfig implements Config, ConfigLoader {
   private RestTemplate m_restTemplate;
   private ConfigServiceLocator m_serviceLocator;
   private String m_namespace;
-
+  private ConfigUtil m_configUtil;
   private Properties m_remoteProperties;
 
   public RemoteConfig(RestTemplate restTemplate,
-                      ConfigServiceLocator locator, String namespace) {
+                      ConfigServiceLocator locator, String namespace, ConfigUtil configUtil) {
     this.m_restTemplate = restTemplate;
     this.m_serviceLocator = locator;
     this.m_namespace = namespace;
+    this.m_configUtil = configUtil;
     this.initialize();
   }
 
@@ -61,8 +62,8 @@ public class RemoteConfig implements Config, ConfigLoader {
   }
 
   private ApolloConfig loadApolloConfig() {
-    String appId = ConfigUtil.getInstance().getAppId();
-    String cluster = ConfigUtil.getInstance().getCluster();
+    String appId = m_configUtil.getAppId();
+    String cluster = m_configUtil.getCluster();
     try {
       ApolloConfig result =
           this.getRemoteConfig(m_restTemplate, getConfigServiceUrl(),
