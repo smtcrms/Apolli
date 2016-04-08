@@ -1,5 +1,7 @@
 package com.ctrip.apollo.core.dto;
 
+import java.util.Date;
+
 public class ItemDTO {
 
   private long id;
@@ -11,6 +13,10 @@ public class ItemDTO {
   private String value;
 
   private String comment;
+
+  private String dataChangeLastModifiedBy;
+
+  private Date dataChangeLastModifiedTime;
 
   public ItemDTO() {
 
@@ -59,5 +65,21 @@ public class ItemDTO {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  public String getDataChangeLastModifiedBy() {
+    return dataChangeLastModifiedBy;
+  }
+
+  public void setDataChangeLastModifiedBy(String dataChangeLastModifiedBy) {
+    this.dataChangeLastModifiedBy = dataChangeLastModifiedBy;
+  }
+
+  public Date getDataChangeLastModifiedTime() {
+    return dataChangeLastModifiedTime;
+  }
+
+  public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
+    this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
 }

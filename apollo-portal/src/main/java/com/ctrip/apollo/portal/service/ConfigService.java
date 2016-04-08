@@ -97,12 +97,12 @@ public class ConfigService {
     NamespaceVO.ItemVO itemVO = new NamespaceVO.ItemVO();
     itemVO.setItem(itemDTO);
     String key = itemDTO.getKey();
-    String value = itemDTO.getValue();
+    String newValue = itemDTO.getValue();
     String oldValue = releaseItems.get(key);
-    if (value.equals(oldValue)) {
+    if (oldValue == null || !newValue.equals(oldValue)) {
       itemVO.setModified(true);
-      itemVO.setOldValue(oldValue);
-      itemVO.setNewValue(value);
+      itemVO.setOldValue(oldValue == null ? "" : oldValue);
+      itemVO.setNewValue(newValue);
     }
     return itemVO;
   }
