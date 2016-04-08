@@ -1,5 +1,6 @@
-import com.ctrip.apollo.client.ConfigService;
-import com.ctrip.apollo.client.config.Config;
+
+import com.ctrip.apollo.Config;
+import com.ctrip.apollo.ConfigService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +13,7 @@ public class ApolloConfigDemo {
   private Config config;
 
   public ApolloConfigDemo() {
-    config = ConfigService.getConfig();
+    config = ConfigService.getConfig("apollo-config-service");
   }
 
   private String getConfig(String key) {

@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@Named(type = ConfigManager.class)
+@Named(type = ConfigManager.class, value = "default")
 public class DefaultConfigManager implements ConfigManager {
   @Inject
   private ConfigFactoryManager m_factoryManager;

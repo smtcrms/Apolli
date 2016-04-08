@@ -50,12 +50,12 @@ public class ApolloConfig {
     return releaseId;
   }
 
-  public void setConfigurations(Map<String, String> configurations) {
-    this.configurations = configurations;
+  public Map<String, String> getConfigurations() {
+    return configurations;
   }
 
-  public String getProperty(String key) {
-    return this.configurations.get(key);
+  public void setConfigurations(Map<String, String> configurations) {
+    this.configurations = configurations;
   }
 
   @Override
