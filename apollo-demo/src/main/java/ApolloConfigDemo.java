@@ -13,7 +13,7 @@ public class ApolloConfigDemo {
   private Config config;
 
   public ApolloConfigDemo() {
-    config = ConfigService.getConfig("apollo-config-service");
+    config = ConfigService.getConfig();
   }
 
   private String getConfig(String key) {
