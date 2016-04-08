@@ -19,6 +19,9 @@ a{
 }
 
 /*panel*/
+.panel{
+    border: 1px solid #ddd;
+}
 .panel-heading {
     height: 45px;
     font-size: 14px;
