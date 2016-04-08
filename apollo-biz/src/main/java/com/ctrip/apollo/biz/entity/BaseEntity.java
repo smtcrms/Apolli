@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -17,7 +20,8 @@ public abstract class BaseEntity {
   @GeneratedValue
   private long id;
 
-  private boolean isDeleted;
+  @Column(name = "IsDeleted")
+  protected boolean isDeleted;
 
   @Column(name = "DataChange_CreatedBy")
   private String dataChangeCreatedBy;
@@ -77,5 +81,20 @@ public abstract class BaseEntity {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  @PrePersist
+  private void prePersist() {
+    if (this.dataChangeCreatedTime == null) dataChangeCreatedTime = new Date();
+  }
+
+  @PreUpdate
+  private void preUpdate() {
+    this.dataChangeLastModifiedTime = new Date();
+  }
+
+  @PreRemove
+  private void preRemove() {
+    this.dataChangeLastModifiedTime = new Date();
   }
 }
