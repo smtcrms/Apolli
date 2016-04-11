@@ -1,9 +1,5 @@
 package com.ctrip.apollo.biz.utils;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.util.CollectionUtils;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.util.CollectionUtils;
 
 
 public class BeanUtils {
@@ -23,7 +23,6 @@ public class BeanUtils {
    * </pre>
    */
   public static <T> List<T> batchTransform(final Class<T> clazz, List srcList) {
-
     if (CollectionUtils.isEmpty(srcList)) {
       return Collections.EMPTY_LIST;
     }
@@ -43,8 +42,8 @@ public class BeanUtils {
    *      return BeanUtil.transform(UserDTO.class, userBean);
    * </pre>
    */
-  public static <T> T transfrom(Class<T>  clazz, Object src) {
-    if (src == null){
+  public static <T> T transfrom(Class<T> clazz, Object src) {
+    if (src == null) {
       return null;
     }
     T instance = null;
@@ -207,5 +206,15 @@ public class BeanUtils {
 
   public static List toPropertyList(String key, List list) {
     return new ArrayList(toPropertySet(key, list));
+  }
+
+  /**
+   * The copy will ignore <em>id</em> field
+   * 
+   * @param source
+   * @param target
+   */
+  public static void copyEntityProperties(Object source, Object target) {
+    org.springframework.beans.BeanUtils.copyProperties(source, target, "id");
   }
 }

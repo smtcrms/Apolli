@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.ctrip.apollo.biz.SpringTestConfiguration;
+import com.ctrip.apollo.biz.BizTestConfiguration;
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.Namespace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SpringTestConfiguration.class)
+@SpringApplicationConfiguration(classes = BizTestConfiguration.class)
 public class AdminServiceTest {
 
   @Autowired
