@@ -6,26 +6,22 @@ import com.google.common.collect.Maps;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.util.ConfigUtil;
+import com.ctrip.apollo.util.http.HttpRequest;
+import com.ctrip.apollo.util.http.HttpResponse;
+import com.ctrip.apollo.util.http.HttpUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.unidal.lookup.ComponentTestCase;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,27 +29,23 @@ import static org.mockito.Mockito.when;
  * Created by Jason on 4/9/16.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RemoteConfigRepositoryTest {
-  @Mock
-  private RestTemplate restTemplate;
+public class RemoteConfigRepositoryTest extends ComponentTestCase {
   @Mock
   private ConfigServiceLocator configServiceLocator;
   private String someNamespace;
   @Mock
-  private ResponseEntity<ApolloConfig> someResponse;
+  private static HttpResponse<ApolloConfig> someResponse;
   @Mock
   private ConfigUtil someConfigUtil;
 
   @Before
   public void setUp() throws Exception {
+    super.setUp();
     someNamespace = "someName";
-    String someServerUrl = "http://someServer";
-    mockConfigServiceLocator(someServerUrl);
 
-    String someAppId = "someApp";
-    String someCluster = "someCluster";
-    when(someConfigUtil.getAppId()).thenReturn(someAppId);
-    when(someConfigUtil.getCluster()).thenReturn(someCluster);
+    defineComponent(ConfigUtil.class, MockConfigUtil.class);
+    defineComponent(ConfigServiceLocator.class, MockConfigServiceLocator.class);
+    defineComponent(HttpUtil.class, MockHttpUtil.class);
   }
 
   @Test
@@ -64,13 +56,10 @@ public class RemoteConfigRepositoryTest {
     configurations.put(someKey, someValue);
     ApolloConfig someApolloConfig = assembleApolloConfig(configurations);
 
-    when(someResponse.getStatusCode()).thenReturn(HttpStatus.OK);
+    when(someResponse.getStatusCode()).thenReturn(200);
     when(someResponse.getBody()).thenReturn(someApolloConfig);
-    when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
-            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
-
-    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(restTemplate, configServiceLocator, someConfigUtil, someNamespace);
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
     Properties config = remoteConfigRepository.loadConfig();
 
     assertEquals(configurations, config);
@@ -79,11 +68,9 @@ public class RemoteConfigRepositoryTest {
   @Test(expected = RuntimeException.class)
   public void testGetRemoteConfigWithServerError() throws Exception {
 
-    when(someResponse.getStatusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
-    when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
-            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
+    when(someResponse.getStatusCode()).thenReturn(500);
 
-    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(restTemplate, configServiceLocator, someConfigUtil, someNamespace);
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
     remoteConfigRepository.loadConfig();
   }
 
@@ -99,10 +86,35 @@ public class RemoteConfigRepositoryTest {
     return apolloConfig;
   }
 
-  private void mockConfigServiceLocator(String serverUrl) {
-    ServiceDTO serviceDTO = mock(ServiceDTO.class);
+  public static class MockConfigUtil extends ConfigUtil {
+    @Override
+    public String getAppId() {
+      return "someApp";
+    }
 
-    when(serviceDTO.getHomepageUrl()).thenReturn(serverUrl);
-    when(configServiceLocator.getConfigServices()).thenReturn(Lists.newArrayList(serviceDTO));
+    @Override
+    public String getCluster() {
+      return "someCluster";
+    }
   }
+
+  public static class MockConfigServiceLocator extends ConfigServiceLocator {
+    @Override
+    public List<ServiceDTO> getConfigServices() {
+      String someServerUrl = "http://someServer";
+
+      ServiceDTO serviceDTO = mock(ServiceDTO.class);
+
+      when(serviceDTO.getHomepageUrl()).thenReturn(someServerUrl);
+      return Lists.newArrayList(serviceDTO);
+    }
+  }
+
+  public static class MockHttpUtil extends HttpUtil {
+    @Override
+    public <T> HttpResponse<T> doGet(HttpRequest httpRequest, Class<T> responseType) {
+      return (HttpResponse<T>) someResponse;
+    }
+  }
+
 }

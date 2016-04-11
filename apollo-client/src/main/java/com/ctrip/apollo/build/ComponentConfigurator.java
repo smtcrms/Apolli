@@ -1,9 +1,12 @@
 package com.ctrip.apollo.build;
 
+import com.ctrip.apollo.internals.ConfigServiceLocator;
 import com.ctrip.apollo.internals.DefaultConfigManager;
 import com.ctrip.apollo.spi.DefaultConfigFactory;
 import com.ctrip.apollo.spi.DefaultConfigFactoryManager;
 import com.ctrip.apollo.spi.DefaultConfigRegistry;
+import com.ctrip.apollo.util.ConfigUtil;
+import com.ctrip.apollo.util.http.HttpUtil;
 
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -27,6 +30,9 @@ public class ComponentConfigurator extends AbstractResourceConfigurator {
     all.add(A(DefaultConfigFactory.class));
     all.add(A(DefaultConfigRegistry.class));
     all.add(A(DefaultConfigFactoryManager.class));
+    all.add(A(ConfigUtil.class));
+    all.add(A(ConfigServiceLocator.class));
+    all.add(A(HttpUtil.class));
 
     return all;
   }

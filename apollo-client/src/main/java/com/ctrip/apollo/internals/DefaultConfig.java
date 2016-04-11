@@ -4,6 +4,9 @@ import com.ctrip.apollo.Config;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
 import com.dianping.cat.Cat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -12,6 +15,7 @@ import java.util.Properties;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class DefaultConfig implements Config {
+  private static final Logger logger = LoggerFactory.getLogger(DefaultConfig.class);
   private final String m_namespace;
   private Properties m_resourceProperties;
   private Properties m_configProperties;
@@ -28,9 +32,10 @@ public class DefaultConfig implements Config {
     try {
       m_configProperties = m_configRepository.loadConfig();
     } catch (Throwable ex) {
-      throw new RuntimeException(
-          String.format("Init Apollo Local Config failed - namespace: %s",
-              m_namespace), ex);
+      String message = String.format("Init Apollo Local Config failed - namespace: %s",
+          m_namespace);
+      logger.error(message, ex);
+      throw new RuntimeException(message, ex);
     }
   }
 
@@ -74,6 +79,7 @@ public class DefaultConfig implements Config {
       try {
         properties.load(in);
       } catch (IOException e) {
+        logger.error("Load resource config for namespace {} failed", namespace, e);
         Cat.logError(e);
       } finally {
         try {

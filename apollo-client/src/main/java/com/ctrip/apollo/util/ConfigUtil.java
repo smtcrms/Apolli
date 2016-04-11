@@ -1,30 +1,19 @@
 package com.ctrip.apollo.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.unidal.lookup.annotation.Named;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
+@Named(type = ConfigUtil.class)
 public class ConfigUtil {
   //TODO read from config?
   private static final int refreshInterval = 5;
   private static final TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
-
-  private static ConfigUtil configUtil = new ConfigUtil();
-
-  private ConfigUtil() {
-  }
-
-  public static ConfigUtil getInstance() {
-    return configUtil;
-  }
+  private static final int connectTimeout = 5000; //5 seconds
+  private static final int readTimeout = 10000; //10 seconds
 
   public String getAppId() {
     // TODO return the actual app id
@@ -34,6 +23,14 @@ public class ConfigUtil {
   public String getCluster() {
     // TODO return the actual cluster
     return "default";
+  }
+
+  public int getConnectTimeout() {
+    return connectTimeout;
+  }
+
+  public int getReadTimeout() {
+    return readTimeout;
   }
 
   public int getRefreshInterval() {
