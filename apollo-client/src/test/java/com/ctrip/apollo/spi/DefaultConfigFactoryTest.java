@@ -2,7 +2,7 @@ package com.ctrip.apollo.spi;
 
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.internals.DefaultConfig;
-import com.ctrip.apollo.internals.RemoteConfig;
+import com.ctrip.apollo.internals.LocalFileConfigRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -38,17 +39,16 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
     String someValue = "someValue";
     someProperties.setProperty(someKey, someValue);
 
-    RemoteConfig someRemoteConfig = mock(RemoteConfig.class);
-    when(someRemoteConfig.loadConfig()).thenReturn(someProperties);
+    LocalFileConfigRepository someLocalConfigRepo = mock(LocalFileConfigRepository.class);
+    when(someLocalConfigRepo.loadConfig()).thenReturn(someProperties);
 
-    doReturn(someRemoteConfig).when(defaultConfigFactory).createRemoteConfig(someNamespace);
+    doReturn(someLocalConfigRepo).when(defaultConfigFactory).createLocalConfigRepository(someNamespace);
 
     Config result = defaultConfigFactory.create(someNamespace);
 
     assertThat("DefaultConfigFactory should create DefaultConfig", result,
         is(instanceOf(DefaultConfig.class)));
-    assertThat("DefaultConfigFactory should set remote config as the fallback loader",
-        ((DefaultConfig) result).getFallbackLoader(), instanceOf(RemoteConfig.class));
+    assertEquals(someValue, result.getProperty(someKey, null));
   }
 
 }

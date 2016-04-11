@@ -2,7 +2,6 @@ package com.ctrip.apollo.internals;
 
 import com.google.common.collect.Maps;
 
-import com.ctrip.apollo.Config;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.util.ConfigUtil;
@@ -23,43 +22,44 @@ import java.util.Properties;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class RemoteConfig implements Config, ConfigLoader {
-  private static final Logger logger = LoggerFactory.getLogger(RemoteConfig.class);
+public class RemoteConfigRepository implements ConfigRepository {
+  private static final Logger logger = LoggerFactory.getLogger(RemoteConfigRepository.class);
   private RestTemplate m_restTemplate;
   private ConfigServiceLocator m_serviceLocator;
-  private String m_namespace;
   private ConfigUtil m_configUtil;
   private Properties m_remoteProperties;
+  private String m_namespace;
 
-  public RemoteConfig(RestTemplate restTemplate,
-                      ConfigServiceLocator locator, String namespace, ConfigUtil configUtil) {
-    this.m_restTemplate = restTemplate;
-    this.m_serviceLocator = locator;
-    this.m_namespace = namespace;
-    this.m_configUtil = configUtil;
-    this.initialize();
-  }
-
-  @Override
-  public String getProperty(String key, String defaultValue) {
-    return this.m_remoteProperties.getProperty(key, defaultValue);
+  public RemoteConfigRepository(RestTemplate restTemplate,
+                                ConfigServiceLocator serviceLocator,
+                                ConfigUtil configUtil, String namespace) {
+    m_restTemplate = restTemplate;
+    m_serviceLocator = serviceLocator;
+    m_configUtil = configUtil;
+    m_namespace = namespace;
   }
 
   @Override
   public Properties loadConfig() {
     if (m_remoteProperties == null) {
-      return null;
+      initRemoteConfig();
     }
     Properties result = new Properties();
     result.putAll(m_remoteProperties);
     return result;
   }
 
-  private void initialize() {
+  @Override
+  public void setFallback(ConfigRepository fallbackConfigRepository) {
+    //remote config doesn't need fallback
+  }
+
+  private void initRemoteConfig() {
     ApolloConfig apolloConfig = this.loadApolloConfig();
     m_remoteProperties = new Properties();
     m_remoteProperties.putAll(apolloConfig.getConfigurations());
   }
+
 
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
@@ -82,9 +82,10 @@ public class RemoteConfig implements Config, ConfigLoader {
     }
   }
 
+
   private ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri,
-                               String appId, String cluster, String namespace,
-                               ApolloConfig previousConfig) {
+                                       String appId, String cluster, String namespace,
+                                       ApolloConfig previousConfig) {
 
     logger.info("Loading config from {}, appId={}, cluster={}, namespace={}", uri, appId, cluster,
         namespace);
@@ -136,5 +137,4 @@ public class RemoteConfig implements Config, ConfigLoader {
     }
     return services.get(0).getHomepageUrl();
   }
-
 }

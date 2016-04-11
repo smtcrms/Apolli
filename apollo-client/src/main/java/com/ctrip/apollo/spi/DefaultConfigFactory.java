@@ -2,9 +2,8 @@ package com.ctrip.apollo.spi;
 
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
-import com.ctrip.apollo.internals.ConfigServiceLocator;
-import com.ctrip.apollo.internals.DefaultConfig;
-import com.ctrip.apollo.internals.RemoteConfig;
+import com.ctrip.apollo.internals.*;
+import com.ctrip.apollo.internals.RemoteConfigRepository;
 import com.ctrip.apollo.util.ConfigUtil;
 
 import org.springframework.web.client.RestTemplate;
@@ -29,14 +28,20 @@ public class DefaultConfigFactory implements ConfigFactory {
 
   @Override
   public Config create(String namespace) {
-    RemoteConfig remoteConfig = this.createRemoteConfig(namespace);
-    DefaultConfig defaultConfig =
-        new DefaultConfig(m_baseDir, namespace, remoteConfig, ConfigUtil.getInstance());
+    DefaultConfig defaultConfig = new DefaultConfig(namespace, createLocalConfigRepository(namespace));
     return defaultConfig;
   }
 
-  public RemoteConfig createRemoteConfig(String namespace) {
-    return new RemoteConfig(new RestTemplate(), new ConfigServiceLocator(), namespace,
-        ConfigUtil.getInstance());
+  LocalFileConfigRepository createLocalConfigRepository(String namespace) {
+    LocalFileConfigRepository
+        localFileConfigLoader =
+        new LocalFileConfigRepository(m_baseDir, namespace, ConfigUtil.getInstance());
+    localFileConfigLoader.setFallback(createRemoteConfigRepository(namespace));
+    return localFileConfigLoader;
+  }
+
+  RemoteConfigRepository createRemoteConfigRepository(String namespace) {
+    return new RemoteConfigRepository(new RestTemplate(), new ConfigServiceLocator(),
+        ConfigUtil.getInstance(), namespace);
   }
 }
