@@ -22,18 +22,18 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * @author Jason Song(song_s@ctrip.com)
+ * Created by Jason on 4/9/16.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class RemoteConfigTest {
+public class RemoteConfigRepositoryTest {
   @Mock
   private RestTemplate restTemplate;
   @Mock
@@ -47,7 +47,6 @@ public class RemoteConfigTest {
   @Before
   public void setUp() throws Exception {
     someNamespace = "someName";
-
     String someServerUrl = "http://someServer";
     mockConfigServiceLocator(someServerUrl);
 
@@ -55,37 +54,6 @@ public class RemoteConfigTest {
     String someCluster = "someCluster";
     when(someConfigUtil.getAppId()).thenReturn(someAppId);
     when(someConfigUtil.getCluster()).thenReturn(someCluster);
-  }
-
-  @Test
-  public void testGetProperty() throws Exception {
-    String someKey = "someKey";
-    String someValue = "someValue";
-    String someKeyNotExisted = "key-not-existed";
-    String someDefaultValue = "someDefault";
-    Map<String, String> configurations = Maps.newHashMap();
-    configurations.put(someKey, someValue);
-    ApolloConfig someApolloConfig = assembleApolloConfig(configurations);
-
-    when(someResponse.getStatusCode()).thenReturn(HttpStatus.OK);
-    when(someResponse.getBody()).thenReturn(someApolloConfig);
-    when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
-        eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
-
-    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
-
-    assertEquals(someValue, remoteConfig.getProperty(someKey, null));
-    assertEquals(someDefaultValue, remoteConfig.getProperty(someKeyNotExisted, someDefaultValue));
-  }
-
-  @Test(expected = RuntimeException.class)
-  public void testGetRemoteConfigWithServerError() throws Exception {
-
-    when(someResponse.getStatusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
-    when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
-        eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
-
-    new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
   }
 
   @Test
@@ -99,14 +67,24 @@ public class RemoteConfigTest {
     when(someResponse.getStatusCode()).thenReturn(HttpStatus.OK);
     when(someResponse.getBody()).thenReturn(someApolloConfig);
     when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
-        eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
+            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
 
 
-    RemoteConfig remoteConfig = new RemoteConfig(restTemplate, configServiceLocator, someNamespace, someConfigUtil);
-
-    Properties config = remoteConfig.loadConfig();
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(restTemplate, configServiceLocator, someConfigUtil, someNamespace);
+    Properties config = remoteConfigRepository.loadConfig();
 
     assertEquals(configurations, config);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void testGetRemoteConfigWithServerError() throws Exception {
+
+    when(someResponse.getStatusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+    when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+            eq(ApolloConfig.class), anyMap())).thenReturn(someResponse);
+
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(restTemplate, configServiceLocator, someConfigUtil, someNamespace);
+    remoteConfigRepository.loadConfig();
   }
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
@@ -114,7 +92,7 @@ public class RemoteConfigTest {
     String someClusterName = "cluster";
     long someReleaseId = 1;
     ApolloConfig apolloConfig =
-        new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
+            new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
 
     apolloConfig.setConfigurations(configurations);
 

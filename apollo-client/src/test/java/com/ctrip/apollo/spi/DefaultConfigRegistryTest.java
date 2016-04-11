@@ -4,11 +4,11 @@ import com.ctrip.apollo.Config;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.unidal.lookup.ComponentTestCase;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
