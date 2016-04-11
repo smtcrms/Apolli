@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.ctrip.apollo.biz")
-public class SpringTestConfiguration {
+public class BizTestConfiguration {
 
 }
