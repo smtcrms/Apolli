@@ -1,17 +1,18 @@
 package com.ctrip.apollo.biz.service;
 
-import java.io.IOException;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
 import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * Config Service
@@ -24,10 +25,9 @@ public class ConfigService {
   @Autowired
   private ReleaseRepository releaseRepository;
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private Gson gson = new Gson();
 
-  private TypeReference<Map<String, String>> configurationTypeReference =
-      new TypeReference<Map<String, String>>() {};
+  private Type configurationTypeReference = new TypeToken<Map<String, String>>(){}.getType();
 
   public Release findRelease(String appId, String clusterName, String namespaceName) {
     Release release = releaseRepository.findLatest(appId, clusterName, namespaceName);
@@ -49,8 +49,8 @@ public class ConfigService {
 
   Map<String, String> transformConfigurationToMap(String configurations) {
     try {
-      return objectMapper.readValue(configurations, configurationTypeReference);
-    } catch (IOException e) {
+      return gson.fromJson(configurations, configurationTypeReference);
+    } catch (Throwable e) {
       e.printStackTrace();
       return Maps.newHashMap();
     }

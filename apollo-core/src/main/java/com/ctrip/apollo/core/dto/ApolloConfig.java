@@ -2,9 +2,6 @@ package com.ctrip.apollo.core.dto;
 
 import com.google.common.base.MoreObjects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Map;
 
 /**
@@ -22,11 +19,10 @@ public class ApolloConfig {
 
   private long releaseId;
 
-  @JsonCreator
-  public ApolloConfig(@JsonProperty("appId") String appId,
-                      @JsonProperty("cluster") String cluster,
-                      @JsonProperty("namespace") String namespace,
-                      @JsonProperty("releaseId") long releaseId) {
+  public ApolloConfig(String appId,
+                      String cluster,
+                      String namespace,
+                      long releaseId) {
     super();
     this.appId = appId;
     this.cluster = cluster;

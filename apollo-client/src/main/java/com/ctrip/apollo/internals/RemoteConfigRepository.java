@@ -1,52 +1,56 @@
 package com.ctrip.apollo.internals;
 
-import com.google.common.collect.Maps;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.util.ConfigUtil;
+import com.ctrip.apollo.util.http.HttpRequest;
+import com.ctrip.apollo.util.http.HttpResponse;
+import com.ctrip.apollo.util.http.HttpUtil;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
+import org.unidal.lookup.ContainerLoader;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public class RemoteConfigRepository implements ConfigRepository {
   private static final Logger logger = LoggerFactory.getLogger(RemoteConfigRepository.class);
-  private RestTemplate m_restTemplate;
+  private PlexusContainer m_container;
   private ConfigServiceLocator m_serviceLocator;
+  private HttpUtil m_httpUtil;
   private ConfigUtil m_configUtil;
-  private Properties m_remoteProperties;
+  private AtomicReference<ApolloConfig> m_configCache;
   private String m_namespace;
 
-  public RemoteConfigRepository(RestTemplate restTemplate,
-                                ConfigServiceLocator serviceLocator,
-                                ConfigUtil configUtil, String namespace) {
-    m_restTemplate = restTemplate;
-    m_serviceLocator = serviceLocator;
-    m_configUtil = configUtil;
+  public RemoteConfigRepository(String namespace) {
     m_namespace = namespace;
+    m_configCache = new AtomicReference<>();
+    m_container = ContainerLoader.getDefaultContainer();
+    try {
+      m_configUtil = m_container.lookup(ConfigUtil.class);
+      m_httpUtil = m_container.lookup(HttpUtil.class);
+      m_serviceLocator = m_container.lookup(ConfigServiceLocator.class);
+    } catch (ComponentLookupException e) {
+      throw new IllegalStateException("Unable to load component!", e);
+    }
   }
 
   @Override
   public Properties loadConfig() {
-    if (m_remoteProperties == null) {
+    if (m_configCache.get() == null) {
       initRemoteConfig();
     }
-    Properties result = new Properties();
-    result.putAll(m_remoteProperties);
-    return result;
+    return transformApolloConfigToProperties(m_configCache.get());
   }
 
   @Override
@@ -55,79 +59,60 @@ public class RemoteConfigRepository implements ConfigRepository {
   }
 
   private void initRemoteConfig() {
-    ApolloConfig apolloConfig = this.loadApolloConfig();
-    m_remoteProperties = new Properties();
-    m_remoteProperties.putAll(apolloConfig.getConfigurations());
+    m_configCache.set(this.loadApolloConfig());
+  }
+
+  private Properties transformApolloConfigToProperties(ApolloConfig apolloConfig) {
+    Properties result = new Properties();
+    result.putAll(apolloConfig.getConfigurations());
+    return result;
   }
 
 
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
+    String uri = getConfigServiceUrl();
+
+    logger.info("Loading config from {}, appId={}, cluster={}, namespace={}", uri, appId, cluster,
+        m_namespace);
+    HttpRequest request =
+        new HttpRequest(assembleUrl(uri, appId, cluster, m_namespace, m_configCache.get()));
+
     try {
-      ApolloConfig result =
-          this.getRemoteConfig(m_restTemplate, getConfigServiceUrl(),
-              appId, cluster,
-              m_namespace,
-              null);
-      if (result == null) {
-        return null;
+      HttpResponse<ApolloConfig> response = m_httpUtil.doGet(request, ApolloConfig.class);
+      if (response.getStatusCode() == 304) {
+        return m_configCache.get();
       }
-      logger.info("Loaded config: {}", result);
-      return result;
-    } catch (Throwable ex) {
-      throw new RuntimeException(
+
+      logger.info("Loaded config: {}", response.getBody());
+
+      return response.getBody();
+    } catch (Throwable t) {
+      String message =
           String.format("Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s", appId,
-              cluster, m_namespace), ex);
+              cluster, m_namespace);
+      logger.error(message, t);
+      throw new RuntimeException(message, t);
     }
   }
 
+  private String assembleUrl(String uri, String appId, String cluster, String namespace,
+                             ApolloConfig previousConfig) {
+    String path = "/config/%s/%s";
+    List<String> params = Lists.newArrayList(appId, cluster);
 
-  private ApolloConfig getRemoteConfig(RestTemplate restTemplate, String uri,
-                                       String appId, String cluster, String namespace,
-                                       ApolloConfig previousConfig) {
-
-    logger.info("Loading config from {}, appId={}, cluster={}, namespace={}", uri, appId, cluster,
-        namespace);
-    String path = "/config/{appId}/{cluster}";
-    Map<String, Object> paramMap = Maps.newHashMap();
-    paramMap.put("appId", appId);
-    paramMap.put("cluster", cluster);
-
-    if (StringUtils.hasText(namespace)) {
-      path = path + "/{namespace}";
-      paramMap.put("namespace", namespace);
+    if (!Strings.isNullOrEmpty(namespace)) {
+      path = path + "/%s";
+      params.add(namespace);
     }
     if (previousConfig != null) {
-      path = path + "?releaseId={releaseId}";
-      paramMap.put("releaseId", previousConfig.getReleaseId());
+      path = path + "?releaseId=%s";
+      params.add(String.valueOf(previousConfig.getReleaseId()));
     }
 
-    ResponseEntity<ApolloConfig> response;
-
-    try {
-      // TODO retry
-      response = restTemplate.exchange(uri
-          + path, HttpMethod.GET, new HttpEntity<Void>((Void) null), ApolloConfig.class, paramMap);
-    } catch (Throwable ex) {
-      throw ex;
-    }
-
-    if (response == null) {
-      throw new RuntimeException("Load apollo config failed, response is null");
-    }
-
-    if (response.getStatusCode() == HttpStatus.NOT_MODIFIED) {
-      return null;
-    }
-
-    if (response.getStatusCode() != HttpStatus.OK) {
-      throw new RuntimeException(
-          String.format("Load apollo config failed, response status %s", response.getStatusCode()));
-    }
-
-    ApolloConfig result = response.getBody();
-    return result;
+    String pathExpanded = String.format(path, params.toArray());
+    return uri + pathExpanded;
   }
 
   private String getConfigServiceUrl() {

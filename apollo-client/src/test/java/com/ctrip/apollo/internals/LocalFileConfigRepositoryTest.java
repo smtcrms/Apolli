@@ -8,6 +8,7 @@ import com.ctrip.apollo.util.ConfigUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.unidal.lookup.ComponentTestCase;
 
 import java.io.File;
 import java.util.Properties;
@@ -21,15 +22,17 @@ import static org.mockito.Mockito.when;
 /**
  * Created by Jason on 4/9/16.
  */
-public class LocalFileConfigRepositoryTest {
+public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   private File someBaseDir;
   private String someNamespace;
   private ConfigRepository fallbackRepo;
   private Properties someProperties;
-  private ConfigUtil someConfigUtil;
+  private static String someAppId = "someApp";
+  private static String someCluster = "someCluster";
 
   @Before
   public void setUp() throws Exception {
+    super.setUp();
     someBaseDir = new File("src/test/resources/config-cache");
     someBaseDir.mkdir();
 
@@ -39,12 +42,7 @@ public class LocalFileConfigRepositoryTest {
     fallbackRepo = mock(ConfigRepository.class);
     when(fallbackRepo.loadConfig()).thenReturn(someProperties);
 
-    String someAppId = "someApp";
-    String someCluster = "someCluster";
-    someConfigUtil = mock(ConfigUtil.class);
-    when(someConfigUtil.getAppId()).thenReturn(someAppId);
-    when(someConfigUtil.getCluster()).thenReturn(someCluster);
-
+    defineComponent(ConfigUtil.class, MockConfigUtil.class);
   }
 
   @After
@@ -66,8 +64,8 @@ public class LocalFileConfigRepositoryTest {
   }
 
   private String assembleLocalCacheFileName() {
-    return String.format("%s-%s-%s.properties", someConfigUtil.getAppId(),
-            someConfigUtil.getCluster(), someNamespace);
+    return String.format("%s-%s-%s.properties", someAppId,
+            someCluster, someNamespace);
   }
 
   @Test
@@ -84,7 +82,7 @@ public class LocalFileConfigRepositoryTest {
 
     Files.write(someKey + "=" + someValue, file, Charsets.UTF_8);
 
-    LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someBaseDir, someNamespace, someConfigUtil);
+    LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someBaseDir, someNamespace);
     Properties properties = localRepo.loadConfig();
 
     assertEquals(someValue, properties.getProperty(someKey));
@@ -95,7 +93,7 @@ public class LocalFileConfigRepositoryTest {
   public void testLoadConfigWithNoLocalFile() throws Exception {
     LocalFileConfigRepository
         localFileConfigRepository =
-        new LocalFileConfigRepository(someBaseDir, someNamespace, someConfigUtil);
+        new LocalFileConfigRepository(someBaseDir, someNamespace);
 
     localFileConfigRepository.setFallback(fallbackRepo);
 
@@ -109,7 +107,7 @@ public class LocalFileConfigRepositoryTest {
   @Test
   public void testLoadConfigWithNoLocalFileMultipleTimes() throws Exception {
     LocalFileConfigRepository localRepo =
-        new LocalFileConfigRepository(someBaseDir, someNamespace, someConfigUtil);
+        new LocalFileConfigRepository(someBaseDir, someNamespace);
 
     localRepo.setFallback(fallbackRepo);
 
@@ -117,7 +115,7 @@ public class LocalFileConfigRepositoryTest {
 
     LocalFileConfigRepository
         anotherLocalRepoWithNoFallback =
-        new LocalFileConfigRepository(someBaseDir, someNamespace, someConfigUtil);
+        new LocalFileConfigRepository(someBaseDir, someNamespace);
 
     Properties anotherProperties = anotherLocalRepoWithNoFallback.loadConfig();
 
@@ -125,6 +123,18 @@ public class LocalFileConfigRepositoryTest {
         "LocalFileConfigRepository should persist local cache files and return that afterwards",
             someProperties.entrySet(), equalTo(anotherProperties.entrySet()));
 
+  }
+
+  public static class MockConfigUtil extends ConfigUtil {
+    @Override
+    public String getAppId() {
+      return someAppId;
+    }
+
+    @Override
+    public String getCluster() {
+      return someCluster;
+    }
   }
 
 }

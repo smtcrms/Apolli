@@ -28,7 +28,7 @@ public class DefaultConfigTest {
   @Before
   public void setUp() throws Exception {
     someResourceDir = new File(ClassLoaderUtil.getClassPath() + "/META-INF/config");
-    someResourceDir.mkdir();
+    someResourceDir.mkdirs();
     someNamespace = "someName";
     configRepository = mock(ConfigRepository.class);
   }

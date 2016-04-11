@@ -26,5 +26,27 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>com.ctrip.apollo.util.ConfigUtil</role>
+			<implementation>com.ctrip.apollo.util.ConfigUtil</implementation>
+		</component>
+		<component>
+			<role>com.ctrip.apollo.internals.ConfigServiceLocator</role>
+			<implementation>com.ctrip.apollo.internals.ConfigServiceLocator</implementation>
+			<requirements>
+				<requirement>
+					<role>com.ctrip.apollo.util.http.HttpUtil</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.ctrip.apollo.util.http.HttpUtil</role>
+			<implementation>com.ctrip.apollo.util.http.HttpUtil</implementation>
+			<requirements>
+				<requirement>
+					<role>com.ctrip.apollo.util.ConfigUtil</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>
