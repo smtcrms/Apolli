@@ -30,6 +30,14 @@ public class NamespaceController {
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public ResponseEntity<NamespaceDTO> create(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
+    if (!appId.equals(dto.getAppId())) {
+      throw new IllegalArgumentException(String
+          .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
+    }
+    if (!clusterName.equals(dto.getClusterName())) {
+      throw new IllegalArgumentException(String.format(
+          "Path variable %s is not equals to object field %s", clusterName, dto.getClusterName()));
+    }
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
     entity = namespaceService.save(entity);
     dto = BeanUtils.transfrom(NamespaceDTO.class, entity);
@@ -41,8 +49,8 @@ public class NamespaceController {
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName) {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
-    if (entity == null)
-      throw new NotFoundException("namespace not found for namespaceName " + namespaceName);
+    if (entity == null) throw new NotFoundException(
+        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     namespaceService.delete(entity.getId());
   }
 
@@ -56,6 +64,8 @@ public class NamespaceController {
   @RequestMapping("/namespaces/{namespaceId}")
   public NamespaceDTO get(@PathVariable("namespaceId") Long namespaceId) {
     Namespace namespace = namespaceService.findOne(namespaceId);
+    if (namespace == null)
+      throw new NotFoundException(String.format("namespace not found for %s", namespaceId));
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
 
@@ -64,6 +74,8 @@ public class NamespaceController {
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
+    if (namespace == null) throw new NotFoundException(
+        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
 
@@ -71,14 +83,22 @@ public class NamespaceController {
   public NamespaceDTO update(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName, @RequestBody NamespaceDTO dto) {
+    if (!appId.equals(dto.getAppId())) {
+      throw new IllegalArgumentException(String
+          .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
+    }
+    if (!clusterName.equals(dto.getClusterName())) {
+      throw new IllegalArgumentException(String.format(
+          "Path variable %s is not equals to object field %s", clusterName, dto.getClusterName()));
+    }
     if (!namespaceName.equals(dto.getNamespaceName())) {
       throw new IllegalArgumentException(
           String.format("Path variable %s is not equals to object field %s", namespaceName,
               dto.getNamespaceName()));
     }
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
-    if (entity == null)
-      throw new NotFoundException("namespace not found for name " + namespaceName);
+    if (entity == null) throw new NotFoundException(
+        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     entity = namespaceService.update(BeanUtils.transfrom(Namespace.class, dto));
     return BeanUtils.transfrom(NamespaceDTO.class, entity);
   }
