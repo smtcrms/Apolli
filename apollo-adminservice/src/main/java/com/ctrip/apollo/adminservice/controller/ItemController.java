@@ -15,7 +15,6 @@ import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.service.ItemService;
 import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.biz.utils.BeanUtils;
-import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
 
