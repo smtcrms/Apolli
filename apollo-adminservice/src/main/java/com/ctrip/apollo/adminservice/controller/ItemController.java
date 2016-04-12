@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.service.ItemService;
 import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 
 @RestController
@@ -24,8 +27,8 @@ public class ItemController {
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items")
   public List<ItemDTO> findItems(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName,
-      @PathVariable("namespaceName") String namespaceName) {
+                                 @PathVariable("clusterName") String clusterName,
+                                 @PathVariable("namespaceName") String namespaceName) {
     List<Item> items = viewService.findItems(appId, clusterName, namespaceName);
     return BeanUtils.batchTransform(ItemDTO.class, items);
   }
@@ -35,4 +38,5 @@ public class ItemController {
     Item item = itemService.findOne(itemId);
     return BeanUtils.transfrom(ItemDTO.class, item);
   }
+
 }
