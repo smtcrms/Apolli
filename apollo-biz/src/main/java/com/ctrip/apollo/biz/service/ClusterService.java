@@ -3,7 +3,6 @@ package com.ctrip.apollo.biz.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.repository.ClusterRepository;
 import com.ctrip.apollo.biz.utils.BeanUtils;

@@ -14,7 +14,7 @@ public class NamespaceDTO {
     return appId;
   }
 
-  public String getClusterId() {
+  public String getClusterName() {
     return clusterName;
   }
 
