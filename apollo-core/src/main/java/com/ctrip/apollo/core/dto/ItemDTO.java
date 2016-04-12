@@ -82,4 +82,17 @@ public class ItemDTO {
   public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
     this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
+
+  @Override
+  public String toString() {
+    return "ItemDTO{" +
+           "id=" + id +
+           ", namespaceId=" + namespaceId +
+           ", key='" + key + '\'' +
+           ", value='" + value + '\'' +
+           ", comment='" + comment + '\'' +
+           ", dataChangeLastModifiedBy='" + dataChangeLastModifiedBy + '\'' +
+           ", dataChangeLastModifiedTime=" + dataChangeLastModifiedTime +
+           '}';
+  }
 }

@@ -7,15 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
+import com.ctrip.apollo.portal.service.txtresolver.ConfigTextResolver;
+import com.ctrip.apollo.portal.service.txtresolver.TextResolverResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,13 +36,14 @@ public class ConfigService {
   @Autowired
   private AdminServiceAPI.ReleaseAPI releaseAPI;
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  @Autowired
+  private ConfigTextResolver resolver;
 
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   public List<NamespaceVO> findNampspaces(String appId, Apollo.Env env, String clusterName) {
 
-    List<NamespaceDTO> namespaces = Arrays.asList(
-        groupAPI.findGroupsByAppAndCluster(appId, env, clusterName));
+    List<NamespaceDTO> namespaces = groupAPI.findGroupsByAppAndCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
       return Collections.EMPTY_LIST;
     }
@@ -51,6 +54,16 @@ public class ConfigService {
     }
 
     return namespaceVOs;
+  }
+
+  public TextResolverResult resolve(String appId, Apollo.Env env, String clusterName, String namespaceName,
+                                         String configText) {
+    TextResolverResult result = resolver.resolve(configText, itemAPI.findItems(appId, env, clusterName, namespaceName));
+    if (result.getCode() == TextResolverResult.Code.OK) {
+      ItemChangeSets changeSets = result.getChangeSets();
+      //invoke admin service
+    }
+    return result;
   }
 
   private NamespaceVO parseNamespace(String appId, Apollo.Env env, String clusterName, NamespaceDTO namespace) {
@@ -75,7 +88,7 @@ public class ConfigService {
     }
 
     //not release config items
-    List<ItemDTO> items = Arrays.asList(itemAPI.findItems(appId, env, clusterName, namespaceName));
+    List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
     int modifiedItemCnt = 0;
     for (ItemDTO itemDTO : items) {
 

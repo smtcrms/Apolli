@@ -44,8 +44,9 @@ application_module.controller("AppConfigController",
                                            $scope.namespaces = result;
 
                                            //初始化视图
-                                           if($scope.namespaces){
-                                               $scope.namespaces.forEach(function(item){
+                                           if ($scope.namespaces) {
+                                               $scope.namespaces.forEach(function (item) {
+                                                   item.isModify = false;
                                                    item.viewType = 'table';
                                                })
                                            }
@@ -53,6 +54,22 @@ application_module.controller("AppConfigController",
                                        }, function (result) {
                                            toastr.error("加载配置信息出错:" + result);
                                        });
+
+                                   //更新配置
+                                   $scope.modifyItems = function (namespace) {
+                                       ConfigService.modify_items($scope.appId, $scope.env, $scope.clusterName,
+                                                                  namespace.namespace.namespaceName, namespace.text).then(
+                                           function (result) {
+                                               if (result.code == 200){
+                                                   toastr.success("更新成功");
+                                               }else {
+                                                   toastr.error("更新失败. code:" + result.code + " msg:" + result.msg);
+                                               }
+                                           },function (result) {
+
+                                           }
+                                       );
+                                   };
 
                                    /////////
                                    $scope.queryOldValue = function (key, oldValue) {
@@ -64,28 +81,34 @@ application_module.controller("AppConfigController",
                                        }
                                    };
 
-                                   $scope.switchView = function(namespace, viewType){
+                                   $scope.switchView = function (namespace, viewType) {
 
-                                       if('textarea' == viewType){
+                                       if ('textarea' == viewType) {
                                            namespace.text = parseTableModel2Text(namespace);
+                                       } else if ('table' == viewType) {
+
                                        }
-                                        namespace.viewType = viewType;
+                                       namespace.viewType = viewType;
                                    };
 
-                                   function parseTableModel2Text(namespace){
-                                       if(!namespace.items){
+                                   //把表格内容解析成文本
+                                   function parseTableModel2Text(namespace) {
+                                       if (!namespace.items) {
                                            return "无配置信息";
                                        }
                                        var result = "";
-                                       namespace.items.forEach(function(item){
-                                           if(item.modified){
-                                               result += "**";
-                                           }
-                                           result += item.item.key + ":" + item.item.value + " ##" + item.item.comment + "\n";
+                                       namespace.items.forEach(function (item) {
+                                           // if (item.modified) {
+                                           //     result += "**";
+                                           // }
+                                           result +=
+                                               item.item.key + ":" + item.item.value + " ##" + item.item.comment + "\n";
                                        });
 
                                        return result;
                                    }
+
+                                   //把文本内容解析成表格
 
                                }]);
 

@@ -17,7 +17,7 @@ public class ClusterService {
   private AdminServiceAPI.ClusterAPI clusterAPI;
 
   public List<ClusterDTO> findClusters(Apollo.Env env, String appId){
-    return Arrays.asList(clusterAPI.findClustersByApp(appId, env));
+    return clusterAPI.findClustersByApp(appId, env);
   }
 
 }
