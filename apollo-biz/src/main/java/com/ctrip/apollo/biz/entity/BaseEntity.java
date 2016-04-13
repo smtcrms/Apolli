@@ -97,4 +97,5 @@ public abstract class BaseEntity {
   private void preRemove() {
     this.dataChangeLastModifiedTime = new Date();
   }
+
 }
