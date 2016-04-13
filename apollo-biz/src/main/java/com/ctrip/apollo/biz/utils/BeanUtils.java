@@ -209,12 +209,22 @@ public class BeanUtils {
   }
 
   /**
-   * The copy will ignore <em>id</em> field
    * 
    * @param source
    * @param target
    */
-  public static void copyEntityProperties(Object source, Object target, String... ignoreProperties) {
+  public static void copyProperties(Object source, Object target, String... ignoreProperties) {
     org.springframework.beans.BeanUtils.copyProperties(source, target, ignoreProperties);
+  }
+  
+  /**
+   * The copy will ignore <em>BaseEntity</em> field
+   * 
+   * @param source
+   * @param target
+   */
+  public static void copyEntityProperties(Object source, Object target) {
+    org.springframework.beans.BeanUtils.copyProperties(source, target, "id", "dataChangeCreatedBy",
+        "dataChangeCreatedTime", "dataChangeLastModifiedBy", "dataChangeLastModifiedTime");
   }
 }

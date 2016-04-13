@@ -2,36 +2,20 @@ package com.ctrip.apollo.adminservice.controller;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.AdminServiceTestConfiguration;
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.repository.AppRepository;
 import com.ctrip.apollo.biz.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = AdminServiceTestConfiguration.class)
-@WebIntegrationTest(randomPort = true)
-public class AppControllerTest {
-
-  RestTemplate restTemplate = new TestRestTemplate();
+public class AppControllerTest extends AbstractControllerTest{
 
   @Autowired
   AppRepository appRepository;
 
-  @Value("${local.server.port}")
-  private int port;
-  
   private String getBaseAppUrl(){
     return "http://localhost:"+port+"/apps/";
   }
