@@ -1,6 +1,7 @@
 package com.ctrip.apollo.biz.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.biz.entity.App;
@@ -27,8 +28,12 @@ public class AdminService {
   @Autowired
   private ClusterRepository clusterRepository;
 
+  @Autowired
+  private CounterService counter;
+  
   public App createNewApp(String appId, String appName, String ownerName, String ownerEmail,
       String namespace) {
+    counter.increment("admin.createNewApp.start");
     App app = new App();
     app.setAppId(appId);
     app.setName(appName);
@@ -51,7 +56,7 @@ public class AdminService {
     ns.setClusterName(cluster.getName());
     ns.setNamespaceName(namespace);
     namespaceRepository.save(ns);
-
+    counter.increment("admin.createNewApp.success");
     return app;
   }
 }
