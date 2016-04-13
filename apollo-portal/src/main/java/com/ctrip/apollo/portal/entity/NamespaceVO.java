@@ -71,6 +71,7 @@ public class NamespaceVO {
     public void setNewValue(String newValue) {
       this.newValue = newValue;
     }
+
   }
 
 }

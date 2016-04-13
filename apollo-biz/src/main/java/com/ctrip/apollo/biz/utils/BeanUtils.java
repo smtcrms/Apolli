@@ -214,7 +214,7 @@ public class BeanUtils {
    * @param source
    * @param target
    */
-  public static void copyEntityProperties(Object source, Object target) {
-    org.springframework.beans.BeanUtils.copyProperties(source, target, "id");
+  public static void copyEntityProperties(Object source, Object target, String... ignoreProperties) {
+    org.springframework.beans.BeanUtils.copyProperties(source, target, ignoreProperties);
   }
 }

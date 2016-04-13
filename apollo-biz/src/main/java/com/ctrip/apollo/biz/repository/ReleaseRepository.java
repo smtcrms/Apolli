@@ -17,5 +17,5 @@ public interface ReleaseRepository extends PagingAndSortingRepository<Release, L
       @Param("namespaceName") String namespaceName);
 
   List<Release> findByAppIdAndClusterNameAndNamespaceName(String appId, String clusterName,
-      String namespaceName);
+                                                          String namespaceName);
 }
