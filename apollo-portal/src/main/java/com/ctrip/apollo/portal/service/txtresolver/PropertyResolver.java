@@ -4,11 +4,10 @@ import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.util.BeanUtils;
-import com.sun.tools.javac.util.Assert;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public class PropertyResolver implements ConfigTextResolver {
 
     ItemChangeSets changeSets = new ItemChangeSets();
     result.setChangeSets(changeSets);
-    Map<Integer, String> newLineNumMapItem = new HashedMap();//use for delete blank and comment item
+    Map<Integer, String> newLineNumMapItem = new HashMap();//use for delete blank and comment item
     int lineCounter = 1;
     for (String newItem : newItems) {
       newItem = newItem.trim();
@@ -82,13 +81,13 @@ public class PropertyResolver implements ConfigTextResolver {
     String oldComment = oldItemByLine == null ? "" : oldItemByLine.getComment();
     //create comment. implement update comment by delete old comment and create new comment
     if (!(isCommentItem(oldItemByLine) && newItem.equals(oldComment))) {
-      changeSets.addCreatedItem(buildCommentItem(0l, newItem, lineCounter));
+      changeSets.addCreateItem(buildCommentItem(0l, newItem, lineCounter));
     }
   }
 
   private void handleBlankLine(ItemDTO oldItem, int lineCounter, ItemChangeSets changeSets) {
     if (!isBlankItem(oldItem)) {
-      changeSets.addCreatedItem(buildBlankItem(0l, lineCounter));
+      changeSets.addCreateItem(buildBlankItem(0l, lineCounter));
     }
   }
 
@@ -110,7 +109,7 @@ public class PropertyResolver implements ConfigTextResolver {
     ItemDTO oldItem = keyMapOldItem.get(newKey);
 
     if (oldItem == null) {//new item
-      changeSets.addCreatedItem(buildNormalItem(0l, newKey, newValue, "", lineCounter));
+      changeSets.addCreateItem(buildNormalItem(0l, newKey, newValue, "", lineCounter));
     } else if (!newValue.equals(oldItem.getValue())){//update item
       changeSets.addUpdateItem(
           buildNormalItem(oldItem.getId(), newKey, newValue, oldItem.getComment(),
@@ -139,7 +138,7 @@ public class PropertyResolver implements ConfigTextResolver {
   private void deleteNormalKVItem(Map<String, ItemDTO> baseKeyMapItem, ItemChangeSets changeSets) {
     //surplus item is to be deleted
     for (Map.Entry<String, ItemDTO> entry : baseKeyMapItem.entrySet()) {
-      changeSets.addDeletedItem(entry.getValue());
+      changeSets.addDeleteItem(entry.getValue());
     }
   }
 
@@ -156,7 +155,7 @@ public class PropertyResolver implements ConfigTextResolver {
       //2.old is comment by now is not exist or modified
       if ((isBlankItem(oldItem) && !isBlankItem(newItem))
           || isCommentItem(oldItem) && (newItem == null || !newItem.equals(oldItem))) {
-        changeSets.addDeletedItem(oldItem);
+        changeSets.addDeleteItem(oldItem);
       }
     }
   }

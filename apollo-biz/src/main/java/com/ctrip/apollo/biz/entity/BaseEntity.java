@@ -20,8 +20,8 @@ public abstract class BaseEntity {
   @GeneratedValue
   private long id;
 
-  @Column(name = "IsDeleted")
-  protected boolean isDeleted;
+  @Column(name = "IsDeleted", columnDefinition="Bit default '0'")
+  protected boolean isDeleted = false;
 
   @Column(name = "DataChange_CreatedBy")
   private String dataChangeCreatedBy;

@@ -11,9 +11,9 @@ public class ItemChangeSets {
   private String modifyBy;
   private List<ItemDTO> createItems = new LinkedList<>();
   private List<ItemDTO> updateItems = new LinkedList<>();
-  private List<ItemDTO> deletedItems = new LinkedList<>();
+  private List<ItemDTO> deleteItems = new LinkedList<>();
 
-  public void addCreatedItem(ItemDTO item) {
+  public void addCreateItem(ItemDTO item) {
     createItems.add(item);
   }
 
@@ -21,10 +21,9 @@ public class ItemChangeSets {
     updateItems.add(item);
   }
 
-  public void addDeletedItem(ItemDTO item) {
-    deletedItems.add(item);
+  public void addDeleteItem(ItemDTO item) {
+    deleteItems.add(item);
   }
-
 
   public List<ItemDTO> getCreateItems() {
     return createItems;
@@ -34,8 +33,8 @@ public class ItemChangeSets {
     return updateItems;
   }
 
-  public List<ItemDTO> getDeletedItems() {
-    return deletedItems;
+  public List<ItemDTO> getDeleteItems() {
+    return deleteItems;
   }
 
   public void setCreateItems(List<ItemDTO> createItems) {
@@ -46,8 +45,8 @@ public class ItemChangeSets {
     this.updateItems = updateItems;
   }
 
-  public void setDeletedItems(List<ItemDTO> deletedItems) {
-    this.deletedItems = deletedItems;
+  public void setDeleteItems(List<ItemDTO> deleteItems) {
+    this.deleteItems = deleteItems;
   }
 
   public String getModifyBy() {
