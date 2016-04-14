@@ -21,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -74,7 +75,7 @@ public class AdminServiceAPI {
 
     public List<ItemDTO> findItems(String appId, Apollo.Env env, String clusterName, String namespace) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespace)) {
-        return null;
+        return Collections.EMPTY_LIST;
       }
 
       return Arrays.asList(restTemplate.getForObject(getAdminServiceHost(env) + String
@@ -140,7 +141,8 @@ public class AdminServiceAPI {
       ResponseEntity<ReleaseDTO> response = restTemplate.postForEntity(getAdminServiceHost(env) + String.
           format("apps/%s/clusters/%s/namespaces/%s/releases", appId, clusterName, namespace),
                                                                        entity, ReleaseDTO.class);
-      if (response.getStatusCode() == HttpStatus.OK){
+
+      if (response != null && response.getStatusCode() == HttpStatus.OK){
         return response.getBody();
       }else {
         logger.error("release fail.id:{}, env:{}, clusterName:{}, namespace:{},releaseBy{}",appId, env, clusterName, namespace, releaseBy);
