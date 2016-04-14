@@ -44,12 +44,15 @@ public class ConfigController {
                                                  @PathVariable String clusterName, @PathVariable String namespaceName,
                                                  @RequestBody NamespaceModifyModel model) {
 
+    if (model == null){
+      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+    }
     model.setAppId(appId);
     model.setClusterName(clusterName);
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
 
-    if (model == null || model.isInvalid()){
+    if (model.isInvalid()){
       return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
     }
 
@@ -66,12 +69,15 @@ public class ConfigController {
   public ResponseEntity<SimpleMsg> createRelease(@PathVariable String appId, @PathVariable String env,
                                                  @PathVariable String clusterName, @PathVariable String namespaceName,
                                                  @RequestBody NamespaceReleaseModel model){
+    if (model == null){
+      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+    }
     model.setAppId(appId);
     model.setClusterName(clusterName);
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
 
-    if (model == null || model.isInvalid()){
+    if (model.isInvalid()){
       return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
     }
 

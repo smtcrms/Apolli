@@ -90,8 +90,11 @@ public class PropertyResolver implements ConfigTextResolver {
     int keyCount = 0;
     for (String item: newItems){
       if (!isCommentItem(item) && !isBlankItem(item)){
-        keyCount ++;
-        keys.add(parseKeyValueFromItem(item)[0]);
+        keyCount++;
+        String[] kv = parseKeyValueFromItem(item);
+        if (kv != null) {
+          keys.add(kv[0]);
+        }
       }
     }
 
