@@ -6,6 +6,8 @@ import com.ctrip.apollo.internals.DefaultConfig;
 import com.ctrip.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.apollo.internals.RemoteConfigRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unidal.lookup.annotation.Named;
 
 import java.io.File;
@@ -15,13 +17,19 @@ import java.io.File;
  */
 @Named(type = ConfigFactory.class, value = "default")
 public class DefaultConfigFactory implements ConfigFactory {
+  private static final Logger logger = LoggerFactory.getLogger(DefaultConfigFactory.class);
   private static final String CONFIG_DIR = "/config-cache";
   private File m_baseDir;
 
+  /**
+   * Create the config factory.
+   */
   public DefaultConfigFactory() {
     m_baseDir = new File(ClassLoaderUtil.getClassPath() + CONFIG_DIR);
     if (!m_baseDir.exists()) {
-      m_baseDir.mkdir();
+      if(!m_baseDir.mkdir()){
+        logger.error("Creating local cache dir failed.");
+      }
     }
   }
 
@@ -33,10 +41,10 @@ public class DefaultConfigFactory implements ConfigFactory {
   }
 
   LocalFileConfigRepository createLocalConfigRepository(String namespace) {
-    LocalFileConfigRepository localFileConfigLoader =
+    LocalFileConfigRepository localFileConfigRepository =
         new LocalFileConfigRepository(m_baseDir, namespace);
-    localFileConfigLoader.setFallback(createRemoteConfigRepository(namespace));
-    return localFileConfigLoader;
+    localFileConfigRepository.setFallback(createRemoteConfigRepository(namespace));
+    return localFileConfigRepository;
   }
 
   RemoteConfigRepository createRemoteConfigRepository(String namespace) {

@@ -1,7 +1,7 @@
 package com.ctrip.apollo.internals;
 
 import com.ctrip.apollo.core.dto.ServiceDTO;
-import com.ctrip.apollo.env.ClientEnvironment;
+import com.ctrip.apollo.util.ConfigUtil;
 import com.ctrip.apollo.util.http.HttpRequest;
 import com.ctrip.apollo.util.http.HttpResponse;
 import com.ctrip.apollo.util.http.HttpUtil;
@@ -19,11 +19,16 @@ public class ConfigServiceLocator {
   private static final Logger logger = LoggerFactory.getLogger(ConfigServiceLocator.class);
   @Inject
   private HttpUtil m_httpUtil;
+  @Inject
+  private ConfigUtil m_configUtil;
   private List<ServiceDTO> serviceCaches = new ArrayList<>();
 
+  /**
+   * Get the config service info from remote meta server.
+   * @return the services dto
+   */
   public List<ServiceDTO> getConfigServices() {
-    ClientEnvironment env = ClientEnvironment.getInstance();
-    String domainName = env.getMetaServerDomainName();
+    String domainName = m_configUtil.getMetaServerDomainName();
     String url = domainName + "/services/config";
 
     HttpRequest request = new HttpRequest(url);
@@ -37,9 +42,9 @@ public class ConfigServiceLocator {
           serviceCaches.add(service);
         }
       }
-    } catch (Throwable t) {
-      logger.error("Get config services failed", t);
-      throw new RuntimeException("Get config services failed", t);
+    } catch (Throwable ex) {
+      logger.error("Get config services failed", ex);
+      throw new RuntimeException("Get config services failed", ex);
     }
 
     return serviceCaches;

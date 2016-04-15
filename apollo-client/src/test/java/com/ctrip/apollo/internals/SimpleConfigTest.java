@@ -2,6 +2,7 @@ package com.ctrip.apollo.internals;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.ctrip.apollo.Config;
 import com.ctrip.apollo.ConfigChangeListener;
 import com.ctrip.apollo.enums.PropertyChangeType;
 import com.ctrip.apollo.model.ConfigChange;
@@ -50,11 +51,15 @@ public class SimpleConfigTest {
     assertEquals(someValue, config.getProperty(someKey, null));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testLoadConfigFromConfigRepositoryError() throws Exception {
     when(configRepository.getConfig()).thenThrow(Throwable.class);
 
-    new SimpleConfig(someNamespace, configRepository);
+    Config config = new SimpleConfig(someNamespace, configRepository);
+
+    String someKey = "someKey";
+    String anyValue = "anyValue" + Math.random();
+    assertEquals(anyValue, config.getProperty(someKey, anyValue));
   }
 
   @Test

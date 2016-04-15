@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
@@ -52,7 +52,7 @@ public class ConfigService {
    * @param clusterName
    * @return
    */
-  public List<NamespaceVO> findNampspaces(String appId, Apollo.Env env, String clusterName) {
+  public List<NamespaceVO> findNampspaces(String appId, Env env, String clusterName) {
 
     List<NamespaceDTO> namespaces = groupAPI.findGroupsByAppAndCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
@@ -76,7 +76,7 @@ public class ConfigService {
     return namespaceVOs;
   }
 
-  private NamespaceVO parseNamespace(String appId, Apollo.Env env, String clusterName, NamespaceDTO namespace) {
+  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
 
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
@@ -137,7 +137,7 @@ public class ConfigService {
    */
   public void updateConfigItemByText(NamespaceTextModel model) {
     String appId = model.getAppId();
-    Apollo.Env env = model.getEnv();
+    Env env = model.getEnv();
     String clusterName = model.getClusterName();
     String namespaceName = model.getNamespaceName();
     long namespaceId = model.getNamespaceId();

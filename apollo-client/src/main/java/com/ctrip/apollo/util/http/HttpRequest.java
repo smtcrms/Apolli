@@ -8,6 +8,10 @@ public class HttpRequest {
   private int m_connectTimeout;
   private int m_readTimeout;
 
+  /**
+   * Create the request for the url.
+   * @param url the url
+   */
   public HttpRequest(String url) {
     this.m_url = url;
     m_connectTimeout = -1;

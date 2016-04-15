@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +33,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   private Properties someProperties;
   private static String someAppId = "someApp";
   private static String someCluster = "someCluster";
+  private String defaultKey;
+  private String defaultValue;
 
   @Before
   public void setUp() throws Exception {
@@ -43,7 +44,9 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
     someNamespace = "someName";
     someProperties = new Properties();
-    someProperties.setProperty("defaultKey", "defaultValue");
+    defaultKey = "defaultKey";
+    defaultValue = "defaultValue";
+    someProperties.setProperty(defaultKey, defaultValue);
     fallbackRepo = mock(ConfigRepository.class);
     when(fallbackRepo.getConfig()).thenReturn(someProperties);
 
@@ -52,6 +55,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
   @After
   public void tearDown() throws Exception {
+    super.tearDown();
     recursiveDelete(someBaseDir);
   }
 
@@ -73,10 +77,6 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
             someCluster, someNamespace);
   }
 
-  @Test
-  public void testLoadConfig() throws Exception {
-
-  }
 
   @Test
   public void testLoadConfigWithLocalFile() throws Exception {
@@ -92,6 +92,24 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
     assertEquals(someValue, properties.getProperty(someKey));
 
+  }
+
+  @Test
+  public void testLoadConfigWithLocalFileAndFallbackRepo() throws Exception {
+    File file = new File(someBaseDir, assembleLocalCacheFileName());
+
+    String someValue = "someValue";
+
+    Files.write(defaultKey + "=" + someValue, file, Charsets.UTF_8);
+
+    LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someBaseDir, someNamespace);
+
+    //when fallback is set, it will try to sync from it
+    localRepo.setFallback(fallbackRepo);
+
+    Properties properties = localRepo.getConfig();
+
+    assertEquals(defaultValue, properties.getProperty(defaultKey));
   }
 
   @Test

@@ -15,6 +15,16 @@ public abstract class AbstractConfigRepository implements ConfigRepository {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfigRepository.class);
   private List<RepositoryChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
 
+  protected void trySync() {
+    try {
+      sync();
+    } catch (Throwable ex) {
+      logger.error("Sync config failed with repository {}", this.getClass(), ex);
+    }
+  }
+
+  protected abstract void sync();
+
   @Override
   public void addChangeListener(RepositoryChangeListener listener) {
     if (!m_listeners.contains(listener)) {
@@ -31,8 +41,8 @@ public abstract class AbstractConfigRepository implements ConfigRepository {
     for (RepositoryChangeListener listener : m_listeners) {
       try {
         listener.onRepositoryChange(namespace, newProperties);
-      } catch (Throwable t) {
-        logger.error("Failed to invoke repository change listener {}", listener.getClass(), t);
+      } catch (Throwable ex) {
+        logger.error("Failed to invoke repository change listener {}", listener.getClass(), ex);
       }
     }
   }

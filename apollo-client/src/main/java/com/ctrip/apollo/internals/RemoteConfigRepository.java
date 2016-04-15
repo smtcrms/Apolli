@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class RemoteConfigRepository extends AbstractConfigRepository{
+public class RemoteConfigRepository extends AbstractConfigRepository {
   private static final Logger logger = LoggerFactory.getLogger(RemoteConfigRepository.class);
   private PlexusContainer m_container;
   private final ConfigServiceLocator m_serviceLocator;
@@ -36,6 +36,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository{
   private final String m_namespace;
   private final ScheduledExecutorService m_executorService;
 
+  /**
+   * Constructor.
+   * @param namespace the namespace
+   */
   public RemoteConfigRepository(String namespace) {
     m_namespace = namespace;
     m_configCache = new AtomicReference<>();
@@ -44,18 +48,19 @@ public class RemoteConfigRepository extends AbstractConfigRepository{
       m_configUtil = m_container.lookup(ConfigUtil.class);
       m_httpUtil = m_container.lookup(HttpUtil.class);
       m_serviceLocator = m_container.lookup(ConfigServiceLocator.class);
-    } catch (ComponentLookupException e) {
-      throw new IllegalStateException("Unable to load component!", e);
+    } catch (ComponentLookupException ex) {
+      throw new IllegalStateException("Unable to load component!", ex);
     }
     this.m_executorService = Executors.newScheduledThreadPool(1,
-            ApolloThreadFactory.create("RemoteConfigRepository", true));
+        ApolloThreadFactory.create("RemoteConfigRepository", true));
+    this.trySync();
     this.schedulePeriodicRefresh();
   }
 
   @Override
   public Properties getConfig() {
     if (m_configCache.get() == null) {
-      this.loadRemoteConfig();
+      this.sync();
     }
     return transformApolloConfigToProperties(m_configCache.get());
   }
@@ -72,17 +77,14 @@ public class RemoteConfigRepository extends AbstractConfigRepository{
         new Runnable() {
           @Override
           public void run() {
-            try {
-              loadRemoteConfig();
-            } catch (Throwable ex) {
-              logger.error("Refreshing config failed", ex);
-            }
+            trySync();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
         m_configUtil.getRefreshTimeUnit());
   }
 
-  synchronized void loadRemoteConfig() {
+  @Override
+  protected synchronized void sync() {
     ApolloConfig previous = m_configCache.get();
     ApolloConfig current = loadApolloConfig();
 
@@ -108,7 +110,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository{
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
-    String url = assembleUrl(getConfigServiceUrl(), appId, cluster, m_namespace, m_configCache.get());
+    String
+        url =
+        assembleUrl(getConfigServiceUrl(), appId, cluster, m_namespace, m_configCache.get());
 
     logger.info("Loading config from {}", url);
     HttpRequest request = new HttpRequest(url);
@@ -123,12 +127,12 @@ public class RemoteConfigRepository extends AbstractConfigRepository{
       logger.info("Loaded config: {}", response.getBody());
 
       return response.getBody();
-    } catch (Throwable t) {
+    } catch (Throwable ex) {
       String message =
           String.format("Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s", appId,
               cluster, m_namespace);
-      logger.error(message, t);
-      throw new RuntimeException(message, t);
+      logger.error(message, ex);
+      throw new RuntimeException(message, ex);
     }
   }
 

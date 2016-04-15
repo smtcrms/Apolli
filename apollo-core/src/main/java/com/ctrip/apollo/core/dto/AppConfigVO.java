@@ -1,7 +1,7 @@
 package com.ctrip.apollo.core.dto;
 
 
-import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.core.enums.Env;
 
 import java.util.LinkedList;
 import java.util.List;

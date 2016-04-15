@@ -13,5 +13,9 @@ public interface Config {
    */
   public String getProperty(String key, String defaultValue);
 
+  /**
+   * Add change listener to this config instance.
+   * @param listener the config change listener
+   */
   public void addChangeListener(ConfigChangeListener listener);
 }

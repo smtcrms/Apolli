@@ -92,11 +92,16 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     remoteConfigRepository.addChangeListener(someListener);
     final ArgumentCaptor<Properties> captor = ArgumentCaptor.forClass(Properties.class);
 
-    remoteConfigRepository.loadRemoteConfig();
+    Map<String, String> newConfigurations = ImmutableMap.of("someKey", "anotherValue");
+    ApolloConfig newApolloConfig = assembleApolloConfig(newConfigurations);
+
+    when(someResponse.getBody()).thenReturn(newApolloConfig);
+
+    remoteConfigRepository.sync();
 
     verify(someListener, times(1)).onRepositoryChange(eq(someNamespace), captor.capture());
 
-    assertEquals(configurations, captor.getValue());
+    assertEquals(newConfigurations, captor.getValue());
   }
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {

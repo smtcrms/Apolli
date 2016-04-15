@@ -1,7 +1,7 @@
 package com.ctrip.apollo.portal.controller;
 
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
@@ -34,7 +34,7 @@ public class ConfigController {
       throw new BadRequestException("app id and cluster name can not be empty");
     }
 
-    return configService.findNampspaces(appId, Apollo.Env.valueOf(env), clusterName);
+    return configService.findNampspaces(appId, Env.valueOf(env), clusterName);
   }
 
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {

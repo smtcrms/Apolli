@@ -28,8 +28,9 @@ public class HttpUtil {
   }
 
   /**
-   * Do get operation for the http request
+   * Do get operation for the http request.
    *
+   * @return the http response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
    */
   public <T> HttpResponse<T> doGet(HttpRequest httpRequest, Class<T> responseType) {
@@ -67,7 +68,8 @@ public class HttpUtil {
       }
 
       throw new RuntimeException(
-          String.format("Get operation failed for %s, status code - %d", httpRequest.getUrl(), statusCode));
+          String.format("Get operation failed for %s, status code - %d", httpRequest.getUrl(),
+              statusCode));
 
     } catch (Throwable ex) {
       throw new RuntimeException("Could not complete get operation", ex);
@@ -75,7 +77,7 @@ public class HttpUtil {
       if (is != null) {
         try {
           is.close();
-        } catch (IOException e) {
+        } catch (IOException ex) {
           //ignore
         }
       }

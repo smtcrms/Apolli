@@ -1,7 +1,7 @@
 package com.ctrip.apollo.portal.entity.form;
 
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.utils.StringUtils;
 
 public class NamespaceTextModel implements FormModel{
@@ -26,8 +26,8 @@ public class NamespaceTextModel implements FormModel{
     this.appId = appId;
   }
 
-  public Apollo.Env getEnv() {
-    return Apollo.Env.valueOf(env);
+  public Env getEnv() {
+    return Env.valueOf(env);
   }
 
   public void setEnv(String env) {

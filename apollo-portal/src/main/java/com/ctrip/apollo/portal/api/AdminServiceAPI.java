@@ -1,7 +1,7 @@
 package com.ctrip.apollo.portal.api;
 
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
@@ -36,11 +36,11 @@ public class AdminServiceAPI {
 
     public static String APP_API = "/apps";
 
-    public List<AppDTO> getApps(Apollo.Env env) {
+    public List<AppDTO> getApps(Env env) {
       return Arrays.asList(restTemplate.getForObject(getAdminServiceHost(env) + APP_API, AppDTO[].class));
     }
 
-    public AppDTO save(Apollo.Env env, AppDTO app) {
+    public AppDTO save(Env env, AppDTO app) {
       return restTemplate.postForEntity(getAdminServiceHost(env) + APP_API, app, AppDTO.class).getBody();
     }
   }
@@ -49,7 +49,7 @@ public class AdminServiceAPI {
   @Service
   public static class NamespaceAPI extends API {
 
-    public List<NamespaceDTO> findGroupsByAppAndCluster(String appId, Apollo.Env env,
+    public List<NamespaceDTO> findGroupsByAppAndCluster(String appId, Env env,
                                                         String clusterName) {
       if (StringUtils.isContainEmpty(appId, clusterName)) {
         return null;
@@ -60,7 +60,7 @@ public class AdminServiceAPI {
           NamespaceDTO[].class));
     }
 
-    public NamespaceDTO loadNamespace(String appId, Apollo.Env env,
+    public NamespaceDTO loadNamespace(String appId, Env env,
                                       String clusterName, String namespaceName) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespaceName)) {
         return null;
@@ -74,7 +74,7 @@ public class AdminServiceAPI {
   @Service
   public static class ItemAPI extends API {
 
-    public List<ItemDTO> findItems(String appId, Apollo.Env env, String clusterName, String namespace) {
+    public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespace) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespace)) {
         return Collections.EMPTY_LIST;
       }
@@ -85,7 +85,7 @@ public class AdminServiceAPI {
                                                      ItemDTO[].class));
     }
 
-    public void updateItems(String appId, Apollo.Env env, String clusterName, String namespace,
+    public void updateItems(String appId, Env env, String clusterName, String namespace,
                             ItemChangeSets changeSets) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespace)) {
         return;
@@ -101,7 +101,7 @@ public class AdminServiceAPI {
   @Service
   public static class ClusterAPI extends API {
 
-    public List<ClusterDTO> findClustersByApp(String appId, Apollo.Env env) {
+    public List<ClusterDTO> findClustersByApp(String appId, Env env) {
       if (StringUtils.isContainEmpty(appId)) {
         return null;
       }
@@ -115,7 +115,7 @@ public class AdminServiceAPI {
   @Service
   public static class ReleaseAPI extends API {
 
-    public ReleaseDTO loadLatestRelease(String appId, Apollo.Env env, String clusterName, String namespace) {
+    public ReleaseDTO loadLatestRelease(String appId, Env env, String clusterName, String namespace) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespace)) {
         return null;
       }
@@ -132,7 +132,7 @@ public class AdminServiceAPI {
       }
     }
 
-    public ReleaseDTO release(String appId, Apollo.Env env, String clusterName, String namespace, String releaseBy,
+    public ReleaseDTO release(String appId, Env env, String clusterName, String namespace, String releaseBy,
                               String comment) {
       MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
       parameters.add("name", releaseBy);

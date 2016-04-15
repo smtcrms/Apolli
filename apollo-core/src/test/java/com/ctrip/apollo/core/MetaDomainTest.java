@@ -1,9 +1,9 @@
 package com.ctrip.apollo.core;
 
+import com.ctrip.apollo.core.enums.Env;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.ctrip.apollo.Apollo.Env;
 
 public class MetaDomainTest {
 

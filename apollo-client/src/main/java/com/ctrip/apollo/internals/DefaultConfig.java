@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -25,25 +26,31 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
   private static final Logger logger = LoggerFactory.getLogger(DefaultConfig.class);
   private final String m_namespace;
   private Properties m_resourceProperties;
-  private Properties m_configProperties;
+  private AtomicReference<Properties> m_configProperties;
   private ConfigRepository m_configRepository;
 
+  /**
+   * Constructor.
+   *
+   * @param namespace        the namespace of this config instance
+   * @param configRepository the config repository for this config instance
+   */
   public DefaultConfig(String namespace, ConfigRepository configRepository) {
     m_namespace = namespace;
     m_resourceProperties = loadFromResource(m_namespace);
     m_configRepository = configRepository;
+    m_configProperties = new AtomicReference<>();
     initialize();
   }
 
   private void initialize() {
     try {
-      m_configProperties = m_configRepository.getConfig();
+      m_configProperties.set(m_configRepository.getConfig());
       m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
       String message = String.format("Init Apollo Local Config failed - namespace: %s",
           m_namespace);
       logger.error(message, ex);
-      throw new RuntimeException(message, ex);
     }
   }
 
@@ -53,8 +60,8 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     String value = System.getProperty(key);
 
     // step 2: check local cached properties file
-    if (value == null) {
-      value = m_configProperties.getProperty(key);
+    if (value == null && m_configProperties.get() != null) {
+      value = m_configProperties.get().getProperty(key);
     }
 
     /**
@@ -67,10 +74,12 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     }
 
     // step 4: check properties file from classpath
-    if (value == null) {
-      if (m_resourceProperties != null) {
-        value = (String) m_resourceProperties.get(key);
-      }
+    if (value == null && m_resourceProperties != null) {
+      value = (String) m_resourceProperties.get(key);
+    }
+
+    if (value == null && m_configProperties.get() == null) {
+      logger.error("Config initialization failed, always return default value!");
     }
 
     return value == null ? defaultValue : value;
@@ -78,7 +87,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
   @Override
   public synchronized void onRepositoryChange(String namespace, Properties newProperties) {
-    if (newProperties.equals(m_configProperties)) {
+    if (newProperties.equals(m_configProperties.get())) {
       return;
     }
     Properties newConfigProperties = new Properties();
@@ -91,8 +100,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
   private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties) {
     List<ConfigChange> configChanges =
-        calcPropertyChanges(m_configProperties, newConfigProperties);
-//    List<ConfigChange> actualChanges = Lists.newArrayListWithCapacity(configChanges.size());
+        calcPropertyChanges(m_configProperties.get(), newConfigProperties);
 
     ImmutableMap.Builder<String, ConfigChange> actualChanges =
         new ImmutableMap.Builder<>();
@@ -105,7 +113,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     }
 
     //2. update m_configProperties
-    m_configProperties = newConfigProperties;
+    m_configProperties.set(newConfigProperties);
 
     //3. use getProperty to update configChange's new value and calc the final changes
     for (ConfigChange change : configChanges) {
@@ -134,6 +142,9 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
           }
           actualChanges.put(change.getPropertyName(), change);
           break;
+        default:
+          //do nothing
+          break;
       }
     }
     return actualChanges.build();
@@ -149,13 +160,13 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
       try {
         properties.load(in);
-      } catch (IOException e) {
-        logger.error("Load resource config for namespace {} failed", namespace, e);
-        Cat.logError(e);
+      } catch (IOException ex) {
+        logger.error("Load resource config for namespace {} failed", namespace, ex);
+        Cat.logError(ex);
       } finally {
         try {
           in.close();
-        } catch (IOException e) {
+        } catch (IOException ex) {
           // ignore
         }
       }

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;

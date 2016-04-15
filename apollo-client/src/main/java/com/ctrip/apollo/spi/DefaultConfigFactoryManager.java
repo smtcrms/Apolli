@@ -38,7 +38,7 @@ public class DefaultConfigFactoryManager extends ContainerHolder implements Conf
     // step 3: check declared config factory
     try {
       factory = lookup(ConfigFactory.class, namespace);
-    } catch (LookupException e) {
+    } catch (LookupException ex) {
       // ignore it
     }
 
