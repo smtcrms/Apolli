@@ -3,7 +3,7 @@ package com.ctrip.apollo.portal.service.txtresolver;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.utils.StringUtils;
-import com.ctrip.apollo.portal.util.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 
 import org.springframework.stereotype.Component;
 

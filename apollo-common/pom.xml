@@ -8,20 +8,20 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>apollo-portal</artifactId>
-	<name>Apollo Portal</name>
+	<artifactId>apollo-common</artifactId>
+	<name>Apollo Common</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.ctrip.apollo</groupId>
-			<artifactId>apollo-common</artifactId>
+			<artifactId>apollo-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 </project>

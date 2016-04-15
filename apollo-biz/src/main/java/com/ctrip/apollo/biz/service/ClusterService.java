@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.repository.ClusterRepository;
-import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 
 @Service
 public class ClusterService {
