@@ -3,6 +3,7 @@ package com.ctrip.apollo.portal.controller;
 
 import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
+import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.form.NamespaceModifyModel;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
@@ -31,7 +32,7 @@ public class ConfigController {
 
   @RequestMapping("/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces")
   public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
-                                          @PathVariable String clusterName) {
+      @PathVariable String clusterName) {
     if (StringUtils.isContainEmpty(appId, env, clusterName)) {
       throw new IllegalArgumentException("app id and cluster name can not be empty");
     }
@@ -39,21 +40,22 @@ public class ConfigController {
     return configService.findNampspaces(appId, Apollo.Env.valueOf(env), clusterName);
   }
 
-  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items",method = RequestMethod.PUT, consumes = {"application/json"})
+  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
+      "application/json"})
   public ResponseEntity<SimpleMsg> modifyItems(@PathVariable String appId, @PathVariable String env,
-                                                 @PathVariable String clusterName, @PathVariable String namespaceName,
-                                                 @RequestBody NamespaceModifyModel model) {
+      @PathVariable String clusterName, @PathVariable String namespaceName,
+      @RequestBody NamespaceModifyModel model) {
 
-    if (model == null){
-      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+    if (model == null) {
+      throw new BadRequestException("request payload shoud not be null");
     }
     model.setAppId(appId);
     model.setClusterName(clusterName);
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
 
-    if (model.isInvalid()){
-      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+    if (model.isInvalid()) {
+      throw new BadRequestException("request model is invalid");
     }
 
     TextResolverResult result = configService.resolveConfigText(model);
@@ -65,27 +67,29 @@ public class ConfigController {
     }
   }
 
-  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {"application/json"})
-  public ResponseEntity<SimpleMsg> createRelease(@PathVariable String appId, @PathVariable String env,
-                                                 @PathVariable String clusterName, @PathVariable String namespaceName,
-                                                 @RequestBody NamespaceReleaseModel model){
-    if (model == null){
-      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {
+      "application/json"})
+  public ResponseEntity<SimpleMsg> createRelease(@PathVariable String appId,
+      @PathVariable String env, @PathVariable String clusterName,
+      @PathVariable String namespaceName, @RequestBody NamespaceReleaseModel model) {
+    if (model == null) {
+      throw new BadRequestException("request payload shoud not be null");
     }
     model.setAppId(appId);
     model.setClusterName(clusterName);
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
 
-    if (model.isInvalid()){
-      return ResponseEntity.badRequest().body(new SimpleMsg("form data exception."));
+    if (model.isInvalid()) {
+      throw new BadRequestException("request model is invalid");
     }
 
     ReleaseDTO release = configService.release(model);
 
-    if (release == null){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleMsg("oops! some error in server."));
-    }else {
+    if (release == null) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body(new SimpleMsg("oops! some error in server."));
+    } else {
       return ResponseEntity.ok().body(new SimpleMsg("success"));
     }
   }
