@@ -2,22 +2,24 @@ package com.ctrip.apollo.biz.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
+@Table(name = "Privilege")
 @SQLDelete(sql = "Update Privilege set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Privilege extends BaseEntity {
 
-  @Column
+  @Column(name = "Name", nullable = false)
   private String name;
 
-  @Column
+  @Column(name = "PrivilType", nullable = false)
   private String privilType;
 
-  @Column
+  @Column(name = "NamespaceId")
   private long namespaceId;
 
   public String getName() {

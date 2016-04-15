@@ -6,32 +6,34 @@ import org.hibernate.annotations.Where;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 @Entity
+@Table(name = "Release")
 @SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Release extends BaseEntity {
 
-  @Column(nullable = false)
+  @Column(name = "Name", nullable = false)
   private String name;
 
-  @Column(nullable = false)
+  @Column(name = "AppId", nullable = false)
   private String appId;
 
-  @Column(nullable = false)
+  @Column(name = "ClusterName", nullable = false)
   private String clusterName;
 
-  @Column
+  @Column(name = "NamespaceName", nullable = false)
   private String namespaceName;
 
-  @Column(nullable = false)
+  @Column(name = "Configurations", nullable = false)
   @Lob
   private String configurations;
 
-  @Column(nullable = false)
+  @Column(name = "Comment", nullable = false)
   private String comment;
 
   public String getAppId() {
