@@ -32,21 +32,27 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
   private volatile Properties m_fileProperties;
   private volatile ConfigRepository m_fallback;
 
+  /**
+   * Constructor.
+   * @param baseDir the base dir for this local file config repository
+   * @param namespace the namespace
+   */
   public LocalFileConfigRepository(File baseDir, String namespace) {
     m_baseDir = baseDir;
     m_namespace = namespace;
     m_container = ContainerLoader.getDefaultContainer();
     try {
       m_configUtil = m_container.lookup(ConfigUtil.class);
-    } catch (ComponentLookupException e) {
-      throw new IllegalStateException("Unable to load component!", e);
+    } catch (ComponentLookupException ex) {
+      throw new IllegalStateException("Unable to load component!", ex);
     }
+    this.trySync();
   }
 
   @Override
   public Properties getConfig() {
     if (m_fileProperties == null) {
-      initLocalConfig();
+      sync();
     }
     Properties result = new Properties();
     result.putAll(m_fileProperties);
@@ -60,47 +66,59 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       m_fallback.removeChangeListener(this);
     }
     m_fallback = fallbackConfigRepository;
+    trySyncFromFallback();
     fallbackConfigRepository.addChangeListener(this);
   }
 
   @Override
-  public synchronized void onRepositoryChange(String namespace, Properties newProperties) {
+  public void onRepositoryChange(String namespace, Properties newProperties) {
     if (newProperties.equals(m_fileProperties)) {
       return;
     }
     Properties newFileProperties = new Properties();
     newFileProperties.putAll(newProperties);
-    this.m_fileProperties = newFileProperties;
-    persistLocalCacheFile(m_baseDir, m_namespace);
+    updateFileProperties(newFileProperties);
     this.fireRepositoryChange(namespace, newProperties);
   }
 
-  void initLocalConfig() {
+  @Override
+  protected void sync() {
     try {
       m_fileProperties = this.loadFromLocalCacheFile(m_baseDir, m_namespace);
     } catch (Throwable ex) {
-      logger.error("Load config from local config cache file failed", ex);
+      ex.printStackTrace();
+      //ignore
     }
 
-    //TODO check whether properties is expired or should we return after it's synced with fallback?
-    if (m_fileProperties != null) {
+    //sync with fallback immediately
+    trySyncFromFallback();
+
+    if (m_fileProperties == null) {
+      throw new RuntimeException(
+          "Load config from local config failed!");
+    }
+  }
+
+  private void trySyncFromFallback() {
+    if (m_fallback == null) {
       return;
     }
-
-    if (m_fallback == null) {
-      throw new RuntimeException(
-          "Load config from local config cache failed and there is no fallback repository!");
-    }
-
     try {
-      m_fileProperties = m_fallback.getConfig();
-      persistLocalCacheFile(m_baseDir, m_namespace);
+      Properties properties = m_fallback.getConfig();
+      updateFileProperties(properties);
     } catch (Throwable ex) {
       String message =
-          String.format("Load config from fallback repository %s failed", m_fallback.getClass());
-      logger.error(message, ex);
-      throw new RuntimeException(message, ex);
+          String.format("Sync config from fallback repository %s failed", m_fallback.getClass());
+      logger.warn(message, ex);
     }
+  }
+
+  private synchronized void updateFileProperties(Properties newProperties) {
+    if (newProperties.equals(m_fileProperties)) {
+      return;
+    }
+    this.m_fileProperties = newProperties;
+    persistLocalCacheFile(m_baseDir, m_namespace);
   }
 
   private Properties loadFromLocalCacheFile(File baseDir, String namespace) throws IOException {
@@ -117,16 +135,16 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
         properties = new Properties();
         properties.load(in);
-      } catch (IOException e) {
-        logger.error("Loading config from local cache file {} failed", file.getAbsolutePath(), e);
-        Cat.logError(e);
-        throw e;
+      } catch (IOException ex) {
+        logger.error("Loading config from local cache file {} failed", file.getAbsolutePath(), ex);
+        Cat.logError(ex);
+        throw ex;
       } finally {
         try {
           if (in != null) {
             in.close();
           }
-        } catch (IOException e) {
+        } catch (IOException ex) {
           // ignore
         }
       }
@@ -158,7 +176,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       if (out != null) {
         try {
           out.close();
-        } catch (IOException e) {
+        } catch (IOException ex) {
           //ignore
         }
       }

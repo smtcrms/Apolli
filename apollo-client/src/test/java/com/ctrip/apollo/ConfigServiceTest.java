@@ -18,6 +18,7 @@ public class ConfigServiceTest extends ComponentTestCase {
   @Before
   public void setUp() throws Exception {
     super.setUp();
+    //as ConfigService is singleton, so we must manually clear its container
     ConfigService.setContainer(getContainer());
   }
 

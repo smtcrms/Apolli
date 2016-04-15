@@ -22,6 +22,11 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
   private final ConfigRepository m_configRepository;
   private volatile Properties m_configProperties;
 
+  /**
+   * Constructor.
+   * @param namespace the namespace for this config instance
+   * @param configRepository the config repository for this config instance
+   */
   public SimpleConfig(String namespace, ConfigRepository configRepository) {
     m_namespace = namespace;
     m_configRepository = configRepository;
@@ -36,12 +41,15 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
       String message = String.format("Init Apollo Simple Config failed - namespace: %s",
           m_namespace);
       logger.error(message, ex);
-      throw new RuntimeException(message, ex);
     }
   }
 
   @Override
   public String getProperty(String key, String defaultValue) {
+    if (m_configProperties == null) {
+      logger.error("Config initialization failed, always return default value!");
+      return defaultValue;
+    }
     return this.m_configProperties.getProperty(key, defaultValue);
   }
 

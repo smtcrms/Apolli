@@ -35,8 +35,8 @@ public abstract class AbstractConfig implements Config {
     for (ConfigChangeListener listener : m_listeners) {
       try {
         listener.onChange(changeEvent);
-      } catch (Throwable t) {
-        logger.error("Failed to invoke config change listener {}", listener.getClass(), t);
+      } catch (Throwable ex) {
+        logger.error("Failed to invoke config change listener {}", listener.getClass(), ex);
       }
     }
   }
@@ -61,7 +61,8 @@ public abstract class AbstractConfig implements Config {
     List<ConfigChange> changes = Lists.newArrayList();
 
     for (String newKey : newKeys) {
-      changes.add(new ConfigChange(newKey, null, current.getProperty(newKey), PropertyChangeType.NEW));
+      changes
+          .add(new ConfigChange(newKey, null, current.getProperty(newKey), PropertyChangeType.NEW));
     }
 
     for (String removedKey : removedKeys) {

@@ -1,6 +1,6 @@
 package com.ctrip.apollo.portal.api;
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.ServiceException;
 import com.ctrip.apollo.portal.service.ServiceLocator;
 
@@ -14,7 +14,7 @@ public class API {
 
   protected RestTemplate restTemplate = new RestTemplate();
 
-  public String getAdminServiceHost(Apollo.Env env) {
+  public String getAdminServiceHost(Env env) {
     // 本地测试用
     // return "http://localhost:8090";
     try {

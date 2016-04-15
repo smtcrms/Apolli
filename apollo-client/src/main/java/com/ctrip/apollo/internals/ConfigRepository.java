@@ -7,18 +7,26 @@ import java.util.Properties;
  */
 public interface ConfigRepository {
   /**
-   * Get the config from this repository
-   * @return
+   * Get the config from this repository.
+   * @return config
    */
   public Properties getConfig();
 
   /**
-   * Set the fallback repo for this repository
-   * @param fallbackConfigRepository
+   * Set the fallback repo for this repository.
+   * @param fallbackConfigRepository the fallback repo
    */
   public void setFallback(ConfigRepository fallbackConfigRepository);
 
+  /**
+   * Add change listener.
+   * @param listener the listener to observe the changes
+   */
   public void addChangeListener(RepositoryChangeListener listener);
 
+  /**
+   * Remove change listener.
+   * @param listener the listener to remove
+   */
   public void removeChangeListener(RepositoryChangeListener listener);
 }

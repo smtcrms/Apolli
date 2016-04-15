@@ -37,6 +37,9 @@
 				<requirement>
 					<role>com.ctrip.apollo.util.http.HttpUtil</role>
 				</requirement>
+				<requirement>
+					<role>com.ctrip.apollo.util.ConfigUtil</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

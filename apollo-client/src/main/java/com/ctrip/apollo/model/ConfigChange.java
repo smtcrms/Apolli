@@ -6,6 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.ctrip.apollo.enums.PropertyChangeType;
 
 /**
+ * Holds the information for a config change.
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigChange {
@@ -14,6 +15,13 @@ public class ConfigChange {
   private String newValue;
   private PropertyChangeType changeType;
 
+  /**
+   * Constructor.
+   * @param propertyName the key whose value is changed
+   * @param oldValue the value before change
+   * @param newValue the value after change
+   * @param changeType the change type
+   */
   public ConfigChange(String propertyName, String oldValue, String newValue,
                       PropertyChangeType changeType) {
     this.propertyName = propertyName;

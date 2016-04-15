@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.MetaDomainConsts;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.core.exception.ServiceException;

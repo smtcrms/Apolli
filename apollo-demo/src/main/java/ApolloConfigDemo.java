@@ -36,7 +36,11 @@ public class ApolloConfigDemo implements ConfigChangeListener {
         "Apollo Config Demo. Please input key to get the value.");
     while (true) {
       System.out.print("> ");
-      String input = (new BufferedReader(new InputStreamReader(System.in)).readLine()).trim();
+      String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
+      if (input == null) {
+       continue;
+      }
+      input = input.trim();
       if (input.equalsIgnoreCase("quit")) {
         System.exit(0);
       }

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.ctrip.apollo.Apollo.Env;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.utils.ResourceUtils;
 
 public class MetaDomainConsts {

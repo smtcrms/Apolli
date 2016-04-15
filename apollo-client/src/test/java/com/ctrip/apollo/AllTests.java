@@ -1,6 +1,7 @@
 package com.ctrip.apollo;
 
 
+import com.ctrip.apollo.integration.ConfigIntegrationTest;
 import com.ctrip.apollo.internals.DefaultConfigManagerTest;
 import com.ctrip.apollo.internals.DefaultConfigTest;
 import com.ctrip.apollo.internals.LocalFileConfigRepositoryTest;
@@ -18,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     ConfigServiceTest.class, DefaultConfigRegistryTest.class, DefaultConfigFactoryManagerTest.class,
     DefaultConfigManagerTest.class, DefaultConfigTest.class, LocalFileConfigRepositoryTest.class,
-    RemoteConfigRepositoryTest.class, SimpleConfigTest.class, DefaultConfigFactoryTest.class
+    RemoteConfigRepositoryTest.class, SimpleConfigTest.class, DefaultConfigFactoryTest.class,
+    ConfigIntegrationTest.class
 })
 public class AllTests {
 

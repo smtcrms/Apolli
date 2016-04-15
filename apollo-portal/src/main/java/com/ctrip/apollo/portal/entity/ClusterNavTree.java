@@ -1,6 +1,6 @@
 package com.ctrip.apollo.portal.entity;
 
-import com.ctrip.apollo.Apollo;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 
 import java.util.LinkedList;
@@ -19,18 +19,18 @@ public class ClusterNavTree {
   }
 
     public static class Node{
-      private Apollo.Env env;
+      private Env env;
       private List<ClusterDTO> clusters;
 
-      public Node(Apollo.Env env){
+      public Node(Env env){
         this.env = env;
       }
 
-      public Apollo.Env getEnv() {
+      public Env getEnv() {
         return env;
       }
 
-      public void setEnv(Apollo.Env env) {
+      public void setEnv(Env env) {
         this.env = env;
       }
 
