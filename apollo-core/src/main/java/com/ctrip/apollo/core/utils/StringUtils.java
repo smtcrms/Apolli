@@ -67,7 +67,7 @@ public class StringUtils {
       return true;
     }
     for (int i = 0; i < strLen; i++) {
-      if ((Character.isWhitespace(str.charAt(i)) == false)) {
+      if (Character.isWhitespace(str.charAt(i)) == false) {
         return false;
       }
     }
@@ -252,7 +252,7 @@ public class StringUtils {
    */
   private static boolean startsWith(String str, String prefix, boolean ignoreCase) {
     if (str == null || prefix == null) {
-      return (str == null && prefix == null);
+      return str == null && prefix == null;
     }
     if (prefix.length() > str.length()) {
       return false;
@@ -325,7 +325,7 @@ public class StringUtils {
   }
 
   public static interface StringFormatter<T> {
-    public String format(T obj);
+    String format(T obj);
   }
 
   public static <T> String join(Collection<T> collection, String separator) {

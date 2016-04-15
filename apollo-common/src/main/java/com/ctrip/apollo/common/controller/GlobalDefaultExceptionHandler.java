@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.ctrip.apollo.core.exception.AbstractBaseException;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.NotFoundException;
 
@@ -32,13 +33,12 @@ public class GlobalDefaultExceptionHandler {
   }
 
   private ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request,
-                                                          HttpStatus status, Throwable ex) {
+      HttpStatus status, Throwable ex) {
     return handleError(request, status, ex, ex.getMessage());
   }
 
   private ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request,
-                                                          HttpStatus status, Throwable ex,
-                                                          String message) {
+      HttpStatus status, Throwable ex, String message) {
     ex = resolveError(ex);
     Map<String, Object> errorAttributes = new LinkedHashMap<>();
     errorAttributes.put("status", status.value());
@@ -46,6 +46,9 @@ public class GlobalDefaultExceptionHandler {
     errorAttributes.put("timestamp",
         LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     errorAttributes.put("exception", resolveError(ex).getClass().getName());
+    if (ex instanceof AbstractBaseException) {
+      errorAttributes.put("errorCode", ((AbstractBaseException) ex).getErrorCode());
+    }
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
     return new ResponseEntity<>(errorAttributes, headers, status);
@@ -53,17 +56,19 @@ public class GlobalDefaultExceptionHandler {
 
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class, HttpMediaTypeException.class})
   public ResponseEntity<Map<String, Object>> methodNotSupportedException(HttpServletRequest request,
-                                                                         ServletException ex) {
+      ServletException ex) {
     return handleError(request, BAD_REQUEST, ex);
   }
 
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<Map<String, Object>> notFound(HttpServletRequest request, NotFoundException ex) {
+  public ResponseEntity<Map<String, Object>> notFound(HttpServletRequest request,
+      NotFoundException ex) {
     return handleError(request, NOT_FOUND, ex);
   }
-  
+
   @ExceptionHandler(BadRequestException.class)
-  public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request, BadRequestException ex){
+  public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request,
+      BadRequestException ex) {
     return handleError(request, BAD_REQUEST, ex);
   }
 
