@@ -12,7 +12,6 @@ import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
 import com.ctrip.apollo.portal.service.AppService;
-import com.google.common.base.Strings;
 
 @RestController
 @RequestMapping("/apps")
@@ -23,7 +22,7 @@ public class AppController {
 
   @RequestMapping("/{appId}/navtree")
   public ClusterNavTree nav(@PathVariable String appId) {
-    if (Strings.isNullOrEmpty(appId)) {
+    if (StringUtils.isEmpty(appId)) {
       throw new BadRequestException("app id can not be empty.");
     }
 

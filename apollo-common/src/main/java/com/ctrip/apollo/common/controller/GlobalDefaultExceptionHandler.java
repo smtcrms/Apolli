@@ -1,4 +1,4 @@
-package com.ctrip.apollo.adminservice.controller;
+package com.ctrip.apollo.common.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,8 +7,8 @@ import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.NotFoundException;
 
 import java.time.LocalDateTime;
@@ -58,8 +58,13 @@ public class GlobalDefaultExceptionHandler {
   }
 
   @ExceptionHandler(NotFoundException.class)
-  @ResponseStatus(value = NOT_FOUND)
-  public void notFound(HttpServletRequest req, NotFoundException ex) {
+  public ResponseEntity<Map<String, Object>> notFound(HttpServletRequest request, NotFoundException ex) {
+    return handleError(request, NOT_FOUND, ex);
+  }
+  
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request, BadRequestException ex){
+    return handleError(request, BAD_REQUEST, ex);
   }
 
   private Throwable resolveError(Throwable ex) {

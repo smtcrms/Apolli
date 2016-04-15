@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.repository.ItemRepository;
-import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 

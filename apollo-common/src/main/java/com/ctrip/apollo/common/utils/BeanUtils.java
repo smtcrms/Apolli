@@ -1,4 +1,4 @@
-package com.ctrip.apollo.biz.utils;
+package com.ctrip.apollo.common.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
