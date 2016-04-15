@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.service.AdminService;
 import com.ctrip.apollo.biz.service.AppService;
-import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
 import com.ctrip.apollo.core.utils.StringUtils;

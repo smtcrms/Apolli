@@ -89,6 +89,7 @@
 		<module>apollo-buildtools</module>
 		<module>apollo-core</module>
 		<module>apollo-client</module>
+		<module>apollo-common</module>
 		<module>apollo-biz</module>
 		<module>apollo-configservice</module>
 		<module>apollo-adminservice</module>
@@ -101,6 +102,11 @@
 			<dependency>
 				<groupId>com.ctrip.apollo</groupId>
 				<artifactId>apollo-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ctrip.apollo</groupId>
+				<artifactId>apollo-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

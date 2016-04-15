@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.repository.AppRepository;
-import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 
 public class AppControllerTest extends AbstractControllerTest{

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.service.NamespaceService;
 import com.ctrip.apollo.biz.service.ViewService;
-import com.ctrip.apollo.biz.utils.BeanUtils;
+import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
 
