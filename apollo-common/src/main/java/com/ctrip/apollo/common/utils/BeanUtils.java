@@ -1,5 +1,6 @@
 package com.ctrip.apollo.common.utils;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +23,9 @@ public class BeanUtils {
    *     List<UserDTO> userDTOs = BeanUtil.batchTransform(UserDTO.class, userBeans);
    * </pre>
    */
-  public static <T> List<T> batchTransform(final Class<T> clazz, List srcList) {
+  public static <T> List<T> batchTransform(final Class<T> clazz, List<? extends Object> srcList) {
     if (CollectionUtils.isEmpty(srcList)) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     List<T> result = new ArrayList<>(srcList.size());
@@ -56,12 +57,12 @@ public class BeanUtils {
     return instance;
   }
 
-  static String[] getNullPropertyNames(Object source) {
+  private static String[] getNullPropertyNames(Object source) {
     final BeanWrapper src = new BeanWrapperImpl(source);
-    java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+    PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
     Set<String> emptyNames = new HashSet<String>();
-    for (java.beans.PropertyDescriptor pd : pds) {
+    for (PropertyDescriptor pd : pds) {
       Object srcValue = src.getPropertyValue(pd.getName());
       if (srcValue == null) emptyNames.add(pd.getName());
     }
@@ -74,20 +75,21 @@ public class BeanUtils {
    *
    * <pre>
    *      List<UserDTO> userList = userService.queryUsers();
-   *      Map<Integer, userDTO> userIdToUser = BeanUtil.mapByKey("userId", Integer.class, userList,
-   * UserDTO.class);
+   *      Map<Integer, userDTO> userIdToUser = BeanUtil.mapByKey("userId", userList);
    * </pre>
    *
    * @param key 属性名
    */
-  public static <K, V> Map<K, V> mapByKey(String key, List list) {
+  @SuppressWarnings("unchecked")
+  public static <K, V> Map<K, V> mapByKey(String key, List<? extends Object> list) {
     Map<K, V> map = new HashMap<K, V>();
     if (CollectionUtils.isEmpty(list)) {
       return map;
     }
     try {
-      Class clazz = list.get(0).getClass();
+      Class<? extends Object> clazz = list.get(0).getClass();
       Field field = deepFindField(clazz, key);
+      if (field == null) throw new IllegalArgumentException("Could not find the key");
       field.setAccessible(true);
       for (Object o : list) {
         map.put((K) field.get(o), (V) o);
@@ -106,14 +108,16 @@ public class BeanUtils {
    *       Map<Integer, List<ShopDTO>> city2Shops = BeanUtil.aggByKeyToList("cityId", shopList);
    * </pre>
    */
-  public static <K, V> Map<K, List<V>> aggByKeyToList(String key, List list) {
+  @SuppressWarnings("unchecked")
+  public static <K, V> Map<K, List<V>> aggByKeyToList(String key, List<? extends Object> list) {
     Map<K, List<V>> map = new HashMap<K, List<V>>();
     if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
       return map;
     }
     try {
-      Class clazz = list.get(0).getClass();
+      Class<? extends Object> clazz = list.get(0).getClass();
       Field field = deepFindField(clazz, key);
+      if (field == null) throw new IllegalArgumentException("Could not find the key");
       field.setAccessible(true);
       for (Object o : list) {
         K k = (K) field.get(o);
@@ -136,20 +140,19 @@ public class BeanUtils {
    *     Set<Integer> userIds = BeanUtil.toPropertySet("userId", userList);
    * </pre>
    */
-  public static Set toPropertySet(String key, List list) {
-    Set set = new HashSet();
+  @SuppressWarnings("unchecked")
+  public static <K> Set<K> toPropertySet(String key, List<? extends Object> list) {
+    Set<K> set = new HashSet<K>();
     if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
       return set;
     }
     try {
-      Class clazz = list.get(0).getClass();
+      Class<? extends Object> clazz = list.get(0).getClass();
       Field field = deepFindField(clazz, key);
-      if (field == null) {
-        return set;
-      }
+      if (field == null) throw new IllegalArgumentException("Could not find the key");
       field.setAccessible(true);
       for (Object o : list) {
-        set.add(field.get(o));
+        set.add((K)field.get(o));
       }
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -158,7 +161,7 @@ public class BeanUtils {
   }
 
 
-  private static Field deepFindField(Class clazz, String key) {
+  private static Field deepFindField(Class<? extends Object> clazz, String key) {
     Field field = null;
     while (!clazz.getName().equals(Object.class.getName())) {
       try {
@@ -204,10 +207,6 @@ public class BeanUtils {
     }
   }
 
-  public static List toPropertyList(String key, List list) {
-    return new ArrayList(toPropertySet(key, list));
-  }
-
   /**
    * 
    * @param source
@@ -216,7 +215,7 @@ public class BeanUtils {
   public static void copyProperties(Object source, Object target, String... ignoreProperties) {
     org.springframework.beans.BeanUtils.copyProperties(source, target, ignoreProperties);
   }
-  
+
   /**
    * The copy will ignore <em>BaseEntity</em> field
    * 
@@ -224,7 +223,9 @@ public class BeanUtils {
    * @param target
    */
   public static void copyEntityProperties(Object source, Object target) {
-    org.springframework.beans.BeanUtils.copyProperties(source, target, "id", "dataChangeCreatedBy",
-        "dataChangeCreatedTime", "dataChangeLastModifiedBy", "dataChangeLastModifiedTime");
+    org.springframework.beans.BeanUtils.copyProperties(source, target, COPY_IGNORED_PROPERTIES);
   }
+  
+  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedBy",
+      "dataChangeCreatedTime", "dataChangeLastModifiedBy", "dataChangeLastModifiedTime"};
 }
