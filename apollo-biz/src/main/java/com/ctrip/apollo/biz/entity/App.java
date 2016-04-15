@@ -22,7 +22,7 @@ public class App extends BaseEntity {
   @Column(name = "OwnerName", nullable = false)
   private String ownerName;
 
-  @Column(name = "OnwerEmail", nullable = false)
+  @Column(name = "OwnerEmail", nullable = false)
   private String ownerEmail;
 
   public String getAppId() {

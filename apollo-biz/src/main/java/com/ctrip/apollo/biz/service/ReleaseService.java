@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.entity.Namespace;
@@ -40,6 +41,7 @@ public class ReleaseService {
     return release;
   }
 
+  @Transactional
   public Release buildRelease(String name, String comment, String appId, String clusterName,
       String namespaceName) {
     Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId,

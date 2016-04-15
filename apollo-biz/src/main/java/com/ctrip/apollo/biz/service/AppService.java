@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.repository.AppRepository;
@@ -17,6 +18,7 @@ public class AppService {
   @Autowired
   private AppRepository appRepository;
 
+  @Transactional
   public void delete(long id) {
     appRepository.delete(id);
   }
@@ -34,10 +36,12 @@ public class AppService {
     return appRepository.findByAppId(appId);
   }
 
+  @Transactional
   public App save(App entity) {
     return appRepository.save(entity);
   }
 
+  @Transactional
   public App update(App app) {
     App managedApp = appRepository.findByAppId(app.getAppId());
     BeanUtils.copyEntityProperties(app, managedApp);

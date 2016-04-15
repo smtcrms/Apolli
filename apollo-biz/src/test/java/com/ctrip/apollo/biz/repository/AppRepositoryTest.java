@@ -1,27 +1,25 @@
 package com.ctrip.apollo.biz.repository;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.BizTestConfiguration;
 import com.ctrip.apollo.biz.entity.App;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = BizTestConfiguration.class)
+@Transactional
+@Rollback
 public class AppRepositoryTest {
 
   @Autowired
   private AppRepository appRepository;
-
-  @Before
-  public void before() {
-    appRepository.deleteAll();
-  }
 
   @Test
   public void testCreate() {
@@ -66,4 +64,5 @@ public class AppRepositoryTest {
 
     Assert.assertEquals(0, appRepository.count());
   }
+
 }

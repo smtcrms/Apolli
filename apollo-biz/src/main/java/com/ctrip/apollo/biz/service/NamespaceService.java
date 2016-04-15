@@ -2,6 +2,7 @@ package com.ctrip.apollo.biz.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.repository.NamespaceRepository;
@@ -13,6 +14,7 @@ public class NamespaceService {
   @Autowired
   private NamespaceRepository namespaceRepository;
 
+  @Transactional
   public void delete(long id) {
     namespaceRepository.delete(id);
   }
@@ -26,10 +28,12 @@ public class NamespaceService {
         namespaceName);
   }
 
+  @Transactional
   public Namespace save(Namespace entity) {
     return namespaceRepository.save(entity);
   }
 
+  @Transactional
   public Namespace update(Namespace namespace) {
     Namespace managedNamespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(
         namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());

@@ -8,7 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.BizTestConfiguration;
 import com.ctrip.apollo.biz.entity.App;
@@ -17,6 +19,8 @@ import com.ctrip.apollo.biz.entity.Namespace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = BizTestConfiguration.class)
+@Transactional
+@Rollback
 public class AdminServiceTest {
 
   @Autowired
@@ -49,4 +53,5 @@ public class AdminServiceTest {
     Assert.assertEquals(1, namespaces.size());
     Assert.assertEquals("application", namespaces.get(0).getNamespaceName());
   }
+  
 }
