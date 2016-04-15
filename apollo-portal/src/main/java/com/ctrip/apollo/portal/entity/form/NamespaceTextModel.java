@@ -4,7 +4,7 @@ package com.ctrip.apollo.portal.entity.form;
 import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.core.utils.StringUtils;
 
-public class NamespaceModifyModel implements FormModel{
+public class NamespaceTextModel implements FormModel{
 
   private String appId;
   private String env;
