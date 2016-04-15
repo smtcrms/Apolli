@@ -11,13 +11,13 @@ import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
+import com.ctrip.apollo.core.exception.ServiceException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.apollo.portal.entity.form.NamespaceModifyModel;
+import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.apollo.portal.service.txtresolver.ConfigTextResolver;
-import com.ctrip.apollo.portal.service.txtresolver.TextResolverResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -86,20 +86,20 @@ public class ConfigService {
 
     String namespaceName = namespace.getNamespaceName();
 
-    //latest release
+    //latest createRelease
     ReleaseDTO release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
     Map<String, String> releaseItems = new HashMap<>();
     if (release != null) {
       try {
         releaseItems = objectMapper.readValue(release.getConfigurations(), Map.class);
       } catch (IOException e) {
-        logger.error("parse release json error. appId:{},env:{},clusterName:{},namespace:{}", appId,
+        logger.error("parse createRelease json error. appId:{},env:{},clusterName:{},namespace:{}", appId,
                      env, clusterName, namespaceName);
         return namespaceVO;
       }
     }
 
-    //not release config items
+    //not createRelease config items
     List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
     int modifiedItemCnt = 0;
     for (ItemDTO itemDTO : items) {
@@ -135,7 +135,7 @@ public class ConfigService {
    * parse config text and update config items
    * @return  parse result
    */
-  public TextResolverResult resolveConfigText(NamespaceModifyModel model) {
+  public void updateConfigItemByText(NamespaceTextModel model) {
     String appId = model.getAppId();
     Apollo.Env env = model.getEnv();
     String clusterName = model.getClusterName();
@@ -143,36 +143,16 @@ public class ConfigService {
     long namespaceId = model.getNamespaceId();
     String configText = model.getConfigText();
 
-    TextResolverResult result = new TextResolverResult();
+    ItemChangeSets changeSets =
+        resolver.resolve(namespaceId, configText, itemAPI.findItems(appId, env, clusterName, namespaceName));
     try {
-      result = resolver.resolve( namespaceId, configText, itemAPI.findItems(appId, env, clusterName, namespaceName));
+      changeSets.setModifyBy(model.getModifyBy());
+      enrichChangeSetBaseInfo(changeSets);
+      itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
     } catch (Exception e) {
-      logger
-          .error("resolve config text error. app id:{}, env:{}, clusterName:{}, namespace:{}", appId, env, clusterName,
-                 namespaceName, e);
-      result.setResolveSuccess(false);
-      result.setMsg("oops! server resolveConfigText config text error.");
-      return result;
-    }
-    if (result.isResolveSuccess()) {
-      try {
-        ItemChangeSets changeSets = result.getChangeSets();
-        changeSets.setModifyBy(model.getModifyBy());
-        enrichChangeSetBaseInfo(changeSets);
-        itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
-      } catch (Exception e) {
-        logger.error("resolve config text error. app id:{}, env:{}, clusterName:{}, namespace:{}", appId, env,
-                     clusterName, namespaceName, e);
-        result.setResolveSuccess(false);
-        result.setMsg("oops! server update config error.");
-        return result;
-      }
-    } else {
-      logger.warn("resolve config text error by format error. app id:{}, env:{}, clusterName:{}, namespace:{},cause:{}",
-                  appId,env, clusterName, namespaceName, result.getMsg());
+      throw new ServiceException("oops! call admin service config error. ");
     }
 
-    return result;
   }
 
   private void enrichChangeSetBaseInfo(ItemChangeSets changeSets){
@@ -182,10 +162,10 @@ public class ConfigService {
   }
 
   /**
-   * release config items
+   * createRelease config items
    * @return
    */
-  public ReleaseDTO release(NamespaceReleaseModel model){
+  public ReleaseDTO createRelease(NamespaceReleaseModel model){
     return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(), model.getNamespaceName(),
                               model.getReleaseBy(), model.getReleaseComment());
   }

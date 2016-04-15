@@ -2,6 +2,7 @@ package com.ctrip.apollo.portal.service.txtresolver;
 
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
+import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.util.BeanUtils;
 
@@ -25,13 +26,10 @@ public class PropertyResolver implements ConfigTextResolver {
   private static final String ITEM_SEPARATOR = "\n";
 
   @Override
-  public TextResolverResult resolve(long namespaceId, String configText, List<ItemDTO> baseItems) {
+  public ItemChangeSets resolve(long namespaceId, String configText, List<ItemDTO> baseItems) {
 
-    TextResolverResult result = new TextResolverResult();
     if (StringUtils.isEmpty(configText)){
-      result.setResolveSuccess(false);
-      result.setMsg("config text can not be empty");
-      return result;
+      throw new BadRequestException("config text can not be empty");
     }
 
     Map<Integer, ItemDTO> oldLineNumMapItem = BeanUtils.mapByKey("lineNum", baseItems);
@@ -43,13 +41,10 @@ public class PropertyResolver implements ConfigTextResolver {
     String[] newItems = configText.split(ITEM_SEPARATOR);
 
     if (isHasRepeatKey(newItems)){
-      result.setResolveSuccess(false);
-      result.setMsg("config text has repeat key please check.");
-      return result;
+      throw new BadRequestException("config text has repeat key please check.");
     }
 
     ItemChangeSets changeSets = new ItemChangeSets();
-    result.setChangeSets(changeSets);
     Map<Integer, String> newLineNumMapItem = new HashMap();//use for delete blank and comment item
     int lineCounter = 1;
     for (String newItem : newItems) {
@@ -69,9 +64,7 @@ public class PropertyResolver implements ConfigTextResolver {
 
         //normal item
       } else {
-        if (!handleNormalLine(namespaceId, oldKeyMapItem, newItem, lineCounter, result)) {
-          return result;
-        }
+        handleNormalLine(namespaceId, oldKeyMapItem, newItem, lineCounter, changeSets);
       }
 
       lineCounter++;
@@ -80,13 +73,12 @@ public class PropertyResolver implements ConfigTextResolver {
     deleteCommentAndBlankItem(oldLineNumMapItem, newLineNumMapItem, changeSets);
     deleteNormalKVItem(oldKeyMapItem, changeSets);
 
-    result.setResolveSuccess(true);
-
-    return result;
+    return changeSets;
   }
 
   private boolean isHasRepeatKey(String[] newItems){
     Set<String> keys = new HashSet<>();
+    int lineCounter = 1;
     int keyCount = 0;
     for (String item: newItems){
       if (!isCommentItem(item) && !isBlankItem(item)){
@@ -94,8 +86,11 @@ public class PropertyResolver implements ConfigTextResolver {
         String[] kv = parseKeyValueFromItem(item);
         if (kv != null) {
           keys.add(kv[0]);
+        }else {
+          throw new BadRequestException("line:" + lineCounter + " key value must separate by '='");
         }
       }
+      lineCounter ++;
     }
 
     return keyCount > keys.size();
@@ -127,17 +122,13 @@ public class PropertyResolver implements ConfigTextResolver {
     }
   }
 
-  private boolean handleNormalLine(Long namespaceId, Map<String, ItemDTO> keyMapOldItem, String newItem,
-                                   int lineCounter, TextResolverResult result) {
-
-    ItemChangeSets changeSets = result.getChangeSets();
+  private void handleNormalLine(Long namespaceId, Map<String, ItemDTO> keyMapOldItem, String newItem,
+                                   int lineCounter, ItemChangeSets changeSets) {
 
     String[] kv = parseKeyValueFromItem(newItem);
 
     if (kv == null) {
-      result.setResolveSuccess(false);
-      result.setMsg(" line:" + lineCounter + " key value must separate by '='");
-      return false;
+      throw new BadRequestException("line:" + lineCounter + " key value must separate by '='");
     }
 
     String newKey = kv[0];
@@ -153,7 +144,6 @@ public class PropertyResolver implements ConfigTextResolver {
                           lineCounter));
     }
     keyMapOldItem.remove(newKey);
-    return true;
   }
 
   private boolean isCommentItem(ItemDTO item) {

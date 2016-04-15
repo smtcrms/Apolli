@@ -5,15 +5,12 @@ import com.ctrip.apollo.Apollo;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
-import com.ctrip.apollo.portal.entity.form.NamespaceModifyModel;
+import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
-import com.ctrip.apollo.portal.entity.SimpleMsg;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.apollo.portal.service.ConfigService;
-import com.ctrip.apollo.portal.service.txtresolver.TextResolverResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +31,7 @@ public class ConfigController {
   public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
       @PathVariable String clusterName) {
     if (StringUtils.isContainEmpty(appId, env, clusterName)) {
-      throw new IllegalArgumentException("app id and cluster name can not be empty");
+      throw new BadRequestException("app id and cluster name can not be empty");
     }
 
     return configService.findNampspaces(appId, Apollo.Env.valueOf(env), clusterName);
@@ -42,9 +39,9 @@ public class ConfigController {
 
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
       "application/json"})
-  public ResponseEntity<SimpleMsg> modifyItems(@PathVariable String appId, @PathVariable String env,
+  public ResponseEntity modifyItems(@PathVariable String appId, @PathVariable String env,
       @PathVariable String clusterName, @PathVariable String namespaceName,
-      @RequestBody NamespaceModifyModel model) {
+      @RequestBody NamespaceTextModel model) {
 
     if (model == null) {
       throw new BadRequestException("request payload shoud not be null");
@@ -58,18 +55,13 @@ public class ConfigController {
       throw new BadRequestException("request model is invalid");
     }
 
-    TextResolverResult result = configService.resolveConfigText(model);
-
-    if (result.isResolveSuccess()) {
-      return ResponseEntity.ok().body(new SimpleMsg("success"));
-    } else {
-      return ResponseEntity.badRequest().body(new SimpleMsg(result.getMsg()));
-    }
+    configService.updateConfigItemByText(model);
+    return ResponseEntity.ok().build();
   }
 
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {
       "application/json"})
-  public ResponseEntity<SimpleMsg> createRelease(@PathVariable String appId,
+  public ReleaseDTO createRelease(@PathVariable String appId,
       @PathVariable String env, @PathVariable String clusterName,
       @PathVariable String namespaceName, @RequestBody NamespaceReleaseModel model) {
     if (model == null) {
@@ -84,14 +76,8 @@ public class ConfigController {
       throw new BadRequestException("request model is invalid");
     }
 
-    ReleaseDTO release = configService.release(model);
+    return configService.createRelease(model);
 
-    if (release == null) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(new SimpleMsg("oops! some error in server."));
-    } else {
-      return ResponseEntity.ok().body(new SimpleMsg("success"));
-    }
   }
 
 }

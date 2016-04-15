@@ -141,7 +141,7 @@ application_module.controller("AppConfigController",
                                                $scope.toggleTextEditStatus($scope.draft);
 
                                            }, function (result) {
-                                               toastr.error(result.data.msg, "更新失败");
+                                               toastr.error(result.data.message, "更新失败");
 
                                            }
                                        );
@@ -189,7 +189,7 @@ application_module.controller("AppConfigController",
                                                refreshNamespaces();
 
                                            }, function (result) {
-                                               toastr.error(result.data.msg, "发布失败");
+                                               toastr.error(result.data.message, "发布失败");
 
                                            }
                                        );    

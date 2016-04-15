@@ -8,6 +8,7 @@ import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
+import com.ctrip.apollo.core.exception.ServiceException;
 import com.ctrip.apollo.core.utils.StringUtils;
 
 import org.slf4j.Logger;
@@ -145,8 +146,9 @@ public class AdminServiceAPI {
       if (response != null && response.getStatusCode() == HttpStatus.OK){
         return response.getBody();
       }else {
-        logger.error("release fail.id:{}, env:{}, clusterName:{}, namespace:{},releaseBy{}",appId, env, clusterName, namespace, releaseBy);
-        return null;
+        logger.error("createRelease fail.id:{}, env:{}, clusterName:{}, namespace:{},releaseBy{}",
+                     appId, env, clusterName, namespace, releaseBy);
+        throw new ServiceException("call create createRelease api error.");
       }
     }
   }
