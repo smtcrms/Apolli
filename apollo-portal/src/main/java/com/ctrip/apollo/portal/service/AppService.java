@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ctrip.apollo.Apollo.Env;
 import com.ctrip.apollo.core.dto.AppDTO;
+import com.ctrip.apollo.core.exception.ServiceException;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
@@ -46,10 +47,10 @@ public class AppService {
       app.setDataChangeCreatedBy(createBy);
       app.setDataChangeCreatedTime(new Date());
       app.setDataChangeLastModifiedBy(createBy);
-      return appAPI.save(Env.LOCAL, app);
+      return appAPI.save(Env.DEV, app);
     } catch (Exception e) {
       logger.error("oops! save app error. app id:{}", app.getAppId(), e);
-      throw e;
+      throw new ServiceException("call service error.");
     }
   }
 
