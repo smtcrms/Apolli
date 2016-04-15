@@ -1,27 +1,13 @@
 package com.ctrip.apollo.integration;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import com.ctrip.apollo.Config;
-import com.ctrip.apollo.ConfigChangeListener;
-import com.ctrip.apollo.ConfigService;
-import com.ctrip.apollo.core.ConfigConsts;
-import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.ctrip.apollo.core.utils.ClassLoaderUtil;
-import com.ctrip.apollo.model.ConfigChangeEvent;
-
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -31,9 +17,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.ctrip.apollo.Config;
+import com.ctrip.apollo.ConfigChangeListener;
+import com.ctrip.apollo.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.utils.ClassLoaderUtil;
+import com.ctrip.apollo.model.ConfigChangeEvent;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -56,8 +56,8 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   @Override
   @After
   public void tearDown() throws Exception {
-    super.tearDown();
     recursiveDelete(configDir);
+    super.tearDown();
   }
 
   private void recursiveDelete(File file) {
@@ -69,7 +69,12 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         recursiveDelete(f);
       }
     }
-    file.delete();
+    try {
+      Files.deleteIfExists(file.toPath());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
   }
 
   @Test
@@ -108,8 +113,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
   @Test
   public void testGetConfigWithNoLocalFileAndRemoteConfigError() throws Exception {
-    ContextHandler
-        handler =
+    ContextHandler handler =
         mockConfigServerHandler(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
     startServerWithHandlers(handler);
 
@@ -129,13 +133,11 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     properties.put(someKey, someValue);
     createLocalCachePropertyFile(properties);
 
-    ContextHandler
-        handler =
+    ContextHandler handler =
         mockConfigServerHandler(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
     startServerWithHandlers(handler);
 
     Config config = ConfigService.getConfig();
-
     assertEquals(someValue, config.getProperty(someKey, null));
   }
 
@@ -166,7 +168,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         assertEquals(1, changeEvent.getChanges().size());
         assertEquals(someValue, changeEvent.getChange(someKey).getOldValue());
         assertEquals(anotherValue, changeEvent.getChange(someKey).getNewValue());
-        //if there is any assertion failed above, this line won't be executed
+        // if there is any assertion failed above, this line won't be executed
         changeEvents.add(changeEvent);
       }
     });
@@ -186,7 +188,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     context.setHandler(new AbstractHandler() {
       @Override
       public void handle(String target, Request baseRequest, HttpServletRequest request,
-                         HttpServletResponse response) throws IOException, ServletException {
+          HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);
 
@@ -210,12 +212,19 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
   private File createLocalCachePropertyFile(Properties properties) throws IOException {
     File file = new File(configDir, assembleLocalCacheFileName());
-    properties.store(new FileOutputStream(file), "Persisted by ConfigIntegrationTest");
+    FileOutputStream in = null;
+    try {
+      in = new FileOutputStream(file);
+      properties.store(in, "Persisted by ConfigIntegrationTest");
+    } finally {
+      if (in != null) {
+        in.close();
+      }
+    }
     return file;
   }
 
   private String assembleLocalCacheFileName() {
-    return String.format("%s-%s-%s.properties", someAppId,
-        someClusterName, someNamespace);
+    return String.format("%s-%s-%s.properties", someAppId, someClusterName, someNamespace);
   }
 }
