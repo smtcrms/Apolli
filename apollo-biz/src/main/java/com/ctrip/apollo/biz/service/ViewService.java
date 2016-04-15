@@ -36,12 +36,12 @@ public class ViewService {
 
   public List<Cluster> findClusters(String appId) {
     if (Strings.isNullOrEmpty(appId)) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     List<Cluster> clusters = clusterRepository.findByAppId(appId);
     if (clusters == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return clusters;
   }
@@ -49,7 +49,7 @@ public class ViewService {
   public List<Namespace> findNamespaces(String appId, String clusterName) {
     List<Namespace> groups = namespaceRepository.findByAppIdAndClusterName(appId, clusterName);
     if (groups == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return groups;
   }
@@ -60,14 +60,14 @@ public class ViewService {
     if (group != null) {
       return findItems(group.getId());
     } else {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
   }
 
   public List<Item> findItems(Long namespaceId) {
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespaceId);
     if (items == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return items;
   }
@@ -76,7 +76,7 @@ public class ViewService {
     List<Release> releases = releaseRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
         clusterName, namespaceName);
     if (releases == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return releases;
   }

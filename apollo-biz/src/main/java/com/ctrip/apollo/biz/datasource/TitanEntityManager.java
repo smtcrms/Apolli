@@ -23,7 +23,7 @@ public class TitanEntityManager {
     Object obj = clazz.newInstance();
     Method method = clazz.getMethod("createDataSource", new Class[] {String.class, String.class});
     return ((DataSource) method.invoke(obj,
-        new String[] {settings.getTitanDbname(), settings.getTitanUrl()}));
+        new Object[] {settings.getTitanDbname(), settings.getTitanUrl()}));
   }
 
 }
