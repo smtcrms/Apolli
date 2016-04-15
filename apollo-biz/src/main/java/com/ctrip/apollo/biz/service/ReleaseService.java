@@ -15,6 +15,7 @@ import com.ctrip.apollo.biz.repository.ItemRepository;
 import com.ctrip.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
 import com.ctrip.apollo.core.exception.NotFoundException;
+import com.ctrip.apollo.core.utils.StringUtils;
 import com.google.gson.Gson;
 
 /**
@@ -50,6 +51,9 @@ public class ReleaseService {
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
     Map<String, String> configurations = new HashMap<String, String>();
     for (Item item : items) {
+      if (StringUtils.isEmpty(item.getKey())) {
+        continue;
+      }
       configurations.put(item.getKey(), item.getValue());
     }
 

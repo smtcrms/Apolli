@@ -76,7 +76,7 @@ public class AdminServiceAPI {
 
     public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespace) {
       if (StringUtils.isContainEmpty(appId, clusterName, namespace)) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       }
 
       return Arrays.asList(restTemplate.getForObject(getAdminServiceHost(env) + String

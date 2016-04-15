@@ -1,6 +1,5 @@
 package com.ctrip.apollo.portal.service;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,7 @@ public class ConfigService {
 
   /**
    * load cluster all namespace info with items
+   * 
    * @param appId
    * @param env
    * @param clusterName
@@ -56,7 +56,7 @@ public class ConfigService {
 
     List<NamespaceDTO> namespaces = groupAPI.findGroupsByAppAndCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     List<NamespaceVO> namespaceVOs = new LinkedList<>();
@@ -67,8 +67,8 @@ public class ConfigService {
         namespaceVO = parseNamespace(appId, env, clusterName, namespace);
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
-        logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}", appId, env, clusterName,
-                     namespace.getNamespaceName(), e);
+        logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
+            appId, env, clusterName, namespace.getNamespaceName(), e);
         return namespaceVOs;
       }
     }
@@ -76,8 +76,8 @@ public class ConfigService {
     return namespaceVOs;
   }
 
+  @SuppressWarnings("unchecked")
   private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
-
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
 
@@ -133,7 +133,8 @@ public class ConfigService {
 
   /**
    * parse config text and update config items
-   * @return  parse result
+   * 
+   * @return parse result
    */
   public void updateConfigItemByText(NamespaceTextModel model) {
     String appId = model.getAppId();
@@ -143,8 +144,8 @@ public class ConfigService {
     long namespaceId = model.getNamespaceId();
     String configText = model.getConfigText();
 
-    ItemChangeSets changeSets =
-        resolver.resolve(namespaceId, configText, itemAPI.findItems(appId, env, clusterName, namespaceName));
+    ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
+        itemAPI.findItems(appId, env, clusterName, namespaceName));
     try {
       changeSets.setModifyBy(model.getModifyBy());
       enrichChangeSetBaseInfo(changeSets);
@@ -155,18 +156,19 @@ public class ConfigService {
 
   }
 
-  private void enrichChangeSetBaseInfo(ItemChangeSets changeSets){
-    for (ItemDTO item: changeSets.getCreateItems()){
+  private void enrichChangeSetBaseInfo(ItemChangeSets changeSets) {
+    for (ItemDTO item : changeSets.getCreateItems()) {
       item.setDataChangeCreatedTime(new Date());
     }
   }
 
   /**
    * createRelease config items
+   * 
    * @return
    */
-  public ReleaseDTO createRelease(NamespaceReleaseModel model){
-    return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(), model.getNamespaceName(),
-                              model.getReleaseBy(), model.getReleaseComment());
+  public ReleaseDTO createRelease(NamespaceReleaseModel model) {
+    return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(),
+        model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment());
   }
 }
