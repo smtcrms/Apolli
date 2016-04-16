@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<rss version="0.91">
+  <channel>
+    <title>Apollo Client - Checkstyle report</title>
+    <link>https://ctripcorp.github.io/apollo/apollo-client</link>
+    <description>Apollo Client - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2016 Ctrip, Inc.</copyright>
+    <item>
+      <title>File: 29,
+             Errors: 0,
+             Warnings: 44,
+             Infos: 0
+      </title>
+            <link>https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.ConfigManager.java">com/ctrip/apollo/internals/ConfigManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.util.http.HttpUtil.java">com/ctrip/apollo/util/http/HttpUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.util.http.HttpRequest.java">com/ctrip/apollo/util/http/HttpRequest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.DefaultConfigFactory.java">com/ctrip/apollo/spi/DefaultConfigFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.env.Apollo.java">com/ctrip/apollo/env/Apollo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.RepositoryChangeListener.java">com/ctrip/apollo/internals/RepositoryChangeListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.model.ConfigChangeEvent.java">com/ctrip/apollo/model/ConfigChangeEvent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.DefaultConfigRegistry.java">com/ctrip/apollo/spi/DefaultConfigRegistry.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.Config.java">com/ctrip/apollo/Config.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.ConfigRepository.java">com/ctrip/apollo/internals/ConfigRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.ConfigRegistry.java">com/ctrip/apollo/spi/ConfigRegistry.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.util.http.HttpResponse.java">com/ctrip/apollo/util/http/HttpResponse.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.ConfigServiceLocator.java">com/ctrip/apollo/internals/ConfigServiceLocator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.DefaultConfig.java">com/ctrip/apollo/internals/DefaultConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.ConfigService.java">com/ctrip/apollo/ConfigService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.SimpleConfig.java">com/ctrip/apollo/internals/SimpleConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.enums.PropertyChangeType.java">com/ctrip/apollo/enums/PropertyChangeType.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.build.ComponentConfigurator.java">com/ctrip/apollo/build/ComponentConfigurator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.DefaultConfigFactoryManager.java">com/ctrip/apollo/spi/DefaultConfigFactoryManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.ConfigFactory.java">com/ctrip/apollo/spi/ConfigFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.spi.ConfigFactoryManager.java">com/ctrip/apollo/spi/ConfigFactoryManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.AbstractConfigRepository.java">com/ctrip/apollo/internals/AbstractConfigRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.model.ConfigChange.java">com/ctrip/apollo/model/ConfigChange.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.ConfigChangeListener.java">com/ctrip/apollo/ConfigChangeListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.AbstractConfig.java">com/ctrip/apollo/internals/AbstractConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.DefaultConfigManager.java">com/ctrip/apollo/internals/DefaultConfigManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.util.ConfigUtil.java">com/ctrip/apollo/util/ConfigUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.LocalFileConfigRepository.java">com/ctrip/apollo/internals/LocalFileConfigRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-client/checkstyle.html#com.ctrip.apollo.internals.RemoteConfigRepository.java">com/ctrip/apollo/internals/RemoteConfigRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
