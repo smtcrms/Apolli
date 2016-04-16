@@ -2,28 +2,30 @@ package com.ctrip.apollo.biz.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
+@Table(name = "Item")
 @SQLDelete(sql = "Update Item set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Item extends BaseEntity {
 
-  @Column(nullable = false)
+  @Column(name = "NamespaceId", nullable = false)
   private long namespaceId;
 
-  @Column(nullable = false)
+  @Column(name = "key", nullable = false)
   private String key;
 
-  @Column
+  @Column(name = "value")
   private String value;
 
-  @Column
+  @Column(name = "comment")
   private String comment;
 
-  @Column
+  @Column(name = "LineNum")
   private Integer lineNum;
 
   public String getComment() {

@@ -5,6 +5,7 @@ import com.ctrip.apollo.biz.repository.PrivilegeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class PrivilegeService {
   @Autowired
   private PrivilegeRepository privilRepo;
 
+  @Transactional
   public Privilege addPrivilege(long namespaceId, String name, PrivilType privilType) {
     Privilege privil =
         privilRepo.findByNamespaceIdAndNameAndPrivilType(namespaceId, name, privilType.name());
@@ -41,6 +43,7 @@ public class PrivilegeService {
     return privilRepo.findByNamespaceId(namespaceId);
   }
 
+  @Transactional
   public void removePrivilege(long namespaceId, String name, PrivilType privilType) {
     Privilege privil =
         privilRepo.findByNamespaceIdAndNameAndPrivilType(namespaceId, name, privilType.name());

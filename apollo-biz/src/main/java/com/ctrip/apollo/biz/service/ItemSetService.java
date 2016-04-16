@@ -2,6 +2,7 @@ package com.ctrip.apollo.biz.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.repository.ItemRepository;
@@ -15,6 +16,7 @@ public class ItemSetService {
   @Autowired
   private ItemRepository itemRepository;
 
+  @Transactional
   public void updateSet(ItemChangeSets changeSet) {
     if (changeSet.getCreateItems() != null) {
       for (ItemDTO item : changeSet.getCreateItems()) {
