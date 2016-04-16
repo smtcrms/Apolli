@@ -88,7 +88,7 @@
 <tr class="b">
 <td>6</td>
 <td>0</td>
-<td>8</td>
+<td>9</td>
 <td>0</td></tr></table></div>
 <div class="section">
 <h2>Files<a name="Files"></a></h2>
@@ -99,16 +99,21 @@
 <th><img src="images/icon_warning_sml.gif" alt="" />&#160;W</th>
 <th><img src="images/icon_error_sml.gif" alt="" />&#160;E</th></tr>
 <tr class="b">
-<td><a href="#com.ctrip.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/apollo/configservice/ConfigServiceHealthIndicator.java</a></td>
+<td><a href="#com.ctrip.apollo.ConfigServiceApplication.java">com/ctrip/apollo/ConfigServiceApplication.java</a></td>
 <td>0</td>
 <td>1</td>
 <td>0</td></tr>
 <tr class="a">
+<td><a href="#com.ctrip.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/apollo/configservice/ConfigServiceHealthIndicator.java</a></td>
+<td>0</td>
+<td>1</td>
+<td>0</td></tr>
+<tr class="b">
 <td><a href="#com.ctrip.apollo.configservice.controller.ConfigController.java">com/ctrip/apollo/configservice/controller/ConfigController.java</a></td>
 <td>0</td>
 <td>4</td>
 <td>0</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.ctrip.apollo.metaservice.controller.ServiceController.java">com/ctrip/apollo/metaservice/controller/ServiceController.java</a></td>
 <td>0</td>
 <td>3</td>
@@ -116,12 +121,12 @@
 <div class="section">
 <h2>Rules<a name="Rules"></a></h2>
 <table border="0" class="bodyTable">
-<tr class="a">
+<tr class="b">
 <th>Category</th>
 <th>Rule</th>
 <th>Violations</th>
 <th>Severity</th></tr>
-<tr class="b">
+<tr class="a">
 <td>imports</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_imports.html#CustomImportOrder">CustomImportOrder</a>
 <ul>
@@ -130,7 +135,7 @@
 <li>customImportOrderRules: <tt>&quot;STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE&quot;</tt></li></ul></td>
 <td>1</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
-<tr class="a">
+<tr class="b">
 <td>javadoc</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#JavadocMethod">JavadocMethod</a>
 <ul>
@@ -141,9 +146,9 @@
 <li>allowMissingParamTags: <tt>&quot;true&quot;</tt></li>
 <li>minLineCount: <tt>&quot;2&quot;</tt></li>
 <li>allowedAnnotations: <tt>&quot;Override, Test&quot;</tt></li></ul></td>
-<td>4</td>
+<td>5</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
-<tr class="b">
+<tr class="a">
 <td>sizes</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_sizes.html#LineLength">LineLength</a>
 <ul>
@@ -154,15 +159,30 @@
 <div class="section">
 <h2>Details<a name="Details"></a></h2>
 <div class="section">
-<h3 id="com.ctrip.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/apollo/configservice/ConfigServiceHealthIndicator.java</h3>
+<h3 id="com.ctrip.apollo.ConfigServiceApplication.java">com/ctrip/apollo/ConfigServiceApplication.java</h3>
 <table border="0" class="bodyTable">
-<tr class="a">
+<tr class="b">
 <th>Severity</th>
 <th>Category</th>
 <th>Rule</th>
 <th>Message</th>
 <th>Line</th></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>javadoc</td>
+<td>JavadocMethod</td>
+<td>Missing a Javadoc comment.</td>
+<td>19</td></tr></table></div>
+<div class="section">
+<h3 id="com.ctrip.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/apollo/configservice/ConfigServiceHealthIndicator.java</h3>
+<table border="0" class="bodyTable">
 <tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
@@ -171,31 +191,31 @@
 <div class="section">
 <h3 id="com.ctrip.apollo.configservice.controller.ConfigController.java">com/ctrip/apollo/configservice/controller/ConfigController.java</h3>
 <table border="0" class="bodyTable">
-<tr class="a">
+<tr class="b">
 <th>Severity</th>
 <th>Category</th>
 <th>Rule</th>
 <th>Message</th>
 <th>Line</th></tr>
-<tr class="b">
+<tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>sizes</td>
 <td>LineLength</td>
 <td>Line is longer than 100 characters (found 115).</td>
 <td>30</td></tr>
-<tr class="a">
+<tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>sizes</td>
 <td>LineLength</td>
 <td>Line is longer than 100 characters (found 104).</td>
 <td>32</td></tr>
-<tr class="b">
+<tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>javadoc</td>
 <td>JavadocMethod</td>
 <td>Missing a Javadoc comment.</td>
 <td>36</td></tr>
-<tr class="a">
+<tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>sizes</td>
 <td>LineLength</td>
@@ -204,25 +224,25 @@
 <div class="section">
 <h3 id="com.ctrip.apollo.metaservice.controller.ServiceController.java">com/ctrip/apollo/metaservice/controller/ServiceController.java</h3>
 <table border="0" class="bodyTable">
-<tr class="b">
+<tr class="a">
 <th>Severity</th>
 <th>Category</th>
 <th>Rule</th>
 <th>Message</th>
 <th>Line</th></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>javadoc</td>
-<td>JavadocMethod</td>
-<td>Missing a Javadoc comment.</td>
-<td>23</td></tr>
 <tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>javadoc</td>
 <td>JavadocMethod</td>
 <td>Missing a Javadoc comment.</td>
-<td>41</td></tr>
+<td>23</td></tr>
 <tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>javadoc</td>
+<td>JavadocMethod</td>
+<td>Missing a Javadoc comment.</td>
+<td>41</td></tr>
+<tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>javadoc</td>
 <td>JavadocMethod</td>
