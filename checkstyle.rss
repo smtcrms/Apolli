@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 9,
              Errors: 0,
-             Warnings: 111,
+             Warnings: 113,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html</link>
@@ -88,13 +88,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.AdminServiceApplication.java">com/ctrip/apollo/AdminServiceApplication.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  19
+                  2
                 </td>
                 <td>
                   0
@@ -102,13 +102,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.AdminServiceApplication.java">com/ctrip/apollo/AdminServiceApplication.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  0
+                  19
                 </td>
                 <td>
                   0
