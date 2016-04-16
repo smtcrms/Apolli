@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 118,
              Errors: 0,
-             Warnings: 586,
+             Warnings: 588,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -94,7 +94,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  2
                 </td>
                 <td>
                   0
@@ -234,7 +234,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  12
+                  13
                 </td>
                 <td>
                   0
@@ -430,7 +430,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -508,13 +508,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.service.ConfigService.java">com/ctrip/apollo/biz/service/ConfigService.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.service.AppService.java">com/ctrip/apollo/biz/service/AppService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  3
+                  9
                 </td>
                 <td>
                   0
@@ -522,13 +522,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.service.AppService.java">com/ctrip/apollo/biz/service/AppService.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.service.ConfigService.java">com/ctrip/apollo/biz/service/ConfigService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  8
+                  3
                 </td>
                 <td>
                   0
@@ -626,7 +626,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  14
+                  13
                 </td>
                 <td>
                   0
@@ -738,7 +738,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -906,7 +906,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  1
                 </td>
                 <td>
                   0
@@ -1130,7 +1130,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
                 <td>
                   0
