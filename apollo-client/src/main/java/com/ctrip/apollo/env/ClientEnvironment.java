@@ -5,7 +5,7 @@ import com.google.common.base.Strings;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.framework.foundation.Foundation;
 
-public class Apollo {
+public class ClientEnvironment {
   private static Env s_env;
   private static String s_appId;
   private static String s_cluster;
@@ -39,6 +39,7 @@ public class Apollo {
         s_env = Env.LPT;
         break;
       case "FAT":
+      case "FWS":
         s_env = Env.FAT;
         break;
       case "UAT":

@@ -1,5 +1,7 @@
 package com.ctrip.apollo.core.dto;
 
+import com.google.common.base.MoreObjects;
+
 public class ServiceDTO {
 
   private String appName;
@@ -30,5 +32,15 @@ public class ServiceDTO {
 
   public void setInstanceId(String instanceId) {
     this.instanceId = instanceId;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .omitNullValues()
+        .add("appName", appName)
+        .add("instanceId", instanceId)
+        .add("homepageUrl", homepageUrl)
+        .toString();
   }
 }
