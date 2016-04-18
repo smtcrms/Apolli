@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.apollo.biz.entity.App;
+import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.repository.AppRepository;
 import com.ctrip.apollo.common.utils.BeanUtils;
 
@@ -18,9 +19,14 @@ public class AppService {
   @Autowired
   private AppRepository appRepository;
 
+  @Autowired
+  private AuditService auditService;
+
   @Transactional
-  public void delete(long id) {
+  public void delete(long id, String owner) {
     appRepository.delete(id);
+
+    auditService.audit(App.class.getSimpleName(), id, Audit.OP.DELETE, owner);
   }
 
   public List<App> findAll(Pageable pageable) {
@@ -38,13 +44,23 @@ public class AppService {
 
   @Transactional
   public App save(App entity) {
-    return appRepository.save(entity);
+    App app = appRepository.save(entity);
+    
+    auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT,
+        app.getDataChangeCreatedBy());
+    
+    return app;
   }
 
   @Transactional
   public App update(App app) {
     App managedApp = appRepository.findByAppId(app.getAppId());
     BeanUtils.copyEntityProperties(app, managedApp);
-    return appRepository.save(managedApp);
+    managedApp = appRepository.save(managedApp);
+    
+    auditService.audit(App.class.getSimpleName(), managedApp.getId(), Audit.OP.UPDATE,
+        managedApp.getDataChangeLastModifiedBy());
+    
+    return managedApp;
   }
 }

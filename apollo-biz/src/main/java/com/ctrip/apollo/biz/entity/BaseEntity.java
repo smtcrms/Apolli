@@ -12,6 +12,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BaseEntity {
@@ -24,10 +27,10 @@ public abstract class BaseEntity {
   @Column(name = "IsDeleted", columnDefinition = "Bit default '0'")
   protected boolean isDeleted = false;
 
-  @Column(name = "DataChange_CreatedBy")
+  @Column(name = "DataChange_CreatedBy", nullable = false)
   private String dataChangeCreatedBy;
 
-  @Column(name = "DataChange_CreatedTime")
+  @Column(name = "DataChange_CreatedTime", nullable = false)
   private Date dataChangeCreatedTime;
 
   @Column(name = "DataChange_LastModifiedBy")
@@ -85,18 +88,29 @@ public abstract class BaseEntity {
   }
 
   @PrePersist
-  private void prePersist() {
+  protected void prePersist() {
     if (this.dataChangeCreatedTime == null) dataChangeCreatedTime = new Date();
   }
 
   @PreUpdate
-  private void preUpdate() {
+  protected void preUpdate() {
     this.dataChangeLastModifiedTime = new Date();
   }
 
   @PreRemove
-  private void preRemove() {
+  protected void preRemove() {
     this.dataChangeLastModifiedTime = new Date();
   }
 
+  protected ToStringHelper toStringHelper() {
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id)
+        .add("dataChangeCreatedBy", dataChangeCreatedBy)
+        .add("dataChangeCreatedTime", dataChangeCreatedTime)
+        .add("dataChangeLastModifiedBy", dataChangeLastModifiedBy)
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime);
+  }
+
+  public String toString(){
+    return toStringHelper().toString();
+  }
 }

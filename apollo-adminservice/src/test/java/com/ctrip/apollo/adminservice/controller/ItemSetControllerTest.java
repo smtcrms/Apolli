@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
@@ -44,7 +45,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets itemSet = new ItemChangeSets();
-    itemSet.setModifyBy("created");
+    restTemplate = new TestRestTemplate("created", "");
 
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
@@ -91,8 +92,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
-    createChangeSet.setModifyBy("created");
-
+    restTemplate = new TestRestTemplate("created", "");
+    
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
       ItemDTO item = new ItemDTO();
@@ -115,8 +116,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
             ItemDTO[].class);
 
     ItemChangeSets udpateChangeSet = new ItemChangeSets();
-    udpateChangeSet.setModifyBy("updated");
-
+    restTemplate = new TestRestTemplate("updated", "");
+    
     int updatedSize = 2;
     for (int i = 0; i < updatedSize; i++) {
       items[i].setValue("updated_value_" + i);
@@ -160,8 +161,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
-    createChangeSet.setModifyBy("created");
-
+    restTemplate = new TestRestTemplate("created", "");
+    
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
       ItemDTO item = new ItemDTO();
@@ -184,8 +185,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
             ItemDTO[].class);
 
     ItemChangeSets deleteChangeSet = new ItemChangeSets();
-    deleteChangeSet.setModifyBy("deleted");
-
+    restTemplate = new TestRestTemplate("deleted", "");
+    
     int deletedSize = 1;
     for (int i = 0; i < deletedSize; i++) {
       items[i].setValue("deleted_value_" + i);

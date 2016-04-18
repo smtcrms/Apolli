@@ -147,7 +147,6 @@ public class ConfigService {
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
         itemAPI.findItems(appId, env, clusterName, namespaceName));
     try {
-      changeSets.setModifyBy(model.getModifyBy());
       enrichChangeSetBaseInfo(changeSets);
       itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
     } catch (Exception e) {

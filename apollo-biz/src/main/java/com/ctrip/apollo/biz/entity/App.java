@@ -56,4 +56,9 @@ public class App extends BaseEntity {
   public void setOwnerName(String ownerName) {
     this.ownerName = ownerName;
   }
+
+  public String toString() {
+    return toStringHelper().add("name", name).add("appId", appId).add("ownerName", ownerName)
+        .add("ownerEmail", ownerEmail).toString();
+  }
 }

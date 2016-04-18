@@ -46,4 +46,8 @@ public class AppNamespace extends BaseEntity {
     this.name = name;
   }
 
+  public String toString() {
+    return toStringHelper().add("name", name).add("appId", appId).add("comment", comment)
+        .toString();
+  }
 }

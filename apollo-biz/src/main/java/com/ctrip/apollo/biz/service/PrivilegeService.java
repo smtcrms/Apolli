@@ -1,5 +1,6 @@
 package com.ctrip.apollo.biz.service;
 
+import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Privilege;
 import com.ctrip.apollo.biz.repository.PrivilegeRepository;
 
@@ -19,6 +20,9 @@ public class PrivilegeService {
   @Autowired
   private PrivilegeRepository privilRepo;
 
+  @Autowired
+  private AuditService auditService;
+
   @Transactional
   public Privilege addPrivilege(long namespaceId, String name, PrivilType privilType) {
     Privilege privil =
@@ -29,6 +33,8 @@ public class PrivilegeService {
       privil.setPrivilType(privilType.name());
       privil.setName(name);
       privilRepo.save(privil);
+
+      auditService.audit(Privilege.class.getSimpleName(), privil.getId(), Audit.OP.INSERT, name);
     }
     return privil;
   }
@@ -47,6 +53,10 @@ public class PrivilegeService {
   public void removePrivilege(long namespaceId, String name, PrivilType privilType) {
     Privilege privil =
         privilRepo.findByNamespaceIdAndNameAndPrivilType(namespaceId, name, privilType.name());
-    if (privil != null) privilRepo.delete(privil);
+    if (privil != null) {
+      privilRepo.delete(privil);
+
+      auditService.audit(Privilege.class.getSimpleName(), privil.getId(), Audit.OP.DELETE, name);
+    }
   }
 }

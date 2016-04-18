@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.service.NamespaceService;
 import com.ctrip.apollo.biz.service.ViewService;
+import com.ctrip.apollo.common.controller.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
@@ -29,7 +31,8 @@ public class NamespaceController {
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public ResponseEntity<NamespaceDTO> create(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
+      @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto,
+      @ActiveUser UserDetails user) {
     if (!appId.equals(dto.getAppId())) {
       throw new IllegalArgumentException(String
           .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
@@ -39,6 +42,7 @@ public class NamespaceController {
           "Path variable %s is not equals to object field %s", clusterName, dto.getClusterName()));
     }
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
+    entity.setDataChangeCreatedBy(user.getUsername());
     entity = namespaceService.save(entity);
     dto = BeanUtils.transfrom(NamespaceDTO.class, entity);
     return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -47,11 +51,11 @@ public class NamespaceController {
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
-      @PathVariable("namespaceName") String namespaceName) {
+      @PathVariable("namespaceName") String namespaceName, @ActiveUser UserDetails user) {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
     if (entity == null) throw new NotFoundException(
         String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
-    namespaceService.delete(entity.getId());
+    namespaceService.delete(entity.getId(), user.getUsername());
   }
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces")
@@ -82,7 +86,8 @@ public class NamespaceController {
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}", method = RequestMethod.PUT)
   public NamespaceDTO update(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
-      @PathVariable("namespaceName") String namespaceName, @RequestBody NamespaceDTO dto) {
+      @PathVariable("namespaceName") String namespaceName, @RequestBody NamespaceDTO dto,
+      @ActiveUser UserDetails user) {
     if (!appId.equals(dto.getAppId())) {
       throw new IllegalArgumentException(String
           .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
@@ -99,6 +104,7 @@ public class NamespaceController {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
     if (entity == null) throw new NotFoundException(
         String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+    entity.setDataChangeLastModifiedBy(user.getUsername());
     entity = namespaceService.update(BeanUtils.transfrom(Namespace.class, dto));
     return BeanUtils.transfrom(NamespaceDTO.class, entity);
   }

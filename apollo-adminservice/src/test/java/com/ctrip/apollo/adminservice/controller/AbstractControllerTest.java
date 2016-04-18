@@ -15,7 +15,7 @@ import com.ctrip.apollo.AdminServiceTestConfiguration;
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractControllerTest {
 
-  RestTemplate restTemplate = new TestRestTemplate();
+  RestTemplate restTemplate = new TestRestTemplate("user", "");
 
   @Value("${local.server.port}")
   int port;

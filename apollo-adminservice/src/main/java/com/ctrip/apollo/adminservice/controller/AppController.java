@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.service.AdminService;
 import com.ctrip.apollo.biz.service.AppService;
+import com.ctrip.apollo.common.controller.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
@@ -30,18 +32,19 @@ public class AppController {
   private AdminService adminService;
 
   @RequestMapping(path = "/apps", method = RequestMethod.POST)
-  public ResponseEntity<AppDTO> create(@RequestBody AppDTO dto) {
+  public ResponseEntity<AppDTO> create(@RequestBody AppDTO dto, @ActiveUser UserDetails user) {
     App entity = BeanUtils.transfrom(App.class, dto);
+    entity.setDataChangeCreatedBy(user.getUsername());
     entity = adminService.createNewApp(entity);
     dto = BeanUtils.transfrom(AppDTO.class, entity);
     return ResponseEntity.status(HttpStatus.CREATED).body(dto);
   }
 
   @RequestMapping(path = "/apps/{appId}", method = RequestMethod.DELETE)
-  public void delete(@PathVariable("appId") String appId) {
+  public void delete(@PathVariable("appId") String appId, @ActiveUser UserDetails user) {
     App entity = appService.findOne(appId);
     if (entity == null) throw new NotFoundException("app not found for appId " + appId);
-    appService.delete(entity.getId());
+    appService.delete(entity.getId(), user.getUsername());
   }
 
   @RequestMapping("/apps")
@@ -64,13 +67,15 @@ public class AppController {
   }
 
   @RequestMapping(path = "/apps/{appId}", method = RequestMethod.PUT)
-  public AppDTO update(@PathVariable("appId") String appId, @RequestBody AppDTO dto) {
+  public AppDTO update(@PathVariable("appId") String appId, @RequestBody AppDTO dto,
+      @ActiveUser UserDetails user) {
     if (!appId.equals(dto.getAppId())) {
       throw new IllegalArgumentException(String
           .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
     }
     App entity = appService.findOne(appId);
     if (entity == null) throw new NotFoundException("app not found for appId " + appId);
+    entity.setDataChangeLastModifiedBy(user.getUsername());
     entity = appService.update(BeanUtils.transfrom(App.class, dto));
     return BeanUtils.transfrom(AppDTO.class, entity);
   }

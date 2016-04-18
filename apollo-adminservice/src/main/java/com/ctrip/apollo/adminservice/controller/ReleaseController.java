@@ -3,6 +3,7 @@ package com.ctrip.apollo.adminservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,7 @@ import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.biz.service.ReleaseService;
 import com.ctrip.apollo.biz.service.ViewService;
+import com.ctrip.apollo.common.controller.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;
@@ -47,12 +49,12 @@ public class ReleaseController {
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest")
   public ReleaseDTO getLatest(@PathVariable("appId") String appId,
-                              @PathVariable("clusterName") String clusterName,
-                              @PathVariable("namespaceName") String namespaceName) {
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName) {
     Release release = configService.findRelease(appId, clusterName, namespaceName);
     if (release == null) {
-      throw new NotFoundException(
-          String.format("latest release not found for %s %s %s", appId, clusterName, namespaceName));
+      throw new NotFoundException(String.format("latest release not found for %s %s %s", appId,
+          clusterName, namespaceName));
     } else {
       return BeanUtils.transfrom(ReleaseDTO.class, release);
     }
@@ -62,8 +64,10 @@ public class ReleaseController {
   public ReleaseDTO buildRelease(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName, @RequestParam("name") String name,
-      @RequestParam(name = "comment", required = false) String comment) {
-    Release release = releaseService.buildRelease(name, comment, appId, clusterName, namespaceName);
+      @RequestParam(name = "comment", required = false) String comment,
+      @ActiveUser UserDetails user) {
+    Release release = releaseService.buildRelease(name, comment, appId, clusterName, namespaceName,
+        user.getUsername());
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 }

@@ -38,4 +38,7 @@ public class Cluster extends BaseEntity {
     this.name = name;
   }
 
+  public String toString() {
+    return toStringHelper().add("name", name).add("appId", appId).toString();
+  }
 }
