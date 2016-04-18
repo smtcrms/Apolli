@@ -106,7 +106,6 @@ public class ConfigServiceTest extends AbstractPortalTest{
 
     List<ItemDTO> itemDTOs = mockBaseItemHas3Key();
     ItemChangeSets changeSets = new ItemChangeSets();
-    changeSets.setModifyBy("ll");
     changeSets.addCreateItem(new ItemDTO("d", "c", "", 4));
 
     when(itemAPI.findItems(appId, Env.DEV, clusterName, namespaceName)).thenReturn(itemDTOs);
