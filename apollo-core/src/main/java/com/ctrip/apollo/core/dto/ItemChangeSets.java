@@ -8,7 +8,6 @@ import java.util.List;
  */
 public class ItemChangeSets {
 
-  private String modifyBy;
   private List<ItemDTO> createItems = new LinkedList<>();
   private List<ItemDTO> updateItems = new LinkedList<>();
   private List<ItemDTO> deleteItems = new LinkedList<>();
@@ -47,14 +46,6 @@ public class ItemChangeSets {
 
   public void setDeleteItems(List<ItemDTO> deleteItems) {
     this.deleteItems = deleteItems;
-  }
-
-  public String getModifyBy() {
-    return modifyBy;
-  }
-
-  public void setModifyBy(String modifyBy) {
-    this.modifyBy = modifyBy;
   }
 
 }
