@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.service.ItemSetService;
-import com.ctrip.apollo.common.controller.ActiveUser;
+import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 
 @RestController

@@ -14,7 +14,7 @@ import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.biz.service.ReleaseService;
 import com.ctrip.apollo.biz.service.ViewService;
-import com.ctrip.apollo.common.controller.ActiveUser;
+import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;

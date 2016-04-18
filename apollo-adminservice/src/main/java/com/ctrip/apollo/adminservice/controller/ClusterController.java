@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.service.ClusterService;
 import com.ctrip.apollo.biz.service.ViewService;
-import com.ctrip.apollo.common.controller.ActiveUser;
+import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.exception.NotFoundException;

@@ -12,7 +12,8 @@ public class API {
   @Autowired
   protected ServiceLocator serviceLocator;
 
-  protected RestTemplate restTemplate = new RestTemplate();
+  @Autowired
+  protected RestTemplate restTemplate;
 
   public String getAdminServiceHost(Env env) {
     // 本地测试用
@@ -24,4 +25,5 @@ public class API {
     }
     return "";
   }
+  
 }
