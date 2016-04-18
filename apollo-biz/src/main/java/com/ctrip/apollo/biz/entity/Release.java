@@ -84,4 +84,9 @@ public class Release extends BaseEntity {
     this.name = name;
   }
 
+  public String toString() {
+    return toStringHelper().add("name", name).add("appId", appId).add("clusterName", clusterName)
+        .add("namespaceName", namespaceName).add("configurations", configurations)
+        .add("comment", comment).toString();
+  }
 }

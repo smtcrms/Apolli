@@ -59,6 +59,9 @@ public class AdminServiceTest {
 
     List<Audit> audits = auditService.findByOwner(owner);
     Assert.assertEquals(4, audits.size());
+    for(Audit audit : audits){
+      System.out.println(audit);
+    }
   }
 
 }

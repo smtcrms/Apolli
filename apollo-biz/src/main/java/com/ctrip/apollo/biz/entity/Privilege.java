@@ -45,4 +45,9 @@ public class Privilege extends BaseEntity {
   public void setPrivilType(String privilType) {
     this.privilType = privilType;
   }
+
+  public String toString() {
+    return toStringHelper().add("namespaceId", namespaceId).add("privilType", privilType)
+        .add("name", name).toString();
+  }
 }

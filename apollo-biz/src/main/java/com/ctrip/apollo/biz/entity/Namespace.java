@@ -46,4 +46,8 @@ public class Namespace extends BaseEntity {
     this.namespaceName = namespaceName;
   }
 
+  public String toString() {
+    return toStringHelper().add("appId", appId).add("clusterName", clusterName)
+        .add("namespaceName", namespaceName).toString();
+  }
 }

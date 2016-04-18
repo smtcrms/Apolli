@@ -12,7 +12,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
-import com.ctrip.apollo.core.utils.ToStringHelper;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -101,7 +102,15 @@ public abstract class BaseEntity {
     this.dataChangeLastModifiedTime = new Date();
   }
 
-  public String toString() {
-    return ToStringHelper.toString(this);
+  protected ToStringHelper toStringHelper() {
+    return MoreObjects.toStringHelper(this).omitNullValues().add("id", id)
+        .add("dataChangeCreatedBy", dataChangeCreatedBy)
+        .add("dataChangeCreatedTime", dataChangeCreatedTime)
+        .add("dataChangeLastModifiedBy", dataChangeLastModifiedBy)
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime);
+  }
+
+  public String toString(){
+    return toStringHelper().toString();
   }
 }

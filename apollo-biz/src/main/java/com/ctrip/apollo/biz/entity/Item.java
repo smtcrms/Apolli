@@ -67,4 +67,9 @@ public class Item extends BaseEntity {
   public void setLineNum(Integer lineNum) {
     this.lineNum = lineNum;
   }
+
+  public String toString() {
+    return toStringHelper().add("namespaceId", namespaceId).add("key", key).add("value", value)
+        .add("lineNum", lineNum).add("comment", comment).toString();
+  }
 }

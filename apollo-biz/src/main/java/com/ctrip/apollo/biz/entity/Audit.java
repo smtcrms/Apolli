@@ -19,8 +19,8 @@ public class Audit extends BaseEntity {
 
   @Column(name = "EntityName", nullable = false)
   private String entityName;
-  
-  @Column(name="EntityId")
+
+  @Column(name = "EntityId")
   private Long entityId;
 
   @Column(name = "OpName", nullable = false)
@@ -61,4 +61,8 @@ public class Audit extends BaseEntity {
     this.opName = opName;
   }
 
+  public String toString() {
+    return toStringHelper().add("entityName", entityName).add("entityId", entityId)
+        .add("opName", opName).add("comment", comment).toString();
+  }
 }
