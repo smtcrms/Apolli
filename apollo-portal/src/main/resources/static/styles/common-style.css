@@ -11,6 +11,11 @@ a{
     cursor: pointer;
 }
 
+.apollo-container{
+    min-height: 550px;
+}
+
+
 .footer {
     height: 100px;
     width: 100%;
@@ -72,6 +77,13 @@ table th {
     height: 500px;
     overflow: scroll;
 }
+
+#editor {
+    position: relative;
+    width: 500px;
+    height: 400px;
+}
+
 .namespace-view-table{
     max-height: 700px;
     overflow: scroll;

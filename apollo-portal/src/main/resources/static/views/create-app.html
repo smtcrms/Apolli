@@ -14,53 +14,51 @@
 
 <div ng-include="'common/nav.html'"></div>
 
-<div class="container">
-    <div class="container-fluid">
+<div class="container-fluid apollo-container">
 
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel">
-                    <header class="panel-heading">
-                        创建项目
-                    </header>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel">
+                <header class="panel-heading">
+                    创建项目
+                </header>
 
-                    <div class="panel-body">
-                        <form class="form-horizontal" ng-controller="CreateAppController" ng-submit="save()">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><font style="color: red">*</font> 应用ID</label>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" name="appAppId" ng-model="app.appId"
-                                           required>
-                                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" ng-controller="CreateAppController" ng-submit="save()">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><font style="color: red">*</font> 应用ID</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="appAppId" ng-model="app.appId"
+                                       required>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"><font style="color: red">*</font> 应用名称</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" name="appName" ng-model="app.name" required>
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><font style="color: red">*</font> 应用名称</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" name="appName" ng-model="app.name" required>
                             </div>
-                            <!--接入sso之后将会去除-->
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Owner</label>
-                                <div class="col-sm-3">
-                                    <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName">
-                                </div>
+                        </div>
+                        <!--接入sso之后将会去除-->
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Owner</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName">
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label"> 邮箱地址</label>
-                                <div class="col-sm-4">
-                                    <input type="email" class="form-control" ng-model="app.ownerEmail">
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"> 邮箱地址</label>
+                            <div class="col-sm-4">
+                                <input type="email" class="form-control" ng-model="app.ownerEmail">
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
 
-                                    <button type="submit" class="btn btn-default">创建</button>
-                                </div>
+                                <button type="submit" class="btn btn-default">创建</button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

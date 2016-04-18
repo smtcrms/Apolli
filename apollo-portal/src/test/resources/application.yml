@@ -17,3 +17,7 @@ logging:
   
 ctrip:
   appid: 100003173
+
+apollo:
+  portal:
+    env: dev

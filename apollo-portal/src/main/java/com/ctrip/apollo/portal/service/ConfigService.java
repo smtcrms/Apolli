@@ -33,7 +33,7 @@ public class ConfigService {
   private Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
   @Autowired
-  private AdminServiceAPI.NamespaceAPI groupAPI;
+  private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
   private AdminServiceAPI.ItemAPI itemAPI;
   @Autowired
@@ -54,7 +54,7 @@ public class ConfigService {
    */
   public List<NamespaceVO> findNampspaces(String appId, Env env, String clusterName) {
 
-    List<NamespaceDTO> namespaces = groupAPI.findGroupsByAppAndCluster(appId, env, clusterName);
+    List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
       return Collections.emptyList();
     }
@@ -77,7 +77,7 @@ public class ConfigService {
   }
 
   @SuppressWarnings("unchecked")
-  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
+  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace)   {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
 
@@ -99,7 +99,7 @@ public class ConfigService {
       }
     }
 
-    //not createRelease config items
+    //not Release config items
     List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
     int modifiedItemCnt = 0;
     for (ItemDTO itemDTO : items) {

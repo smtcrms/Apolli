@@ -14,7 +14,7 @@
 
 <div ng-include="'common/nav.html'"></div>
 
-<div class="container-fluid">
+<div class="container-fluid apollo-container">
     <div class="app" ng-controller="AppConfigController as appConfig">
 
         <!--配置信息-->
@@ -100,8 +100,8 @@
                                     </div>
                                 </div>
                             </header>
-
                             <div ng-show="namespace.viewType == 'text'">
+
                                 <textarea class="form-control" rows="30" ng-model="namespace.text"
                                           ng-disabled="!namespace.isTextEditing">
 {{namespace.text}}
@@ -305,11 +305,10 @@
 <!--controller-->
 <script type="application/javascript" src="../scripts/controller/app/AppConfigController.js"></script>
 
-
 <script type="application/javascript">
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-    })
+    });
 </script>
 </body>
 </html>
