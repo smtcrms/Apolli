@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.MetaDomainConsts;
 import com.ctrip.apollo.core.enums.Env;
-import com.ctrip.apollo.env.Apollo;
+import com.ctrip.apollo.env.ClientEnvironment;
 
 import org.unidal.lookup.annotation.Named;
 
@@ -28,7 +28,7 @@ public class ConfigUtil {
    * @throws IllegalStateException if app id is not set
    */
   public String getAppId() {
-    String appId = Apollo.getAppId();
+    String appId = ClientEnvironment.getAppId();
     Preconditions.checkState(appId != null, "app.id is not set");
     return appId;
   }
@@ -38,7 +38,7 @@ public class ConfigUtil {
    * @return the cluster name, or "default" if not specified
    */
   public String getCluster() {
-    String cluster = Apollo.getCluster();
+    String cluster = ClientEnvironment.getCluster();
     if (cluster == null) {
       cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
     }
@@ -51,7 +51,7 @@ public class ConfigUtil {
    * @throws IllegalStateException if env is set
    */
   public Env getApolloEnv() {
-    Env env = Apollo.getEnv();
+    Env env = ClientEnvironment.getEnv();
     Preconditions.checkState(env != null, "env is not set");
     return env;
   }

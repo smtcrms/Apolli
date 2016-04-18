@@ -10,6 +10,9 @@ import com.ctrip.apollo.util.ConfigUtil;
 import com.ctrip.apollo.util.http.HttpRequest;
 import com.ctrip.apollo.util.http.HttpResponse;
 import com.ctrip.apollo.util.http.HttpUtil;
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -17,10 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unidal.lookup.ContainerLoader;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -38,6 +43,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
   /**
    * Constructor.
+   *
    * @param namespace the namespace
    */
   public RemoteConfigRepository(String namespace) {
@@ -49,6 +55,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       m_httpUtil = m_container.lookup(HttpUtil.class);
       m_serviceLocator = m_container.lookup(ConfigServiceLocator.class);
     } catch (ComponentLookupException ex) {
+      Cat.logError(ex);
       throw new IllegalStateException("Unable to load component!", ex);
     }
     this.m_executorService = Executors.newScheduledThreadPool(1,
@@ -110,35 +117,65 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
-    String
-        url =
-        assembleUrl(getConfigServiceUrl(), appId, cluster, m_namespace, m_configCache.get());
+    Cat.logEvent("Apollo.Client.Config", String.format("%s-%s-%s", appId, cluster, m_namespace));
+    int maxRetries = 2;
+    Throwable exception = null;
 
-    logger.info("Loading config from {}", url);
-    HttpRequest request = new HttpRequest(url);
+    List<ServiceDTO> configServices = getConfigServices();
+    for (int i = 0; i < maxRetries; i++) {
+      List<ServiceDTO> randomConfigServices = Lists.newArrayList(configServices);
+      Collections.shuffle(randomConfigServices);
 
-    try {
-      HttpResponse<ApolloConfig> response = m_httpUtil.doGet(request, ApolloConfig.class);
-      if (response.getStatusCode() == 304) {
-        logger.info("Config server responds with 304 HTTP status code.");
-        return m_configCache.get();
+      for (ServiceDTO configService : randomConfigServices) {
+        String url =
+            assembleUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
+                m_configCache.get());
+
+        logger.debug("Loading config from {}", url);
+        HttpRequest request = new HttpRequest(url);
+
+        Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "queryConfig");
+        transaction.addData("Url", url);
+        try {
+
+          HttpResponse<ApolloConfig> response = m_httpUtil.doGet(request, ApolloConfig.class);
+
+          transaction.addData("StatusCode", response.getStatusCode());
+          transaction.setStatus(Message.SUCCESS);
+
+          if (response.getStatusCode() == 304) {
+            logger.debug("Config server responds with 304 HTTP status code.");
+            return m_configCache.get();
+          }
+          logger.debug("Loaded config: {}", response.getBody());
+
+          return response.getBody();
+        } catch (Throwable ex) {
+          Cat.logError(ex);
+          transaction.setStatus(ex);
+          exception = ex;
+        } finally {
+          transaction.complete();
+        }
+
       }
 
-      logger.info("Loaded config: {}", response.getBody());
-
-      return response.getBody();
-    } catch (Throwable ex) {
-      String message =
-          String.format("Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s", appId,
-              cluster, m_namespace);
-      logger.error(message, ex);
-      throw new RuntimeException(message, ex);
+      try {
+        TimeUnit.SECONDS.sleep(1);
+      } catch (InterruptedException e) {
+        //ignore
+      }
     }
+    String message = String.format(
+        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, services: %s",
+        appId, cluster, m_namespace, configServices);
+    logger.error(message, exception);
+    throw new RuntimeException(message, exception);
   }
 
   private String assembleUrl(String uri, String appId, String cluster, String namespace,
                              ApolloConfig previousConfig) {
-    String path = "/config/%s/%s";
+    String path = "config/%s/%s";
     List<String> params = Lists.newArrayList(appId, cluster);
 
     if (!Strings.isNullOrEmpty(namespace)) {
@@ -151,14 +188,18 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     }
 
     String pathExpanded = String.format(path, params.toArray());
+    if (!uri.endsWith("/")) {
+      uri += "/";
+    }
     return uri + pathExpanded;
   }
 
-  private String getConfigServiceUrl() {
+  private List<ServiceDTO> getConfigServices() {
     List<ServiceDTO> services = m_serviceLocator.getConfigServices();
     if (services.size() == 0) {
       throw new RuntimeException("No available config service");
     }
-    return services.get(0).getHomepageUrl();
+
+    return services;
   }
 }

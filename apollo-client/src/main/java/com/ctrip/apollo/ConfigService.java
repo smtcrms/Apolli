@@ -4,6 +4,7 @@ import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.internals.ConfigManager;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.spi.ConfigRegistry;
+import com.dianping.cat.Cat;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -36,6 +37,7 @@ public class ConfigService {
    * @return config instance
    */
   public static Config getConfig(String namespace) {
+    Cat.logEvent("Apollo.Client.Version", Apollo.VERSION);
     return getManager().getConfig(namespace);
   }
 
@@ -43,6 +45,7 @@ public class ConfigService {
     try {
       return s_instance.m_container.lookup(ConfigManager.class);
     } catch (ComponentLookupException ex) {
+      Cat.logError(ex);
       throw new IllegalStateException("Unable to load ConfigManager!", ex);
     }
   }
@@ -51,6 +54,7 @@ public class ConfigService {
     try {
       return s_instance.m_container.lookup(ConfigRegistry.class);
     } catch (ComponentLookupException ex) {
+      Cat.logError(ex);
       throw new IllegalStateException("Unable to load ConfigRegistry!", ex);
     }
   }
@@ -60,7 +64,7 @@ public class ConfigService {
   }
 
   /**
-   * Manually set the config for the namespace specified, use with caution!
+   * Manually set the config for the namespace specified, use with caution.
    * @param namespace the namespace
    * @param config the config instance
    */
@@ -78,7 +82,7 @@ public class ConfigService {
   }
 
   /**
-   * Manually set the config factory for the namespace specified, use with caution!
+   * Manually set the config factory for the namespace specified, use with caution.
    * @param namespace the namespace
    * @param factory the factory instance
    */

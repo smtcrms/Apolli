@@ -23,7 +23,9 @@ import org.unidal.lookup.ComponentTestCase;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class BaseIntegrationTest extends ComponentTestCase {
-  private static final int PORT = 5678;
+  private static final int PORT = findFreePort();
   private static final String metaServiceUrl = "http://localhost:" + PORT;
   private static final String someAppName = "someAppName";
   private static final String someInstanceId = "someInstanceId";
@@ -86,23 +88,33 @@ public class BaseIntegrationTest extends ComponentTestCase {
 
   @After
   public void tearDown() throws Exception {
-    super.tearDown();
     if (server != null && server.isStarted()) {
       server.stop();
     }
+    super.tearDown();
   }
 
-  private ContextHandler mockMetaServerHandler() {
+  protected ContextHandler mockMetaServerHandler() {
+    return mockMetaServerHandler(false);
+  }
+
+  protected ContextHandler mockMetaServerHandler(final boolean failedAtFirstTime) {
     final ServiceDTO someServiceDTO = new ServiceDTO();
     someServiceDTO.setAppName(someAppName);
     someServiceDTO.setInstanceId(someInstanceId);
     someServiceDTO.setHomepageUrl(configServiceURL);
+    final AtomicInteger counter = new AtomicInteger(0);
 
     ContextHandler context = new ContextHandler("/services/config");
     context.setHandler(new AbstractHandler() {
       @Override
       public void handle(String target, Request baseRequest, HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
+        if (failedAtFirstTime && counter.incrementAndGet() == 1) {
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          baseRequest.setHandled(true);
+          return;
+        }
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
@@ -148,6 +160,39 @@ public class BaseIntegrationTest extends ComponentTestCase {
     public Env getApolloEnv() {
       return Env.LOCAL;
     }
+  }
+
+  /**
+   * Returns a free port number on localhost.
+   *
+   * Heavily inspired from org.eclipse.jdt.launching.SocketUtil (to avoid a dependency to JDT just because of this).
+   * Slightly improved with close() missing in JDT. And throws exception instead of returning -1.
+   *
+   * @return a free port number on localhost
+   * @throws IllegalStateException if unable to find a free port
+   */
+  private static int findFreePort() {
+    ServerSocket socket = null;
+    try {
+      socket = new ServerSocket(0);
+      socket.setReuseAddress(true);
+      int port = socket.getLocalPort();
+      try {
+        socket.close();
+      } catch (IOException e) {
+        // Ignore IOException on close()
+      }
+      return port;
+    } catch (IOException e) {
+    } finally {
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
+        }
+      }
+    }
+    throw new IllegalStateException("Could not find a free TCP/IP port to start embedded Jetty HTTP Server on");
   }
 
 }

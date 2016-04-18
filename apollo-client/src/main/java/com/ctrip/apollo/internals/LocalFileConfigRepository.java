@@ -34,7 +34,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   /**
    * Constructor.
-   * @param baseDir the base dir for this local file config repository
+   *
+   * @param baseDir   the base dir for this local file config repository
    * @param namespace the namespace
    */
   public LocalFileConfigRepository(File baseDir, String namespace) {
@@ -44,6 +45,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     try {
       m_configUtil = m_container.lookup(ConfigUtil.class);
     } catch (ComponentLookupException ex) {
+      Cat.logError(ex);
       throw new IllegalStateException("Unable to load component!", ex);
     }
     this.trySync();
@@ -86,6 +88,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     try {
       m_fileProperties = this.loadFromLocalCacheFile(m_baseDir, m_namespace);
     } catch (Throwable ex) {
+      Cat.logError(ex);
       ex.printStackTrace();
       //ignore
     }
@@ -107,9 +110,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       Properties properties = m_fallback.getConfig();
       updateFileProperties(properties);
     } catch (Throwable ex) {
-      String message =
-          String.format("Sync config from fallback repository %s failed", m_fallback.getClass());
-      logger.warn(message, ex);
+      Cat.logError(ex);
+      logger.warn("Sync config from fallback repository {} failed", m_fallback.getClass(), ex);
     }
   }
 
@@ -136,9 +138,9 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
         properties = new Properties();
         properties.load(in);
       } catch (IOException ex) {
-        logger.error("Loading config from local cache file {} failed", file.getAbsolutePath(), ex);
         Cat.logError(ex);
-        throw ex;
+        throw new RuntimeException(String
+            .format("Loading config from local cache file %s failed", file.getAbsolutePath()), ex);
       } finally {
         try {
           if (in != null) {
@@ -149,10 +151,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
         }
       }
     } else {
-      String message =
-          String.format("Cannot read from local cache file %s", file.getAbsolutePath());
-      logger.error(message);
-      throw new RuntimeException(message);
+      throw new RuntimeException(
+          String.format("Cannot read from local cache file %s", file.getAbsolutePath()));
     }
 
     return properties;
@@ -170,8 +170,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       out = new FileOutputStream(file);
       m_fileProperties.store(out, "Persisted by DefaultConfig");
     } catch (IOException ex) {
-      logger.error("Persist local cache file {} failed", file.getAbsolutePath(), ex);
       Cat.logError(ex);
+      logger.error("Persist local cache file {} failed", file.getAbsolutePath(), ex);
     } finally {
       if (out != null) {
         try {

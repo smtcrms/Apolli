@@ -50,6 +50,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     } catch (Throwable ex) {
       String message = String.format("Init Apollo Local Config failed - namespace: %s",
           m_namespace);
+      Cat.logError(ex);
       logger.error(message, ex);
     }
   }
@@ -161,8 +162,8 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
       try {
         properties.load(in);
       } catch (IOException ex) {
-        logger.error("Load resource config for namespace {} failed", namespace, ex);
         Cat.logError(ex);
+        logger.error("Load resource config for namespace {} failed", namespace, ex);
       } finally {
         try {
           in.close();

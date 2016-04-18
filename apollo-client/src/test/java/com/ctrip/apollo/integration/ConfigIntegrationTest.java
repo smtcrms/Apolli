@@ -1,8 +1,23 @@
 package com.ctrip.apollo.integration;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import com.ctrip.apollo.Config;
+import com.ctrip.apollo.ConfigChangeListener;
+import com.ctrip.apollo.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.utils.ClassLoaderUtil;
+import com.ctrip.apollo.model.ConfigChangeEvent;
+
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,28 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.ctrip.apollo.Config;
-import com.ctrip.apollo.ConfigChangeListener;
-import com.ctrip.apollo.ConfigService;
-import com.ctrip.apollo.core.ConfigConsts;
-import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.ctrip.apollo.core.utils.ClassLoaderUtil;
-import com.ctrip.apollo.model.ConfigChangeEvent;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -142,6 +144,36 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   }
 
   @Test
+  public void testGetConfigWithNoLocalFileAndRemoteMetaServiceRetry() throws Exception {
+    String someKey = "someKey";
+    String someValue = "someValue";
+    ApolloConfig apolloConfig = assembleApolloConfig(ImmutableMap.of(someKey, someValue));
+    ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
+    boolean failAtFirstTime = true;
+    ContextHandler metaServerHandler = mockMetaServerHandler(failAtFirstTime);
+    startServerWithHandlers(metaServerHandler, configHandler);
+
+    Config config = ConfigService.getConfig();
+
+    assertEquals(someValue, config.getProperty(someKey, null));
+  }
+
+  @Test
+  public void testGetConfigWithNoLocalFileAndRemoteConfigServiceRetry() throws Exception {
+    String someKey = "someKey";
+    String someValue = "someValue";
+    ApolloConfig apolloConfig = assembleApolloConfig(ImmutableMap.of(someKey, someValue));
+    boolean failedAtFirstTime = true;
+    ContextHandler handler =
+        mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig, failedAtFirstTime);
+    startServerWithHandlers(handler);
+
+    Config config = ConfigService.getConfig();
+
+    assertEquals(someValue, config.getProperty(someKey, null));
+  }
+
+  @Test
   public void testRefreshConfig() throws Exception {
     final String someKey = "someKey";
     final String someValue = "someValue";
@@ -183,12 +215,21 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     assertEquals(anotherValue, config.getProperty(someKey, null));
   }
 
-  private ContextHandler mockConfigServerHandler(final int statusCode, final ApolloConfig result) {
+  private ContextHandler mockConfigServerHandler(final int statusCode, final ApolloConfig result,
+                                                 final boolean failedAtFirstTime) {
     ContextHandler context = new ContextHandler("/config/*");
     context.setHandler(new AbstractHandler() {
+      AtomicInteger counter = new AtomicInteger(0);
+
       @Override
       public void handle(String target, Request baseRequest, HttpServletRequest request,
-          HttpServletResponse response) throws IOException, ServletException {
+                         HttpServletResponse response) throws IOException, ServletException {
+        if (failedAtFirstTime && counter.incrementAndGet() == 1) {
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          baseRequest.setHandled(true);
+          return;
+        }
+
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);
 
@@ -199,6 +240,12 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     });
 
     return context;
+
+  }
+
+
+  private ContextHandler mockConfigServerHandler(int statusCode, ApolloConfig result) {
+    return mockConfigServerHandler(statusCode, result, false);
   }
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {

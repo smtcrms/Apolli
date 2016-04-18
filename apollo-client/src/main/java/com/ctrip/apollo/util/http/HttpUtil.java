@@ -1,6 +1,7 @@
 package com.ctrip.apollo.util.http;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Function;
 import com.google.gson.Gson;
 
 import com.ctrip.apollo.util.ConfigUtil;
@@ -11,6 +12,7 @@ import org.unidal.lookup.annotation.Named;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -30,10 +32,43 @@ public class HttpUtil {
   /**
    * Do get operation for the http request.
    *
-   * @return the http response
+   * @param httpRequest  the request
+   * @param responseType the response type
+   * @return the response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
    */
-  public <T> HttpResponse<T> doGet(HttpRequest httpRequest, Class<T> responseType) {
+  public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Class<T> responseType) {
+    Function<String, T> convertResponse = new Function<String, T>() {
+      @Override
+      public T apply(String input) {
+        return gson.fromJson(input, responseType);
+      }
+    };
+
+    return doGetWithSerializeFunction(httpRequest, convertResponse);
+  }
+
+  /**
+   * Do get operation for the http request.
+   *
+   * @param httpRequest  the request
+   * @param responseType the response type
+   * @return the response
+   * @throws RuntimeException if any error happened or response code is neither 200 nor 304
+   */
+  public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Type responseType) {
+    Function<String, T> convertResponse = new Function<String, T>() {
+      @Override
+      public T apply(String input) {
+        return gson.fromJson(input, responseType);
+      }
+    };
+
+    return doGetWithSerializeFunction(httpRequest, convertResponse);
+  }
+
+  private <T> HttpResponse<T> doGetWithSerializeFunction(HttpRequest httpRequest,
+                                                         Function<String, T> serializeFunction) {
     InputStream is = null;
     try {
       HttpURLConnection conn = (HttpURLConnection) new URL(httpRequest.getUrl()).openConnection();
@@ -60,7 +95,7 @@ public class HttpUtil {
       if (statusCode == 200) {
         is = conn.getInputStream();
         String content = Files.IO.INSTANCE.readFrom(is, Charsets.UTF_8.name());
-        return new HttpResponse<>(statusCode, gson.fromJson(content, responseType));
+        return new HttpResponse<>(statusCode, serializeFunction.apply(content));
       }
 
       if (statusCode == 304) {
@@ -82,7 +117,6 @@ public class HttpUtil {
         }
       }
     }
-
   }
 
 }
