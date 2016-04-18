@@ -49,15 +49,21 @@ public class AdminServiceAPI {
   @Service
   public static class NamespaceAPI extends API {
 
-    public List<NamespaceDTO> findGroupsByAppAndCluster(String appId, Env env,
-                                                        String clusterName) {
+    public List<NamespaceDTO> findNamespaceByCluster(String appId, Env env,
+                                                     String clusterName) {
       if (StringUtils.isContainEmpty(appId, clusterName)) {
         return null;
       }
 
-      return Arrays.asList(restTemplate.getForObject(
+      NamespaceDTO[] namespaceDTOs = restTemplate.getForObject(
           getAdminServiceHost(env) + String.format("apps/%s/clusters/%s/namespaces", appId, clusterName),
-          NamespaceDTO[].class));
+          NamespaceDTO[].class);
+
+      if (namespaceDTOs == null){
+        return Collections.emptyList();
+      }else {
+        return Arrays.asList(namespaceDTOs);
+      }
     }
 
     public NamespaceDTO loadNamespace(String appId, Env env,
@@ -79,10 +85,16 @@ public class AdminServiceAPI {
         return Collections.emptyList();
       }
 
-      return Arrays.asList(restTemplate.getForObject(getAdminServiceHost(env) + String
+      ItemDTO[] itemDTOs = restTemplate.getForObject(getAdminServiceHost(env) + String
                                                          .format("apps/%s/clusters/%s/namespaces/%s/items", appId,
                                                                  clusterName, namespace),
-                                                     ItemDTO[].class));
+                                                     ItemDTO[].class);
+
+      if (itemDTOs == null) {
+        return Collections.emptyList();
+      } else {
+        return Arrays.asList(itemDTOs);
+      }
     }
 
     public void updateItems(String appId, Env env, String clusterName, String namespace,
@@ -106,9 +118,14 @@ public class AdminServiceAPI {
         return null;
       }
 
-      return Arrays
-          .asList(restTemplate.getForObject(getAdminServiceHost(env) + String.format("apps/%s/clusters", appId),
-                                            ClusterDTO[].class));
+      ClusterDTO[] clusterDTOs = restTemplate.getForObject(getAdminServiceHost(env) + String.format("apps/%s/clusters", appId),
+                                ClusterDTO[].class);
+
+      if (clusterDTOs == null){
+        return Collections.emptyList();
+      }else {
+        return Arrays.asList(clusterDTOs);
+      }
     }
   }
 

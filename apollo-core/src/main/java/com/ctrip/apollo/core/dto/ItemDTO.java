@@ -28,9 +28,11 @@ public class ItemDTO{
 
   }
 
-  public ItemDTO(String key, String value) {
+  public ItemDTO(String key, String value, String comment, int lineNum) {
     this.key = key;
     this.value = value;
+    this.comment = comment;
+    this.lineNum = lineNum;
   }
 
   public String getComment() {

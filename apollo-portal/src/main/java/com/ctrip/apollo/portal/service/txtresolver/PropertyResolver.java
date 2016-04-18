@@ -147,11 +147,12 @@ public class PropertyResolver implements ConfigTextResolver {
   }
 
   private boolean isCommentItem(ItemDTO item) {
-    return item != null && "".equals(item.getKey()) && item.getComment().startsWith("#");
+    return item != null && "".equals(item.getKey())
+           && (item.getComment().startsWith("#") || item.getComment().startsWith("!"));
   }
 
   private boolean isCommentItem(String line) {
-    return line != null && line.startsWith("#");
+    return line != null && (line.startsWith("#") || line.startsWith("!"));
   }
 
   private boolean isBlankItem(ItemDTO item) {
@@ -196,13 +197,9 @@ public class PropertyResolver implements ConfigTextResolver {
   }
 
   private ItemDTO buildNormalItem(Long id, Long namespaceId, String key, String value, String comment, int lineNum) {
-    ItemDTO item = new ItemDTO();
+    ItemDTO item = new ItemDTO(key, value, comment, lineNum);
     item.setId(id);
     item.setNamespaceId(namespaceId);
-    item.setKey(key);
-    item.setValue(value);
-    item.setComment(comment);
-    item.setLineNum(lineNum);
     return item;
   }
 }
