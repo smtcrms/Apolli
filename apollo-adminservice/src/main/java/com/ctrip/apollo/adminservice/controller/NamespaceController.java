@@ -51,7 +51,7 @@ public class NamespaceController {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
     if (entity == null) throw new NotFoundException(
         String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
-    namespaceService.delete(entity.getId());
+    namespaceService.delete(entity.getId(), "who");
   }
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces")

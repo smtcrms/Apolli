@@ -39,7 +39,7 @@ public class ItemController {
   public void delete(@PathVariable("itemId") long itemId) {
     Item entity = itemService.findOne(itemId);
     if (entity == null) throw new NotFoundException("item not found for itemId " + itemId);
-    itemService.delete(entity.getId());
+    itemService.delete(entity.getId(), "who");
   }
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items")

@@ -63,7 +63,7 @@ public class ReleaseController {
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName, @RequestParam("name") String name,
       @RequestParam(name = "comment", required = false) String comment) {
-    Release release = releaseService.buildRelease(name, comment, appId, clusterName, namespaceName);
+    Release release = releaseService.buildRelease(name, comment, appId, clusterName, namespaceName, "who");
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 }

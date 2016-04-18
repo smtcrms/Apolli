@@ -41,7 +41,7 @@ public class AppController {
   public void delete(@PathVariable("appId") String appId) {
     App entity = appService.findOne(appId);
     if (entity == null) throw new NotFoundException("app not found for appId " + appId);
-    appService.delete(entity.getId());
+    appService.delete(entity.getId(), "who");
   }
 
   @RequestMapping("/apps")

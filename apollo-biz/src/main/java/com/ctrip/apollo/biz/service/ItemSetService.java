@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.repository.ItemRepository;
 import com.ctrip.apollo.common.utils.BeanUtils;
@@ -16,6 +17,9 @@ public class ItemSetService {
   @Autowired
   private ItemRepository itemRepository;
 
+  @Autowired
+  private AuditService auditService;
+
   @Transactional
   public void updateSet(ItemChangeSets changeSet) {
     if (changeSet.getCreateItems() != null) {
@@ -25,6 +29,7 @@ public class ItemSetService {
         entity.setDataChangeLastModifiedBy(changeSet.getModifyBy());
         itemRepository.save(entity);
       }
+      auditService.audit("ItemSet", null, Audit.OP.INSERT, changeSet.getModifyBy());
     }
 
     if (changeSet.getUpdateItems() != null) {
@@ -35,6 +40,7 @@ public class ItemSetService {
         managedItem.setDataChangeLastModifiedBy(changeSet.getModifyBy());
         itemRepository.save(managedItem);
       }
+      auditService.audit("ItemSet", null, Audit.OP.UPDATE, changeSet.getModifyBy());
     }
 
     if (changeSet.getDeleteItems() != null) {
@@ -44,6 +50,7 @@ public class ItemSetService {
         itemRepository.save(entity);
         itemRepository.delete(item.getId());
       }
+      auditService.audit("ItemSet", null, Audit.OP.DELETE, changeSet.getModifyBy());
     }
   }
 }

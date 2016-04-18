@@ -42,7 +42,7 @@ public class ClusterController {
     Cluster entity = clusterService.findOne(appId, clusterName);
     if (entity == null)
       throw new NotFoundException("cluster not found for clusterName " + clusterName);
-    clusterService.delete(entity.getId());
+    clusterService.delete(entity.getId(), "who");
   }
 
   @RequestMapping("/apps/{appId}/clusters")
