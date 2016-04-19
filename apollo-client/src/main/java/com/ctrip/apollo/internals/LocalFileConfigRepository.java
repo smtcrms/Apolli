@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 import com.ctrip.apollo.util.ConfigUtil;
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -85,12 +87,19 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   @Override
   protected void sync() {
+    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "queryLocalConfigFile");
+    Throwable exception = null;
     try {
+      transaction.addData("Basedir", m_baseDir.getAbsolutePath());
       m_fileProperties = this.loadFromLocalCacheFile(m_baseDir, m_namespace);
+      transaction.setStatus(Message.SUCCESS);
     } catch (Throwable ex) {
       Cat.logError(ex);
-      ex.printStackTrace();
+      transaction.setStatus(ex);
+      exception = ex;
       //ignore
+    } finally {
+      transaction.complete();
     }
 
     //sync with fallback immediately
@@ -98,7 +107,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
     if (m_fileProperties == null) {
       throw new RuntimeException(
-          "Load config from local config failed!");
+          "Load config from local config failed!", exception);
     }
   }
 
@@ -111,7 +120,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       updateFileProperties(properties);
     } catch (Throwable ex) {
       Cat.logError(ex);
-      logger.warn("Sync config from fallback repository {} failed", m_fallback.getClass(), ex);
+      logger.warn("Sync config from fallback repository {} failed, reason: {}", m_fallback.getClass(), ex);
     }
   }
 
@@ -166,12 +175,16 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
     OutputStream out = null;
 
+    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "persistLocalConfigFile");
+    transaction.addData("LocalConfigFile", file.getAbsolutePath());
     try {
       out = new FileOutputStream(file);
       m_fileProperties.store(out, "Persisted by DefaultConfig");
+      transaction.setStatus(Message.SUCCESS);
     } catch (IOException ex) {
       Cat.logError(ex);
-      logger.error("Persist local cache file {} failed", file.getAbsolutePath(), ex);
+      transaction.setStatus(ex);
+      logger.warn("Persist local cache file {} failed, reason: {}.", file.getAbsolutePath(), ex);
     } finally {
       if (out != null) {
         try {
@@ -180,6 +193,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
           //ignore
         }
       }
+      transaction.complete();
     }
   }
 

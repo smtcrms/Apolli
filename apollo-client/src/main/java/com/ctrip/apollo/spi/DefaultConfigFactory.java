@@ -6,6 +6,8 @@ import com.ctrip.apollo.internals.DefaultConfig;
 import com.ctrip.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.apollo.internals.RemoteConfigRepository;
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +38,19 @@ public class DefaultConfigFactory implements ConfigFactory {
     if (baseDir.exists()) {
       return;
     }
+    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "createLocalConfigDir");
+    transaction.addData("BaseDir", baseDir.getAbsolutePath());
     try {
       Files.createDirectory(baseDir.toPath());
+      transaction.setStatus(Message.SUCCESS);
     } catch (IOException ex) {
       Cat.logError(ex);
-      logger.error("Unable to create directory: " + baseDir, ex);
+      transaction.setStatus(ex);
+      logger.warn(
+          "Unable to create local config cache directory {}, reason: {}. Will not able to cache config file.",
+          baseDir, ex);
+    } finally {
+      transaction.complete();
     }
   }
 

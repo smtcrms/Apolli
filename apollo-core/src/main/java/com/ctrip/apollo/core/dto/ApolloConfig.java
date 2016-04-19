@@ -17,12 +17,12 @@ public class ApolloConfig {
 
   private Map<String, String> configurations;
 
-  private long releaseId;
+  private String releaseId;
 
   public ApolloConfig(String appId,
                       String cluster,
                       String namespace,
-                      long releaseId) {
+                      String releaseId) {
     super();
     this.appId = appId;
     this.cluster = cluster;
@@ -42,7 +42,7 @@ public class ApolloConfig {
     return namespace;
   }
 
-  public long getReleaseId() {
+  public String getReleaseId() {
     return releaseId;
   }
 

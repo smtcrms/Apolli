@@ -42,7 +42,7 @@ public class ConfigService {
       return null;
     }
     ApolloConfig config = new ApolloConfig(release.getAppId(), release.getClusterName(),
-        namespaceName, release.getId());
+        namespaceName, String.valueOf(release.getId()));
     config.setConfigurations(transformConfigurationToMap(release.getConfigurations()));
     return config;
   }

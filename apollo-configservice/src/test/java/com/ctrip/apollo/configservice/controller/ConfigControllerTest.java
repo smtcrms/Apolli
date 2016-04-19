@@ -57,7 +57,7 @@ public class ConfigControllerTest {
     when(configService.loadConfig(someRelease, someNamespaceName)).thenReturn(someApolloConfig);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
-        someNamespaceName, someClientSideReleaseId, someResponse);
+        someNamespaceName, String.valueOf(someClientSideReleaseId), someResponse);
 
     assertEquals(someApolloConfig, result);
     verify(configService, times(1)).findRelease(someAppId, someClusterName, someNamespaceName);
@@ -76,7 +76,7 @@ public class ConfigControllerTest {
     when(configService.findRelease(someAppId, someClusterName, someNamespaceName)).thenReturn(null);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
-        someNamespaceName, someClientSideReleaseId, someResponse);
+        someNamespaceName, String.valueOf(someClientSideReleaseId), someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
@@ -98,7 +98,7 @@ public class ConfigControllerTest {
     when(configService.loadConfig(someRelease, someNamespaceName)).thenReturn(null);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
-        someNamespaceName, someClientSideReleaseId, someResponse);
+        someNamespaceName, String.valueOf(someClientSideReleaseId), someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
@@ -119,7 +119,7 @@ public class ConfigControllerTest {
     when(someRelease.getId()).thenReturn(someServerSideReleaseId);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName, someNamespaceName,
-        someClientSideReleaseId, someResponse);
+        String.valueOf(someClientSideReleaseId), someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).setStatus(HttpServletResponse.SC_NOT_MODIFIED);

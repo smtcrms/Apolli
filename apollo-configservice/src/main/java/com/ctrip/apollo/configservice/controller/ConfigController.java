@@ -20,25 +20,28 @@ import javax.servlet.http.HttpServletResponse;
  * @author Jason Song(song_s@ctrip.com)
  */
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/configs")
 public class ConfigController {
   @Autowired
   private ConfigService configService;
 
   @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
-                                  @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
+                                  @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
-    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_APPLICATION, clientSideReleaseId,
+    return this
+        .queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_APPLICATION, clientSideReleaseId,
             response);
   }
 
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
-                                  @RequestParam(value = "releaseId", defaultValue = "-1") long clientSideReleaseId,
+                                  @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
     Release release = configService.findRelease(appId, clusterName, namespace);
+    //TODO if namespace != application, should also query config by namespace and DC?
+    //And if found, should merge config, as well as releaseId -> make releaseId a string?
     if (release == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           String.format(
@@ -46,7 +49,7 @@ public class ConfigController {
               appId, clusterName, namespace));
       return null;
     }
-    if (release.getId() == clientSideReleaseId) {
+    if (String.valueOf(release.getId()).equals(clientSideReleaseId)) {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       return null;
