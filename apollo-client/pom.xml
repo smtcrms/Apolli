@@ -27,12 +27,6 @@
 			<artifactId>framework-foundation</artifactId>
 		</dependency>
 		<!-- end of foundation service -->
-		<!-- cat -->
-		<dependency>
-			<groupId>com.dianping.cat</groupId>
-			<artifactId>cat-client</artifactId>
-		</dependency>
-		<!-- end of cat -->
 		<!-- log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
