@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,16 +26,25 @@ public class AppController {
 
   @Autowired
   private AppService appService;
+
   @Autowired
   private AdminService adminService;
 
   @RequestMapping(path = "/apps", method = RequestMethod.POST)
-  public ResponseEntity<AppDTO> create(@RequestBody AppDTO dto, @ActiveUser UserDetails user) {
+  public AppDTO createOrUpdate(@RequestBody AppDTO dto, @ActiveUser UserDetails user) {
     App entity = BeanUtils.transfrom(App.class, dto);
-    entity.setDataChangeCreatedBy(user.getUsername());
-    entity = adminService.createNewApp(entity);
+    App managedEntity = appService.findOne(entity.getAppId());
+    if (managedEntity != null) {
+      managedEntity.setDataChangeLastModifiedBy(user.getUsername());
+      BeanUtils.copyEntityProperties(entity, managedEntity);
+      entity = appService.update(managedEntity);
+    } else {
+      entity.setDataChangeCreatedBy(user.getUsername());
+      entity = adminService.createNewApp(entity);
+    }
+
     dto = BeanUtils.transfrom(AppDTO.class, entity);
-    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    return dto;
   }
 
   @RequestMapping(path = "/apps/{appId}", method = RequestMethod.DELETE)
@@ -64,20 +71,6 @@ public class AppController {
     App app = appService.findOne(appId);
     if (app == null) throw new NotFoundException("app not found for appId " + appId);
     return BeanUtils.transfrom(AppDTO.class, app);
-  }
-
-  @RequestMapping(path = "/apps/{appId}", method = RequestMethod.PUT)
-  public AppDTO update(@PathVariable("appId") String appId, @RequestBody AppDTO dto,
-      @ActiveUser UserDetails user) {
-    if (!appId.equals(dto.getAppId())) {
-      throw new IllegalArgumentException(String
-          .format("Path variable %s is not equals to object field %s", appId, dto.getAppId()));
-    }
-    App entity = appService.findOne(appId);
-    if (entity == null) throw new NotFoundException("app not found for appId " + appId);
-    entity.setDataChangeLastModifiedBy(user.getUsername());
-    entity = appService.update(BeanUtils.transfrom(App.class, dto));
-    return BeanUtils.transfrom(AppDTO.class, entity);
   }
 
 }

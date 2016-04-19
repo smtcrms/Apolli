@@ -1,6 +1,5 @@
 package com.ctrip.apollo.portal.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class AppService {
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
 
-  public List<AppDTO> findAll(Env env){
+  public List<AppDTO> findAll(Env env) {
     return appAPI.getApps(env);
   }
 
@@ -45,12 +44,15 @@ public class AppService {
     return tree;
   }
 
-  public AppDTO save(AppDTO app) {
-    try {
-      return appAPI.save(Env.DEV, app);
-    } catch (Exception e) {
-      logger.error("oops! save app error. app id:{}", app.getAppId(), e);
-      throw new ServiceException("call service error.");
+  public void save(AppDTO app) {
+    List<Env> envs = portalSettings.getEnvs();
+    for (Env env : envs) {
+      try {
+        appAPI.save(env, app);
+      } catch (Exception e) {
+        logger.error("oops! save app error. app id:{}", app.getAppId(), e);
+        throw new ServiceException("call service error.");
+      }
     }
   }
 

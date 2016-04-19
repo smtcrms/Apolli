@@ -13,15 +13,15 @@ import com.ctrip.apollo.biz.repository.AppRepository;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 
-public class AppControllerTest extends AbstractControllerTest{
+public class AppControllerTest extends AbstractControllerTest {
 
   @Autowired
   AppRepository appRepository;
 
-  private String getBaseAppUrl(){
-    return "http://localhost:"+port+"/apps/";
+  private String getBaseAppUrl() {
+    return "http://localhost:" + port + "/apps/";
   }
-  
+
   @Test
   @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testCreate() {
@@ -29,7 +29,7 @@ public class AppControllerTest extends AbstractControllerTest{
     ResponseEntity<AppDTO> response =
         restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
     AppDTO result = response.getBody();
-    Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     Assert.assertEquals(dto.getAppId(), result.getAppId());
     Assert.assertTrue(result.getId() > 0);
 
@@ -40,13 +40,40 @@ public class AppControllerTest extends AbstractControllerTest{
 
   @Test
   @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+  public void testCreateTwice() {
+    AppDTO dto = generateSampleDTOData();
+    ResponseEntity<AppDTO> response =
+        restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
+    AppDTO first = response.getBody();
+    Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assert.assertEquals(dto.getAppId(), first.getAppId());
+    Assert.assertTrue(first.getId() > 0);
+
+    App savedApp = appRepository.findOne(first.getId());
+    Assert.assertEquals(dto.getAppId(), savedApp.getAppId());
+    Assert.assertNotNull(savedApp.getDataChangeCreatedTime());
+    Assert.assertNull(savedApp.getDataChangeLastModifiedTime());
+
+    response = restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
+    AppDTO second = response.getBody();
+    Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assert.assertEquals(dto.getAppId(), second.getAppId());
+    Assert.assertEquals(first.getId(), second.getId());
+
+    savedApp = appRepository.findOne(second.getId());
+    Assert.assertEquals(dto.getAppId(), savedApp.getAppId());
+    Assert.assertNotNull(savedApp.getDataChangeCreatedTime());
+    Assert.assertNotNull(savedApp.getDataChangeLastModifiedTime());
+  }
+
+  @Test
+  @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testFind() {
     AppDTO dto = generateSampleDTOData();
     App app = BeanUtils.transfrom(App.class, dto);
     app = appRepository.save(app);
 
-    AppDTO result =
-        restTemplate.getForObject(getBaseAppUrl() + dto.getAppId(), AppDTO.class);
+    AppDTO result = restTemplate.getForObject(getBaseAppUrl() + dto.getAppId(), AppDTO.class);
     Assert.assertEquals(dto.getAppId(), result.getAppId());
     Assert.assertEquals(dto.getName(), result.getName());
   }
@@ -80,7 +107,7 @@ public class AppControllerTest extends AbstractControllerTest{
     app = appRepository.save(app);
 
     dto.setName("newName");
-    restTemplate.put(getBaseAppUrl() + dto.getAppId(), dto);
+    restTemplate.postForObject(getBaseAppUrl(), dto, AppDTO.class);
 
     App updatedApp = appRepository.findOne(app.getId());
     Assert.assertEquals(dto.getName(), updatedApp.getName());

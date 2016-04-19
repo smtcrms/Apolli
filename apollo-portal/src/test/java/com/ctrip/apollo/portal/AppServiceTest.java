@@ -61,23 +61,23 @@ public class AppServiceTest extends AbstractPortalTest{
     assertEquals("default", node1.getClusters().get(0).getName());
   }
 
-  @Test
-  public void testSaveApp(){
-    String appId = "6666";
-    String appName = "hermas";
-    AppDTO appDTO = new AppDTO();
-    appDTO.setAppId(appId);
-    appDTO.setName(appName);
-    appDTO.setDataChangeLastModifiedBy("ll");
-    appDTO.setDataChangeCreatedTime(new Date());
-    appDTO.setOwnerEmail("qq@qq.com");
-    appDTO.setOwnerName("zz");
-
-    when(appService.save(appDTO)).thenReturn(appDTO);
-
-    AppDTO createApp = appService.save(appDTO);
-
-    assertEquals(appId, createApp.getAppId());
-    assertEquals(appName, createApp.getName());
-  }
+//  @Test
+//  public void testSaveApp(){
+//    String appId = "6666";
+//    String appName = "hermas";
+//    AppDTO appDTO = new AppDTO();
+//    appDTO.setAppId(appId);
+//    appDTO.setName(appName);
+//    appDTO.setDataChangeLastModifiedBy("ll");
+//    appDTO.setDataChangeCreatedTime(new Date());
+//    appDTO.setOwnerEmail("qq@qq.com");
+//    appDTO.setOwnerName("zz");
+//
+//    when(appService.save(appDTO)).thenReturn(appDTO);
+//
+//    AppDTO createApp = appService.save(appDTO);
+//
+//    assertEquals(appId, createApp.getAppId());
+//    assertEquals(appName, createApp.getName());
+//  }
 }

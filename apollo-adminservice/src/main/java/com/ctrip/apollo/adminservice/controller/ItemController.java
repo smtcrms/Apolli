@@ -3,8 +3,6 @@ package com.ctrip.apollo.adminservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +27,24 @@ public class ItemController {
   @Autowired
   private ItemService itemService;
 
-  @RequestMapping(path = "/items/", method = RequestMethod.POST)
-  public ResponseEntity<ItemDTO> create(@RequestBody ItemDTO dto, @ActiveUser UserDetails user) {
+  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
+  public ItemDTO createOrUpdate(@PathVariable("appId") String appId,
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto,
+      @ActiveUser UserDetails user) {
     Item entity = BeanUtils.transfrom(Item.class, dto);
-    entity.setDataChangeCreatedBy(user.getUsername());
-    entity = itemService.save(entity);
+    Item managedEntity = itemService.findOne(appId, clusterName, namespaceName, entity.getKey());
+    if (managedEntity != null) {
+      managedEntity.setDataChangeLastModifiedBy(user.getUsername());
+      BeanUtils.copyEntityProperties(entity, managedEntity);
+      entity = itemService.update(managedEntity);
+    } else {
+      entity.setDataChangeCreatedBy(user.getUsername());
+      entity = itemService.save(entity);
+    }
+
     dto = BeanUtils.transfrom(ItemDTO.class, entity);
-    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    return dto;
   }
 
   @RequestMapping(path = "/items/{itemId}", method = RequestMethod.DELETE)
@@ -60,13 +69,13 @@ public class ItemController {
     return BeanUtils.transfrom(ItemDTO.class, item);
   }
 
-  @RequestMapping(path = "/item/{itemId}", method = RequestMethod.PUT)
-  public ItemDTO update(@PathVariable("itemId") long itemId, @RequestBody ItemDTO dto,
-      @ActiveUser UserDetails user) {
-    Item entity = itemService.findOne(itemId);
-    if (entity == null) throw new NotFoundException("item not found for itemId " + itemId);
-    entity.setDataChangeLastModifiedBy(user.getUsername());
-    entity = itemService.update(BeanUtils.transfrom(Item.class, dto));
-    return BeanUtils.transfrom(ItemDTO.class, entity);
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key}")
+  public ItemDTO get(@PathVariable("appId") String appId,
+      @PathVariable("clusterName") String clusterName,
+      @PathVariable("namespaceName") String namespaceName, @PathVariable("key") String key) {
+    Item item = itemService.findOne(appId, clusterName, namespaceName, key);
+    if (item == null) throw new NotFoundException(
+        String.format("item not found for %s %s %s %s", appId, clusterName, namespaceName, key));
+    return BeanUtils.transfrom(ItemDTO.class, item);
   }
 }
