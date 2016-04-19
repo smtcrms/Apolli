@@ -31,7 +31,7 @@ public class HttpUtil {
   public HttpUtil() {
     gson = new Gson();
     try {
-      basicAuth =  "Basic " + BaseEncoding.base64().encode("".getBytes("UTF-8"));
+      basicAuth =  "Basic " + BaseEncoding.base64().encode("user:".getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }

@@ -78,7 +78,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private void schedulePeriodicRefresh() {
-    logger.info("Schedule periodic refresh with interval: {} {}",
+    logger.debug("Schedule periodic refresh with interval: {} {}",
         m_configUtil.getRefreshInterval(), m_configUtil.getRefreshTimeUnit());
     this.m_executorService.scheduleAtFixedRate(
         new Runnable() {
@@ -100,7 +100,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       return;
     }
 
-    logger.info("Remote Config changes!");
+    logger.debug("Remote Config refreshed!");
 
     m_configCache.set(current);
 
@@ -162,20 +162,19 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
       try {
         TimeUnit.SECONDS.sleep(1);
-      } catch (InterruptedException e) {
+      } catch (InterruptedException ex) {
         //ignore
       }
     }
     String message = String.format(
         "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, services: %s",
         appId, cluster, m_namespace, configServices);
-    logger.error(message, exception);
     throw new RuntimeException(message, exception);
   }
 
   private String assembleUrl(String uri, String appId, String cluster, String namespace,
                              ApolloConfig previousConfig) {
-    String path = "config/%s/%s";
+    String path = "configs/%s/%s";
     List<String> params = Lists.newArrayList(appId, cluster);
 
     if (!Strings.isNullOrEmpty(namespace)) {

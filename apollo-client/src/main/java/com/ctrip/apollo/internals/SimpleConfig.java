@@ -25,7 +25,8 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
 
   /**
    * Constructor.
-   * @param namespace the namespace for this config instance
+   *
+   * @param namespace        the namespace for this config instance
    * @param configRepository the config repository for this config instance
    */
   public SimpleConfig(String namespace, ConfigRepository configRepository) {
@@ -39,10 +40,8 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
       m_configProperties = m_configRepository.getConfig();
       m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
-      String message = String.format("Init Apollo Simple Config failed - namespace: %s",
-          m_namespace);
-      Cat.logError(message, ex);
-      logger.error(message, ex);
+      Cat.logError(ex);
+      logger.warn("Init Apollo Simple Config failed - namespace: {}, reason: {}", m_namespace, ex);
     }
   }
 

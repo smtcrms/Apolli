@@ -41,7 +41,7 @@ import static org.junit.Assert.assertThat;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigIntegrationTest extends BaseIntegrationTest {
-  private long someReleaseId;
+  private String someReleaseId;
   private File configDir;
   private String someNamespace;
 
@@ -50,7 +50,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     super.setUp();
 
     someNamespace = ConfigConsts.NAMESPACE_APPLICATION;
-    someReleaseId = 1;
+    someReleaseId = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     configDir.mkdirs();
   }
@@ -195,8 +195,13 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     final List<ConfigChangeEvent> changeEvents = Lists.newArrayList();
 
     config.addChangeListener(new ConfigChangeListener() {
+      AtomicInteger counter = new AtomicInteger(0);
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
+        //only need to assert once
+        if (counter.incrementAndGet() > 1) {
+          return;
+        }
         assertEquals(1, changeEvent.getChanges().size());
         assertEquals(someValue, changeEvent.getChange(someKey).getOldValue());
         assertEquals(anotherValue, changeEvent.getChange(someKey).getNewValue());
@@ -207,7 +212,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    Thread.sleep(someRefreshTimeUnit.toMillis(someRefreshInterval * 2));
+    someRefreshTimeUnit.sleep(someRefreshInterval * 2);
 
     assertThat(
         "Change event's size should equal to one or there must be some assertion failed in change listener",
@@ -217,7 +222,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
   private ContextHandler mockConfigServerHandler(final int statusCode, final ApolloConfig result,
                                                  final boolean failedAtFirstTime) {
-    ContextHandler context = new ContextHandler("/config/*");
+    ContextHandler context = new ContextHandler("/configs/*");
     context.setHandler(new AbstractHandler() {
       AtomicInteger counter = new AtomicInteger(0);
 

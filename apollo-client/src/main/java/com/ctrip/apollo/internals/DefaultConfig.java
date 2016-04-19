@@ -48,10 +48,9 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
       m_configProperties.set(m_configRepository.getConfig());
       m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
-      String message = String.format("Init Apollo Local Config failed - namespace: %s",
-          m_namespace);
       Cat.logError(ex);
-      logger.error(message, ex);
+      logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.",
+          m_namespace, ex);
     }
   }
 

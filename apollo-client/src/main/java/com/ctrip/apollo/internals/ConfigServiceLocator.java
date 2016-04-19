@@ -29,6 +29,9 @@ public class ConfigServiceLocator {
   private AtomicReference<List<ServiceDTO>> m_configServices;
   private Type m_responseType;
 
+  /**
+   * Create a config service locator
+   */
   public ConfigServiceLocator() {
     List<ServiceDTO> initial = Lists.newArrayList();
     m_configServices = new AtomicReference<>(initial);
@@ -64,7 +67,7 @@ public class ConfigServiceLocator {
       try {
         HttpResponse<List<ServiceDTO>> response = m_httpUtil.doGet(request, m_responseType);
         m_configServices.set(response.getBody());
-        Cat.logEvent("Apollo.Config.Services", response.getBody().toString());
+        logConfigServicesToCat(response.getBody());
         transaction.setStatus(Message.SUCCESS);
         return;
       } catch (Throwable ex) {
@@ -77,11 +80,17 @@ public class ConfigServiceLocator {
 
       try {
         TimeUnit.SECONDS.sleep(1);
-      } catch (InterruptedException e) {
+      } catch (InterruptedException ex) {
         //ignore
       }
     }
 
     throw new RuntimeException("Get config services failed", exception);
+  }
+
+  private void logConfigServicesToCat(List<ServiceDTO> serviceDTOs) {
+    for (ServiceDTO serviceDTO : serviceDTOs) {
+      Cat.logEvent("Apollo.Config.Services", serviceDTO.getHomepageUrl());
+    }
   }
 }
