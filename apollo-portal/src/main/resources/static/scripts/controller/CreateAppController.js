@@ -1,14 +1,6 @@
 create_app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService',
     function ($scope, $window, toastr, AppService) {
 
-        //todo 便于测试，后续删掉
-        $scope.app = {
-            appId: 1001,
-            name: 'lepdou',
-            ownerEmail: 'qqq@qq.com',
-            ownerName: 'le'
-        };
-
         $scope.save = function () {
             AppService.add($scope.app).then(function (result) {
                 toastr.success('添加成功!');

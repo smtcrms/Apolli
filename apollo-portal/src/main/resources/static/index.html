@@ -1,28 +1,59 @@
 <!doctype html>
-<html ng-app="create_app">
+<html ng-app="index">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- styles -->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="vendor/angular/angular-toastr-1.4.1.min.css">
     <link rel="stylesheet" type="text/css" media='all' href="vendor/angular/loading-bar.min.css">
+    <link href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/common-style.css">
     <title>apollo</title>
 </head>
 
-<body>
+<body ng-controller="IndexController">
 
-<div ng-include="'views/common/nav.html'"></div>
+<!--<div ng-include="'views/common/nav.html'"></div>-->
 
-<div class="container-fluid apollo-container">
+<header class="site-header jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12"><h1>Apollo</h1>
+                <p>携程统一配置中心<br>
+                    <span class="package-amount">共收录了 <strong>{{appsCount}}</strong> 个项目</span>
+                    <a class="btn btn-success btn-lg" href="views/create-app.html">创建项目</a>
+                </p>
 
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <h1>welcome to apollo!~~</h1>
+                <form class="" role="search">
+                    <div class="form-group"><input type="text" class="form-control search clearable"
+                                                   placeholder="搜索App, 例如:900088" ng-model="searchKey" ng-change="search()"></div>
+                </form>
+            </div>
 
-            <img src="img/dolphin.jpg" style="width: 100px; height: 130px;"/>
-            <a class="btn btn-primary btn-lg" href="views/create-app.html" role="button">create app</a>
         </div>
+    </div>
+</header>
+<div class="container-fluid apollo-container">
+    <div class="list-group apps">
+        <a class="package list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}" ng-repeat="app in apps ">
+            <div class="row">
+                <div class="col-md-3"><h4 class="apps-name">{{app.appId}}</h4></div>
+                <div class="col-md-7 hidden-xs">
+                    <p class="apps-description">{{app.name}}</p>
+                </div>
+                <div class="col-md-2">
+                    <p class="apps-description">
+                        {{app.ownerName}}
+                        <br>
+                        {{app.ownerEmail}}
+                    </p>
+
+                </div>
+                <!--<div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12"><span><i-->
+                        <!--class="glyphicon glyphicon-fire"></i> 92793</span>-->
+                <!--</div>-->
+            </div>
+        </a>
     </div>
 </div>
 
@@ -30,7 +61,6 @@
 
 <!--angular-->
 <script src="vendor/angular/angular.min.js"></script>
-<script src="vendor/angular/angular-route.min.js"></script>
 <script src="vendor/angular/angular-resource.min.js"></script>
 <script src="vendor/angular/angular-toastr-1.4.1.tpls.min.js"></script>
 <script src="vendor/angular/loading-bar.min.js"></script>
@@ -43,6 +73,6 @@
 
 <script type="application/javascript" src="scripts/app.js"></script>
 <script type="application/javascript" src="scripts/services/AppService.js"></script>
-<script type="application/javascript" src="scripts/controller/CreateAppController.js"></script>
+<script type="application/javascript" src="scripts/controller/IndexController.js"></script>
 </body>
 </html>
