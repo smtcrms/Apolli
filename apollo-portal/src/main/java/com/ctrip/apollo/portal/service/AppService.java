@@ -46,11 +46,7 @@ public class AppService {
   }
 
   public AppDTO save(AppDTO app) {
-    String createBy = app.getOwnerName();
     try {
-      app.setDataChangeCreatedBy(createBy);
-      app.setDataChangeCreatedTime(new Date());
-      app.setDataChangeLastModifiedBy(createBy);
       return appAPI.save(Env.DEV, app);
     } catch (Exception e) {
       logger.error("oops! save app error. app id:{}", app.getAppId(), e);
