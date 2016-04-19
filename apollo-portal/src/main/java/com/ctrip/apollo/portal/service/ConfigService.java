@@ -150,6 +150,8 @@ public class ConfigService {
       enrichChangeSetBaseInfo(changeSets);
       itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
     } catch (Exception e) {
+      logger.error("itemAPI.updateItems error. appId{},env:{},clusterName:{},namespaceName:{}", appId, env, clusterName,
+                   namespaceName);
       throw new ServiceException("oops! call admin service config error. ");
     }
 
