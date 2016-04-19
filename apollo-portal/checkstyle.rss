@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 19,
+      <title>File: 20,
              Errors: 0,
-             Warnings: 193,
+             Warnings: 203,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html</link>
@@ -66,7 +66,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  37
+                  38
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#META-INF.app.properties">META-INF/app.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -94,7 +108,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  14
+                  15
                 </td>
                 <td>
                   0
@@ -150,7 +164,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  9
+                  11
                 </td>
                 <td>
                   0
@@ -158,7 +172,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.PortalApplication.java">com/ctrip/apollo/portal/PortalApplication.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.PortalApplication.java">com/ctrip/apollo/PortalApplication.java</a>
                 </td>
                 <td>
                   0
@@ -290,7 +304,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  9
                 </td>
                 <td>
                   0
