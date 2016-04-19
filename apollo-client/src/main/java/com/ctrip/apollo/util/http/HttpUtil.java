@@ -2,6 +2,7 @@ package com.ctrip.apollo.util.http;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 
 import com.ctrip.apollo.util.ConfigUtil;
@@ -12,6 +13,7 @@ import org.unidal.lookup.annotation.Named;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,15 +26,21 @@ public class HttpUtil {
   @Inject
   private ConfigUtil m_configUtil;
   private Gson gson;
-
+  private String basicAuth;
+  
   public HttpUtil() {
     gson = new Gson();
+    try {
+      basicAuth =  "Basic " + BaseEncoding.base64().encode("".getBytes("UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest  the request
+   * @param httpRequest the request
    * @param responseType the response type
    * @return the response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
@@ -51,7 +59,7 @@ public class HttpUtil {
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest  the request
+   * @param httpRequest the request
    * @param responseType the response type
    * @return the response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
@@ -68,13 +76,14 @@ public class HttpUtil {
   }
 
   private <T> HttpResponse<T> doGetWithSerializeFunction(HttpRequest httpRequest,
-                                                         Function<String, T> serializeFunction) {
+      Function<String, T> serializeFunction) {
     InputStream is = null;
     try {
       HttpURLConnection conn = (HttpURLConnection) new URL(httpRequest.getUrl()).openConnection();
 
       conn.setRequestMethod("GET");
-
+      conn.setRequestProperty ("Authorization", basicAuth);
+      
       int connectTimeout = httpRequest.getConnectTimeout();
       if (connectTimeout < 0) {
         connectTimeout = m_configUtil.getConnectTimeout();
@@ -102,9 +111,8 @@ public class HttpUtil {
         return new HttpResponse<>(statusCode, null);
       }
 
-      throw new RuntimeException(
-          String.format("Get operation failed for %s, status code - %d", httpRequest.getUrl(),
-              statusCode));
+      throw new RuntimeException(String.format("Get operation failed for %s, status code - %d",
+          httpRequest.getUrl(), statusCode));
 
     } catch (Throwable ex) {
       throw new RuntimeException("Could not complete get operation", ex);
@@ -113,7 +121,7 @@ public class HttpUtil {
         try {
           is.close();
         } catch (IOException ex) {
-          //ignore
+          // ignore
         }
       }
     }

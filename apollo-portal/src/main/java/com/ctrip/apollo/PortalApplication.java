@@ -1,4 +1,4 @@
-package com.ctrip.apollo.portal;
+package com.ctrip.apollo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;

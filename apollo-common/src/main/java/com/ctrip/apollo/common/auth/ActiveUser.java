@@ -1,4 +1,4 @@
-package com.ctrip.apollo.common.controller;
+package com.ctrip.apollo.common.auth;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
