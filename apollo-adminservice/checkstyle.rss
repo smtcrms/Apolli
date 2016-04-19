@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 9,
+      <title>File: 10,
              Errors: 0,
              Warnings: 129,
              Infos: 0
@@ -61,6 +61,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.PrivilegeController.java">com/ctrip/apollo/adminservice/controller/PrivilegeController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#META-INF.app.properties">META-INF/app.properties</a>
                 </td>
                 <td>
                   0
