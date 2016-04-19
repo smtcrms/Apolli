@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.core.dto.AppDTO;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
 import com.ctrip.apollo.portal.service.AppService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/apps")
@@ -19,6 +22,12 @@ public class AppController {
 
   @Autowired
   private AppService appService;
+
+
+  @RequestMapping("/env/{env}")
+  public List<AppDTO> findAllApp(@PathVariable String env){
+    return appService.findAll(Env.valueOf(env));
+  }
 
   @RequestMapping("/{appId}/navtree")
   public ClusterNavTree nav(@PathVariable String appId) {

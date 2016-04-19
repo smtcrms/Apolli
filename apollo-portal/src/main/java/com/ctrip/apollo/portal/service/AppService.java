@@ -29,6 +29,10 @@ public class AppService {
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
 
+  public List<AppDTO> findAll(Env env){
+    return appAPI.getApps(env);
+  }
+
   public ClusterNavTree buildClusterNavTree(String appId) {
     ClusterNavTree tree = new ClusterNavTree();
 

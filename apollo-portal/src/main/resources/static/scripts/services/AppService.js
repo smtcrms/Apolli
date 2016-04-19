@@ -1,5 +1,10 @@
 appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
     var app_resource = $resource('/apps/:appId', {}, {
+        find_all_app:{
+            method: 'GET',
+            isArray: true,
+            url:'/apps/env/:env'
+        },
         load_navtree:{
             methode: 'GET',
             isArray:false,
@@ -15,7 +20,18 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         }
     });
     return {
-        load_nav_tree: function loadNavTree(appId){
+        find_all_app: function (env) {
+            var d = $q.defer();
+            app_resource.find_all_app({
+                                          env: env
+                                      }, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+        load_nav_tree: function (appId){
             var d = $q.defer();
             app_resource.load_navtree({
                 appId: appId
@@ -26,7 +42,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
             });
             return d.promise;
         },
-        add: function add(app) {
+        add: function (app) {
             var d = $q.defer();
             app_resource.add_app({}, app, function (result) {
                 d.resolve(result);
@@ -35,7 +51,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
             });
             return d.promise;
         },
-        load: function load(appId) {
+        load: function (appId) {
             var d = $q.defer();
             app_resource.load_app({
                 appId: appId
