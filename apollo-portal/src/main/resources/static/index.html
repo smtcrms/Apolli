@@ -19,7 +19,11 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12"><h1>Apollo</h1>
-                <p>携程统一配置中心<br><span class="package-amount">共收录了 <strong>8888</strong> 个项目</span></p>
+                <p>携程统一配置中心<br>
+                    <span class="package-amount">共收录了 <strong>{{appsCount}}</strong> 个项目</span>
+                    <a class="btn btn-success btn-lg" href="views/create-app.html">创建项目</a>
+                </p>
+
                 <form class="" role="search">
                     <div class="form-group"><input type="text" class="form-control search clearable"
                                                    placeholder="搜索App, 例如:900088" ng-model="searchKey" ng-change="search()"></div>
@@ -45,41 +49,11 @@
                     </p>
 
                 </div>
-                <div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12"><span><i
-                        class="glyphicon glyphicon-fire"></i> 92793</span>
-                </div>
-            </div>
-        </a>
-        <!--<a href="/bootstrap/" class="package list-group-item" data-library-name="bootstrap" target="_blank"-->
-           <!--onclick="_hmt.push(['_trackEvent', 'packages', 'click', 'bootstrap'])" style="display: block;">-->
-            <!--<div class="row">-->
-                <!--<div class="col-md-3"><h4 class="apps-name">{{app.appId}}</h4></div>-->
-                <!--<div class="col-md-7 hidden-xs">-->
-                    <!--<p class="apps-description">{{app.name}}</p>-->
-                <!--</div>-->
-                <!--<div class="col-md-2">-->
-                    <!--<p class="apps-description">-->
-                        <!--{{app.ownerName}}-->
-                    <!--<br>-->
-                        <!--{{app.ownerEmail}}-->
-                    <!--</p>-->
-
-                <!--</div>-->
                 <!--<div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12"><span><i-->
                         <!--class="glyphicon glyphicon-fire"></i> 92793</span>-->
                 <!--</div>-->
-            <!--</div>-->
-        <!--</a>-->
-        <!--<a href="/bootstrap/" class="package list-group-item" data-library-name="bootstrap" target="_blank"-->
-           <!--onclick="_hmt.push(['_trackEvent', 'packages', 'click', 'bootstrap'])" style="display: block;">-->
-            <!--<div class="row">-->
-                <!--<div class="col-md-3"><h4 class="package-name">2222</h4></div>-->
-                <!--<div class="col-md-9 hidden-xs"><p class="package-description">The most popular front-end framework for-->
-                    <!--developing responsive, mobile first projects on the web.</p></div>-->
-                <!--<div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12"><span><i class="fa fa-star"></i> 92793</span>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</a>-->
+            </div>
+        </a>
     </div>
 </div>
 

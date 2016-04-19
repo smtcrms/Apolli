@@ -7,6 +7,7 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
                 AppService.find_all_app($scope.env).then(function (result) {
                         apps = result;
                         $scope.apps = apps;
+                        $scope.appsCount = apps.length;
                 });
 
                 $scope.search = function () {
