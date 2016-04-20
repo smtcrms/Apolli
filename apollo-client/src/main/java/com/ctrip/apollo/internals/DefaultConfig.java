@@ -95,7 +95,14 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
     Map<String, ConfigChange> actualChanges = updateAndCalcConfigChanges(newConfigProperties);
 
+    //check double checked result
+    if (actualChanges.isEmpty()) {
+      return;
+    }
+
     this.fireConfigChange(new ConfigChangeEvent(m_namespace, actualChanges));
+
+    Cat.logEvent("Apollo.Client.ConfigChanges", m_namespace);
   }
 
   private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties) {

@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.util.ConfigUtil;
 import com.ctrip.apollo.util.http.HttpRequest;
@@ -22,6 +23,9 @@ import org.unidal.lookup.ComponentTestCase;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -41,12 +45,16 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
   @Mock
   private static HttpResponse<ApolloConfig> someResponse;
   @Mock
+  private static HttpResponse<ApolloConfigNotification> pollResponse;
+  @Mock
   private ConfigUtil someConfigUtil;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
     someNamespace = "someName";
+
+    when(pollResponse.getStatusCode()).thenReturn(HttpServletResponse.SC_NOT_MODIFIED);
 
     defineComponent(ConfigUtil.class, MockConfigUtil.class);
     defineComponent(ConfigServiceLocator.class, MockConfigServiceLocator.class);
@@ -65,9 +73,11 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     when(someResponse.getBody()).thenReturn(someApolloConfig);
 
     RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
+
     Properties config = remoteConfigRepository.getConfig();
 
     assertEquals(configurations, config);
+    remoteConfigRepository.stopLongPollingRefresh();
   }
 
   @Test(expected = RuntimeException.class)
@@ -76,6 +86,10 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     when(someResponse.getStatusCode()).thenReturn(500);
 
     RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
+
+    //must stop the long polling before exception occurred
+    remoteConfigRepository.stopLongPollingRefresh();
+
     remoteConfigRepository.getConfig();
   }
 
@@ -102,6 +116,35 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     verify(someListener, times(1)).onRepositoryChange(eq(someNamespace), captor.capture());
 
     assertEquals(newConfigurations, captor.getValue());
+
+    remoteConfigRepository.stopLongPollingRefresh();
+  }
+
+  @Test
+  public void testLongPollingRefresh() throws Exception {
+    Map<String, String> configurations = ImmutableMap.of("someKey", "someValue");
+    ApolloConfig someApolloConfig = assembleApolloConfig(configurations);
+
+    when(someResponse.getStatusCode()).thenReturn(200);
+    when(someResponse.getBody()).thenReturn(someApolloConfig);
+
+    RepositoryChangeListener someListener = mock(RepositoryChangeListener.class);
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
+    remoteConfigRepository.addChangeListener(someListener);
+    final ArgumentCaptor<Properties> captor = ArgumentCaptor.forClass(Properties.class);
+
+    Map<String, String> newConfigurations = ImmutableMap.of("someKey", "anotherValue");
+    ApolloConfig newApolloConfig = assembleApolloConfig(newConfigurations);
+
+    when(pollResponse.getStatusCode()).thenReturn(HttpServletResponse.SC_OK);
+    when(someResponse.getBody()).thenReturn(newApolloConfig);
+
+    TimeUnit.MILLISECONDS.sleep(60);
+
+    remoteConfigRepository.stopLongPollingRefresh();
+
+    verify(someListener, times(1)).onRepositoryChange(eq(someNamespace), captor.capture());
+    assertEquals(newConfigurations, captor.getValue());
   }
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
@@ -109,7 +152,7 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     String someClusterName = "cluster";
     String someReleaseId = "1";
     ApolloConfig apolloConfig =
-            new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
+        new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
 
     apolloConfig.setConfigurations(configurations);
 
@@ -143,6 +186,13 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
   public static class MockHttpUtil extends HttpUtil {
     @Override
     public <T> HttpResponse<T> doGet(HttpRequest httpRequest, Class<T> responseType) {
+      if (httpRequest.getUrl().contains("notifications?")) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(50);
+        } catch (InterruptedException e) {
+        }
+        return (HttpResponse<T>) pollResponse;
+      }
       return (HttpResponse<T>) someResponse;
     }
   }

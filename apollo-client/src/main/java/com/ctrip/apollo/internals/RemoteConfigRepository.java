@@ -1,9 +1,14 @@
 package com.ctrip.apollo.internals;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.escape.Escaper;
+import com.google.common.net.UrlEscapers;
 
 import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.apollo.util.ConfigUtil;
@@ -22,10 +27,14 @@ import org.unidal.lookup.ContainerLoader;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -40,6 +49,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private volatile AtomicReference<ApolloConfig> m_configCache;
   private final String m_namespace;
   private final ScheduledExecutorService m_executorService;
+  private final AtomicBoolean m_longPollingStopped;
 
   /**
    * Constructor.
@@ -58,10 +68,12 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       Cat.logError(ex);
       throw new IllegalStateException("Unable to load component!", ex);
     }
+    this.m_longPollingStopped = new AtomicBoolean(false);
     this.m_executorService = Executors.newScheduledThreadPool(1,
         ApolloThreadFactory.create("RemoteConfigRepository", true));
     this.trySync();
     this.schedulePeriodicRefresh();
+    this.scheduleLongPollingRefresh();
   }
 
   @Override
@@ -84,7 +96,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         new Runnable() {
           @Override
           public void run() {
+            Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "periodicRefresh");
             trySync();
+            transaction.setStatus(Message.SUCCESS);
+            transaction.complete();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
         m_configUtil.getRefreshTimeUnit());
@@ -113,11 +128,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     return result;
   }
 
-
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
-    Cat.logEvent("Apollo.Client.Config", String.format("%s-%s-%s", appId, cluster, m_namespace));
+    Cat.logEvent("Apollo.Client.ConfigInfo",
+        String.format("%s-%s-%s", appId, cluster, m_namespace));
     int maxRetries = 2;
     Throwable exception = null;
 
@@ -128,7 +143,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
       for (ServiceDTO configService : randomConfigServices) {
         String url =
-            assembleUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
+            assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
                 m_configCache.get());
 
         logger.debug("Loading config from {}", url);
@@ -172,18 +187,19 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     throw new RuntimeException(message, exception);
   }
 
-  private String assembleUrl(String uri, String appId, String cluster, String namespace,
-                             ApolloConfig previousConfig) {
+  private String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
+                                        ApolloConfig previousConfig) {
+    Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     String path = "configs/%s/%s";
-    List<String> params = Lists.newArrayList(appId, cluster);
+    List<String> params = Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster));
 
     if (!Strings.isNullOrEmpty(namespace)) {
       path = path + "/%s";
-      params.add(namespace);
+      params.add(escaper.escape(namespace));
     }
     if (previousConfig != null) {
       path = path + "?releaseId=%s";
-      params.add(String.valueOf(previousConfig.getReleaseId()));
+      params.add(escaper.escape(String.valueOf(previousConfig.getReleaseId())));
     }
 
     String pathExpanded = String.format(path, params.toArray());
@@ -191,6 +207,106 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       uri += "/";
     }
     return uri + pathExpanded;
+  }
+
+  private void scheduleLongPollingRefresh() {
+    final String appId = m_configUtil.getAppId();
+    final String cluster = m_configUtil.getCluster();
+    final ExecutorService longPollingService =
+        Executors.newFixedThreadPool(2,
+            ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
+    longPollingService.submit(new Runnable() {
+      @Override
+      public void run() {
+        doLongPollingRefresh(appId, cluster, longPollingService);
+      }
+    });
+  }
+
+  private void doLongPollingRefresh(String appId, String cluster,
+                                    ExecutorService longPollingService) {
+    final Random random = new Random();
+    ServiceDTO lastServiceDto = null;
+    Transaction transaction = null;
+    while (!m_longPollingStopped.get() && !Thread.currentThread().isInterrupted()) {
+      try {
+        if (lastServiceDto == null) {
+          List<ServiceDTO> configServices = getConfigServices();
+          lastServiceDto = configServices.get(random.nextInt(configServices.size()));
+        }
+
+        String url =
+            assembleLongPollRefreshUrl(lastServiceDto.getHomepageUrl(), appId, cluster,
+                m_namespace, m_configCache.get());
+
+        logger.debug("Long polling from {}", url);
+        HttpRequest request = new HttpRequest(url);
+        //no timeout for read
+        request.setReadTimeout(0);
+
+        transaction = Cat.newTransaction("Apollo.ConfigService", "pollNotification");
+        transaction.addData("Url", url);
+
+        HttpResponse<ApolloConfigNotification> response =
+            m_httpUtil.doGet(request, ApolloConfigNotification.class);
+
+        logger.debug("Long polling response: {}, url: {}", response.getStatusCode(), url);
+        if (response.getStatusCode() == 200) {
+          longPollingService.submit(new Runnable() {
+            @Override
+            public void run() {
+              trySync();
+            }
+          });
+        }
+        transaction.addData("StatusCode", response.getStatusCode());
+        transaction.setStatus(Message.SUCCESS);
+      } catch (Throwable ex) {
+        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}, reason: {}",
+            appId, cluster, m_namespace, ex);
+        lastServiceDto = null;
+        Cat.logError(ex);
+        if (transaction != null) {
+          transaction.setStatus(ex);
+        }
+        try {
+          TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException ie) {
+          //ignore
+        }
+      } finally {
+        if (transaction != null) {
+          transaction.complete();
+        }
+      }
+    }
+  }
+
+  private String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
+                                            String namespace,
+                                            ApolloConfig previousConfig) {
+    Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
+    Map<String, String> queryParams = Maps.newHashMap();
+    queryParams.put("appId", escaper.escape(appId));
+    queryParams.put("cluster", escaper.escape(cluster));
+
+    if (!Strings.isNullOrEmpty(namespace)) {
+      queryParams.put("namespace", escaper.escape(namespace));
+    }
+    if (previousConfig != null) {
+      queryParams.put("releaseId", escaper.escape(previousConfig.getReleaseId()));
+    }
+
+    String params = Joiner.on("&").withKeyValueSeparator("=").join(queryParams);
+    if (!uri.endsWith("/")) {
+      uri += "/";
+    }
+
+    return uri + "notifications?" + params;
+  }
+
+  void stopLongPollingRefresh() {
+    this.m_longPollingStopped.compareAndSet(false, true);
   }
 
   private List<ServiceDTO> getConfigServices() {

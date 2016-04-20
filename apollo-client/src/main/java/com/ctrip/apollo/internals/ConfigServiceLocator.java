@@ -30,7 +30,7 @@ public class ConfigServiceLocator {
   private Type m_responseType;
 
   /**
-   * Create a config service locator
+   * Create a config service locator.
    */
   public ConfigServiceLocator() {
     List<ServiceDTO> initial = Lists.newArrayList();
@@ -88,8 +88,8 @@ public class ConfigServiceLocator {
     throw new RuntimeException("Get config services failed", exception);
   }
 
-  private void logConfigServicesToCat(List<ServiceDTO> serviceDTOs) {
-    for (ServiceDTO serviceDTO : serviceDTOs) {
+  private void logConfigServicesToCat(List<ServiceDTO> serviceDtos) {
+    for (ServiceDTO serviceDTO : serviceDtos) {
       Cat.logEvent("Apollo.Config.Services", serviceDTO.getHomepageUrl());
     }
   }

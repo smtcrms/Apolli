@@ -120,7 +120,9 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       updateFileProperties(properties);
     } catch (Throwable ex) {
       Cat.logError(ex);
-      logger.warn("Sync config from fallback repository {} failed, reason: {}", m_fallback.getClass(), ex);
+      logger
+          .warn("Sync config from fallback repository {} failed, reason: {}", m_fallback.getClass(),
+              ex);
     }
   }
 
