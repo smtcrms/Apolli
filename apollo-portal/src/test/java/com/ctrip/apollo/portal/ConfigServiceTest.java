@@ -74,6 +74,7 @@ public class ConfigServiceTest {
 
     when(namespaceAPI.findNamespaceByCluster(appId, Env.DEV, clusterName)).thenReturn(namespaces);
     when(releaseAPI.loadLatestRelease(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someRelease);
+    when(releaseAPI.loadLatestRelease(appId, Env.DEV, clusterName, "hermas")).thenReturn(someRelease);
     when(itemAPI.findItems(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someItems);
 
     List<NamespaceVO> namespaceVOs = configService.findNampspaces(appId, Env.DEV, clusterName);
