@@ -12,6 +12,7 @@ import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
 import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.apollo.util.ConfigUtil;
+import com.ctrip.apollo.util.ExceptionUtil;
 import com.ctrip.apollo.util.http.HttpRequest;
 import com.ctrip.apollo.util.http.HttpResponse;
 import com.ctrip.apollo.util.http.HttpUtil;
@@ -96,6 +97,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         new Runnable() {
           @Override
           public void run() {
+            logger.debug("refresh config for namespace: {}", m_namespace);
             Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "periodicRefresh");
             trySync();
             transaction.setStatus(Message.SUCCESS);
@@ -262,8 +264,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);
       } catch (Throwable ex) {
-        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}, reason: {}",
-            appId, cluster, m_namespace, ex);
+        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}",
+            appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
         lastServiceDto = null;
         Cat.logError(ex);
         if (transaction != null) {

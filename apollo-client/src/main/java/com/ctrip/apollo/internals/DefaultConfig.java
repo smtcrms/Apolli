@@ -6,6 +6,7 @@ import com.ctrip.apollo.core.utils.ClassLoaderUtil;
 import com.ctrip.apollo.enums.PropertyChangeType;
 import com.ctrip.apollo.model.ConfigChange;
 import com.ctrip.apollo.model.ConfigChangeEvent;
+import com.ctrip.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.",
-          m_namespace, ex);
+          m_namespace, ExceptionUtil.getDetailMessage(ex));
     }
   }
 

@@ -12,6 +12,7 @@ import com.ctrip.apollo.util.http.HttpRequest;
 import com.ctrip.apollo.util.http.HttpResponse;
 import com.ctrip.apollo.util.http.HttpUtil;
 
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -180,6 +181,11 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
 
       when(serviceDTO.getHomepageUrl()).thenReturn(someServerUrl);
       return Lists.newArrayList(serviceDTO);
+    }
+
+    @Override
+    public void initialize() throws InitializationException {
+      //do nothing
     }
   }
 
