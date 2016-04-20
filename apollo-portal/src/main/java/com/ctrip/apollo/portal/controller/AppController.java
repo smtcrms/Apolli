@@ -1,6 +1,7 @@
 package com.ctrip.apollo.portal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,12 +40,12 @@ public class AppController {
   }
 
   @RequestMapping(value = "", method = RequestMethod.POST, consumes = {"application/json"})
-  public AppDTO create(@RequestBody AppDTO app) {
+  public ResponseEntity<Void> create(@RequestBody AppDTO app) {
     if (isInvalidApp(app)){
       throw new BadRequestException("request payload contains empty");
     }
-    AppDTO createdApp = appService.save(app);
-    return createdApp;
+    appService.save(app);
+    return ResponseEntity.ok().build();
   }
 
   private boolean isInvalidApp(AppDTO app) {

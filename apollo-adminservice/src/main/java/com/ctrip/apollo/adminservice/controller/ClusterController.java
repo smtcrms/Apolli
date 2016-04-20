@@ -3,8 +3,6 @@ package com.ctrip.apollo.adminservice.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +28,21 @@ public class ClusterController {
   private ClusterService clusterService;
 
   @RequestMapping(path = "/apps/{appId}/clusters", method = RequestMethod.POST)
-  public ResponseEntity<ClusterDTO> create(@PathVariable("appId") String appId,
-      @RequestBody ClusterDTO dto, @ActiveUser UserDetails user) {
+  public ClusterDTO createOrUpdate(@PathVariable("appId") String appId, @RequestBody ClusterDTO dto,
+      @ActiveUser UserDetails user) {
     Cluster entity = BeanUtils.transfrom(Cluster.class, dto);
-    entity.setDataChangeCreatedBy(user.getUsername());
-    entity = clusterService.save(entity);
+    Cluster managedEntity = clusterService.findOne(appId, entity.getName());
+    if (managedEntity != null) {
+      managedEntity.setDataChangeLastModifiedBy(user.getUsername());
+      BeanUtils.copyEntityProperties(entity, managedEntity);
+      entity = clusterService.update(managedEntity);
+    } else {
+      entity.setDataChangeCreatedBy(user.getUsername());
+      entity = clusterService.save(entity);
+    }
+
     dto = BeanUtils.transfrom(ClusterDTO.class, entity);
-    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    return dto;
   }
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}", method = RequestMethod.DELETE)
@@ -60,21 +66,6 @@ public class ClusterController {
     Cluster cluster = clusterService.findOne(appId, clusterName);
     if (cluster == null) throw new NotFoundException("cluster not found for name " + clusterName);
     return BeanUtils.transfrom(ClusterDTO.class, cluster);
-  }
-
-  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}", method = RequestMethod.PUT)
-  public ClusterDTO update(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName, @RequestBody ClusterDTO dto,
-      @ActiveUser UserDetails user) {
-    if (!clusterName.equals(dto.getName())) {
-      throw new IllegalArgumentException(String
-          .format("Path variable %s is not equals to object field %s", clusterName, dto.getName()));
-    }
-    Cluster entity = clusterService.findOne(appId, clusterName);
-    if (entity == null) throw new NotFoundException("cluster not found for name " + clusterName);
-    entity.setDataChangeLastModifiedBy(user.getUsername());
-    entity = clusterService.update(BeanUtils.transfrom(Cluster.class, dto));
-    return BeanUtils.transfrom(ClusterDTO.class, entity);
   }
 
 }

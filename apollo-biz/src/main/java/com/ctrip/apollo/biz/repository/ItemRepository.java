@@ -8,7 +8,7 @@ import com.ctrip.apollo.biz.entity.Item;
 
 public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
 
-  List<Item> findByNamespaceIdIsIn(List<Long> namespaceIds);
+  Item findByNamespaceIdAndKey(Long namespaceId, String key);
 
   List<Item> findByNamespaceIdOrderByLineNumAsc(Long namespaceId);
 
