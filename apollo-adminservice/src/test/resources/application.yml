@@ -3,7 +3,7 @@ spring:
     name: apollo-adminservice
     
 server:
-  port: ${port:8080}
+  port: ${port:8090}
   
 logging:
   level:

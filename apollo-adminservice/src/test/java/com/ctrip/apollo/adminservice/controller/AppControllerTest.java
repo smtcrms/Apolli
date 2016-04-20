@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.repository.AppRepository;
@@ -78,12 +79,11 @@ public class AppControllerTest extends AbstractControllerTest {
     Assert.assertEquals(dto.getName(), result.getName());
   }
 
-  @Test
+  @Test(expected = HttpClientErrorException.class)
   @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testFindNotExist() {
     ResponseEntity<AppDTO> result =
         restTemplate.getForEntity(getBaseAppUrl() + "notExists", AppDTO.class);
-    Assert.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
   }
 
   @Test
