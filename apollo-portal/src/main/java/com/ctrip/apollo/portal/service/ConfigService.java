@@ -1,9 +1,13 @@
 package com.ctrip.apollo.portal.service;
 
+import com.google.gson.Gson;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
@@ -42,7 +46,7 @@ public class ConfigService {
   @Autowired
   private ConfigTextResolver resolver;
 
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private Gson gson = new Gson();
 
   /**
    * load cluster all namespace info with items
@@ -86,16 +90,17 @@ public class ConfigService {
 
     String namespaceName = namespace.getNamespaceName();
 
-    //latest createRelease
-    ReleaseDTO release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+    //latest Release
+    ReleaseDTO release = null;
     Map<String, String> releaseItems = new HashMap<>();
-    if (release != null) {
-      try {
-        releaseItems = objectMapper.readValue(release.getConfigurations(), Map.class);
-      } catch (IOException e) {
-        logger.error("parse createRelease json error. appId:{},env:{},clusterName:{},namespace:{}", appId,
-                     env, clusterName, namespaceName);
-        return namespaceVO;
+    try {
+      release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+      releaseItems = gson.fromJson(release.getConfigurations(), Map.class);
+    }catch (HttpClientErrorException e){
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND){
+        //ignore maybe new app has no release.
+      }else {
+        throw e;
       }
     }
 
