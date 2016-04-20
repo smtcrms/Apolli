@@ -40,7 +40,8 @@ public class ConfigChangeEvent {
   }
 
   /**
-   * Get the changes. Please note that the returned Map is immutable.
+   * Get the changes as <Key, Change> map.
+   * Please note that the returned Map is immutable.
    * @return changes
    */
   public Map<String, ConfigChange> getChanges() {

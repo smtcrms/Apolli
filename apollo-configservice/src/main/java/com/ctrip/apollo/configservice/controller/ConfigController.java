@@ -40,7 +40,7 @@ public class ConfigController {
                                   @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
     Release release = configService.findRelease(appId, clusterName, namespace);
-    //TODO if namespace != application, should also query config by namespace and DC?
+    //TODO if namespace != application, should also query config by namespace and DC(default if DC not found)?
     //And if found, should merge config, as well as releaseId -> make releaseId a string?
     if (release == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,

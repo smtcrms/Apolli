@@ -9,6 +9,7 @@ import com.ctrip.apollo.ConfigChangeListener;
 import com.ctrip.apollo.ConfigService;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
 import com.ctrip.apollo.model.ConfigChangeEvent;
 
@@ -196,6 +197,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     config.addChangeListener(new ConfigChangeListener() {
       AtomicInteger counter = new AtomicInteger(0);
+
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
         //only need to assert once
@@ -220,6 +222,66 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     assertEquals(anotherValue, config.getProperty(someKey, null));
   }
 
+  @Test
+  public void testLongPollRefresh() throws Exception {
+    final String someKey = "someKey";
+    final String someValue = "someValue";
+    final String anotherValue = "anotherValue";
+
+    Map<String, String> configurations = Maps.newHashMap();
+    configurations.put(someKey, someValue);
+    ApolloConfig apolloConfig = assembleApolloConfig(configurations);
+    ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
+    ContextHandler pollHandler =
+        mockPollNotificationHandler(50, HttpServletResponse.SC_OK,
+            new ApolloConfigNotification(apolloConfig.getAppId(), apolloConfig.getCluster(),
+                apolloConfig.getNamespace()), false);
+
+    startServerWithHandlers(configHandler, pollHandler);
+
+    Config config = ConfigService.getConfig();
+    assertEquals(someValue, config.getProperty(someKey, null));
+
+    apolloConfig.getConfigurations().put(someKey, anotherValue);
+
+    TimeUnit.MILLISECONDS.sleep(60);
+
+    assertEquals(anotherValue, config.getProperty(someKey, null));
+
+  }
+
+  private ContextHandler mockPollNotificationHandler(final long pollResultTimeOutInMS,
+                                                     final int statusCode,
+                                                     final ApolloConfigNotification result,
+                                                     final boolean failedAtFirstTime) {
+    ContextHandler context = new ContextHandler("/notifications");
+    context.setHandler(new AbstractHandler() {
+      AtomicInteger counter = new AtomicInteger(0);
+
+      @Override
+      public void handle(String target, Request baseRequest, HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, ServletException {
+        if (failedAtFirstTime && counter.incrementAndGet() == 1) {
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          baseRequest.setHandled(true);
+          return;
+        }
+
+        try {
+          TimeUnit.MILLISECONDS.sleep(pollResultTimeOutInMS);
+        } catch (InterruptedException e) {
+        }
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(statusCode);
+        response.getWriter().println(gson.toJson(result));
+        baseRequest.setHandled(true);
+      }
+    });
+
+    return context;
+  }
+
   private ContextHandler mockConfigServerHandler(final int statusCode, final ApolloConfig result,
                                                  final boolean failedAtFirstTime) {
     ContextHandler context = new ContextHandler("/configs/*");
@@ -237,15 +299,11 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(statusCode);
-
         response.getWriter().println(gson.toJson(result));
-
         baseRequest.setHandled(true);
       }
     });
-
     return context;
-
   }
 
 

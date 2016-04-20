@@ -27,20 +27,23 @@ public class HttpUtil {
   private ConfigUtil m_configUtil;
   private Gson gson;
   private String basicAuth;
-  
+
+  /**
+   * Constructor.
+   */
   public HttpUtil() {
     gson = new Gson();
     try {
-      basicAuth =  "Basic " + BaseEncoding.base64().encode("user:".getBytes("UTF-8"));
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      basicAuth = "Basic " + BaseEncoding.base64().encode("user:".getBytes("UTF-8"));
+    } catch (UnsupportedEncodingException ex) {
+      ex.printStackTrace();
     }
   }
 
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest the request
+   * @param httpRequest  the request
    * @param responseType the response type
    * @return the response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
@@ -59,7 +62,7 @@ public class HttpUtil {
   /**
    * Do get operation for the http request.
    *
-   * @param httpRequest the request
+   * @param httpRequest  the request
    * @param responseType the response type
    * @return the response
    * @throws RuntimeException if any error happened or response code is neither 200 nor 304
@@ -76,14 +79,14 @@ public class HttpUtil {
   }
 
   private <T> HttpResponse<T> doGetWithSerializeFunction(HttpRequest httpRequest,
-      Function<String, T> serializeFunction) {
+                                                         Function<String, T> serializeFunction) {
     InputStream is = null;
     try {
       HttpURLConnection conn = (HttpURLConnection) new URL(httpRequest.getUrl()).openConnection();
 
       conn.setRequestMethod("GET");
-      conn.setRequestProperty ("Authorization", basicAuth);
-      
+      conn.setRequestProperty("Authorization", basicAuth);
+
       int connectTimeout = httpRequest.getConnectTimeout();
       if (connectTimeout < 0) {
         connectTimeout = m_configUtil.getConnectTimeout();

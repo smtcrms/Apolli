@@ -74,5 +74,7 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
     m_configProperties = newConfigProperties;
 
     this.fireConfigChange(new ConfigChangeEvent(m_namespace, changeMap));
+
+    Cat.logEvent("Apollo.Client.ConfigChanges", m_namespace);
   }
 }
