@@ -27,7 +27,6 @@ public class ItemSetService {
     if (changeSet.getCreateItems() != null) {
       for (ItemDTO item : changeSet.getCreateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
-        entity.setDataChangeCreatedTime(new Date());
         entity.setDataChangeCreatedBy(owner);
         entity.setDataChangeLastModifiedBy(owner);
         itemRepository.save(entity);
