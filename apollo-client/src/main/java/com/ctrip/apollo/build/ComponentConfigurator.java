@@ -31,8 +31,8 @@ public class ComponentConfigurator extends AbstractResourceConfigurator {
     all.add(A(DefaultConfigRegistry.class));
     all.add(A(DefaultConfigFactoryManager.class));
     all.add(A(ConfigUtil.class));
-    all.add(A(ConfigServiceLocator.class));
     all.add(A(HttpUtil.class));
+    all.add(A(ConfigServiceLocator.class));
 
     return all;
   }

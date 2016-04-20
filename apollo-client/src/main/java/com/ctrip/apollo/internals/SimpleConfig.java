@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 
 import com.ctrip.apollo.model.ConfigChange;
 import com.ctrip.apollo.model.ConfigChangeEvent;
+import com.ctrip.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
@@ -41,7 +42,8 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
       m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
       Cat.logError(ex);
-      logger.warn("Init Apollo Simple Config failed - namespace: {}, reason: {}", m_namespace, ex);
+      logger.warn("Init Apollo Simple Config failed - namespace: {}, reason: {}", m_namespace,
+          ExceptionUtil.getDetailMessage(ex));
     }
   }
 

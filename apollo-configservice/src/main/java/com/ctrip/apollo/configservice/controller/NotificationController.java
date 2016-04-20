@@ -30,8 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/notifications")
 public class NotificationController {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
-  private final static long TIMEOUT = 60 * 60 * 1000;//60 MINUTES
+  private final static long TIMEOUT = 120 * 60 * 1000;//120 MINUTES
   private final Multimap<String, DeferredResult<ApolloConfigNotification>> deferredResults =
+      Multimaps.synchronizedSetMultimap(HashMultimap.create());
+  private final Multimap<DeferredResult<ApolloConfigNotification>, String> deferredResultReversed =
       Multimaps.synchronizedSetMultimap(HashMultimap.create());
 
   {
@@ -43,12 +45,15 @@ public class NotificationController {
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_APPLICATION) String namespace,
+      @RequestParam(value = "datacenter", required = false) String datacenter,
       @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
       HttpServletResponse response) {
     DeferredResult<ApolloConfigNotification> deferredResult =
         new DeferredResult<>(TIMEOUT);
     String key = assembleKey(appId, cluster, namespace);
     this.deferredResults.put(key, deferredResult);
+    //to record all the keys related to deferredResult
+    this.deferredResultReversed.put(deferredResult, key);
 
     deferredResult.onCompletion(() -> {
       logger.info("deferred result for {} {} {} completed", appId, cluster, namespace);

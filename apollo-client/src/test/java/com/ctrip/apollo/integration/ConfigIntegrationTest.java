@@ -228,12 +228,13 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     final String someValue = "someValue";
     final String anotherValue = "anotherValue";
 
+    long pollTimeoutInMS = 50;
     Map<String, String> configurations = Maps.newHashMap();
     configurations.put(someKey, someValue);
     ApolloConfig apolloConfig = assembleApolloConfig(configurations);
     ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     ContextHandler pollHandler =
-        mockPollNotificationHandler(50, HttpServletResponse.SC_OK,
+        mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
             new ApolloConfigNotification(apolloConfig.getAppId(), apolloConfig.getCluster(),
                 apolloConfig.getNamespace()), false);
 
@@ -244,7 +245,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    TimeUnit.MILLISECONDS.sleep(60);
+    TimeUnit.MILLISECONDS.sleep(pollTimeoutInMS * 3);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
 

@@ -3,6 +3,7 @@ package com.ctrip.apollo.internals;
 import com.google.common.base.Preconditions;
 
 import com.ctrip.apollo.util.ConfigUtil;
+import com.ctrip.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -122,7 +123,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       Cat.logError(ex);
       logger
           .warn("Sync config from fallback repository {} failed, reason: {}", m_fallback.getClass(),
-              ex);
+              ExceptionUtil.getDetailMessage(ex));
     }
   }
 
@@ -186,7 +187,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     } catch (IOException ex) {
       Cat.logError(ex);
       transaction.setStatus(ex);
-      logger.warn("Persist local cache file {} failed, reason: {}.", file.getAbsolutePath(), ex);
+      logger.warn("Persist local cache file {} failed, reason: {}.", file.getAbsolutePath(),
+          ExceptionUtil.getDetailMessage(ex));
     } finally {
       if (out != null) {
         try {

@@ -5,6 +5,7 @@ import com.ctrip.apollo.core.utils.ClassLoaderUtil;
 import com.ctrip.apollo.internals.DefaultConfig;
 import com.ctrip.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.apollo.internals.RemoteConfigRepository;
+import com.ctrip.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -48,7 +49,7 @@ public class DefaultConfigFactory implements ConfigFactory {
       transaction.setStatus(ex);
       logger.warn(
           "Unable to create local config cache directory {}, reason: {}. Will not able to cache config file.",
-          baseDir, ex);
+          baseDir, ExceptionUtil.getDetailMessage(ex));
     } finally {
       transaction.complete();
     }
