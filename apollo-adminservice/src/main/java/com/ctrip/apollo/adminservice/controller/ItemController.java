@@ -1,5 +1,6 @@
 package com.ctrip.apollo.adminservice.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,15 @@ public class ItemController {
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName) {
     List<Item> items = viewService.findItems(appId, clusterName, namespaceName);
-    return BeanUtils.batchTransform(ItemDTO.class, items);
+    List<ItemDTO> itemDTOs = new LinkedList<>();
+
+    for (Item item: items){
+      ItemDTO itemDTO = BeanUtils.transfrom(ItemDTO.class, item);
+      itemDTO.setLastModifiedBy(item.getDataChangeLastModifiedBy());
+      itemDTO.setLastModifiedTime(item.getDataChangeLastModifiedTime());
+      itemDTOs.add(itemDTO);
+    }
+    return itemDTOs;
   }
 
   @RequestMapping("/items/{itemId}")

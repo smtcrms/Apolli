@@ -1,5 +1,7 @@
 package com.ctrip.apollo.core.dto;
 
+import java.util.Date;
+
 public class ItemDTO {
 
   private long id;
@@ -13,6 +15,10 @@ public class ItemDTO {
   private String comment;
 
   private int lineNum;
+
+  private String lastModifiedBy;
+
+  private Date lastModifiedTime;
 
   public ItemDTO() {
 
@@ -73,6 +79,21 @@ public class ItemDTO {
     this.lineNum = lineNum;
   }
 
+  public String getLastModifiedBy() {
+    return lastModifiedBy;
+  }
+
+  public void setLastModifiedBy(String lastModifiedBy) {
+    this.lastModifiedBy = lastModifiedBy;
+  }
+
+  public Date getLastModifiedTime() {
+    return lastModifiedTime;
+  }
+
+  public void setLastModifiedTime(Date lastModifiedTime) {
+    this.lastModifiedTime = lastModifiedTime;
+  }
 
   @Override
   public String toString() {
@@ -83,6 +104,8 @@ public class ItemDTO {
            ", value='" + value + '\'' +
            ", comment='" + comment + '\'' +
            ", lineNum=" + lineNum +
+           ", lastModifiedBy='" + lastModifiedBy + '\'' +
+           ", lastModifiedTime=" + lastModifiedTime +
            '}';
   }
 }
