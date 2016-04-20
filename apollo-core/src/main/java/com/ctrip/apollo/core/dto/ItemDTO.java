@@ -1,8 +1,6 @@
 package com.ctrip.apollo.core.dto;
 
-import java.util.Date;
-
-public class ItemDTO{
+public class ItemDTO {
 
   private long id;
 
@@ -16,14 +14,6 @@ public class ItemDTO{
 
   private int lineNum;
 
-  private String dataChangeCreatedBy;
-
-  private Date dataChangeCreatedTime;
-
-  private String dataChangeLastModifiedBy;
-
-  private Date dataChangeLastModifiedTime;
-
   public ItemDTO() {
 
   }
@@ -35,12 +25,16 @@ public class ItemDTO{
     this.lineNum = lineNum;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
   public long getId() {
     return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getComment() {
+    return comment;
   }
 
   public String getKey() {
@@ -57,10 +51,6 @@ public class ItemDTO{
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public void setId(long id) {
-    this.id = id;
   }
 
   public void setKey(String key) {
@@ -83,37 +73,6 @@ public class ItemDTO{
     this.lineNum = lineNum;
   }
 
-  public String getDataChangeLastModifiedBy() {
-    return dataChangeLastModifiedBy;
-  }
-
-  public void setDataChangeLastModifiedBy(String dataChangeLastModifiedBy) {
-    this.dataChangeLastModifiedBy = dataChangeLastModifiedBy;
-  }
-
-  public Date getDataChangeLastModifiedTime() {
-    return dataChangeLastModifiedTime;
-  }
-
-  public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
-    this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
-  }
-
-  public String getDataChangeCreatedBy() {
-    return dataChangeCreatedBy;
-  }
-
-  public void setDataChangeCreatedBy(String dataChangeCreatedBy) {
-    this.dataChangeCreatedBy = dataChangeCreatedBy;
-  }
-
-  public Date getDataChangeCreatedTime() {
-    return dataChangeCreatedTime;
-  }
-
-  public void setDataChangeCreatedTime(Date dataChangeCreatedTime) {
-    this.dataChangeCreatedTime = dataChangeCreatedTime;
-  }
 
   @Override
   public String toString() {
@@ -124,10 +83,6 @@ public class ItemDTO{
            ", value='" + value + '\'' +
            ", comment='" + comment + '\'' +
            ", lineNum=" + lineNum +
-           ", dataChangeCreatedBy='" + dataChangeCreatedBy + '\'' +
-           ", dataChangeCreatedTime=" + dataChangeCreatedTime +
-           ", dataChangeLastModifiedBy='" + dataChangeLastModifiedBy + '\'' +
-           ", dataChangeLastModifiedTime=" + dataChangeLastModifiedTime +
            '}';
   }
 }
