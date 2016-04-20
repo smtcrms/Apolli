@@ -17,6 +17,10 @@ public abstract class AbstractBaseException extends RuntimeException{
     super(str);
   }
   
+  public AbstractBaseException(String str, Exception e){
+    super(str,e);
+  }
+  
   public AbstractBaseException(String str, String errorCode){
     super(str);
     this.setErrorCode(errorCode);

@@ -6,10 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
-import com.ctrip.apollo.core.enums.Env;
+import com.ctrip.apollo.common.utils.ExceptionUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
-import com.ctrip.apollo.core.exception.ServiceException;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
@@ -49,9 +50,9 @@ public class AppService {
     for (Env env : envs) {
       try {
         appAPI.save(env, app);
-      } catch (Exception e) {
-        logger.error("oops! save app error. app id:{}", app.getAppId(), e);
-        throw new ServiceException("call service error.");
+      } catch (HttpStatusCodeException e) {
+        logger.error(ExceptionUtils.toString(e));
+        throw e;
       }
     }
   }

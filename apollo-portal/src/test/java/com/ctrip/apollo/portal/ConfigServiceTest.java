@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ConfigServiceTest extends AbstractPortalTest{
+public class ConfigServiceTest {
 
   @Mock
   private AdminServiceAPI.NamespaceAPI namespaceAPI;

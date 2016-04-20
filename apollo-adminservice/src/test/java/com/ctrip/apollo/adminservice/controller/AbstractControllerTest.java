@@ -18,7 +18,7 @@ import com.ctrip.apollo.AdminServiceTestConfiguration;
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractControllerTest {
 
-  RestTemplate restTemplate = new TestRestTemplate("user", "");
+  RestTemplate restTemplate = new TestRestTemplate("apollo", "");
 
   @PostConstruct
   private void postConstruct() {
