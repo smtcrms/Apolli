@@ -11,4 +11,7 @@ public class ServiceException extends AbstractBaseException {
     super(str);
   }
 
+  public ServiceException(String str, Exception e) {
+    super(str, e);
+  }
 }

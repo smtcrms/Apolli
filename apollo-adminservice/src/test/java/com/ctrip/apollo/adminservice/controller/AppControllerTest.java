@@ -53,7 +53,6 @@ public class AppControllerTest extends AbstractControllerTest {
     App savedApp = appRepository.findOne(first.getId());
     Assert.assertEquals(dto.getAppId(), savedApp.getAppId());
     Assert.assertNotNull(savedApp.getDataChangeCreatedTime());
-    Assert.assertNull(savedApp.getDataChangeLastModifiedTime());
 
     response = restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
     AppDTO second = response.getBody();
@@ -82,8 +81,7 @@ public class AppControllerTest extends AbstractControllerTest {
   @Test(expected = HttpClientErrorException.class)
   @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testFindNotExist() {
-    ResponseEntity<AppDTO> result =
-        restTemplate.getForEntity(getBaseAppUrl() + "notExists", AppDTO.class);
+    restTemplate.getForEntity(getBaseAppUrl() + "notExists", AppDTO.class);
   }
 
   @Test
