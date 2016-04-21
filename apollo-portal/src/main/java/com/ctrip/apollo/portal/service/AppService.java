@@ -29,7 +29,9 @@ public class AppService {
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
 
-  public List<AppDTO> findAll(Env env) {
+  public List<AppDTO> findAll() {
+    // TODO: 16/4/21 先从 portalSettings第一个环境去apps,后续可以优化
+    Env env = portalSettings.getEnvs().get(0);
     return appAPI.getApps(env);
   }
 

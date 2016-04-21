@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.ctrip.apollo.common.utils.ExceptionUtils;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
@@ -73,7 +74,7 @@ public class ConfigService {
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
             appId, env, clusterName, namespace.getNamespaceName(), e);
-        return namespaceVOs;
+        throw e;
       }
     }
 
@@ -98,7 +99,7 @@ public class ConfigService {
       releaseItems = gson.fromJson(release.getConfigurations(), Map.class);
     }catch (HttpClientErrorException e){
       if (e.getStatusCode() == HttpStatus.NOT_FOUND){
-        //ignore maybe new app has no release.
+        logger.warn(ExceptionUtils.toString(e));
       }else {
         throw e;
       }
