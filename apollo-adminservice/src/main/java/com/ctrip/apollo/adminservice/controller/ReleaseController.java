@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
+import com.ctrip.apollo.biz.service.NamespaceService;
 import com.ctrip.apollo.biz.service.ReleaseService;
 import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.common.auth.ActiveUser;
@@ -30,6 +32,9 @@ public class ReleaseController {
 
   @Autowired
   private ConfigService configService;
+
+  @Autowired
+  private NamespaceService namespaceService;
 
   @RequestMapping("/release/{releaseId}")
   public ReleaseDTO get(@PathVariable("releaseId") long releaseId) {
@@ -66,8 +71,12 @@ public class ReleaseController {
       @PathVariable("namespaceName") String namespaceName, @RequestParam("name") String name,
       @RequestParam(name = "comment", required = false) String comment,
       @ActiveUser UserDetails user) {
-    Release release = releaseService.buildRelease(name, comment, appId, clusterName, namespaceName,
-        user.getUsername());
+    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
+    if (namespace == null) {
+      throw new NotFoundException(String.format("Could not find namespace for %s %s %s", appId,
+          clusterName, namespaceName));
+    }
+    Release release = releaseService.buildRelease(name, comment, namespace, user.getUsername());
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 }
