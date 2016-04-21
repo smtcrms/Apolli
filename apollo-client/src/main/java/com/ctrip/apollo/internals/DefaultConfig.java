@@ -131,7 +131,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
           if (Objects.equals(change.getOldValue(), change.getNewValue())) {
             break;
           }
-          if (!Objects.isNull(change.getOldValue())) {
+          if (change.getOldValue() != null) {
             change.setChangeType(PropertyChangeType.MODIFIED);
           }
           actualChanges.put(change.getPropertyName(), change);
@@ -145,7 +145,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
           if (Objects.equals(change.getOldValue(), change.getNewValue())) {
             break;
           }
-          if (!Objects.isNull(change.getNewValue())) {
+          if (change.getNewValue() != null) {
             change.setChangeType(PropertyChangeType.MODIFIED);
           }
           actualChanges.put(change.getPropertyName(), change);
