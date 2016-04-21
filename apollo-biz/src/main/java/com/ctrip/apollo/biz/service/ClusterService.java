@@ -1,5 +1,9 @@
 package com.ctrip.apollo.biz.service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +12,9 @@ import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.repository.ClusterRepository;
 import com.ctrip.apollo.common.utils.BeanUtils;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.exception.ServiceException;
+import com.google.common.base.Strings;
 
 @Service
 public class ClusterService {
@@ -18,12 +25,33 @@ public class ClusterService {
   @Autowired
   private AuditService auditService;
 
+  public boolean isClusterNameUnique(String appId, String clusterName) {
+    Objects.requireNonNull(appId, "AppId must not be null");
+    Objects.requireNonNull(clusterName, "ClusterName must not be null");
+    return Objects.isNull(clusterRepository.findByAppIdAndName(appId, clusterName));
+  }
+
   public Cluster findOne(String appId, String name) {
     return clusterRepository.findByAppIdAndName(appId, name);
   }
 
+  public List<Cluster> findClusters(String appId) {
+    if (Strings.isNullOrEmpty(appId)) {
+      return Collections.emptyList();
+    }
+
+    List<Cluster> clusters = clusterRepository.findByAppId(appId);
+    if (clusters == null) {
+      return Collections.emptyList();
+    }
+    return clusters;
+  }
+
   @Transactional
   public Cluster save(Cluster entity) {
+    if (!isClusterNameUnique(entity.getAppId(), entity.getName())) {
+      throw new ServiceException("cluster not unique");
+    }
     Cluster cluster = clusterRepository.save(entity);
 
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT,
@@ -50,5 +78,20 @@ public class ClusterService {
         managedCluster.getDataChangeLastModifiedBy());
 
     return managedCluster;
+  }
+
+  @Transactional
+  public void createDefaultCluster(String appId, String createBy) {
+    if (!isClusterNameUnique(appId, ConfigConsts.CLUSTER_NAME_DEFAULT)) {
+      throw new ServiceException("cluster not unique");
+    }
+    Cluster cluster = new Cluster();
+    cluster.setName(ConfigConsts.CLUSTER_NAME_DEFAULT);
+    cluster.setAppId(appId);
+    cluster.setDataChangeCreatedBy(createBy);
+    cluster.setDataChangeLastModifiedBy(createBy);
+    clusterRepository.save(cluster);
+
+    auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT, createBy);
   }
 }

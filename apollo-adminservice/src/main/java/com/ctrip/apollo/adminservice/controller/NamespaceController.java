@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.service.NamespaceService;
-import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
@@ -20,9 +19,6 @@ import com.ctrip.apollo.core.exception.NotFoundException;
 
 @RestController
 public class NamespaceController {
-
-  @Autowired
-  private ViewService viewService;
 
   @Autowired
   private NamespaceService namespaceService;
@@ -59,7 +55,7 @@ public class NamespaceController {
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces")
   public List<NamespaceDTO> find(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName) {
-    List<Namespace> groups = viewService.findNamespaces(appId, clusterName);
+    List<Namespace> groups = namespaceService.findNamespaces(appId, clusterName);
     return BeanUtils.batchTransform(NamespaceDTO.class, groups);
   }
 

@@ -17,7 +17,9 @@ import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.Namespace;
+import com.ctrip.apollo.biz.repository.AppRepository;
 import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.exception.ServiceException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = BizTestConfiguration.class)
@@ -29,10 +31,16 @@ public class AdminServiceTest {
   private AdminService adminService;
 
   @Autowired
-  private ViewService viewService;
+  private AuditService auditService;
 
   @Autowired
-  private AuditService auditService;
+  private AppRepository appRepository;
+
+  @Autowired
+  private ClusterService clsuterService;
+
+  @Autowired
+  private NamespaceService namespaceService;
 
   @Test
   public void testCreateNewApp() {
@@ -50,16 +58,34 @@ public class AdminServiceTest {
     app = adminService.createNewApp(app);
     Assert.assertEquals(appId, app.getAppId());
 
-    List<Cluster> clusters = viewService.findClusters(app.getAppId());
+    List<Cluster> clusters = clsuterService.findClusters(app.getAppId());
     Assert.assertEquals(1, clusters.size());
     Assert.assertEquals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusters.get(0).getName());
 
-    List<Namespace> namespaces = viewService.findNamespaces(appId, clusters.get(0).getName());
+    List<Namespace> namespaces = namespaceService.findNamespaces(appId, clusters.get(0).getName());
     Assert.assertEquals(1, namespaces.size());
     Assert.assertEquals(appId, namespaces.get(0).getNamespaceName());
 
     List<Audit> audits = auditService.findByOwner(owner);
     Assert.assertEquals(4, audits.size());
+  }
+
+  @Test(expected = ServiceException.class)
+  public void testCreateDuplicateApp() {
+    String appId = "someAppId";
+    App app = new App();
+    app.setAppId(appId);
+    app.setName("someAppName");
+    String owner = "someOwnerName";
+    app.setOwnerName(owner);
+    app.setOwnerEmail("someOwnerName@ctrip.com");
+    app.setDataChangeCreatedBy(owner);
+    app.setDataChangeLastModifiedBy(owner);
+    app.setDataChangeCreatedTime(new Date());
+
+    appRepository.save(app);
+
+    adminService.createNewApp(app);
   }
 
 }

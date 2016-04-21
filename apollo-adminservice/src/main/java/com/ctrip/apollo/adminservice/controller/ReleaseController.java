@@ -15,7 +15,6 @@ import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.biz.service.NamespaceService;
 import com.ctrip.apollo.biz.service.ReleaseService;
-import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
@@ -23,9 +22,6 @@ import com.ctrip.apollo.core.exception.NotFoundException;
 
 @RestController
 public class ReleaseController {
-
-  @Autowired
-  private ViewService viewSerivce;
 
   @Autowired
   private ReleaseService releaseService;
@@ -48,7 +44,7 @@ public class ReleaseController {
   public List<ReleaseDTO> find(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName) {
-    List<Release> releases = viewSerivce.findReleases(appId, clusterName, namespaceName);
+    List<Release> releases = releaseService.findReleases(appId, clusterName, namespaceName);
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 

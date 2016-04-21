@@ -1,6 +1,7 @@
 package com.ctrip.apollo.biz.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.repository.AppRepository;
 import com.ctrip.apollo.common.utils.BeanUtils;
+import com.ctrip.apollo.core.exception.ServiceException;
 
 @Service
 public class AppService {
@@ -22,6 +24,11 @@ public class AppService {
   @Autowired
   private AuditService auditService;
 
+  public boolean isAppIdUnique(String appId) {
+    Objects.requireNonNull(appId, "AppId must not be null");
+    return Objects.isNull(appRepository.findByAppId(appId));
+  }
+  
   @Transactional
   public void delete(long id, String owner) {
     appRepository.delete(id);
@@ -44,6 +51,9 @@ public class AppService {
 
   @Transactional
   public App save(App entity) {
+    if (!isAppIdUnique(entity.getAppId())) {
+      throw new ServiceException("appId not unique");
+    }
     App app = appRepository.save(entity);
     
     auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT,

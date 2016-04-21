@@ -24,6 +24,24 @@ public class AppControllerTest extends AbstractControllerTest {
   }
 
   @Test
+  public void testCheckIfAppIdUnique() {
+    AppDTO dto = generateSampleDTOData();
+    ResponseEntity<AppDTO> response =
+        restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
+    AppDTO result = response.getBody();
+    Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+    Assert.assertEquals(dto.getAppId(), result.getAppId());
+    Assert.assertTrue(result.getId() > 0);
+
+    Boolean falseUnique =
+        restTemplate.getForObject(getBaseAppUrl() + dto.getAppId() + "/unique", Boolean.class);
+    Assert.assertFalse(falseUnique);
+    Boolean trueUnique = restTemplate
+        .getForObject(getBaseAppUrl() + dto.getAppId() + "true" + "/unique", Boolean.class);
+    Assert.assertTrue(trueUnique);
+  }
+
+  @Test
   @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testCreate() {
     AppDTO dto = generateSampleDTOData();

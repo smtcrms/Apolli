@@ -28,8 +28,11 @@ public class PrivilegeServiceTest {
   private AdminService adminService;
 
   @Autowired
-  private ViewService viewService;
+  private ClusterService clusterService;
 
+  @Autowired
+  private NamespaceService namespaceService;
+  
   @Autowired
   private PrivilegeService privilService;
 
@@ -46,9 +49,9 @@ public class PrivilegeServiceTest {
     app.setDataChangeCreatedTime(new Date());
     App newApp = adminService.createNewApp(app);
 
-    List<Cluster> clusters = viewService.findClusters(newApp.getAppId());
+    List<Cluster> clusters = clusterService.findClusters(newApp.getAppId());
     List<Namespace> namespaces =
-        viewService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
+        namespaceService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
     Namespace namespace = namespaces.get(0);
 
     privilService.addPrivilege(namespace.getId(), newApp.getOwnerName(),
@@ -76,9 +79,9 @@ public class PrivilegeServiceTest {
     app.setDataChangeLastModifiedBy(owner);
     app.setDataChangeCreatedTime(new Date());
     App newApp = adminService.createNewApp(app);
-    List<Cluster> clusters = viewService.findClusters(newApp.getAppId());
+    List<Cluster> clusters = clusterService.findClusters(newApp.getAppId());
     List<Namespace> namespaces =
-        viewService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
+        namespaceService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
     Namespace namespace = namespaces.get(0);
 
     privilService.addPrivilege(namespace.getId(), newApp.getOwnerName(),
