@@ -6,7 +6,7 @@ application_module.controller("AppConfigController",
                                    var currentUser = 'test_user';
                                    var pageContext = {
                                        appId: appId,
-                                       env: 'LOCAL',
+                                       env: '',
                                        clusterName: 'default'
                                    };
 
@@ -21,19 +21,23 @@ application_module.controller("AppConfigController",
                                            var node = {};
                                            //first nav
                                            node.text = item.env;
-                                           node.selectable = false;
-                                           //second nav
                                            var clusterNodes = [];
-                                           item.clusters.forEach(function (item) {
-                                               var clusterNode = {},
-                                                   parentNode = [];
+                                           //如果env下面只有一个default集群则不显示集群列表
+                                           if (item.clusters && item.clusters.length == 1 && item.clusters[0].name == 'default'){
+                                               node.selectable = true;
+                                           }else {
+                                               node.selectable = false;
+                                               //second nav
+                                               item.clusters.forEach(function (item) {
+                                                   var clusterNode = {},
+                                                       parentNode = [];
 
-                                               clusterNode.text = item.name;
-                                               parentNode.push(node.text);
-                                               clusterNode.tags = parentNode;
-                                               clusterNodes.push(clusterNode);
-                                           });
-
+                                                   clusterNode.text = item.name;
+                                                   parentNode.push(node.text);
+                                                   clusterNode.tags = parentNode;
+                                                   clusterNodes.push(clusterNode);
+                                               });
+                                           }
                                            node.nodes = clusterNodes;
                                            navTree.push(node);
                                        });
@@ -43,8 +47,13 @@ application_module.controller("AppConfigController",
                                                                    data: navTree,
                                                                    levels: 99,
                                                                    onNodeSelected: function (event, data) {
-                                                                       $scope.pageContext.env = data.tags[0];
-                                                                       $scope.pageContext.clusterName = data.text;
+                                                                       if (!data.tags){//first nav node
+                                                                           $scope.pageContext.env = data.text;
+                                                                           $scope.pageContext.clusterName = 'default';
+                                                                       }else {//second cluster node
+                                                                           $scope.pageContext.env = data.tags[0];
+                                                                           $scope.pageContext.clusterName = data.text;
+                                                                       }
                                                                        refreshNamespaces();
                                                                    }
                                                                });
@@ -63,6 +72,9 @@ application_module.controller("AppConfigController",
                                    refreshNamespaces();
 
                                    function refreshNamespaces(viewType) {
+                                       if ($scope.pageContext.env == ''){
+                                           return;
+                                       }
                                        ConfigService.load_all_namespaces($scope.pageContext.appId, $scope.pageContext.env,
                                                                          $scope.pageContext.clusterName, viewType).then(
                                            function (result) {
