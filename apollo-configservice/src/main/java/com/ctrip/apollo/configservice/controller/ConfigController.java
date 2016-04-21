@@ -55,7 +55,7 @@ public class ConfigController {
       return null;
     }
 
-    ApolloConfig apolloConfig = configService.loadConfig(release, namespace);
+    ApolloConfig apolloConfig = configService.loadConfig(release);
 
     if (apolloConfig == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,

@@ -1,6 +1,5 @@
 package com.ctrip.apollo.biz.service;
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,32 +26,28 @@ public class ConfigService {
 
   private Gson gson = new Gson();
 
-  private Type configurationTypeReference = new TypeToken<Map<String, String>>(){}.getType();
+  private Type configurationTypeReference = new TypeToken<Map<String, String>>() {}.getType();
 
   public Release findRelease(String appId, String clusterName, String namespaceName) {
-    Release release = releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(appId, clusterName, namespaceName);
+    Release release = releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(
+        appId, clusterName, namespaceName);
     return release;
   }
 
   /**
    * Load configuration from database
    */
-  public ApolloConfig loadConfig(Release release, String namespaceName) {
+  public ApolloConfig loadConfig(Release release) {
     if (release == null) {
       return null;
     }
     ApolloConfig config = new ApolloConfig(release.getAppId(), release.getClusterName(),
-        namespaceName, String.valueOf(release.getId()));
+        release.getNamespaceName(), String.valueOf(release.getId()));
     config.setConfigurations(transformConfigurationToMap(release.getConfigurations()));
     return config;
   }
 
   Map<String, String> transformConfigurationToMap(String configurations) {
-    try {
-      return gson.fromJson(configurations, configurationTypeReference);
-    } catch (Throwable e) {
-      e.printStackTrace();
-      return Maps.newHashMap();
-    }
+    return gson.fromJson(configurations, configurationTypeReference);
   }
 }

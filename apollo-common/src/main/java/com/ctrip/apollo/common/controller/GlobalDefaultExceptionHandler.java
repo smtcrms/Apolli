@@ -13,7 +13,9 @@ import com.ctrip.apollo.core.exception.AbstractBaseException;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.NotFoundException;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -31,6 +33,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class GlobalDefaultExceptionHandler {
 
   private Gson gson = new Gson();
+
+  private static Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, Object>> exception(HttpServletRequest request, Exception ex) {
@@ -85,8 +89,7 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler(HttpStatusCodeException.class)
   public ResponseEntity<Map<String, Object>> restTemplateException(HttpServletRequest request,
       HttpStatusCodeException ex) {
-    @SuppressWarnings("unchecked")
-    Map<String, Object> errorAttributes = gson.fromJson(ex.getResponseBodyAsString(), Map.class);
+    Map<String, Object> errorAttributes = gson.fromJson(ex.getResponseBodyAsString(), mapType);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
     return new ResponseEntity<>(errorAttributes, headers, ex.getStatusCode());
