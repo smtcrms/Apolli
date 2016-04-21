@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.ConfigChangeListener;
 import com.ctrip.apollo.ConfigService;
-import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
@@ -44,13 +43,13 @@ import static org.junit.Assert.assertThat;
 public class ConfigIntegrationTest extends BaseIntegrationTest {
   private String someReleaseId;
   private File configDir;
-  private String someNamespace;
+  private String defaultNamespace;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
 
-    someNamespace = ConfigConsts.NAMESPACE_APPLICATION;
+    defaultNamespace = someAppId;
     someReleaseId = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     configDir.mkdirs();
@@ -314,7 +313,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
     ApolloConfig apolloConfig =
-        new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
+        new ApolloConfig(someAppId, someClusterName, defaultNamespace, someReleaseId);
 
     apolloConfig.setConfigurations(configurations);
 
@@ -336,6 +335,6 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   }
 
   private String assembleLocalCacheFileName() {
-    return String.format("%s-%s-%s.properties", someAppId, someClusterName, someNamespace);
+    return String.format("%s-%s-%s.properties", someAppId, someClusterName, defaultNamespace);
   }
 }

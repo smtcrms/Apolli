@@ -81,6 +81,7 @@ public class HttpUtil {
   private <T> HttpResponse<T> doGetWithSerializeFunction(HttpRequest httpRequest,
                                                          Function<String, T> serializeFunction) {
     InputStream is = null;
+    int statusCode;
     try {
       HttpURLConnection conn = (HttpURLConnection) new URL(httpRequest.getUrl()).openConnection();
 
@@ -102,7 +103,7 @@ public class HttpUtil {
 
       conn.connect();
 
-      int statusCode = conn.getResponseCode();
+      statusCode = conn.getResponseCode();
 
       if (statusCode == 200) {
         is = conn.getInputStream();
@@ -113,9 +114,6 @@ public class HttpUtil {
       if (statusCode == 304) {
         return new HttpResponse<>(statusCode, null);
       }
-
-      throw new RuntimeException(String.format("Get operation failed for %s, status code - %d",
-          httpRequest.getUrl(), statusCode));
 
     } catch (Throwable ex) {
       throw new RuntimeException("Could not complete get operation", ex);
@@ -128,6 +126,8 @@ public class HttpUtil {
         }
       }
     }
+    throw new RuntimeException(String.format("Get operation failed for %s, status code - %d",
+        httpRequest.getUrl(), statusCode));
   }
 
 }

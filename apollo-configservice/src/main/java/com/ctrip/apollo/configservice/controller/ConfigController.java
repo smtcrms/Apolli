@@ -2,7 +2,6 @@ package com.ctrip.apollo.configservice.controller;
 
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,8 @@ public class ConfigController {
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
-    return this
-        .queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_APPLICATION, clientSideReleaseId,
-            response);
+    //default namespace is appId
+    return this.queryConfig(appId, clusterName, appId, clientSideReleaseId, response);
   }
 
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
