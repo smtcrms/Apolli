@@ -1,10 +1,8 @@
 index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppService',
         function ($scope, $window, toastr, AppService) {
 
-                $scope.env = 'LOCAL';
-
                 var apps = [];
-                AppService.find_all_app($scope.env).then(function (result) {
+                AppService.find_all_app().then(function (result) {
                         apps = result;
                         $scope.apps = apps;
                         $scope.appsCount = apps.length;

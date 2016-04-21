@@ -17,6 +17,7 @@ import com.ctrip.apollo.biz.entity.App;
 import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.entity.Namespace;
+import com.ctrip.apollo.core.ConfigConsts;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = BizTestConfiguration.class)
@@ -51,11 +52,11 @@ public class AdminServiceTest {
 
     List<Cluster> clusters = viewService.findClusters(app.getAppId());
     Assert.assertEquals(1, clusters.size());
-    Assert.assertEquals("default", clusters.get(0).getName());
+    Assert.assertEquals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusters.get(0).getName());
 
     List<Namespace> namespaces = viewService.findNamespaces(appId, clusters.get(0).getName());
     Assert.assertEquals(1, namespaces.size());
-    Assert.assertEquals("application", namespaces.get(0).getNamespaceName());
+    Assert.assertEquals(appId, namespaces.get(0).getNamespaceName());
 
     List<Audit> audits = auditService.findByOwner(owner);
     Assert.assertEquals(4, audits.size());

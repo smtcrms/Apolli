@@ -54,7 +54,7 @@ public class AdminService {
   private void createDefaultAppNamespace(String appId, String createBy) {
     AppNamespace appNs = new AppNamespace();
     appNs.setAppId(appId);
-    appNs.setName(ConfigConsts.NAMESPACE_APPLICATION);
+    appNs.setName(appId);
     appNs.setComment("default app namespace");
     appNs.setDataChangeCreatedBy(createBy);
     appNs.setDataChangeLastModifiedBy(createBy);
@@ -79,7 +79,7 @@ public class AdminService {
     Namespace ns = new Namespace();
     ns.setAppId(appId);
     ns.setClusterName(ConfigConsts.CLUSTER_NAME_DEFAULT);
-    ns.setNamespaceName(ConfigConsts.NAMESPACE_APPLICATION);
+    ns.setNamespaceName(appId);
     ns.setDataChangeCreatedBy(createBy);
     ns.setDataChangeLastModifiedBy(createBy);
     namespaceRepository.save(ns);

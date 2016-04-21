@@ -3,7 +3,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_all_app:{
             method: 'GET',
             isArray: true,
-            url:'/apps/env/:env'
+            url:'/apps'
         },
         load_navtree:{
             methode: 'GET',
@@ -20,11 +20,11 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         }
     });
     return {
-        find_all_app: function (env) {
+        find_all_app: function () {
             var d = $q.defer();
             app_resource.find_all_app({
-                                          env: env
-                                      }, function (result) {
+                                      },
+            function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

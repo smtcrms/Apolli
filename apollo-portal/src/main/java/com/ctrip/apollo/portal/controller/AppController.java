@@ -25,9 +25,9 @@ public class AppController {
   private AppService appService;
 
 
-  @RequestMapping("/env/{env}")
-  public List<AppDTO> findAllApp(@PathVariable String env){
-    return appService.findAll(Env.valueOf(env));
+  @RequestMapping("")
+  public List<AppDTO> findAllApp(){
+    return appService.findAll();
   }
 
   @RequestMapping("/{appId}/navtree")
