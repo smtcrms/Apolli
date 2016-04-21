@@ -2,6 +2,7 @@ package com.ctrip.apollo;
 
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.spi.ConfigFactory;
+import com.ctrip.apollo.util.ConfigUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,13 +14,16 @@ import static org.junit.Assert.assertEquals;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigServiceTest extends ComponentTestCase {
+  private static String someAppId;
 
   @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
+    someAppId = "someAppId";
     //as ConfigService is singleton, so we must manually clear its container
     ConfigService.setContainer(getContainer());
+    defineComponent(ConfigUtil.class, MockConfigUtil.class);
   }
 
   @Test
@@ -41,7 +45,7 @@ public class ConfigServiceTest extends ComponentTestCase {
 
     Config config = ConfigService.getConfig();
 
-    assertEquals(ConfigConsts.NAMESPACE_APPLICATION + ":" + someKey,
+    assertEquals(someAppId + ":" + someKey,
         config.getProperty(someKey, null));
   }
 
@@ -85,4 +89,12 @@ public class ConfigServiceTest extends ComponentTestCase {
       return new MockConfig(namespace);
     }
   }
+
+  public static class MockConfigUtil extends ConfigUtil {
+    @Override
+    public String getAppId() {
+      return someAppId;
+    }
+  }
+
 }

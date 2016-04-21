@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,10 +45,15 @@ public class NotificationController {
   public DeferredResult<ApolloConfigNotification> pollNotification(
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
-      @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_APPLICATION) String namespace,
+      @RequestParam(value = "namespace", required = false) String namespace,
       @RequestParam(value = "datacenter", required = false) String datacenter,
       @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
       HttpServletResponse response) {
+    //check default namespace
+    if (Objects.isNull(namespace)) {
+      namespace = appId;
+    }
+
     DeferredResult<ApolloConfigNotification> deferredResult =
         new DeferredResult<>(TIMEOUT);
     String key = assembleKey(appId, cluster, namespace);
@@ -55,13 +61,14 @@ public class NotificationController {
     //to record all the keys related to deferredResult
     this.deferredResultReversed.put(deferredResult, key);
 
+    final String finalNamespace = namespace;
     deferredResult.onCompletion(() -> {
-      logger.info("deferred result for {} {} {} completed", appId, cluster, namespace);
+      logger.info("deferred result for {} {} {} completed", appId, cluster, finalNamespace);
       deferredResults.remove(key, deferredResult);
     });
 
     deferredResult.onTimeout(() -> {
-      logger.info("deferred result for {} {} {} timeout", appId, cluster, namespace);
+      logger.info("deferred result for {} {} {} timeout", appId, cluster, finalNamespace);
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     });
 

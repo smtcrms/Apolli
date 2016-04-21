@@ -4,6 +4,7 @@ import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.internals.ConfigManager;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.spi.ConfigRegistry;
+import com.ctrip.apollo.util.ConfigUtil;
 import com.dianping.cat.Cat;
 
 import org.codehaus.plexus.PlexusContainer;
@@ -28,7 +29,7 @@ public class ConfigService {
    * @return config instance
    */
   public static Config getConfig() {
-    return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
+    return getConfig(getDefaultNamespace());
   }
 
   /**
@@ -59,8 +60,17 @@ public class ConfigService {
     }
   }
 
+  private static String getDefaultNamespace() {
+    try {
+      return s_instance.m_container.lookup(ConfigUtil.class).getAppId();
+    } catch (ComponentLookupException ex) {
+      Cat.logError(ex);
+      throw new IllegalStateException("Unable to load ConfigUtil!", ex);
+    }
+  }
+
   public static void setConfig(Config config) {
-    setConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
+    setConfig(getDefaultNamespace(), config);
   }
 
   /**
@@ -78,7 +88,7 @@ public class ConfigService {
   }
 
   public static void setConfigFactory(ConfigFactory factory) {
-    setConfigFactory(ConfigConsts.NAMESPACE_APPLICATION, factory);
+    setConfigFactory(getDefaultNamespace(), factory);
   }
 
   /**
