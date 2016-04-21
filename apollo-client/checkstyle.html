@@ -193,6 +193,14 @@
 <th>Severity</th></tr>
 <tr class="b">
 <td>javadoc</td>
+<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#AtclauseOrder">AtclauseOrder</a>
+<ul>
+<li>tagOrder: <tt>&quot;@param, @return, @throws, @deprecated&quot;</tt></li>
+<li>target: <tt>&quot;CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF&quot;</tt></li></ul></td>
+<td>1</td>
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
+<tr class="a">
+<td></td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#JavadocMethod">JavadocMethod</a>
 <ul>
 <li>scope: <tt>&quot;public&quot;</tt></li>
@@ -202,13 +210,6 @@
 <li>allowMissingParamTags: <tt>&quot;true&quot;</tt></li>
 <li>minLineCount: <tt>&quot;2&quot;</tt></li>
 <li>allowedAnnotations: <tt>&quot;Override, Test&quot;</tt></li></ul></td>
-<td>1</td>
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
-<tr class="a">
-<td></td>
-<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#SummaryJavadoc">SummaryJavadoc</a>
-<ul>
-<li>forbiddenSummaryFragments: <tt>&quot;^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )&quot;</tt></li></ul></td>
 <td>1</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
 <tr class="b">
@@ -562,7 +563,7 @@
 <tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>javadoc</td>
-<td>SummaryJavadoc</td>
+<td>AtclauseOrder</td>
 <td>Javadoc comment at column 29 has parse error. Details: no viable alternative at input '&lt;Key,' while parsing HTML_ELEMENT</td>
 <td>43</td></tr></table></div>
 <div class="section">
