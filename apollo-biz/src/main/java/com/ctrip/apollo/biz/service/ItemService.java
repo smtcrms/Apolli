@@ -1,5 +1,8 @@
 package com.ctrip.apollo.biz.service;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +50,24 @@ public class ItemService {
     return item;
   }
 
+  public List<Item> findItems(Long namespaceId) {
+    List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespaceId);
+    if (items == null) {
+      return Collections.emptyList();
+    }
+    return items;
+  }
+  
+  public List<Item> findItems(String appId, String clusterName, String namespaceName) {
+    Namespace group = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId, clusterName,
+        namespaceName);
+    if (group != null) {
+      return findItems(group.getId());
+    } else {
+      return Collections.emptyList();
+    }
+  }
+  
   @Transactional
   public Item save(Item entity) {
     Item item = itemRepository.save(entity);

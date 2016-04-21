@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.service.ItemService;
-import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ItemDTO;
@@ -21,9 +20,6 @@ import com.ctrip.apollo.core.exception.NotFoundException;
 
 @RestController
 public class ItemController {
-
-  @Autowired
-  private ViewService viewService;
 
   @Autowired
   private ItemService itemService;
@@ -59,7 +55,7 @@ public class ItemController {
   public List<ItemDTO> findItems(@PathVariable("appId") String appId,
       @PathVariable("clusterName") String clusterName,
       @PathVariable("namespaceName") String namespaceName) {
-    List<Item> items = viewService.findItems(appId, clusterName, namespaceName);
+    List<Item> items = itemService.findItems(appId, clusterName, namespaceName);
     List<ItemDTO> itemDTOs = new LinkedList<>();
 
     for (Item item: items){

@@ -73,4 +73,9 @@ public class AppController {
     return BeanUtils.transfrom(AppDTO.class, app);
   }
 
+  @RequestMapping("/apps/{appId}/unique")
+  public boolean isAppIdUnique(@PathVariable("appId") String appId) {
+    return appService.isAppIdUnique(appId);
+  }
+
 }

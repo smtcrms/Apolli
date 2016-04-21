@@ -1,5 +1,6 @@
 package com.ctrip.apollo.biz.service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,15 @@ public class ReleaseService {
     return release;
   }
 
+  public List<Release> findReleases(String appId, String clusterName, String namespaceName) {
+    List<Release> releases = releaseRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
+        clusterName, namespaceName);
+    if (releases == null) {
+      return Collections.emptyList();
+    }
+    return releases;
+  }
+  
   @Transactional
   public Release buildRelease(String name, String comment, Namespace namespace, String owner) {
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());

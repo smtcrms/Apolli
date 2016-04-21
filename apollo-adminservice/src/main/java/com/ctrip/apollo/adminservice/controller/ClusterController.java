@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.entity.Cluster;
 import com.ctrip.apollo.biz.service.ClusterService;
-import com.ctrip.apollo.biz.service.ViewService;
 import com.ctrip.apollo.common.auth.ActiveUser;
 import com.ctrip.apollo.common.utils.BeanUtils;
 import com.ctrip.apollo.core.dto.ClusterDTO;
@@ -20,9 +19,6 @@ import com.ctrip.apollo.core.exception.NotFoundException;
 
 @RestController
 public class ClusterController {
-
-  @Autowired
-  private ViewService viewService;
 
   @Autowired
   private ClusterService clusterService;
@@ -56,7 +52,7 @@ public class ClusterController {
 
   @RequestMapping("/apps/{appId}/clusters")
   public List<ClusterDTO> find(@PathVariable("appId") String appId) {
-    List<Cluster> clusters = viewService.findClusters(appId);
+    List<Cluster> clusters = clusterService.findClusters(appId);
     return BeanUtils.batchTransform(ClusterDTO.class, clusters);
   }
 
@@ -68,4 +64,9 @@ public class ClusterController {
     return BeanUtils.transfrom(ClusterDTO.class, cluster);
   }
 
+  @RequestMapping("/apps/{appId}/cluster/{clusterName}/unique")
+  public boolean isAppIdUnique(@PathVariable("appId") String appId,
+      @PathVariable("clusterName") String clusterName) {
+    return clusterService.isClusterNameUnique(appId, clusterName);
+  }
 }
