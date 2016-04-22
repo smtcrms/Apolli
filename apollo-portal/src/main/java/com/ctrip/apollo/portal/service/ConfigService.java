@@ -22,11 +22,8 @@ import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.apollo.portal.service.txtresolver.ConfigTextResolver;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

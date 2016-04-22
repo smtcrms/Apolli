@@ -1,6 +1,5 @@
 package com.ctrip.apollo;
 
-import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.util.ConfigUtil;
 

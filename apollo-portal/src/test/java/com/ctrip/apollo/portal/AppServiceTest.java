@@ -1,6 +1,5 @@
 package com.ctrip.apollo.portal;
 
-import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.dto.ClusterDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

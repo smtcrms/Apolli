@@ -126,6 +126,21 @@
 				<artifactId>cat-client</artifactId>
 				<version>1.4.6</version>
 			</dependency>
+			<dependency>
+				<groupId>com.ctrip.platform</groupId>
+				<artifactId>ctrip-dal-client</artifactId>
+				<version>1.0.1.6</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>logback-core</artifactId>
+						<groupId>ch.qos.logback</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>logback-classic</artifactId>
+						<groupId>ch.qos.logback</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 			<!--third party -->
 			<dependency>
 				<groupId>mysql</groupId>
@@ -324,26 +339,65 @@
 			</build>
 		</profile>
 		<profile>
-			<id>ctrip</id>
+			<id>local</id>
+			<properties>
+				<package.environment>local</package.environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<package.environment>dev</package.environment>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>fat</id>
+			<properties>
+				<package.environment>fat</package.environment>
+			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>com.ctrip.platform</groupId>
 					<artifactId>ctrip-dal-client</artifactId>
-					<version>1.0.1.6</version>
-					<exclusions>
-						<exclusion>
-							<artifactId>logback-core</artifactId>
-							<groupId>ch.qos.logback</groupId>
-						</exclusion>
-						<exclusion>
-							<artifactId>logback-classic</artifactId>
-							<groupId>ch.qos.logback</groupId>
-						</exclusion>
-					</exclusions>
 				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>uat</id>
+			<properties>
+				<package.environment>uat</package.environment>
+			</properties>
+			<dependencies>
 				<dependency>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
+					<groupId>com.ctrip.platform</groupId>
+					<artifactId>ctrip-dal-client</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<package.environment>prod</package.environment>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.ctrip.platform</groupId>
+					<artifactId>ctrip-dal-client</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>tools</id>
+			<properties>
+				<package.environment>tools</package.environment>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.ctrip.platform</groupId>
+					<artifactId>ctrip-dal-client</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>

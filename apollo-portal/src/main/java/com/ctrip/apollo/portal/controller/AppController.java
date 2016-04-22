@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.core.dto.AppDTO;
-import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
