@@ -39,25 +39,28 @@ public class ConfigServiceTest {
   }
 
   @Test
-  public void testLoadConfig() throws Exception {
+  public void testFindRelease() throws Exception {
     String someAppId = "1";
     String someClusterName = "someClusterName";
-    String someGroupName = "someGroupName";
+    String someNamespaceName = "someNamespaceName";
     String someReleaseId = "1";
     String someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
 
-    Release someRelease = assembleRelease(someReleaseId, someAppId, someClusterName, someGroupName,
+    Release someRelease = assembleRelease(someReleaseId, someAppId, someClusterName, someNamespaceName,
         someValidConfiguration);
 
     when(releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(someAppId,
-        someClusterName, someGroupName)).thenReturn(someRelease);
+        someClusterName, someNamespaceName)).thenReturn(someRelease);
 
-    ApolloConfig result = configService.loadConfig(someRelease);
+    Release result = configService.findRelease(someAppId, someClusterName, someNamespaceName);
 
+    verify(releaseRepository, times(1))
+        .findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(someAppId, someClusterName,
+            someNamespaceName);
     assertEquals(someAppId, result.getAppId());
-    assertEquals(someClusterName, result.getCluster());
-    assertEquals(someReleaseId, result.getReleaseId());
-    assertEquals("foo", result.getConfigurations().get("apollo.bar"));
+    assertEquals(someClusterName, result.getClusterName());
+    assertEquals(someReleaseId, String.valueOf(result.getId()));
+    assertEquals(someValidConfiguration, result.getConfigurations());
   }
 
   @Test
@@ -68,8 +71,8 @@ public class ConfigServiceTest {
 
     when(releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(someAppId,
         someClusterName, someNamespaceName)).thenReturn(null);
-    Release someRelease = configService.findRelease(someAppId, someClusterName, someNamespaceName);
-    ApolloConfig result = configService.loadConfig(someRelease);
+
+    Release result = configService.findRelease(someAppId, someClusterName, someNamespaceName);
 
     assertNull(result);
     verify(releaseRepository, times(1)).findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(
@@ -87,26 +90,4 @@ public class ConfigServiceTest {
     return release;
   }
 
-
-  @Test
-  public void testTransformConfigurationToMapSuccessful() throws Exception {
-    String someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
-    Map<String, String> someMap = Maps.newHashMap();
-    someMap.put("apollo.bar", "foo");
-
-    Map<String, String> result = configService.transformConfigurationToMap(someValidConfiguration);
-
-    assertEquals(someMap, result);
-  }
-
-  @Test(expected = JsonSyntaxException.class)
-  public void testTransformConfigurationToMapFailed() throws Exception {
-    String someInvalidConfiguration = "xxx";
-
-    Map<String, String> result =
-        configService.transformConfigurationToMap(someInvalidConfiguration);
-
-    assertTrue(result.isEmpty());
-
-  }
 }

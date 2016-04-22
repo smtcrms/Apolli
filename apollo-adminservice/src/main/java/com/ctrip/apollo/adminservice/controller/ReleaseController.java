@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.message.MessageSender;
+import com.ctrip.apollo.biz.message.Topics;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.biz.service.NamespaceService;
 import com.ctrip.apollo.biz.service.ReleaseService;
@@ -31,6 +33,9 @@ public class ReleaseController {
 
   @Autowired
   private NamespaceService namespaceService;
+
+  @Autowired
+  private MessageSender messageSender;
 
   @RequestMapping("/release/{releaseId}")
   public ReleaseDTO get(@PathVariable("releaseId") long releaseId) {
@@ -73,6 +78,12 @@ public class ReleaseController {
           clusterName, namespaceName));
     }
     Release release = releaseService.buildRelease(name, comment, namespace, user.getUsername());
+    messageSender.sendMessage(assembleKey(appId, clusterName, namespaceName),
+        Topics.APOLLO_RELEASE_TOPIC);
     return BeanUtils.transfrom(ReleaseDTO.class, release);
+  }
+
+  private String assembleKey(String appId, String cluster, String namespace) {
+    return String.format("%s-%s-%s", appId, cluster, namespace);
   }
 }

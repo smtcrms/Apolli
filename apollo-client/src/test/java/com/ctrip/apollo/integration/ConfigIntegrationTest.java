@@ -3,6 +3,7 @@ package com.ctrip.apollo.integration;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.SettableFuture;
 
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.ConfigChangeListener;
@@ -194,6 +195,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     Config config = ConfigService.getConfig();
     final List<ConfigChangeEvent> changeEvents = Lists.newArrayList();
 
+    final SettableFuture<Boolean> refreshFinished = SettableFuture.create();
     config.addChangeListener(new ConfigChangeListener() {
       AtomicInteger counter = new AtomicInteger(0);
 
@@ -208,12 +210,13 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         assertEquals(anotherValue, changeEvent.getChange(someKey).getNewValue());
         // if there is any assertion failed above, this line won't be executed
         changeEvents.add(changeEvent);
+        refreshFinished.set(true);
       }
     });
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    someRefreshTimeUnit.sleep(someRefreshInterval * 2);
+    refreshFinished.get(someRefreshInterval * 5, someRefreshTimeUnit);
 
     assertThat(
         "Change event's size should equal to one or there must be some assertion failed in change listener",
@@ -242,9 +245,18 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     Config config = ConfigService.getConfig();
     assertEquals(someValue, config.getProperty(someKey, null));
 
+    final SettableFuture<Boolean> longPollFinished = SettableFuture.create();
+
+    config.addChangeListener(new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        longPollFinished.set(true);
+      }
+    });
+
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    TimeUnit.MILLISECONDS.sleep(pollTimeoutInMS * 3);
+    longPollFinished.get(pollTimeoutInMS * 10, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
 
