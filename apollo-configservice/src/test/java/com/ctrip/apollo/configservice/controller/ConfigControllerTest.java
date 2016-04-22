@@ -1,14 +1,17 @@
 package com.ctrip.apollo.configservice.controller;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.dto.ApolloConfig;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,20 +20,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.service.ConfigService;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * @author Jason Song(song_s@ctrip.com)

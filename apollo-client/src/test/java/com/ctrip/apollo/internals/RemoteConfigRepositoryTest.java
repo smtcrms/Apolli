@@ -140,7 +140,7 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     when(pollResponse.getStatusCode()).thenReturn(HttpServletResponse.SC_OK);
     when(someResponse.getBody()).thenReturn(newApolloConfig);
 
-    TimeUnit.MILLISECONDS.sleep(60);
+    TimeUnit.MILLISECONDS.sleep(1000);
 
     remoteConfigRepository.stopLongPollingRefresh();
 

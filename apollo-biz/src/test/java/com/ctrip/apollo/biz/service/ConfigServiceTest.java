@@ -2,12 +2,9 @@ package com.ctrip.apollo.biz.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +15,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
-import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.google.common.collect.Maps;
-import com.google.gson.JsonSyntaxException;
 
 /**
  * @author Jason Song(song_s@ctrip.com)

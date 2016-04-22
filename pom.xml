@@ -343,56 +343,14 @@
 			<properties>
 				<package.environment>local</package.environment>
 			</properties>
-		</profile>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<package.environment>dev</package.environment>
-			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 		</profile>
 		<profile>
-			<id>fat</id>
+			<id>ctrip</id>
 			<properties>
-				<package.environment>fat</package.environment>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.ctrip.platform</groupId>
-					<artifactId>ctrip-dal-client</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>uat</id>
-			<properties>
-				<package.environment>uat</package.environment>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.ctrip.platform</groupId>
-					<artifactId>ctrip-dal-client</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>prod</id>
-			<properties>
-				<package.environment>prod</package.environment>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.ctrip.platform</groupId>
-					<artifactId>ctrip-dal-client</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>tools</id>
-			<properties>
-				<package.environment>tools</package.environment>
+				<package.environment>ctrip</package.environment>
 			</properties>
 			<dependencies>
 				<dependency>
