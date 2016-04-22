@@ -1,11 +1,14 @@
 package com.ctrip.apollo.configservice.controller;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
+import com.ctrip.apollo.biz.message.MessageListener;
+import com.ctrip.apollo.biz.message.Topics;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
-import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,17 +29,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/notifications")
-public class NotificationController {
+public class NotificationController implements MessageListener {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
-  private final static long TIMEOUT = 120 * 60 * 1000;//120 MINUTES
+  private final static long TIMEOUT = 360 * 60 * 1000;//6 hours
   private final Multimap<String, DeferredResult<ApolloConfigNotification>> deferredResults =
       Multimaps.synchronizedSetMultimap(HashMultimap.create());
-  private final Multimap<DeferredResult<ApolloConfigNotification>, String> deferredResultReversed =
-      Multimaps.synchronizedSetMultimap(HashMultimap.create());
-
-  {
-    startRandomChange();
-  }
 
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ApolloConfigNotification> pollNotification(
@@ -53,41 +48,64 @@ public class NotificationController {
       namespace = appId;
     }
 
+    List<String> watchedKeys = Lists.newArrayList(assembleKey(appId, cluster, namespace));
+
+    //Listen more namespaces, since it's not the default namespace
+    if (!Objects.equals(appId, namespace)) {
+      //TODO find id for this particular namespace, if not equal to current app id, then do more
+      if (!Objects.isNull(datacenter)) {
+        //TODO add newAppId+datacenter+namespace to listened keys
+      }
+      //TODO add newAppId+defaultCluster+namespace to listened keys
+    }
+
     DeferredResult<ApolloConfigNotification> deferredResult =
         new DeferredResult<>(TIMEOUT);
-    String key = assembleKey(appId, cluster, namespace);
-    this.deferredResults.put(key, deferredResult);
-    //to record all the keys related to deferredResult
-    this.deferredResultReversed.put(deferredResult, key);
 
-    final String finalNamespace = namespace;
+    //register all keys
+    for (String key : watchedKeys) {
+      this.deferredResults.put(key, deferredResult);
+    }
+
     deferredResult.onCompletion(() -> {
-      logger.info("deferred result for {} {} {} completed", appId, cluster, finalNamespace);
-      deferredResults.remove(key, deferredResult);
+      //unregister all keys
+      for (String key : watchedKeys) {
+        deferredResults.remove(key, deferredResult);
+      }
     });
 
     deferredResult.onTimeout(() -> {
-      logger.info("deferred result for {} {} {} timeout", appId, cluster, finalNamespace);
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     });
 
-    logger.info("deferred result for {} {} {} returned", appId, cluster, namespace);
     return deferredResult;
-  }
-
-  private void startRandomChange() {
-    Random random = new Random();
-    ScheduledExecutorService testService = Executors.newScheduledThreadPool(1,
-        ApolloThreadFactory.create("NotificationController", true));
-    testService.scheduleAtFixedRate((Runnable) () -> deferredResults
-        .entries().stream().filter(entry -> random.nextBoolean()).forEach(entry -> {
-          String[] keys = entry.getKey().split("-");
-          entry.getValue().setResult(new ApolloConfigNotification(keys[0], keys[1], keys[2]));
-        }), 30, 30, TimeUnit.SECONDS);
   }
 
   private String assembleKey(String appId, String cluster, String namespace) {
     return String.format("%s-%s-%s", appId, cluster, namespace);
+  }
+
+  @Override
+  public void handleMessage(String message, String channel) {
+    logger.info("message received - channel: {}, message: {}", channel, message);
+    if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(message)) {
+      return;
+    }
+    String[] keys = message.split("-");
+    //message should be appId-cluster-namespace
+    if (keys.length != 3) {
+      logger.error("message format invalid - {}", message);
+      return;
+    }
+
+    ApolloConfigNotification notification = new ApolloConfigNotification(keys[0], keys[1], keys[2]);
+
+    Collection<DeferredResult<ApolloConfigNotification>> results = deferredResults.get(message);
+    logger.info("Notify {} clients for key {}", results.size(), message);
+
+    for (DeferredResult<ApolloConfigNotification> result : results) {
+      result.setResult(notification);
+    }
   }
 }
 

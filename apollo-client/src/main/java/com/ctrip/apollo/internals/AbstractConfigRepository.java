@@ -49,9 +49,7 @@ public abstract class AbstractConfigRepository implements ConfigRepository {
         listener.onRepositoryChange(namespace, newProperties);
       } catch (Throwable ex) {
         Cat.logError(ex);
-        logger.error("Failed to invoke repository change listener {}", listener.getClass(),
-            ExceptionUtil
-                .getDetailMessage(ex));
+        logger.error("Failed to invoke repository change listener {}", listener.getClass(), ex);
       }
     }
   }

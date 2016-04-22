@@ -264,7 +264,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);
       } catch (Throwable ex) {
-        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}",
+        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}, reason: {}",
             appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
         lastServiceDto = null;
         Cat.logError(ex);
