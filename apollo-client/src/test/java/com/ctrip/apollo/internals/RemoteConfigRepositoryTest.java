@@ -3,7 +3,7 @@ package com.ctrip.apollo.internals;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
+import com.google.common.util.concurrent.SettableFuture;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
@@ -18,7 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.unidal.lookup.ComponentTestCase;
 
 import java.util.List;
@@ -34,6 +37,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 
 /**
  * Created by Jason on 4/9/16.
@@ -128,8 +133,19 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
 
     when(someResponse.getStatusCode()).thenReturn(200);
     when(someResponse.getBody()).thenReturn(someApolloConfig);
-
+    
+    final SettableFuture<Boolean> longPollFinished = SettableFuture.create();
     RepositoryChangeListener someListener = mock(RepositoryChangeListener.class);
+    doAnswer(new Answer<Void>(){
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        longPollFinished.set(true);
+        return null;
+      }
+      
+    }).when(someListener).onRepositoryChange(any(String.class), any(Properties.class));
+    
     RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
     remoteConfigRepository.addChangeListener(someListener);
     final ArgumentCaptor<Properties> captor = ArgumentCaptor.forClass(Properties.class);
@@ -137,10 +153,11 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     Map<String, String> newConfigurations = ImmutableMap.of("someKey", "anotherValue");
     ApolloConfig newApolloConfig = assembleApolloConfig(newConfigurations);
 
+
     when(pollResponse.getStatusCode()).thenReturn(HttpServletResponse.SC_OK);
     when(someResponse.getBody()).thenReturn(newApolloConfig);
-
-    TimeUnit.MILLISECONDS.sleep(1000);
+    
+    longPollFinished.get(500, TimeUnit.MILLISECONDS);
 
     remoteConfigRepository.stopLongPollingRefresh();
 
