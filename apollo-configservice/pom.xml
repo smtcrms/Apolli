@@ -20,11 +20,6 @@
 			<artifactId>apollo-biz</artifactId>
 		</dependency>
 		<!-- end of apollo -->
-		<!-- redis -->
-		<!-- <dependency> <groupId>org.springframework.data</groupId> <artifactId>spring-data-redis</artifactId> 
-			</dependency> <dependency> <groupId>redis.clients</groupId> <artifactId>jedis</artifactId> 
-			</dependency> -->
-		<!-- end of redis -->
 		<!-- eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
