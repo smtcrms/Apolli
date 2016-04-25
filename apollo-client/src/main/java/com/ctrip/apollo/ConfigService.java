@@ -1,5 +1,6 @@
 package com.ctrip.apollo;
 
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.internals.ConfigManager;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.spi.ConfigRegistry;
@@ -24,11 +25,11 @@ public class ConfigService {
   }
 
   /**
-   * Get the config instance with default namespace.
+   * Get Application's config instance.
    * @return config instance
    */
-  public static Config getConfig() {
-    return getConfig(getDefaultNamespace());
+  public static Config getAppConfig() {
+    return getConfig(ConfigConsts.NAMESPACE_DEFAULT);
   }
 
   /**
@@ -59,17 +60,8 @@ public class ConfigService {
     }
   }
 
-  private static String getDefaultNamespace() {
-    try {
-      return s_instance.m_container.lookup(ConfigUtil.class).getAppId();
-    } catch (ComponentLookupException ex) {
-      Cat.logError(ex);
-      throw new IllegalStateException("Unable to load ConfigUtil!", ex);
-    }
-  }
-
-  public static void setConfig(Config config) {
-    setConfig(getDefaultNamespace(), config);
+  static void setConfig(Config config) {
+    setConfig(ConfigConsts.NAMESPACE_DEFAULT, config);
   }
 
   /**
@@ -77,7 +69,7 @@ public class ConfigService {
    * @param namespace the namespace
    * @param config the config instance
    */
-  public static void setConfig(String namespace, final Config config) {
+  static void setConfig(String namespace, final Config config) {
     getRegistry().register(namespace, new ConfigFactory() {
       @Override
       public Config create(String namespace) {
@@ -86,8 +78,8 @@ public class ConfigService {
     });
   }
 
-  public static void setConfigFactory(ConfigFactory factory) {
-    setConfigFactory(getDefaultNamespace(), factory);
+  static void setConfigFactory(ConfigFactory factory) {
+    setConfigFactory(ConfigConsts.NAMESPACE_DEFAULT, factory);
   }
 
   /**
@@ -95,12 +87,12 @@ public class ConfigService {
    * @param namespace the namespace
    * @param factory the factory instance
    */
-  public static void setConfigFactory(String namespace, ConfigFactory factory) {
+  static void setConfigFactory(String namespace, ConfigFactory factory) {
     getRegistry().register(namespace, factory);
   }
 
   // for test only
-  public static void setContainer(PlexusContainer m_container) {
+  static void setContainer(PlexusContainer m_container) {
     s_instance.m_container = m_container;
   }
 }

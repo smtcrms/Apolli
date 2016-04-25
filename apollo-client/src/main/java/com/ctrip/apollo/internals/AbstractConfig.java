@@ -32,6 +32,48 @@ public abstract class AbstractConfig implements Config {
     }
   }
 
+  @Override
+  public Integer getIntProperty(String key, Integer defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Integer.parseInt(value);
+  }
+
+  @Override
+  public Long getLongProperty(String key, Long defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Long.parseLong(value);
+  }
+
+  @Override
+  public Short getShortProperty(String key, Short defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Short.parseShort(value);
+  }
+
+  @Override
+  public Float getFloatProperty(String key, Float defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Float.parseFloat(value);
+  }
+
+  @Override
+  public Double getDoubleProperty(String key, Double defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Double.parseDouble(value);
+  }
+
+  @Override
+  public Byte getByteProperty(String key, Byte defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Byte.parseByte(value);
+  }
+
+  @Override
+  public Boolean getBooleanProperty(String key, Boolean defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : Boolean.parseBoolean(value);
+  }
+
   protected void fireConfigChange(ConfigChangeEvent changeEvent) {
     for (ConfigChangeListener listener : m_listeners) {
       try {
@@ -43,7 +85,8 @@ public abstract class AbstractConfig implements Config {
     }
   }
 
-  List<ConfigChange> calcPropertyChanges(Properties previous,
+  List<ConfigChange> calcPropertyChanges(String namespace,
+                                         Properties previous,
                                          Properties current) {
     if (previous == null) {
       previous = new Properties();
@@ -64,11 +107,12 @@ public abstract class AbstractConfig implements Config {
 
     for (String newKey : newKeys) {
       changes
-          .add(new ConfigChange(newKey, null, current.getProperty(newKey), PropertyChangeType.NEW));
+          .add(new ConfigChange(namespace, newKey, null, current.getProperty(newKey),
+              PropertyChangeType.ADDED));
     }
 
     for (String removedKey : removedKeys) {
-      changes.add(new ConfigChange(removedKey, previous.getProperty(removedKey), null,
+      changes.add(new ConfigChange(namespace, removedKey, previous.getProperty(removedKey), null,
           PropertyChangeType.DELETED));
     }
 
@@ -78,7 +122,7 @@ public abstract class AbstractConfig implements Config {
       if (Objects.equal(previousValue, currentValue)) {
         continue;
       }
-      changes.add(new ConfigChange(commonKey, previousValue,
+      changes.add(new ConfigChange(namespace, commonKey, previousValue,
           currentValue, PropertyChangeType.MODIFIED));
     }
 

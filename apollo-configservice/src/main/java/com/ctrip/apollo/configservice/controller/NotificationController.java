@@ -8,10 +8,14 @@ import com.google.common.collect.Multimaps;
 
 import com.ctrip.apollo.biz.message.MessageListener;
 import com.ctrip.apollo.biz.message.Topics;
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,27 +35,23 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/notifications")
 public class NotificationController implements MessageListener {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
-  private final static long TIMEOUT = 360 * 60 * 1000;//6 hours
-  private final Multimap<String, DeferredResult<ApolloConfigNotification>> deferredResults =
+  private static final long TIMEOUT = 360 * 60 * 1000;//6 hours
+  private final Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
+      deferredResults =
       Multimaps.synchronizedSetMultimap(HashMultimap.create());
 
   @RequestMapping(method = RequestMethod.GET)
-  public DeferredResult<ApolloConfigNotification> pollNotification(
+  public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
-      @RequestParam(value = "namespace", required = false) String namespace,
+      @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
       @RequestParam(value = "datacenter", required = false) String datacenter,
       @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
       HttpServletResponse response) {
-    //check default namespace
-    if (Objects.isNull(namespace)) {
-      namespace = appId;
-    }
-
     List<String> watchedKeys = Lists.newArrayList(assembleKey(appId, cluster, namespace));
 
     //Listen more namespaces, since it's not the default namespace
-    if (!Objects.equals(appId, namespace)) {
+    if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
       //TODO find id for this particular namespace, if not equal to current app id, then do more
       if (!Objects.isNull(datacenter)) {
         //TODO add newAppId+datacenter+namespace to listened keys
@@ -59,8 +59,10 @@ public class NotificationController implements MessageListener {
       //TODO add newAppId+defaultCluster+namespace to listened keys
     }
 
-    DeferredResult<ApolloConfigNotification> deferredResult =
-        new DeferredResult<>(TIMEOUT);
+    ResponseEntity<ApolloConfigNotification> body = new ResponseEntity<>(
+        HttpStatus.NOT_MODIFIED);
+    DeferredResult<ResponseEntity<ApolloConfigNotification>> deferredResult =
+        new DeferredResult<>(TIMEOUT, body);
 
     //register all keys
     for (String key : watchedKeys) {
@@ -74,10 +76,8 @@ public class NotificationController implements MessageListener {
       }
     });
 
-    deferredResult.onTimeout(() -> {
-      response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-    });
-
+    logger.info("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
+        watchedKeys, appId, cluster, namespace, datacenter);
     return deferredResult;
   }
 
@@ -88,6 +88,7 @@ public class NotificationController implements MessageListener {
   @Override
   public void handleMessage(String message, String channel) {
     logger.info("message received - channel: {}, message: {}", channel, message);
+    Cat.logEvent("Apollo.LongPoll.Message", message);
     if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(message)) {
       return;
     }
@@ -98,12 +99,16 @@ public class NotificationController implements MessageListener {
       return;
     }
 
-    ApolloConfigNotification notification = new ApolloConfigNotification(keys[0], keys[1], keys[2]);
+    ResponseEntity<ApolloConfigNotification> notification =
+        new ResponseEntity<>(
+            new ApolloConfigNotification(keys[0], keys[1], keys[2]),
+            HttpStatus.OK);
 
-    Collection<DeferredResult<ApolloConfigNotification>> results = deferredResults.get(message);
+    Collection<DeferredResult<ResponseEntity<ApolloConfigNotification>>>
+        results = deferredResults.get(message);
     logger.info("Notify {} clients for key {}", results.size(), message);
 
-    for (DeferredResult<ApolloConfigNotification> result : results) {
+    for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);
     }
   }

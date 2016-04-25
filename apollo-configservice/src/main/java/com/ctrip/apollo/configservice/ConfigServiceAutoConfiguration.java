@@ -25,6 +25,7 @@ public class ConfigServiceAutoConfiguration {
     private String host;
     @Value("${apollo.redis.port}")
     private int port;
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
       JedisConnectionFactory factory = new JedisConnectionFactory();

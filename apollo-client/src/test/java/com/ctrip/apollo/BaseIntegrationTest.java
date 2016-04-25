@@ -1,4 +1,4 @@
-package com.ctrip.apollo.integration;
+package com.ctrip.apollo;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class BaseIntegrationTest extends ComponentTestCase {
+public abstract class BaseIntegrationTest extends ComponentTestCase {
   private static final int PORT = findFreePort();
   private static final String metaServiceUrl = "http://localhost:" + PORT;
   private static final String someAppName = "someAppName";

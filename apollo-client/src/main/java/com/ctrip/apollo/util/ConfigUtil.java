@@ -1,11 +1,12 @@
 package com.ctrip.apollo.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.MetaDomainConsts;
 import com.ctrip.apollo.core.enums.Env;
-import com.ctrip.apollo.env.ClientEnvironment;
+import com.ctrip.framework.foundation.Foundation;
 
 import org.unidal.lookup.annotation.Named;
 
@@ -28,7 +29,7 @@ public class ConfigUtil {
    * @throws IllegalStateException if app id is not set
    */
   public String getAppId() {
-    String appId = ClientEnvironment.getAppId();
+    String appId = Foundation.app().getAppId();
     Preconditions.checkState(appId != null, "app.id is not set");
     return appId;
   }
@@ -38,7 +39,7 @@ public class ConfigUtil {
    * @return the cluster name, or "default" if not specified
    */
   public String getCluster() {
-    String cluster = ClientEnvironment.getCluster();
+    String cluster = System.getProperty("apollo.cluster");
     if (cluster == null) {
       cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
     }
@@ -51,9 +52,32 @@ public class ConfigUtil {
    * @throws IllegalStateException if env is set
    */
   public Env getApolloEnv() {
-    Env env = ClientEnvironment.getEnv();
+    Env env = transformEnv(Foundation.server().getEnvType());
     Preconditions.checkState(env != null, "env is not set");
     return env;
+  }
+
+  private Env transformEnv(String envName) {
+    if (Strings.isNullOrEmpty(envName)) {
+      return null;
+    }
+    switch (envName.toUpperCase()) {
+      case "LPT":
+        return Env.LPT;
+      case "FAT":
+      case "FWS":
+        return Env.FAT;
+      case "UAT":
+        return Env.UAT;
+      case "PRO":
+        return Env.PRO;
+      case "DEV":
+        return Env.DEV;
+      case "LOCAL":
+        return Env.LOCAL;
+      default:
+        return null;
+    }
   }
 
   public String getMetaServerDomainName() {

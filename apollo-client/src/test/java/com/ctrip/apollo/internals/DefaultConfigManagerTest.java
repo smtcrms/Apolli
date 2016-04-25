@@ -56,17 +56,11 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
       return new ConfigFactory() {
         @Override
         public Config create(final String namespace) {
-          return new Config() {
+          return new AbstractConfig() {
             @Override
             public String getProperty(String key, String defaultValue) {
               return namespace + ":" + key;
             }
-
-            @Override
-            public void addChangeListener(ConfigChangeListener listener) {
-
-            }
-
           };
         }
       };

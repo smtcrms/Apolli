@@ -10,6 +10,7 @@ import com.ctrip.apollo.enums.PropertyChangeType;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigChange {
+  private final String namespace;
   private final String propertyName;
   private String oldValue;
   private String newValue;
@@ -17,13 +18,15 @@ public class ConfigChange {
 
   /**
    * Constructor.
+   * @param namespace the namespace of the key
    * @param propertyName the key whose value is changed
    * @param oldValue the value before change
    * @param newValue the value after change
    * @param changeType the change type
    */
-  public ConfigChange(String propertyName, String oldValue, String newValue,
+  public ConfigChange(String namespace, String propertyName, String oldValue, String newValue,
                       PropertyChangeType changeType) {
+    this.namespace = namespace;
     this.propertyName = propertyName;
     this.oldValue = oldValue;
     this.newValue = newValue;
@@ -58,10 +61,15 @@ public class ConfigChange {
     this.changeType = changeType;
   }
 
+  public String getNamespace() {
+    return namespace;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .omitNullValues()
+        .add("namespace", namespace)
         .add("propertyName", propertyName)
         .add("oldValue", oldValue)
         .add("newValue", newValue)

@@ -1,5 +1,7 @@
 package com.ctrip.apollo;
 
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.internals.AbstractConfig;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.util.ConfigUtil;
 
@@ -31,7 +33,7 @@ public class ConfigServiceTest extends ComponentTestCase {
     String someKey = "first";
     ConfigService.setConfig(new MockConfig(someNamespace));
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     assertEquals(someNamespace + ":" + someKey, config.getProperty(someKey, null));
     assertEquals(null, config.getProperty("unknown", null));
@@ -42,9 +44,9 @@ public class ConfigServiceTest extends ComponentTestCase {
     String someKey = "someKey";
     ConfigService.setConfigFactory(new MockConfigFactory());
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
-    assertEquals(someAppId + ":" + someKey,
+    assertEquals(ConfigConsts.NAMESPACE_DEFAULT + ":" + someKey,
         config.getProperty(someKey, null));
   }
 
@@ -60,7 +62,7 @@ public class ConfigServiceTest extends ComponentTestCase {
     assertEquals(null, config.getProperty("unknown", null));
   }
 
-  private static class MockConfig implements Config {
+  private static class MockConfig extends AbstractConfig {
     private final String m_namespace;
 
     public MockConfig(String namespace) {
@@ -74,11 +76,6 @@ public class ConfigServiceTest extends ComponentTestCase {
       }
 
       return m_namespace + ":" + key;
-    }
-
-    @Override
-    public void addChangeListener(ConfigChangeListener listener) {
-
     }
   }
 

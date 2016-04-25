@@ -9,6 +9,11 @@ import java.util.List;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ExceptionUtil {
+  /**
+   * Assemble the detail message for the throwable with all of its cause included (at most 10 causes).
+   * @param ex the exception
+   * @return the message along with its causes
+   */
   public static String getDetailMessage(Throwable ex) {
     if (ex == null || Strings.isNullOrEmpty(ex.getMessage())) {
       return "";

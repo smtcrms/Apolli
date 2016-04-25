@@ -39,11 +39,14 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
   private void initialize() {
     try {
       m_configProperties = m_configRepository.getConfig();
-      m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger.warn("Init Apollo Simple Config failed - namespace: {}, reason: {}", m_namespace,
           ExceptionUtil.getDetailMessage(ex));
+    } finally {
+      //register the change listener no matter config repository is working or not
+      //so that whenever config repository is recovered, config could get changed
+      m_configRepository.addChangeListener(this);
     }
   }
 
@@ -64,7 +67,9 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
     Properties newConfigProperties = new Properties();
     newConfigProperties.putAll(newProperties);
 
-    List<ConfigChange> changes = calcPropertyChanges(m_configProperties, newConfigProperties);
+    List<ConfigChange>
+        changes =
+        calcPropertyChanges(namespace, m_configProperties, newConfigProperties);
     Map<String, ConfigChange> changeMap = Maps.uniqueIndex(changes,
         new Function<ConfigChange, String>() {
           @Override
