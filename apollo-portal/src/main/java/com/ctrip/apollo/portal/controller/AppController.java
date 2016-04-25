@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.apollo.core.dto.AppDTO;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
@@ -24,9 +25,12 @@ public class AppController {
   private AppService appService;
 
 
-  @RequestMapping("")
-  public List<AppDTO> findAllApp(){
-    return appService.findAll();
+  @RequestMapping("/env/{env}")
+  public List<AppDTO> findAllApp(@PathVariable String env){
+    if (StringUtils.isEmpty(env)){
+      throw new BadRequestException("env can not be empty");
+    }
+    return appService.findAll(Env.valueOf(env));
   }
 
   @RequestMapping("/{appId}/navtree")
@@ -45,6 +49,14 @@ public class AppController {
     }
     appService.save(app);
     return ResponseEntity.ok().build();
+  }
+
+  @RequestMapping(value = "/{appId}", method = RequestMethod.GET)
+  public AppDTO load(@PathVariable String appId){
+    if (StringUtils.isEmpty(appId)){
+      throw new BadRequestException("app id can not be empty.");
+    }
+    return appService.load(appId);
   }
 
   private boolean isInvalidApp(AppDTO app) {

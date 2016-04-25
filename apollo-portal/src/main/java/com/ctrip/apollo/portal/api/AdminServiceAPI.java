@@ -27,10 +27,14 @@ public class AdminServiceAPI {
 
     public static String APP_API = "/apps";
 
-    public List<AppDTO> getApps(Env env) {
+    public List<AppDTO> findApps(Env env) {
       AppDTO[] appDTOs =
           restTemplate.getForObject(getAdminServiceHost(env) + APP_API, AppDTO[].class);
       return Arrays.asList(appDTOs);
+    }
+
+    public AppDTO loadApp(Env env, String appId){
+      return restTemplate.getForObject(getAdminServiceHost(env) + APP_API + "/" + appId, AppDTO.class);
     }
 
     public AppDTO save(Env env, AppDTO app) {

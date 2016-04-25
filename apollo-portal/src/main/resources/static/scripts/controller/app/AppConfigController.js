@@ -61,6 +61,14 @@ application_module.controller("AppConfigController",
                                        toastr.error(result.status + result.data.message, "加载导航出错");
                                    });
 
+                                   /////////// app info ////////////
+
+                                   AppService.load($scope.pageContext.appId).then(function (result) {
+                                    $scope.appInfo = result;
+                                   },function (result) {
+                                       toastr.error(result.status + result.data.message, "加载App信息出错");    
+                                   });
+
                                    /////////// namespace ////////////
 
                                    var namespace_view_type = {
@@ -89,7 +97,6 @@ application_module.controller("AppConfigController",
                                                        }else if (viewType == namespace_view_type.TABLE){
                                                            item.viewType = namespace_view_type.TABLE;
                                                        }
-
 
                                                        item.isTextEditing = false;
                                                    })
@@ -158,6 +165,12 @@ application_module.controller("AppConfigController",
 
                                            }
                                        );
+                                   };
+
+                                   $scope.isItemsViewOpened = true;
+                                   $scope.toggleItemView = function (isOpened) {
+                                       $scope.isItemsViewOpened = isOpened;
+
                                    };
 
                                    //文本编辑框状态切换
