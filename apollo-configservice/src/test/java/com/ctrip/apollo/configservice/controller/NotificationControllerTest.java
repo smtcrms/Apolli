@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -31,7 +33,7 @@ public class NotificationControllerTest {
   private String someReleaseId;
   @Mock
   private HttpServletResponse response;
-  private Multimap<String, DeferredResult<ApolloConfigNotification>> deferredResults;
+  private Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>> deferredResults;
 
   @Before
   public void setUp() throws Exception {
@@ -43,7 +45,7 @@ public class NotificationControllerTest {
     someReleaseId = "someRelease";
 
     deferredResults =
-        (Multimap<String, DeferredResult<ApolloConfigNotification>>) ReflectionTestUtils
+        (Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>) ReflectionTestUtils
             .getField(controller, "deferredResults");
   }
 
@@ -51,7 +53,7 @@ public class NotificationControllerTest {
   public void testPollNotificationWithDefaultNamespace() throws Exception {
     someNamespace = someAppId; //default namespace
 
-    DeferredResult<ApolloConfigNotification>
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
         .pollNotification(someAppId, someCluster, someNamespace, someDataCenter, someReleaseId,
             response);
@@ -66,7 +68,7 @@ public class NotificationControllerTest {
   public void testPollNotificationWithDefaultNamespaceAndHandleMessage() throws Exception {
     someNamespace = someAppId; //default namespace
 
-    DeferredResult<ApolloConfigNotification>
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
         .pollNotification(someAppId, someCluster, someNamespace, someDataCenter, someReleaseId,
             response);
@@ -75,8 +77,11 @@ public class NotificationControllerTest {
 
     controller.handleMessage(key, Topics.APOLLO_RELEASE_TOPIC);
 
-    ApolloConfigNotification notification = (ApolloConfigNotification) deferredResult.getResult();
+    ResponseEntity<ApolloConfigNotification> response =
+        (ResponseEntity<ApolloConfigNotification>) deferredResult.getResult();
+    ApolloConfigNotification notification = response.getBody();
 
+    assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(someAppId, notification.getAppId());
     assertEquals(someCluster, notification.getCluster());
     assertEquals(someNamespace, notification.getNamespace());

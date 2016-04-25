@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public class ConfigChangeEvent {
   private final String m_namespace;
-  private final Map<String, ConfigChange> changes;
+  private final Map<String, ConfigChange> m_changes;
 
   /**
    * Constructor.
@@ -19,7 +19,7 @@ public class ConfigChangeEvent {
   public ConfigChangeEvent(String namespace,
                            Map<String, ConfigChange> changes) {
     this.m_namespace = namespace;
-    this.changes = changes;
+    this.m_changes = changes;
   }
 
   /**
@@ -27,7 +27,7 @@ public class ConfigChangeEvent {
    * @return the list of the keys
    */
   public Set<String> changedKeys() {
-    return changes.keySet();
+    return m_changes.keySet();
   }
 
   /**
@@ -36,16 +36,16 @@ public class ConfigChangeEvent {
    * @return the change instance
    */
   public ConfigChange getChange(String key) {
-    return changes.get(key);
+    return m_changes.get(key);
   }
 
   /**
-   * Get the changes as <Key, Change> map.
-   * Please note that the returned Map is immutable.
-   * @return changes
+   * Check whether the specified key is changed
+   * @param key the key
+   * @return true if the key is changed, false otherwise.
    */
-  public Map<String, ConfigChange> getChanges() {
-    return changes;
+  public boolean isChanged(String key) {
+    return m_changes.containsKey(key);
   }
 
   /**

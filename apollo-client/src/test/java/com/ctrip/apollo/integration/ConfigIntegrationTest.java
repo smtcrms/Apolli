@@ -5,9 +5,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.SettableFuture;
 
+import com.ctrip.apollo.BaseIntegrationTest;
 import com.ctrip.apollo.Config;
 import com.ctrip.apollo.ConfigChangeListener;
 import com.ctrip.apollo.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.utils.ClassLoaderUtil;
@@ -37,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -50,7 +53,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    defaultNamespace = someAppId;
+    defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
     someReleaseId = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     configDir.mkdirs();
@@ -90,7 +93,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler handler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     assertEquals(someValue, config.getProperty(someKey, null));
     assertEquals(someDefaultValue, config.getProperty(someNonExistedKey, someDefaultValue));
@@ -109,7 +112,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler handler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
   }
@@ -120,7 +123,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         mockConfigServerHandler(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     String someKey = "someKey";
     String someDefaultValue = "defaultValue" + Math.random();
@@ -140,7 +143,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         mockConfigServerHandler(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
     assertEquals(someValue, config.getProperty(someKey, null));
   }
 
@@ -154,7 +157,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler metaServerHandler = mockMetaServerHandler(failAtFirstTime);
     startServerWithHandlers(metaServerHandler, configHandler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     assertEquals(someValue, config.getProperty(someKey, null));
   }
@@ -169,7 +172,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig, failedAtFirstTime);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
 
     assertEquals(someValue, config.getProperty(someKey, null));
   }
@@ -192,7 +195,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler handler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     startServerWithHandlers(handler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
     final List<ConfigChangeEvent> changeEvents = Lists.newArrayList();
 
     final SettableFuture<Boolean> refreshFinished = SettableFuture.create();
@@ -205,7 +208,8 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
         if (counter.incrementAndGet() > 1) {
           return;
         }
-        assertEquals(1, changeEvent.getChanges().size());
+        assertEquals(1, changeEvent.changedKeys().size());
+        assertTrue(changeEvent.isChanged(someKey));
         assertEquals(someValue, changeEvent.getChange(someKey).getOldValue());
         assertEquals(anotherValue, changeEvent.getChange(someKey).getNewValue());
         // if there is any assertion failed above, this line won't be executed
@@ -242,7 +246,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     startServerWithHandlers(configHandler, pollHandler);
 
-    Config config = ConfigService.getConfig();
+    Config config = ConfigService.getAppConfig();
     assertEquals(someValue, config.getProperty(someKey, null));
 
     final SettableFuture<Boolean> longPollFinished = SettableFuture.create();

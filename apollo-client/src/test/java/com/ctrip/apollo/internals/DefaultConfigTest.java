@@ -156,7 +156,7 @@ public class DefaultConfigTest {
     ConfigChangeEvent changeEvent = captor.getValue();
 
     assertEquals(someNamespace, changeEvent.getNamespace());
-    assertEquals(4, changeEvent.getChanges().size());
+    assertEquals(4, changeEvent.changedKeys().size());
 
     ConfigChange anotherKeyChange = changeEvent.getChange(anotherKey);
     assertEquals(someLocalFileValue, anotherKeyChange.getOldValue());
@@ -176,6 +176,6 @@ public class DefaultConfigTest {
     ConfigChange newKeyChange = changeEvent.getChange(newKey);
     assertEquals(null, newKeyChange.getOldValue());
     assertEquals(newValue, newKeyChange.getNewValue());
-    assertEquals(PropertyChangeType.NEW, newKeyChange.getChangeType());
+    assertEquals(PropertyChangeType.ADDED, newKeyChange.getChangeType());
   }
 }

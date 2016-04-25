@@ -18,15 +18,17 @@ public abstract class AbstractConfigRepository implements ConfigRepository {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfigRepository.class);
   private List<RepositoryChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
 
-  protected void trySync() {
+  protected boolean trySync() {
     try {
       sync();
+      return true;
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger
           .warn("Sync config failed with repository {}, reason: {}", this.getClass(), ExceptionUtil
               .getDetailMessage(ex));
     }
+    return false;
   }
 
   protected abstract void sync();

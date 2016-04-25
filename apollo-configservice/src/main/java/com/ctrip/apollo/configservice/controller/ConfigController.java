@@ -1,6 +1,7 @@
 package com.ctrip.apollo.configservice.controller;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -9,7 +10,9 @@ import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.service.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
+import com.dianping.cat.Cat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,8 +48,8 @@ public class ConfigController {
                                   @RequestParam(value = "datacenter", required = false) String datacenter,
                                   @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
-    //default namespace is appId
-    return this.queryConfig(appId, clusterName, appId, datacenter, clientSideReleaseId, response);
+    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_DEFAULT, datacenter,
+        clientSideReleaseId, response);
   }
 
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
@@ -64,7 +67,7 @@ public class ConfigController {
     }
 
     //if namespace is not appId itself, should check if it has its own configurations
-    if (!Objects.equals(appId, namespace)) {
+    if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
       //TODO find id for this particular namespace, if not equal to current app id, then do more
       if (!Objects.isNull(datacenter)) {
         //TODO load newAppId+datacenter+namespace configurations
@@ -77,6 +80,8 @@ public class ConfigController {
           String.format(
               "Could not load configurations with appId: %s, clusterName: %s, namespace: %s",
               appId, clusterName, namespace));
+      Cat.logEvent("Apollo.Config.NotFound",
+          assembleKey(appId, clusterName, namespace, datacenter));
       return null;
     }
 
@@ -86,20 +91,21 @@ public class ConfigController {
     if (mergedReleaseId.equals(clientSideReleaseId)) {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+      Cat.logEvent("Apollo.Config.NotModified",
+          assembleKey(appId, clusterName, namespace, datacenter));
       return null;
     }
 
     ApolloConfig apolloConfig = new ApolloConfig(appId, clusterName, namespace, mergedReleaseId);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
+    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, clusterName, namespace, datacenter));
     return apolloConfig;
   }
 
   /**
    * Merge configurations of releases.
    * Release in lower index override those in higher index
-   * @param releases
-   * @return
    */
   Map<String, String> mergeReleaseConfigurations(List<Release> releases) {
     Map<String, String> result = Maps.newHashMap();
@@ -107,6 +113,14 @@ public class ConfigController {
       result.putAll(gson.fromJson(release.getConfigurations(), configurationTypeReference));
     }
     return result;
+  }
+
+  private String assembleKey(String appId, String cluster, String namespace, String datacenter) {
+    String key = String.format("%s-%s-%s", appId, cluster, namespace);
+    if (!Strings.isNullOrEmpty(datacenter)) {
+      key += "-" + datacenter;
+    }
+    return key;
   }
 
 }

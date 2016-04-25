@@ -93,7 +93,7 @@ public class SimpleConfigTest {
     ConfigChangeEvent changeEvent = captor.getValue();
 
     assertEquals(someNamespace, changeEvent.getNamespace());
-    assertEquals(3, changeEvent.getChanges().size());
+    assertEquals(3, changeEvent.changedKeys().size());
 
     ConfigChange someKeyChange = changeEvent.getChange(someKey);
     assertEquals(someValue, someKeyChange.getOldValue());
@@ -108,6 +108,6 @@ public class SimpleConfigTest {
     ConfigChange newKeyChange = changeEvent.getChange(newKey);
     assertEquals(null, newKeyChange.getOldValue());
     assertEquals(newValue, newKeyChange.getNewValue());
-    assertEquals(PropertyChangeType.NEW, newKeyChange.getChangeType());
+    assertEquals(PropertyChangeType.ADDED, newKeyChange.getChangeType());
   }
 }

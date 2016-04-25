@@ -47,11 +47,14 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
   private void initialize() {
     try {
       m_configProperties.set(m_configRepository.getConfig());
-      m_configRepository.addChangeListener(this);
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.",
           m_namespace, ExceptionUtil.getDetailMessage(ex));
+    } finally {
+      //register the change listener no matter config repository is working or not
+      //so that whenever config repository is recovered, config could get changed
+      m_configRepository.addChangeListener(this);
     }
   }
 
@@ -108,7 +111,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
   private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties) {
     List<ConfigChange> configChanges =
-        calcPropertyChanges(m_configProperties.get(), newConfigProperties);
+        calcPropertyChanges(m_namespace, m_configProperties.get(), newConfigProperties);
 
     ImmutableMap.Builder<String, ConfigChange> actualChanges =
         new ImmutableMap.Builder<>();
@@ -127,7 +130,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     for (ConfigChange change : configChanges) {
       change.setNewValue(this.getProperty(change.getPropertyName(), change.getNewValue()));
       switch (change.getChangeType()) {
-        case NEW:
+        case ADDED:
           if (Objects.equals(change.getOldValue(), change.getNewValue())) {
             break;
           }

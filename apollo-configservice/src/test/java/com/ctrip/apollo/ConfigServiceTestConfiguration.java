@@ -10,7 +10,7 @@ import com.ctrip.apollo.common.controller.WebSecurityConfig;
 
 @Configuration
 @ComponentScan(excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-    SampleConfigServiceApplication.class, ConfigServiceApplication.class, WebSecurityConfig.class})})
+    SampleConfigServiceApplication.class, ConfigServiceApplication.class})})
 @EnableAutoConfiguration
 public class ConfigServiceTestConfiguration {
 

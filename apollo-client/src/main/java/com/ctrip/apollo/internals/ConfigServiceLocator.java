@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Named(type = ConfigServiceLocator.class)
-public class ConfigServiceLocator implements Initializable{
+public class ConfigServiceLocator implements Initializable {
   private static final Logger logger = LoggerFactory.getLogger(ConfigServiceLocator.class);
   @Inject
   private HttpUtil m_httpUtil;
@@ -69,12 +69,14 @@ public class ConfigServiceLocator implements Initializable{
     return m_configServices.get();
   }
 
-  private void tryUpdateConfigServices() {
+  private boolean tryUpdateConfigServices() {
     try {
       updateConfigServices();
+      return true;
     } catch (Throwable ex) {
       //ignore
     }
+    return false;
   }
 
   private void schedulePeriodicRefresh() {
@@ -84,8 +86,9 @@ public class ConfigServiceLocator implements Initializable{
           public void run() {
             logger.debug("refresh config services");
             Transaction transaction = Cat.newTransaction("Apollo.MetaService", "periodicRefresh");
-            tryUpdateConfigServices();
-            transaction.setStatus(Message.SUCCESS);
+            boolean syncResult = tryUpdateConfigServices();
+            String status = syncResult ? Message.SUCCESS : "-1";
+            transaction.setStatus(status);
             transaction.complete();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
@@ -129,8 +132,8 @@ public class ConfigServiceLocator implements Initializable{
   }
 
   private void logConfigServicesToCat(List<ServiceDTO> serviceDtos) {
-    for (ServiceDTO serviceDTO : serviceDtos) {
-      Cat.logEvent("Apollo.Config.Services", serviceDTO.getHomepageUrl());
+    for (ServiceDTO serviceDto : serviceDtos) {
+      Cat.logEvent("Apollo.Config.Services", serviceDto.getHomepageUrl());
     }
   }
 }

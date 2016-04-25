@@ -99,8 +99,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
           public void run() {
             logger.debug("refresh config for namespace: {}", m_namespace);
             Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "periodicRefresh");
-            trySync();
-            transaction.setStatus(Message.SUCCESS);
+            boolean syncSuccess = trySync();
+            String status = syncSuccess ? Message.SUCCESS : "-1";
+            transaction.setStatus(status);
             transaction.complete();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),

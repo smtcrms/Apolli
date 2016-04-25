@@ -2,6 +2,8 @@ package com.ctrip.apollo.core.dto;
 
 import com.google.common.base.MoreObjects;
 
+import com.ctrip.apollo.Apollo;
+
 import java.util.Map;
 
 /**
@@ -19,11 +21,13 @@ public class ApolloConfig {
 
   private String releaseId;
 
+  public ApolloConfig() {
+  }
+
   public ApolloConfig(String appId,
                       String cluster,
                       String namespace,
                       String releaseId) {
-    super();
     this.appId = appId;
     this.cluster = cluster;
     this.namespace = namespace;
@@ -48,6 +52,22 @@ public class ApolloConfig {
 
   public Map<String, String> getConfigurations() {
     return configurations;
+  }
+
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
+  public void setCluster(String cluster) {
+    this.cluster = cluster;
+  }
+
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
+  public void setReleaseId(String releaseId) {
+    this.releaseId = releaseId;
   }
 
   public void setConfigurations(Map<String, String> configurations) {
