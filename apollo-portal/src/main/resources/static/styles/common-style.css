@@ -168,10 +168,6 @@ table th {
     overflow: scroll;
 }
 
-textarea:disabled {
-    color: #5b6e84;
-}
-
 .namespace-view-table {
     max-height: 700px;
     /*overflow-y: scroll;*/
