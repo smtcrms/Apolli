@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
+import com.dianping.cat.Cat;
+
 @Component
 @Conditional(TitanCondition.class)
 public class TitanEntityManager {
@@ -22,8 +24,10 @@ public class TitanEntityManager {
     Class clazz = Class.forName("com.ctrip.datasource.configure.DalDataSourceFactory");
     Object obj = clazz.newInstance();
     Method method = clazz.getMethod("createDataSource", new Class[] {String.class, String.class});
-    return ((DataSource) method.invoke(obj,
+    DataSource ds = ((DataSource) method.invoke(obj,
         new Object[] {settings.getTitanDbname(), settings.getTitanUrl()}));
+    Cat.logEvent("Apollo.Datasource.Titan", settings.getTitanDbname());
+    return ds;
   }
 
 }
