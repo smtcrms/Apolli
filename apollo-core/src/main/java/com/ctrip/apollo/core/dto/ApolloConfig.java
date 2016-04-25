@@ -2,8 +2,6 @@ package com.ctrip.apollo.core.dto;
 
 import com.google.common.base.MoreObjects;
 
-import com.ctrip.apollo.Apollo;
-
 import java.util.Map;
 
 /**

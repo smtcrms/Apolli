@@ -6,8 +6,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import com.ctrip.apollo.common.controller.WebSecurityConfig;
-
 @Configuration
 @ComponentScan(excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
     SampleConfigServiceApplication.class, ConfigServiceApplication.class})})
