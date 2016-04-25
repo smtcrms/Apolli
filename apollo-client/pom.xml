@@ -20,6 +20,11 @@
 			<groupId>com.ctrip.apollo</groupId>
 			<artifactId>apollo-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.ctrip.apollo</groupId>
+			<artifactId>apollo-buildtools</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- end of apollo -->
 		<!-- foundation service -->
 		<dependency>

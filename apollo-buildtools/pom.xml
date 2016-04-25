@@ -13,4 +13,10 @@
 	<properties>
 		<github.path>${project.artifactId}</github.path>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.dianping.cat</groupId>
+			<artifactId>cat-client</artifactId>
+		</dependency>
+	</dependencies>
 </project>

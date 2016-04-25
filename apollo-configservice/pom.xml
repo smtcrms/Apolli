@@ -19,6 +19,11 @@
 			<groupId>com.ctrip.apollo</groupId>
 			<artifactId>apollo-biz</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.ctrip.apollo</groupId>
+			<artifactId>apollo-buildtools</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- end of apollo -->
 		<!-- eureka -->
 		<dependency>

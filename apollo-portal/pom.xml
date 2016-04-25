@@ -18,6 +18,11 @@
 			<groupId>com.ctrip.apollo</groupId>
 			<artifactId>apollo-common</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.ctrip.apollo</groupId>
+			<artifactId>apollo-buildtools</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

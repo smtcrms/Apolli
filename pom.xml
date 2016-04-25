@@ -117,6 +117,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.ctrip.apollo</groupId>
+				<artifactId>apollo-buildtools</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.ctrip.framework</groupId>
 				<artifactId>framework-foundation</artifactId>
 				<version>1.1.4</version>
