@@ -135,7 +135,7 @@
 
                             <!--text view-->
                             <textarea class="form-control" rows="30" ng-show="isItemsViewOpened && namespace.viewType == 'text'"
-                                      ng-disabled="!namespace.isTextEditing">
+                                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.text">
 {{namespace.text}}
                                 </textarea>
 
