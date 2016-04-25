@@ -5,12 +5,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import com.ctrip.apollo.common.utils.ExceptionUtils;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.enums.Env;
+import com.ctrip.apollo.core.exception.BadRequestException;
+import com.ctrip.apollo.core.exception.ServiceException;
+import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
@@ -29,10 +34,33 @@ public class AppService {
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
 
-  public List<AppDTO> findAll() {
-    // TODO: 16/4/21 先从 portalSettings第一个环境去apps,后续可以优化
-    Env env = portalSettings.getEnvs().get(0);
-    return appAPI.getApps(env);
+  public List<AppDTO> findAll(Env env) {
+    return appAPI.findApps(env);
+  }
+
+  public AppDTO load(String appId) {
+    //轮询环境直到能找到此app的信息
+    AppDTO app = null;
+    for (Env env : portalSettings.getEnvs()) {
+      try {
+        app = appAPI.loadApp(env, appId);
+        break;
+      } catch (HttpClientErrorException e) {
+        //not exist maybe because create app fail.
+        if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+          logger.warn("app:{} in {} not exist", appId, env);
+        } else {
+          logger.error("load app info({}) from env:{} error.", appId, env);
+          throw new ServiceException("can not load app from all envs");
+        }
+      }
+    }
+    if (app == null){
+      throw new BadRequestException(String.format("invalid app id %s", appId));
+    }
+
+    return app;
+
   }
 
   public ClusterNavTree buildClusterNavTree(String appId) {

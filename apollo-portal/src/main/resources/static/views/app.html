@@ -23,12 +23,44 @@
             <!--具体配置信息-->
             <div class="row config-info-container">
                 <!--tag导航-->
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div id="treeview"></div>
+                    <!--app info-->
+                    <section class="panel">
+                        <header class="panel-heading">
+                            应用信息
+<span class="tools pull-right">
+<a href="javascript:;" class="icon-chevron-down"></a>
+</span>
+                        </header>
+                        <div class="panel-body">
+                            <table class="project-info">
+                                <tbody>
+                                <tr>
+                                    <th>应用ID:</th>
+                                    <td>{{appInfo.appId}}</td>
+                                </tr>
+                                <tr>
+                                    <th>应用名:</th>
+                                    <td>{{appInfo.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Owner:</th>
+                                    <td>{{appInfo.ownerName}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Owner Email:</th>
+                                    <td>{{appInfo.ownerEmail}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </section>
                 </div>
 
-                <div class="col-md-10 config-item-container">
-
+                <div class="col-md-9 config-item-container">
+                    <a ng-click="toggleItemView(true)">全部展开</a> | <a ng-click="toggleItemView(false)">全部收缩</a>
                     <div ng-repeat="namespace in namespaces">
                         <div class="panel">
                             <header class="panel-heading">
@@ -100,20 +132,20 @@
                                     </div>
                                 </div>
                             </header>
-                            <div ng-show="namespace.viewType == 'text'">
 
-                                <textarea class="form-control" rows="30" ng-model="namespace.text"
-                                          ng-disabled="!namespace.isTextEditing">
+                            <!--text view-->
+                            <textarea class="form-control" rows="30" ng-show="isItemsViewOpened && namespace.viewType == 'text'"
+                                      ng-disabled="!namespace.isTextEditing">
 {{namespace.text}}
                                 </textarea>
-                            </div>
 
+                            <!--table view-->
                             <div class="namespace-view-table">
                                 <table class="table table-bordered text-center table-hover"
-                                       ng-show="namespace.viewType == 'table'">
+                                       ng-show="isItemsViewOpened && namespace.viewType == 'table'">
                                     <thead>
                                     <tr>
-                                        <th>
+                                        <th >
                                             Key
                                         </th>
                                         <th>
@@ -130,27 +162,27 @@
                                         </th>
                                     </tr>
                                     </thead>
-                                    <tbody ng-repeat="config in namespace.items">
+                                    <tbody>
 
-                                    <tr ng-class="{warning:config.modified}" ng-if="config.item.key">
-                                        <td>
+                                    <tr ng-repeat="config in namespace.items" ng-class="{warning:config.modified}" ng-if="config.item.key">
+                                        <td width="25%">
                                             {{config.item.key}}
                                         </td>
-                                        <td>
+                                        <td width="30%">
                                             <button data-placement="top" title="查看旧值"
                                                     class="glyphicon glyphicon-eye-open"
                                                     aria-hidden="true" data-toggle="modal" data-target="#oldValueModal"
                                                     ng-show="config.modified"
                                                     ng-click="queryOldValue(config.item.key, config.oldValue)"></button>
                                             {{config.item.value}}
-                                        </td>
-                                        <td>
+                                        </td >
+                                        <td width="20%">
                                             {{config.item.comment}}
                                         </td>
-                                        <td>
+                                        <td width="10%">
                                             {{config.item.lastModifiedBy}}
                                         </td>
-                                        <td>
+                                        <td width="15%">
                                             {{config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'}}
                                         </td>
 
@@ -160,7 +192,7 @@
                             </div>
 
                             <!--历史修改视图-->
-                            <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
+                            <div class="J_historyview history-view" ng-show="isItemsViewOpened && namespace.viewType == 'history'">
                                 <div class="row">
                                     <div class="col-md-11 col-md-offset-1 list" style="">
                                         <div class="media">
@@ -241,10 +273,13 @@
                         <h4 class="modal-title" id="myModalLabel2">Commit changes</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea rows="4" class="form-control" style="width:570px;" placeholder="input change log...." ng-model="commitComment"></textarea>
+                        <textarea rows="4" class="form-control" style="width:570px;" placeholder="input change log...."
+                                  ng-model="commitComment"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="commitChange()">提交</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="commitChange()">
+                            提交
+                        </button>
                     </div>
                 </div>
             </div>
@@ -260,10 +295,12 @@
                         <h4 class="modal-title" id="myModalLabel3">发布</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea rows="4" class="form-control" style="width:570px;" ng-model = "releaseComment" placeholder="input release log...."></textarea>
+                        <textarea rows="4" class="form-control" style="width:570px;" ng-model="releaseComment"
+                                  placeholder="input release log...."></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="release()">提交</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="release()">提交
+                        </button>
                     </div>
                 </div>
             </div>
@@ -282,6 +319,9 @@
 <!--lodash.js-->
 <script src="../vendor/lodash.min.js" type="text/javascript"></script>
 
+<!--nicescroll-->
+<script src="../vendor/jquery.nicescroll.min.js"></script>
+
 <!--angular-->
 <script src="../vendor/angular/angular.min.js"></script>
 <script src="../vendor/angular/angular-ui-router.min.js"></script>
@@ -296,8 +336,6 @@
 <!--biz script-->
 <script type="application/javascript" src="../scripts/app.js"></script>
 
-<!--directive-->
-
 <!--service-->
 <script type="application/javascript" src="../scripts/services/AppService.js"></script>
 <script type="application/javascript" src="../scripts/services/ConfigService.js"></script>
@@ -306,9 +344,23 @@
 <script type="application/javascript" src="../scripts/controller/app/AppConfigController.js"></script>
 
 <script type="application/javascript">
+    $(document).ready(function () {
+        $("html").niceScroll({
+                                 styler: "fb",
+                                 cursorcolor: "#e8403f",
+                                 cursorwidth: '6',
+                                 cursorborderradius: '10px',
+                                 background: '#404040',
+                                 spacebarenabled: false,
+                                 cursorborder: '',
+                                 zindex: '1000'
+                             });
+    });
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 </script>
+
+
 </body>
 </html>

@@ -1,38 +1,40 @@
+html, body {
+    height: 100%
+}
+
 body {
     color: #797979;
-    background: #fff;
     padding: 0px !important;
     margin: 0px !important;
     font-size: 13px;
-    min-height: 650px;
+    /*min-height: 650px;*/
+    background: #f1f2f7;
+    font-family: 'Open Sans', sans-serif;
 }
 
-a{
+a {
     cursor: pointer;
 }
 
-.apollo-container{
-    min-height: 550px;
+.apollo-container {
+    min-height: 90%;
 }
 
+.navbar-default {
+    background-color: #ffffff;
+    border: none;
+}
 
 .footer {
-    height: 100px;
     width: 100%;
-    background: #F6F6F6;
-    padding-top: 40px;
+    height: 75px;
+    margin-top: -75px;
+    padding-top: 25px;
 }
 
 /*panel*/
-.panel{
+.panel {
     border: 1px solid #ddd;
-}
-.panel-heading {
-    height: 45px;
-    font-size: 14px;
-    background-color: #f5f5f5;
-    padding: 5px 20px;
-
 }
 
 table th {
@@ -40,7 +42,29 @@ table th {
 }
 
 /*首页*/
-.site-header{
+.site-notice {
+    padding: 5px 0;
+    text-align: center;
+    background-color: #208d4e;
+}
+
+.site-notice {
+    color: #eee;
+}
+
+.site-notice a {
+    color: #ffffff;
+}
+
+.site-notice a:hover {
+    text-underline: none;
+}
+
+.site-notice .selected {
+    color: #000000;
+}
+
+.site-header {
     position: relative;
     text-align: center;
     background-color: #27AE60;
@@ -48,7 +72,7 @@ table th {
     margin-bottom: 0;
 }
 
-.site-header .search{
+.site-header .search {
     border: 2px solid #27AE60;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -59,23 +83,55 @@ table th {
     text-align: center;
 }
 
-.list-group{
+.site-header h1 {
+    font-size: 56px;
+    text-shadow: -5px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.site-header span {
+    font-size: 14px;
+}
+
+.list-group {
     margin-top: 20px;
 }
 
-.apps .apps-description{
+.apps .apps-description {
     color: gray;
     font-family: "Apple Color Emoji";
     font-size: 16px;
 }
 
 .app {
-    background-color: #f5f5f5;
+    padding-bottom: 75px;
+    overflow: hidden;
+}
+
+.app td, th {
+    display: table-cell;
+    vertical-align: inherit;
+}
+
+.project-info {
+    width: 100%;
+}
+
+.panel-heading {
+    border-color: #eff2f7;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.project-info td {
+    word-wrap: break-word;
+    word-break: break-all;
+    border-bottom: 1px dotted gray;
+    padding: 4px 6px;
 }
 
 #config-info {
     min-height: 500px;
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
 }
 
 #config-info .nav {
@@ -103,20 +159,30 @@ table th {
     display: none;
 }
 
+.config-item-container {
+    padding-top: 2px;
+}
+
 .config-item-container .config-items {
     height: 500px;
     overflow: scroll;
 }
 
-#editor {
-    position: relative;
-    width: 500px;
-    height: 400px;
+textarea:disabled {
+    color: #5b6e84;
 }
 
-.namespace-view-table{
+.namespace-view-table {
     max-height: 700px;
-    overflow: scroll;
+    /*overflow-y: scroll;*/
+}
+
+.namespace-view-table table {
+    table-layout: fixed;
+}
+
+.namespace-view-table td {
+    word-wrap: break-word;
 }
 
 .history-view {
