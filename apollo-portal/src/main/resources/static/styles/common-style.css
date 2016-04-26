@@ -181,7 +181,7 @@ table th {
 }
 
 .config-item-container {
-    padding-top: 2px;
+    padding-top: 19px;
 }
 
 .config-item-container .config-items {
@@ -191,7 +191,6 @@ table th {
 
 .namespace-view-table {
     max-height: 700px;
-    /*overflow-y: scroll;*/
 }
 
 .namespace-view-table table {

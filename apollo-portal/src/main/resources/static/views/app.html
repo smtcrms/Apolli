@@ -96,19 +96,16 @@
                 </div>
 
                 <div class="col-md-9 config-item-container">
-                    <a ng-click="toggleItemView(true)">全部展开</a> | <a ng-click="toggleItemView(false)">全部收缩</a>
                     <div ng-repeat="namespace in namespaces">
                         <div class="panel">
                             <header class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <img src="../img/close.png" class="i-15" ng-show="!isItemsViewOpened"/>
-                                        <img src="../img/open.png" class="i-15" ng-show="isItemsViewOpened"/>
+                                    <div class="col-md-4">
                                         <b>{{namespace.namespace.namespaceName}}</b>
                                                 <span class="label label-info" ng-show="namespace.itemModifiedCnt > 0">有修改,可发布
                                                 <span class="badge">{{namespace.itemModifiedCnt}}</span></span>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <div class="btn-toolbar" role="toolbar" aria-label="...">
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <button type="button" data-toggle="modal" data-target="#releaseModal"
@@ -173,7 +170,7 @@
 
                             <!--text view-->
                             <textarea class="form-control" rows="30"
-                                      ng-show="isItemsViewOpened && namespace.viewType == 'text'"
+                                      ng-show="namespace.viewType == 'text'"
                                       ng-disabled="!namespace.isTextEditing" ng-model="namespace.text">
 {{namespace.text}}
                                 </textarea>
@@ -181,7 +178,7 @@
                             <!--table view-->
                             <div class="namespace-view-table">
                                 <table class="table table-bordered text-center table-hover"
-                                       ng-show="isItemsViewOpened && namespace.viewType == 'table'">
+                                       ng-show="namespace.viewType == 'table'">
                                     <thead>
                                     <tr>
                                         <th>
@@ -233,7 +230,7 @@
 
                             <!--历史修改视图-->
                             <div class="J_historyview history-view"
-                                 ng-show="isItemsViewOpened && namespace.viewType == 'history'">
+                                 ng-show="namespace.viewType == 'history'">
                                 <div class="row">
                                     <div class="col-md-11 col-md-offset-1 list" style="">
                                         <div class="media">
