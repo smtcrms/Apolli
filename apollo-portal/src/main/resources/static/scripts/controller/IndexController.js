@@ -1,5 +1,5 @@
-index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppService', 'EnvService',
-        function ($scope, $window, toastr, AppService, EnvService) {
+index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppService', 'AppUtil', 'EnvService',
+        function ($scope, $window, toastr, AppService, AppUtil, EnvService) {
 
             $scope.envs = [];
             $scope.selectedEnv = '';
@@ -8,7 +8,7 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
                 //default select first env
                 $scope.switchEnv($scope.envs[0]);
             }, function (result) {
-                    toastr.error(result.status + result.data.message, "load env error");
+                    toastr.error(AppUtil.errorMsg(result), "load env error");
             });
 
             var apps = [];
@@ -25,7 +25,7 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
                     $scope.appsCount = apps.length;
                     $scope.selectedEnv = env;
                 }, function (result) {
-                    toastr.error(result.status + result.data.message, "load apps error"); 
+                    toastr.error(AppUtil.errorMsg(result), "load apps error"); 
                 });    
             };
             
