@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctrip.apollo.biz.entity.AppNamespace;
 import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.repository.AppNamespaceRepository;
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.exception.ServiceException;
 
 @Service
@@ -33,7 +34,7 @@ public class AppNamespaceService {
     }
     AppNamespace appNs = new AppNamespace();
     appNs.setAppId(appId);
-    appNs.setName(appId);
+    appNs.setName(ConfigConsts.NAMESPACE_DEFAULT);
     appNs.setComment("default app namespace");
     appNs.setDataChangeCreatedBy(createBy);
     appNs.setDataChangeLastModifiedBy(createBy);
