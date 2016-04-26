@@ -4,7 +4,6 @@ import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.internals.ConfigManager;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.spi.ConfigRegistry;
-import com.ctrip.apollo.util.ConfigUtil;
 import com.dianping.cat.Cat;
 
 import org.codehaus.plexus.PlexusContainer;

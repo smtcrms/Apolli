@@ -1,7 +1,6 @@
 package com.ctrip.apollo.internals;
 
 import com.ctrip.apollo.Config;
-import com.ctrip.apollo.ConfigChangeListener;
 import com.ctrip.apollo.spi.ConfigFactory;
 import com.ctrip.apollo.spi.ConfigFactoryManager;
 

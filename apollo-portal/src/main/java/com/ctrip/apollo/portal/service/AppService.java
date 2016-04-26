@@ -15,7 +15,6 @@ import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.ServiceException;
-import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
