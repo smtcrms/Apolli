@@ -3,7 +3,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_all_app:{
             method: 'GET',
             isArray: true,
-            url:'/apps/env/:env'
+            url:'/apps/envs/:env'
         },
         load_navtree:{
             methode: 'GET',
@@ -14,9 +14,9 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
             method: 'GET',
             isArray: false
         },
-        add_app: {
+        create_app: {
             method: 'POST',
-            url: '/apps'
+            url: '/apps/envs/:env'
         }
     });
     return {
@@ -42,9 +42,9 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
             });
             return d.promise;
         },
-        add: function (app) {
+        create: function (env, app) {
             var d = $q.defer();
-            app_resource.add_app({}, app, function (result) {
+            app_resource.create_app({env:env}, app, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

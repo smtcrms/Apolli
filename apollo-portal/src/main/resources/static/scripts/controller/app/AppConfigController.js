@@ -1,6 +1,6 @@
 application_module.controller("AppConfigController",
-                              ['$scope', '$location', 'toastr', 'AppService', 'ConfigService',
-                               function ($scope, $location, toastr, AppService, ConfigService) {
+                              ['$scope', '$location', 'toastr', 'AppService', 'AppUtil', 'ConfigService',
+                               function ($scope, $location, toastr, AppService, AppUtil, ConfigService) {
 
                                    var appId = $location.$$url.split("=")[1];
                                    var currentUser = 'test_user';
@@ -12,7 +12,7 @@ application_module.controller("AppConfigController",
 
                                    $scope.pageContext = pageContext;
 
-                                   ///////////// load cluster nav tree /////////
+                                   ////// load cluster nav tree //////
 
                                    AppService.load_nav_tree($scope.pageContext.appId).then(function (result) {
                                        var navTree = [];
@@ -58,18 +58,20 @@ application_module.controller("AppConfigController",
                                                                    }
                                                                });
                                    }, function (result) {
-                                       toastr.error(result.status + result.data.message, "加载导航出错");
+                                       toastr.error(AppUtil.errorMsg(result), "加载导航出错");
                                    });
 
-                                   /////////// app info ////////////
+                                   ////// app info //////
 
                                    AppService.load($scope.pageContext.appId).then(function (result) {
-                                    $scope.appInfo = result;
+                                       $scope.appBaseInfo = result.app;
+                                       $scope.missEnvs = result.missEnvs;
+                                       $scope.selectedEnvs = angular.copy($scope.missEnvs);
                                    },function (result) {
-                                       toastr.error(result.status + result.data.message, "加载App信息出错");    
+                                       toastr.error(AppUtil.errorMsg(result), "加载App信息出错");    
                                    });
 
-                                   /////////// namespace ////////////
+                                   ////// namespace //////
 
                                    var namespace_view_type = {
                                        TEXT:'text',
@@ -103,11 +105,11 @@ application_module.controller("AppConfigController",
                                                }
 
                                            }, function (result) {
-                                               toastr.error(result.status + result.data.message, "加载配置信息出错");
+                                               toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
                                            });
                                    }
 
-                                   ////////////global view oper /////////////
+                                   ////// global view oper //////
 
                                    $scope.switchView = function (namespace, viewType) {
 
@@ -138,7 +140,7 @@ application_module.controller("AppConfigController",
                                        return result;
                                    }
 
-                                   ////////// text view oper /////////
+                                   ////// text view oper //////
 
                                    $scope.draft = {};
                                    //保存草稿
@@ -161,7 +163,7 @@ application_module.controller("AppConfigController",
                                                $scope.toggleTextEditStatus($scope.draft);
 
                                            }, function (result) {
-                                               toastr.error(result.status + result.data.message, "更新失败");
+                                               toastr.error(AppUtil.errorMsg(result), "更新失败");
 
                                            }
                                        );
@@ -169,6 +171,7 @@ application_module.controller("AppConfigController",
 
                                    $scope.isItemsViewOpened = true;
                                    $scope.toggleItemView = function (isOpened) {
+
                                        $scope.isItemsViewOpened = isOpened;
 
                                    };
@@ -185,7 +188,7 @@ application_module.controller("AppConfigController",
                                        }
                                    };
 
-                                   ////////// table view oper /////////
+                                   ////// table view oper //////
 
                                    //查看旧值
                                    $scope.queryOldValue = function (key, oldValue) {
@@ -215,11 +218,47 @@ application_module.controller("AppConfigController",
                                                refreshNamespaces();
 
                                            }, function (result) {
-                                               toastr.error(result.status + result.data.message,  "发布失败");
+                                               toastr.error(AppUtil.errorMsg(result),  "发布失败");
 
                                            }
                                        );    
                                    }
+                                   
+                                   ////// create env //////
+
+                                   $scope.toggleSelection = function toggleSelection(env) {
+                                       var idx = $scope.selectedEnvs.indexOf(env);
+
+                                       // is currently selected
+                                       if (idx > -1) {
+                                           $scope.selectedEnvs.splice(idx, 1);
+                                       }
+
+                                       // is newly selected
+                                       else {
+                                           $scope.selectedEnvs.push(env);
+                                       }
+                                   };
+
+                                   $scope.createEnvs = function () {
+                                       var count = 0;
+                                       $scope.selectedEnvs.forEach(function (env) {
+                                           AppService.create(env, $scope.appBaseInfo).then(function (result) {
+                                               toastr.success(env, '创建成功');
+                                               count ++;
+                                               if (count == $scope.selectedEnvs){
+                                                 $route.reload();
+                                               }
+                                           }, function (result) {
+                                               toastr.error(AppUtil.errorMsg(result), '创建失败:' + env);
+                                               count ++;
+                                               if (count == $scope.selectedEnvs){
+                                                   $route.reload();
+                                               }
+                                           });
+                                       });
+                                   };
+
 
                                }]);
 

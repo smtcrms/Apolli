@@ -27,5 +27,4 @@ public class API {
   public String getAdminServiceHost(Env env) {
     return serviceLocator.getAdminService(env).getHomepageUrl();
   }
-
 }

@@ -28,34 +28,70 @@
                     <!--app info-->
                     <section class="panel">
                         <header class="panel-heading">
-                            应用信息
-<span class="tools pull-right">
-<a href="javascript:;" class="icon-chevron-down"></a>
-</span>
+                            <img src="../img/info.png" class="i-25-20"/> 应用信息
+                            <span class="tools pull-right">
+                                <a href="javascript:;" class="icon-chevron-down"></a>
+                            </span>
                         </header>
                         <div class="panel-body">
                             <table class="project-info">
                                 <tbody>
                                 <tr>
                                     <th>应用ID:</th>
-                                    <td>{{appInfo.appId}}</td>
+                                    <td>{{appBaseInfo.appId}}</td>
                                 </tr>
                                 <tr>
                                     <th>应用名:</th>
-                                    <td>{{appInfo.name}}</td>
+                                    <td>{{appBaseInfo.name}}</td>
                                 </tr>
                                 <tr>
                                     <th>Owner:</th>
-                                    <td>{{appInfo.ownerName}}</td>
+                                    <td>{{appBaseInfo.ownerName}}</td>
                                 </tr>
                                 <tr>
                                     <th>Owner Email:</th>
-                                    <td>{{appInfo.ownerEmail}}</td>
+                                    <td>{{appBaseInfo.ownerEmail}}</td>
+                                </tr>
+                                <tr ng-show="missEnvs.length > 0">
+                                    <th>缺失的环境:</th>
+                                    <td>
+                                        <font ng-repeat="env in missEnvs">
+                                            {{env}}
+                                        </font>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
 
                         </div>
+                    </section>
+                    <a class="list-group-item" data-toggle="modal" data-target="#createEnvModal" ng-show="missEnvs.length > 0">
+                        <div class="row">
+                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
+                            <div class="col-md-7 hidden-xs">
+                                <p class="apps-description">添加环境</p>
+                            </div>
+
+                        </div>
+                    </a>
+                    <a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">
+                        <div class="row">
+                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
+                            <div class="col-md-7 hidden-xs">
+                                <p class="apps-description">添加集群</p>
+                            </div>
+
+                        </div>
+                    </a>
+                    <a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">
+                        <div class="row">
+                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
+                            <div class="col-md-7 hidden-xs">
+                                <p class="apps-description">添加Namespace</p>
+                            </div>
+
+                        </div>
+                    </a>
                     </section>
                 </div>
 
@@ -65,12 +101,14 @@
                         <div class="panel">
                             <header class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <img src="../img/close.png" class="i-15" ng-show="!isItemsViewOpened"/>
+                                        <img src="../img/open.png" class="i-15" ng-show="isItemsViewOpened"/>
                                         <b>{{namespace.namespace.namespaceName}}</b>
                                                 <span class="label label-info" ng-show="namespace.itemModifiedCnt > 0">有修改,可发布
                                                 <span class="badge">{{namespace.itemModifiedCnt}}</span></span>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-8">
                                         <div class="btn-toolbar" role="toolbar" aria-label="...">
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <button type="button" data-toggle="modal" data-target="#releaseModal"
@@ -120,7 +158,7 @@
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                         </a>
                                         <a data-toggle="tooltip" data-placement="top" title="修改配置"
-                                           ng-show="!namespace.isTextEditing && namespace.viewType == 'text'"
+                                           ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && isItemsViewOpened"
                                            ng-click="toggleTextEditStatus(namespace)">
                                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                                         </a>
@@ -134,7 +172,8 @@
                             </header>
 
                             <!--text view-->
-                            <textarea class="form-control" rows="30" ng-show="isItemsViewOpened && namespace.viewType == 'text'"
+                            <textarea class="form-control" rows="30"
+                                      ng-show="isItemsViewOpened && namespace.viewType == 'text'"
                                       ng-disabled="!namespace.isTextEditing" ng-model="namespace.text">
 {{namespace.text}}
                                 </textarea>
@@ -145,7 +184,7 @@
                                        ng-show="isItemsViewOpened && namespace.viewType == 'table'">
                                     <thead>
                                     <tr>
-                                        <th >
+                                        <th>
                                             Key
                                         </th>
                                         <th>
@@ -164,7 +203,8 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr ng-repeat="config in namespace.items" ng-class="{warning:config.modified}" ng-if="config.item.key">
+                                    <tr ng-repeat="config in namespace.items" ng-class="{warning:config.modified}"
+                                        ng-if="config.item.key">
                                         <td width="25%">
                                             {{config.item.key}}
                                         </td>
@@ -175,7 +215,7 @@
                                                     ng-show="config.modified"
                                                     ng-click="queryOldValue(config.item.key, config.oldValue)"></button>
                                             {{config.item.value}}
-                                        </td >
+                                        </td>
                                         <td width="20%">
                                             {{config.item.comment}}
                                         </td>
@@ -192,7 +232,8 @@
                             </div>
 
                             <!--历史修改视图-->
-                            <div class="J_historyview history-view" ng-show="isItemsViewOpened && namespace.viewType == 'history'">
+                            <div class="J_historyview history-view"
+                                 ng-show="isItemsViewOpened && namespace.viewType == 'history'">
                                 <div class="row">
                                     <div class="col-md-11 col-md-offset-1 list" style="">
                                         <div class="media">
@@ -244,39 +285,40 @@
         </div>
 
         <!-- view old value Modal -->
-        <div class="modal fade " id="oldValueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade " id="oldValueModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                     <div class="modal-header panel-primary">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">旧值</h4>
+                        <h4 class="modal-title">旧值</h4>
                     </div>
                     <div class="modal-body">
                         {{OldValue}}
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <!-- commit modify config modal-->
-        <div class="modal fade" id="commitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+        <div class="modal fade" id="commitModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header panel-primary">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel2">Commit changes</h4>
+                        <h4 class="modal-title">Commit changes</h4>
                     </div>
                     <div class="modal-body">
                         <textarea rows="4" class="form-control" style="width:570px;" placeholder="input change log...."
                                   ng-model="commitComment"></textarea>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="commitChange()">
                             提交
                         </button>
@@ -285,21 +327,52 @@
             </div>
         </div>
 
-        <!--createRelease modal-->
-        <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3">
+        <!--create release modal-->
+        <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header panel-primary">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel3">发布</h4>
+                        <h4 class="modal-title">发布</h4>
                     </div>
                     <div class="modal-body">
                         <textarea rows="4" class="form-control" style="width:570px;" ng-model="releaseComment"
                                   placeholder="input release log...."></textarea>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="release()">提交
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--create env modal-->
+        <div class="modal fade" id="createEnvModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header panel-primary">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">添加环境</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>请选择环境:</label>
+                            <div class="checkbox" ng-repeat="env in missEnvs">
+                                <label>
+                                    <input type="checkbox" name="selectedEnvs[]" value="{{env}}"
+                                           ng-checked="selectedEnvs.indexOf(env) > -1" ng-click="toggleSelection(env)">{{env}}
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createEnvs()">添加
                         </button>
                     </div>
                 </div>
@@ -339,6 +412,7 @@
 <!--service-->
 <script type="application/javascript" src="../scripts/services/AppService.js"></script>
 <script type="application/javascript" src="../scripts/services/ConfigService.js"></script>
+<script type="application/javascript" src="../scripts/AppUtils.js"></script>
 
 <!--controller-->
 <script type="application/javascript" src="../scripts/controller/app/AppConfigController.js"></script>

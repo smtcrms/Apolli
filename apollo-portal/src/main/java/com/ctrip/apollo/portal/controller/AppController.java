@@ -12,6 +12,7 @@ import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
+import com.ctrip.apollo.portal.entity.AppInfoVO;
 import com.ctrip.apollo.portal.entity.ClusterNavTree;
 import com.ctrip.apollo.portal.service.AppService;
 
@@ -25,7 +26,7 @@ public class AppController {
   private AppService appService;
 
 
-  @RequestMapping("/env/{env}")
+  @RequestMapping("/envs/{env}")
   public List<AppDTO> findAllApp(@PathVariable String env){
     if (StringUtils.isEmpty(env)){
       throw new BadRequestException("env can not be empty");
@@ -42,17 +43,21 @@ public class AppController {
     return appService.buildClusterNavTree(appId);
   }
 
-  @RequestMapping(value = "", method = RequestMethod.POST, consumes = {"application/json"})
-  public ResponseEntity<Void> create(@RequestBody AppDTO app) {
+  @RequestMapping(value = "/envs/{env}", method = RequestMethod.POST, consumes = {"application/json"})
+  public ResponseEntity<Void> create(@PathVariable String env, @RequestBody AppDTO app) {
     if (isInvalidApp(app)){
       throw new BadRequestException("request payload contains empty");
     }
-    appService.save(app);
+    if ("ALL".equals(env)){
+      appService.save(app);
+    } else {
+      appService.save(Env.valueOf(env), app);
+    }
     return ResponseEntity.ok().build();
   }
 
   @RequestMapping(value = "/{appId}", method = RequestMethod.GET)
-  public AppDTO load(@PathVariable String appId){
+  public AppInfoVO load(@PathVariable String appId){
     if (StringUtils.isEmpty(appId)){
       throw new BadRequestException("app id can not be empty.");
     }

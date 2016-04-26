@@ -16,6 +16,21 @@ a {
     cursor: pointer;
 }
 
+.i-20{
+    height: 20px;
+    width: 20px;
+}
+
+.i-25-20{
+    height: 20px;
+    width: 25px;
+}
+
+.i-15{
+    height: 15px;
+    width: 15px;
+}
+
 .apollo-container {
     min-height: 90%;
 }
@@ -120,6 +135,12 @@ table th {
     border-color: #eff2f7;
     font-size: 16px;
     font-weight: 300;
+}
+
+.project-info th {
+    text-align: right;
+    padding: 4px 6px;
+    white-space: nowrap;
 }
 
 .project-info td {
