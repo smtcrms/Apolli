@@ -112,7 +112,6 @@ application_module.controller("AppConfigController",
                                    ////// global view oper //////
 
                                    $scope.switchView = function (namespace, viewType) {
-
                                        if (namespace_view_type.TEXT == viewType) {
                                            namespace.text = parseModel2Text(namespace);
                                        } else if (namespace_view_type.TABLE == viewType) {
@@ -169,12 +168,6 @@ application_module.controller("AppConfigController",
                                        );
                                    };
 
-                                   $scope.isItemsViewOpened = true;
-                                   $scope.toggleItemView = function (isOpened) {
-
-                                       $scope.isItemsViewOpened = isOpened;
-
-                                   };
 
                                    //文本编辑框状态切换
                                    $scope.toggleTextEditStatus = function (namespace) {
