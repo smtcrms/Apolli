@@ -241,8 +241,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     ContextHandler pollHandler =
         mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
-            new ApolloConfigNotification(apolloConfig.getAppId(), apolloConfig.getCluster(),
-                apolloConfig.getNamespace()), false);
+            new ApolloConfigNotification(apolloConfig.getNamespace()), false);
 
     startServerWithHandlers(configHandler, pollHandler);
 

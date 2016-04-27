@@ -1,5 +1,28 @@
 package com.ctrip.apollo.configservice.controller;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import com.ctrip.apollo.biz.entity.AppNamespace;
+import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.service.AppNamespaceService;
+import com.ctrip.apollo.biz.service.ConfigService;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.ApolloConfig;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
@@ -9,25 +32,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.service.ConfigService;
-import com.ctrip.apollo.core.dto.ApolloConfig;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -36,26 +40,34 @@ public class ConfigControllerTest {
   private ConfigController configController;
   @Mock
   private ConfigService configService;
+  @Mock
+  private AppNamespaceService appNamespaceService;
   private String someAppId;
   private String someClusterName;
-  private String someNamespaceName;
+  private String defaultNamespaceName;
+  private String somePublicNamespaceName;
   private String someDataCenter;
-  private String someValidConfiguration;
   @Mock
   private Release someRelease;
+  @Mock
+  private Release somePublicRelease;
 
   @Before
   public void setUp() throws Exception {
     configController = new ConfigController();
     ReflectionTestUtils.setField(configController, "configService", configService);
+    ReflectionTestUtils.setField(configController, "appNamespaceService", appNamespaceService);
 
     someAppId = "1";
     someClusterName = "someClusterName";
-    someNamespaceName = "someNamespaceName";
+    defaultNamespaceName = ConfigConsts.NAMESPACE_DEFAULT;
+    somePublicNamespaceName = "somePublicNamespace";
     someDataCenter = "someDC";
-    someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
+    String someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
+    String somePublicConfiguration = "{\"apollo.public.bar\": \"foo\"}";
 
     when(someRelease.getConfigurations()).thenReturn(someValidConfiguration);
+    when(somePublicRelease.getConfigurations()).thenReturn(somePublicConfiguration);
   }
 
   @Test
@@ -64,17 +76,18 @@ public class ConfigControllerTest {
     long someServerSideNewReleaseId = 2;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
 
-    when(configService.findRelease(someAppId, someClusterName, someNamespaceName))
+    when(configService.findRelease(someAppId, someClusterName, defaultNamespaceName))
         .thenReturn(someRelease);
     when(someRelease.getId()).thenReturn(someServerSideNewReleaseId);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
-        someNamespaceName, someDataCenter, String.valueOf(someClientSideReleaseId), someResponse);
+        defaultNamespaceName, someDataCenter, String.valueOf(someClientSideReleaseId),
+        someResponse);
 
-    verify(configService, times(1)).findRelease(someAppId, someClusterName, someNamespaceName);
+    verify(configService, times(1)).findRelease(someAppId, someClusterName, defaultNamespaceName);
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(someNamespaceName, result.getNamespace());
+    assertEquals(defaultNamespaceName, result.getNamespace());
     assertEquals(String.valueOf(someServerSideNewReleaseId), result.getReleaseId());
   }
 
@@ -84,10 +97,12 @@ public class ConfigControllerTest {
     long someClientSideReleaseId = 1;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
 
-    when(configService.findRelease(someAppId, someClusterName, someNamespaceName)).thenReturn(null);
+    when(configService.findRelease(someAppId, someClusterName, defaultNamespaceName))
+        .thenReturn(null);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
-        someNamespaceName, someDataCenter, String.valueOf(someClientSideReleaseId), someResponse);
+        defaultNamespaceName, someDataCenter, String.valueOf(someClientSideReleaseId),
+        someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
@@ -99,17 +114,142 @@ public class ConfigControllerTest {
     long someServerSideReleaseId = someClientSideReleaseId;
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
 
-    when(configService.findRelease(someAppId, someClusterName, someNamespaceName))
+    when(configService.findRelease(someAppId, someClusterName, defaultNamespaceName))
         .thenReturn(someRelease);
     when(someRelease.getId()).thenReturn(someServerSideReleaseId);
 
     ApolloConfig
         result =
-        configController.queryConfig(someAppId, someClusterName, someNamespaceName,
+        configController.queryConfig(someAppId, someClusterName, defaultNamespaceName,
             someDataCenter, String.valueOf(someClientSideReleaseId), someResponse);
 
     assertNull(result);
     verify(someResponse, times(1)).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+  }
+
+  @Test
+  public void testQueryConfigWithAppOwnNamespace() throws Exception {
+    String someClientSideReleaseId = "1";
+    String someServerSideReleaseId = "2";
+    String someAppOwnNamespaceName = "someAppOwn";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    AppNamespace someAppOwnNamespace =
+        assmbleAppNamespace(someAppId, someAppOwnNamespaceName);
+
+    when(configService.findRelease(someAppId, someClusterName, someAppOwnNamespaceName))
+        .thenReturn(someRelease);
+    when(appNamespaceService.findByNamespaceName(someAppOwnNamespaceName))
+        .thenReturn(someAppOwnNamespace);
+    when(someRelease.getId()).thenReturn(Long.valueOf(someServerSideReleaseId));
+
+    ApolloConfig result =
+        configController
+            .queryConfig(someAppId, someClusterName, someAppOwnNamespaceName, someDataCenter,
+                someClientSideReleaseId, someResponse);
+
+    assertEquals(someServerSideReleaseId, result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(someAppOwnNamespaceName, result.getNamespace());
+    assertEquals("foo", result.getConfigurations().get("apollo.bar"));
+  }
+
+  @Test
+  public void testQueryConfigWithPubicNamespaceAndNoAppOverride() throws Exception {
+    String someClientSideReleaseId = "1";
+    String someServerSideReleaseId = "2";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assmbleAppNamespace(somePublicAppId, somePublicNamespaceName);
+
+    when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
+        .thenReturn(null);
+    when(appNamespaceService.findByNamespaceName(somePublicNamespaceName))
+        .thenReturn(somePublicAppNamespace);
+    when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
+        .thenReturn(somePublicRelease);
+    when(somePublicRelease.getId()).thenReturn(Long.valueOf(someServerSideReleaseId));
+
+    ApolloConfig result =
+        configController
+            .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
+                someClientSideReleaseId, someResponse);
+
+    assertEquals(someServerSideReleaseId, result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals("foo", result.getConfigurations().get("apollo.public.bar"));
+  }
+
+  @Test
+  public void testQueryConfigWithPublicNamespaceAndNoAppOverrideAndNoDataCenter() throws Exception {
+    String someClientSideReleaseId = "1";
+    String someServerSideReleaseId = "2";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assmbleAppNamespace(somePublicAppId, somePublicNamespaceName);
+
+    when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
+        .thenReturn(null);
+    when(appNamespaceService.findByNamespaceName(somePublicNamespaceName))
+        .thenReturn(somePublicAppNamespace);
+    when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
+        .thenReturn(null);
+    when(configService
+        .findRelease(somePublicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespaceName))
+        .thenReturn(somePublicRelease);
+    when(somePublicRelease.getId()).thenReturn(Long.valueOf(someServerSideReleaseId));
+
+    ApolloConfig result =
+        configController
+            .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
+                someClientSideReleaseId, someResponse);
+
+    assertEquals(someServerSideReleaseId, result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals("foo", result.getConfigurations().get("apollo.public.bar"));
+  }
+
+  @Test
+  public void testQueryConfigWithPublicNamespaceAndAppOverride() throws Exception {
+    String someAppSideReleaseId = "1";
+    String somePublicAppSideReleaseId = "2";
+
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assmbleAppNamespace(somePublicAppId, somePublicNamespaceName);
+
+    when(someRelease.getConfigurations()).thenReturn("{\"apollo.public.foo\": \"foo-override\"}");
+    when(somePublicRelease.getConfigurations())
+        .thenReturn("{\"apollo.public.foo\": \"foo\", \"apollo.public.bar\": \"bar\"}");
+
+    when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
+        .thenReturn(someRelease);
+    when(someRelease.getId()).thenReturn(Long.valueOf(someAppSideReleaseId));
+    when(appNamespaceService.findByNamespaceName(somePublicNamespaceName))
+        .thenReturn(somePublicAppNamespace);
+    when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
+        .thenReturn(somePublicRelease);
+    when(somePublicRelease.getId()).thenReturn(Long.valueOf(somePublicAppSideReleaseId));
+
+    ApolloConfig result =
+        configController
+            .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
+                someAppSideReleaseId, someResponse);
+
+    assertEquals(String.format("%s|%s", someAppSideReleaseId, somePublicAppSideReleaseId),
+        result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals("foo-override", result.getConfigurations().get("apollo.public.foo"));
+    assertEquals("bar", result.getConfigurations().get("apollo.public.bar"));
   }
 
   @Test
@@ -147,5 +287,12 @@ public class ConfigControllerTest {
     someRelease.setConfigurations(someInvalidConfiguration);
 
     configController.mergeReleaseConfigurations(Lists.newArrayList(someRelease));
+  }
+
+  private AppNamespace assmbleAppNamespace(String appId, String namespace) {
+    AppNamespace appNamespace = new AppNamespace();
+    appNamespace.setAppId(appId);
+    appNamespace.setName(namespace);
+    return appNamespace;
   }
 }

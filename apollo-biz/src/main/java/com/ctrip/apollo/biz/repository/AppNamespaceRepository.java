@@ -8,4 +8,6 @@ public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNa
 
   AppNamespace findByAppIdAndName(String appId, String namespaceName);
 
+  AppNamespace findByName(String namespaceName);
+
 }

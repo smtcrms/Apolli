@@ -186,6 +186,11 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     public String getCluster() {
       return "someCluster";
     }
+
+    @Override
+    public String getDataCenter() {
+      return null;
+    }
   }
 
   public static class MockConfigServiceLocator extends ConfigServiceLocator {
