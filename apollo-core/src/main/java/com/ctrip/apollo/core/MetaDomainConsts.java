@@ -13,16 +13,17 @@ import com.ctrip.apollo.core.utils.ResourceUtils;
  * 
  * Currently, apollo supports local/dev/fat/uat/lpt/pro environments.
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MetaDomainConsts {
 
-  private static Map<Env, String> domains = new HashMap<>();
+  private static Map<Env, Object> domains = new HashMap<>();
 
   public static final String DEFAULT_META_URL = "http://localhost:8080";
 
   static {
     Properties prop = new Properties();
     prop = ResourceUtils.readConfigFile("apollo-env.properties", prop);
-    Map<String, String> env = System.getenv();
+    Map env = System.getProperties();
     domains.put(Env.LOCAL,
         env.getOrDefault("local_meta", prop.getProperty("local.meta", DEFAULT_META_URL)));
     domains.put(Env.DEV,
@@ -38,6 +39,6 @@ public class MetaDomainConsts {
   }
 
   public static String getDomain(Env env) {
-    return domains.get(env);
+    return String.valueOf(domains.get(env));
   }
 }
