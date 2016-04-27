@@ -13,7 +13,6 @@ import com.ctrip.apollo.core.utils.ResourceUtils;
  * 
  * Currently, apollo supports local/dev/fat/uat/lpt/pro environments.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class MetaDomainConsts {
 
   private static Map<Env, Object> domains = new HashMap<>();
@@ -23,19 +22,19 @@ public class MetaDomainConsts {
   static {
     Properties prop = new Properties();
     prop = ResourceUtils.readConfigFile("apollo-env.properties", prop);
-    Map env = System.getProperties();
+    Properties env = System.getProperties();
     domains.put(Env.LOCAL,
-        env.getOrDefault("local_meta", prop.getProperty("local.meta", DEFAULT_META_URL)));
+        env.getProperty("local_meta", prop.getProperty("local.meta", DEFAULT_META_URL)));
     domains.put(Env.DEV,
-        env.getOrDefault("dev_meta", prop.getProperty("dev.meta", DEFAULT_META_URL)));
+        env.getProperty("dev_meta", prop.getProperty("dev.meta", DEFAULT_META_URL)));
     domains.put(Env.FAT,
-        env.getOrDefault("fat_meta", prop.getProperty("fat.meta", DEFAULT_META_URL)));
+        env.getProperty("fat_meta", prop.getProperty("fat.meta", DEFAULT_META_URL)));
     domains.put(Env.UAT,
-        env.getOrDefault("uat_meta", prop.getProperty("uat.meta", DEFAULT_META_URL)));
+        env.getProperty("uat_meta", prop.getProperty("uat.meta", DEFAULT_META_URL)));
     domains.put(Env.LPT,
-        env.getOrDefault("lpt_meta", prop.getProperty("lpt.meta", DEFAULT_META_URL)));
+        env.getProperty("lpt_meta", prop.getProperty("lpt.meta", DEFAULT_META_URL)));
     domains.put(Env.PRO,
-        env.getOrDefault("pro_meta", prop.getProperty("pro.meta", DEFAULT_META_URL)));
+        env.getProperty("pro_meta", prop.getProperty("pro.meta", DEFAULT_META_URL)));
   }
 
   public static String getDomain(Env env) {
