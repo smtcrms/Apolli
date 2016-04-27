@@ -11,6 +11,6 @@ public class MetaDomainTest {
   public void testGetMetaDomain() {
     Assert.assertEquals("http://localhost:8080", MetaDomainConsts.getDomain(Env.LOCAL));
     Assert.assertEquals("http://dev:8080", MetaDomainConsts.getDomain(Env.DEV));
-    Assert.assertNull(MetaDomainConsts.getDomain(Env.PRO));
+    Assert.assertEquals(MetaDomainConsts.DEFAULT_META_URL, MetaDomainConsts.getDomain(Env.PRO));
   }
 }

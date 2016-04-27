@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: apollo-portal
-
+  profiles:
+    active: ctrip
+    
 logging:
   level:
     org.springframework.cloud: 'DEBUG'

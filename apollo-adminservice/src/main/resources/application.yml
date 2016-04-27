@@ -1,7 +1,9 @@
 spring:
   application:
     name: apollo-adminservice
-    
+  profiles:
+    active: ctrip
+        
 server:
   port: ${port:8090}
   
