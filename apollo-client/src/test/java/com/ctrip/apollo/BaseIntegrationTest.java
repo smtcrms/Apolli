@@ -42,6 +42,7 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
   private static final String configServiceURL = "http://localhost:" + PORT;
   protected static String someAppId;
   protected static String someClusterName;
+  protected static String someDataCenter;
   protected static int refreshInterval;
   protected static TimeUnit refreshTimeUnit;
   private Server server;
@@ -59,6 +60,7 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     super.setUp();
     someAppId = "1003171";
     someClusterName = "someClusterName";
+    someDataCenter = "someDC";
     refreshInterval = 5;
     refreshTimeUnit = TimeUnit.MINUTES;
 
@@ -159,6 +161,11 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     @Override
     public Env getApolloEnv() {
       return Env.LOCAL;
+    }
+
+    @Override
+    public String getDataCenter() {
+      return someDataCenter;
     }
   }
 

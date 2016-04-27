@@ -1,5 +1,7 @@
 package com.ctrip.apollo.biz.service;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,11 @@ public class AppNamespaceService {
     Objects.requireNonNull(appId, "AppId must not be null");
     Objects.requireNonNull(namespaceName, "Namespace must not be null");
     return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
+  }
+
+  public AppNamespace findByNamespaceName(String namespaceName) {
+    Preconditions.checkArgument(namespaceName != null, "Namespace must not be null");
+    return appNamespaceRepository.findByName(namespaceName);
   }
 
   @Transactional

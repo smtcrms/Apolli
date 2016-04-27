@@ -19,12 +19,18 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   private String someAppId;
   private String someCluster;
   private String someNamespace;
+  private String somePublicNamespace;
+  private String someDC;
+  private String someDefaultCluster;
 
   @Before
   public void setUp() throws Exception {
     someAppId = "someAppId";
     someCluster = "someCluster";
     someNamespace = "someNamespace";
+    somePublicNamespace = "somePublicNamespace";
+    someDC = "someDC";
+    someDefaultCluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
   }
 
   @Test
@@ -83,4 +89,74 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
   }
 
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigWithDataCenterFoundAndNoOverride() throws Exception {
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+            getHostUrl(), someAppId, someCluster, somePublicNamespace, someDC);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("993", result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someCluster, result.getCluster());
+    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals("someDC-v1", result.getConfigurations().get("k1"));
+    assertEquals("someDC-v2", result.getConfigurations().get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigWithDataCenterFoundAndOverride() throws Exception {
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+            getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDC);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("994|993", result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someDefaultCluster, result.getCluster());
+    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals("override-v1", result.getConfigurations().get("k1"));
+    assertEquals("someDC-v2", result.getConfigurations().get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigWithDataCenterNotFoundAndNoOverride() throws Exception {
+    String someDCNotFound = "someDCNotFound";
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+            getHostUrl(), someAppId, someCluster, somePublicNamespace, someDCNotFound);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("992", result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someCluster, result.getCluster());
+    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals("default-v1", result.getConfigurations().get("k1"));
+    assertEquals("default-v2", result.getConfigurations().get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigWithDataCenterNotFoundAndOverride() throws Exception {
+    String someDCNotFound = "someDCNotFound";
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+            getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDCNotFound);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("994|992", result.getReleaseId());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someDefaultCluster, result.getCluster());
+    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals("override-v1", result.getConfigurations().get("k1"));
+    assertEquals("default-v2", result.getConfigurations().get("k2"));
+
+  }
 }

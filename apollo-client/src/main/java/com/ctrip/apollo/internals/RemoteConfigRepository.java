@@ -134,6 +134,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private ApolloConfig loadApolloConfig() {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
+    String dataCenter = m_configUtil.getDataCenter();
     Cat.logEvent("Apollo.Client.ConfigInfo",
         String.format("%s-%s-%s", appId, cluster, m_namespace));
     int maxRetries = 2;
@@ -147,7 +148,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       for (ServiceDTO configService : randomConfigServices) {
         String url =
             assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
-                m_configCache.get());
+                dataCenter, m_configCache.get());
 
         logger.debug("Loading config from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -191,21 +192,30 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
-                                        ApolloConfig previousConfig) {
+                                        String dataCenter, ApolloConfig previousConfig) {
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     String path = "configs/%s/%s";
-    List<String> params = Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster));
+    List<String> pathParams = Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster));
+    Map<String, String> queryParams = Maps.newHashMap();
 
     if (!Strings.isNullOrEmpty(namespace)) {
       path = path + "/%s";
-      params.add(escaper.escape(namespace));
-    }
-    if (previousConfig != null) {
-      path = path + "?releaseId=%s";
-      params.add(escaper.escape(String.valueOf(previousConfig.getReleaseId())));
+      pathParams.add(escaper.escape(namespace));
     }
 
-    String pathExpanded = String.format(path, params.toArray());
+    if (previousConfig != null) {
+      queryParams.put("releaseId", escaper.escape(String.valueOf(previousConfig.getReleaseId())));
+    }
+
+    if (!Strings.isNullOrEmpty(dataCenter)) {
+      queryParams.put("dataCenter", escaper.escape(dataCenter));
+    }
+
+    String pathExpanded = String.format(path, pathParams.toArray());
+
+    if (!queryParams.isEmpty()) {
+      pathExpanded += "?" + Joiner.on("&").withKeyValueSeparator("=").join(queryParams);
+    }
     if (!uri.endsWith("/")) {
       uri += "/";
     }
@@ -215,18 +225,19 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private void scheduleLongPollingRefresh() {
     final String appId = m_configUtil.getAppId();
     final String cluster = m_configUtil.getCluster();
+    final String dataCenter = m_configUtil.getDataCenter();
     final ExecutorService longPollingService =
         Executors.newFixedThreadPool(2,
             ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
     longPollingService.submit(new Runnable() {
       @Override
       public void run() {
-        doLongPollingRefresh(appId, cluster, longPollingService);
+        doLongPollingRefresh(appId, cluster, dataCenter, longPollingService);
       }
     });
   }
 
-  private void doLongPollingRefresh(String appId, String cluster,
+  private void doLongPollingRefresh(String appId, String cluster, String dataCenter,
                                     ExecutorService longPollingService) {
     final Random random = new Random();
     ServiceDTO lastServiceDto = null;
@@ -240,7 +251,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         String url =
             assembleLongPollRefreshUrl(lastServiceDto.getHomepageUrl(), appId, cluster,
-                m_namespace, m_configCache.get());
+                m_namespace, dataCenter, m_configCache.get());
 
         logger.debug("Long polling from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -286,7 +297,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
-                                            String namespace,
+                                            String namespace, String dataCenter,
                                             ApolloConfig previousConfig) {
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
@@ -295,6 +306,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     if (!Strings.isNullOrEmpty(namespace)) {
       queryParams.put("namespace", escaper.escape(namespace));
+    }
+    if (!Strings.isNullOrEmpty(dataCenter)) {
+      queryParams.put("dataCenter", escaper.escape(dataCenter));
     }
     if (previousConfig != null) {
       queryParams.put("releaseId", escaper.escape(previousConfig.getReleaseId()));

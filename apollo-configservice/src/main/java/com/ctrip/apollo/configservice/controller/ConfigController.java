@@ -8,7 +8,9 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import com.ctrip.apollo.biz.entity.AppNamespace;
 import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.service.AppNamespaceService;
 import com.ctrip.apollo.biz.service.ConfigService;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
@@ -37,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 public class ConfigController {
   @Autowired
   private ConfigService configService;
+  @Autowired
+  private AppNamespaceService appNamespaceService;
 
   private Gson gson = new Gson();
   private Type configurationTypeReference =
@@ -45,17 +49,17 @@ public class ConfigController {
 
   @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
-                                  @RequestParam(value = "datacenter", required = false) String datacenter,
+                                  @RequestParam(value = "dataCenter", required = false) String dataCenter,
                                   @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
-    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_DEFAULT, datacenter,
+    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_DEFAULT, dataCenter,
         clientSideReleaseId, response);
   }
 
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
-                                  @RequestParam(value = "datacenter", required = false) String datacenter,
+                                  @RequestParam(value = "dataCenter", required = false) String dataCenter,
                                   @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
                                   HttpServletResponse response) throws IOException {
     List<Release> releases = Lists.newLinkedList();
@@ -66,13 +70,12 @@ public class ConfigController {
       releases.add(currentAppRelease);
     }
 
-    //if namespace is not appId itself, should check if it has its own configurations
+    //if namespace is not 'application', should check if it's a public configuration
     if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
-      //TODO find id for this particular namespace, if not equal to current app id, then do more
-      if (!Objects.isNull(datacenter)) {
-        //TODO load newAppId+datacenter+namespace configurations
+      Release publicRelease = this.findPublicConfig(appId, namespace, dataCenter);
+      if (!Objects.isNull(publicRelease)) {
+        releases.add(publicRelease);
       }
-      //TODO if load from DC failed, then load newAppId+defaultCluster+namespace configurations
     }
 
     if (releases.isEmpty()) {
@@ -81,7 +84,7 @@ public class ConfigController {
               "Could not load configurations with appId: %s, clusterName: %s, namespace: %s",
               appId, clusterName, namespace));
       Cat.logEvent("Apollo.Config.NotFound",
-          assembleKey(appId, clusterName, namespace, datacenter));
+          assembleKey(appId, clusterName, namespace, dataCenter));
       return null;
     }
 
@@ -92,15 +95,44 @@ public class ConfigController {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       Cat.logEvent("Apollo.Config.NotModified",
-          assembleKey(appId, clusterName, namespace, datacenter));
+          assembleKey(appId, clusterName, namespace, dataCenter));
       return null;
     }
 
     ApolloConfig apolloConfig = new ApolloConfig(appId, clusterName, namespace, mergedReleaseId);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
-    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, clusterName, namespace, datacenter));
+    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, clusterName, namespace, dataCenter));
     return apolloConfig;
+  }
+
+  /**
+   * @param applicationId the application which uses public config
+   * @param namespace     the namespace
+   * @param dataCenter    the datacenter
+   */
+  private Release findPublicConfig(String applicationId, String namespace, String dataCenter) {
+    AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
+
+    //check whether the namespace's appId equals to current one
+    if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
+      return null;
+    }
+
+    String publicConfigAppId = appNamespace.getAppId();
+
+    //try to load via data center
+    if (!Objects.isNull(dataCenter)) {
+      Release dataCenterRelease =
+          configService.findRelease(publicConfigAppId, dataCenter, namespace);
+      if (!Objects.isNull(dataCenterRelease)) {
+        return dataCenterRelease;
+      }
+    }
+
+    //fallback to default release
+    return configService
+        .findRelease(publicConfigAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace);
   }
 
   /**

@@ -18,8 +18,8 @@ public class ConfigChangeEvent {
    */
   public ConfigChangeEvent(String namespace,
                            Map<String, ConfigChange> changes) {
-    this.m_namespace = namespace;
-    this.m_changes = changes;
+    m_namespace = namespace;
+    m_changes = changes;
   }
 
   /**

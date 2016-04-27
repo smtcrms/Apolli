@@ -35,6 +35,14 @@ public class ConfigUtil {
   }
 
   /**
+   * Get the data center info for the current application.
+   * @return the current data center, null if there is no such info.
+   */
+  public String getDataCenter() {
+    return Foundation.server().getDataCenter();
+  }
+
+  /**
    * Get the cluster name for the current application.
    * @return the cluster name, or "default" if not specified
    */
