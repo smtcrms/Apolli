@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import com.ctrip.apollo.core.exception.AbstractBaseException;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.NotFoundException;
+import com.dianping.cat.Cat;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,6 +54,8 @@ public class GlobalDefaultExceptionHandler {
       return restTemplateException(request, (HttpStatusCodeException) ex.getCause());
     }
 
+    Cat.logError(ex);
+    
     Map<String, Object> errorAttributes = new LinkedHashMap<>();
     errorAttributes.put("status", status.value());
     errorAttributes.put("message", message);
