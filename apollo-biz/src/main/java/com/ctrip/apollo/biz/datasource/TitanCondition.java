@@ -10,7 +10,11 @@ public class TitanCondition implements Condition {
 
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-    if (!StringUtils.isEmpty(context.getEnvironment().getProperty("titan.url"))) {
+    if (!StringUtils.isEmpty(context.getEnvironment().getProperty("fat.titan.url"))) {
+      return true;
+    } else if (!StringUtils.isEmpty(context.getEnvironment().getProperty("uat.titan.url"))) {
+      return true;
+    } else if (!StringUtils.isEmpty(context.getEnvironment().getProperty("pro.titan.url"))) {
       return true;
     }
     return false;

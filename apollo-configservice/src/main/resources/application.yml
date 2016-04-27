@@ -1,6 +1,8 @@
 spring:
   application:
     name: apollo-configservice
+  profiles:
+    active: ctrip
 
 server:
   port: ${port:8080}

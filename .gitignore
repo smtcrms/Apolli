@@ -24,7 +24,4 @@ target
 # git
 *.orig
 
-dev
-fat
-uat
-prd
+application-dev.properties

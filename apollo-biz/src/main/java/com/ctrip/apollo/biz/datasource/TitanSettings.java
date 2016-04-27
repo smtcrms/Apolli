@@ -3,28 +3,61 @@ package com.ctrip.apollo.biz.datasource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.ctrip.apollo.core.enums.Env;
+import com.ctrip.apollo.core.enums.EnvUtils;
+import com.ctrip.framework.foundation.Foundation;
+
 @Component
 public class TitanSettings {
 
-  @Value("${titan.url:}")
-  private String titanUrl;
+  @Value("${fat.titan.url:}")
+  private String fatTitanUrl;
 
-  @Value("${titan.dbname:}")
-  private String titanDbname;
+  @Value("${uat.titan.url:}")
+  private String uatTitanUrl;
+
+  @Value("${pro.titan.url:}")
+  private String proTitanUrl;
+
+  @Value("${fat.titan.dbname:}")
+  private String fatTitanDbname;
+
+  @Value("${uat.titan.dbname:}")
+  private String uatTitanDbname;
+
+  @Value("${pro.titan.dbname:}")
+  private String proTitanDbname;
 
   public String getTitanUrl() {
-    return titanUrl;
-  }
-
-  public void setTitanUrl(String titanUrl) {
-    this.titanUrl = titanUrl;
+    Env env = EnvUtils.transformEnv(Foundation.server().getEnvType());
+    switch (env) {
+      case FAT:
+      case FWS:
+        return fatTitanUrl;
+      case UAT:
+        return uatTitanUrl;
+      case TOOLS:
+      case PRO:
+        return proTitanUrl;
+      default:
+        return "";
+    }
   }
 
   public String getTitanDbname() {
-    return titanDbname;
+    Env env = EnvUtils.transformEnv(Foundation.server().getEnvType());
+    switch (env) {
+      case FAT:
+      case FWS:
+        return fatTitanDbname;
+      case UAT:
+        return uatTitanDbname;
+      case TOOLS:
+      case PRO:
+        return proTitanDbname;
+      default:
+        return "";
+    }
   }
 
-  public void setTitanDbname(String titanDbname) {
-    this.titanDbname = titanDbname;
-  }
 }
