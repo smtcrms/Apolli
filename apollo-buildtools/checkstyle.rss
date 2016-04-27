@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 0,
+      <title>File: 5,
              Errors: 0,
-             Warnings: 0,
+             Warnings: 21,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html</link>
@@ -44,6 +44,76 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html#com.ctrip.apollo.cat.NullMessageProducer.java">com/ctrip/apollo/cat/NullMessageProducer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html#com.ctrip.apollo.cat.NullClientConfigManager.java">com/ctrip/apollo/cat/NullClientConfigManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html#com.ctrip.apollo.cat.NullLoggerManager.java">com/ctrip/apollo/cat/NullLoggerManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html#com.ctrip.apollo.cat.NullMessageManager.java">com/ctrip/apollo/cat/NullMessageManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  13
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-buildtools/checkstyle.html#com.ctrip.apollo.cat.NullTransportManager.java">com/ctrip/apollo/cat/NullTransportManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                       </tbody>
         </table>
         
