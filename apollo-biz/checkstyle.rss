@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 41,
+      <title>File: 43,
              Errors: 0,
-             Warnings: 162,
+             Warnings: 168,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html</link>
@@ -116,6 +116,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.message.ReleaseMessageScanner.java">com/ctrip/apollo/biz/message/ReleaseMessageScanner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.service.NamespaceService.java">com/ctrip/apollo/biz/service/NamespaceService.java</a>
                 </td>
                 <td>
@@ -158,6 +172,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.repository.ReleaseMessageRepository.java">com/ctrip/apollo/biz/repository/ReleaseMessageRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.service.ItemService.java">com/ctrip/apollo/biz/service/ItemService.java</a>
                 </td>
                 <td>
@@ -179,6 +207,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.message.DatabaseMessageSender.java">com/ctrip/apollo/biz/message/DatabaseMessageSender.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -327,20 +369,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.service.CommitService.java">com/ctrip/apollo/biz/service/CommitService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.message.DummyMessageSender.java">com/ctrip/apollo/biz/message/DummyMessageSender.java</a>
                 </td>
                 <td>
                   0
@@ -592,7 +620,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.message.RedisMessageSender.java">com/ctrip/apollo/biz/message/RedisMessageSender.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.entity.ReleaseMessage.java">com/ctrip/apollo/biz/entity/ReleaseMessage.java</a>
                 </td>
                 <td>
                   0
