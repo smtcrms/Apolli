@@ -24,5 +24,3 @@ target
 
 # git
 *.orig
-
-application-dev.properties
