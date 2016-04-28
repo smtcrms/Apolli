@@ -1,5 +1,6 @@
 package com.ctrip.apollo.biz;
 
+import com.ctrip.apollo.biz.message.DatabaseMessageSenderTest;
 import com.ctrip.apollo.biz.repository.AppRepositoryTest;
 import com.ctrip.apollo.biz.service.AdminServiceTest;
 import com.ctrip.apollo.biz.service.AdminServiceTransactionTest;
@@ -16,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
     AdminServiceTest.class,
     ConfigServiceTest.class,
     PrivilegeServiceTest.class,
-    AdminServiceTransactionTest.class})
+    AdminServiceTransactionTest.class,
+    DatabaseMessageSenderTest.class})
 public class AllTests {
 
 }

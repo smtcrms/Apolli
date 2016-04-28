@@ -1,7 +1,9 @@
 package com.ctrip.apollo.internals;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.util.ConfigUtil;
 import com.ctrip.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
@@ -202,8 +204,10 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
   }
 
   File assembleLocalCacheFile(File baseDir, String namespace) {
-    String fileName = String.format("%s-%s-%s.properties", m_configUtil.getAppId(),
-        m_configUtil.getCluster(), namespace);
+
+    String fileName =
+        String.format("%s.properties", Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+            .join(m_configUtil.getAppId(), m_configUtil.getCluster(), namespace));
     return new File(baseDir, fileName);
   }
 }

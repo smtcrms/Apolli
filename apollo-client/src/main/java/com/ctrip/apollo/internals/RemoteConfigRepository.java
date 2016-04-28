@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
@@ -43,6 +44,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class RemoteConfigRepository extends AbstractConfigRepository {
   private static final Logger logger = LoggerFactory.getLogger(RemoteConfigRepository.class);
+  private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
+  private static final Joiner.MapJoiner MAP_JOINER = Joiner.on("&").withKeyValueSeparator("=");
   private PlexusContainer m_container;
   private final ConfigServiceLocator m_serviceLocator;
   private final HttpUtil m_httpUtil;
@@ -135,8 +138,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
     String dataCenter = m_configUtil.getDataCenter();
-    Cat.logEvent("Apollo.Client.ConfigInfo",
-        String.format("%s-%s-%s", appId, cluster, m_namespace));
+    Cat.logEvent("Apollo.Client.ConfigInfo", STRING_JOINER.join(appId, cluster, m_namespace));
     int maxRetries = 2;
     Throwable exception = null;
 
@@ -214,7 +216,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     String pathExpanded = String.format(path, pathParams.toArray());
 
     if (!queryParams.isEmpty()) {
-      pathExpanded += "?" + Joiner.on("&").withKeyValueSeparator("=").join(queryParams);
+      pathExpanded += "?" + MAP_JOINER.join(queryParams);
     }
     if (!uri.endsWith("/")) {
       uri += "/";
@@ -276,7 +278,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);
       } catch (Throwable ex) {
-        logger.warn("Long polling failed for appId: {}, cluster: {}, namespace: {}, reason: {}",
+        logger.warn("Long polling failed, will retry. appId: {}, cluster: {}, namespace: {}, reason: {}",
             appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
         lastServiceDto = null;
         Cat.logError(ex);
@@ -284,7 +286,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
           transaction.setStatus(ex);
         }
         try {
-          TimeUnit.SECONDS.sleep(10);
+          TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException ie) {
           //ignore
         }
@@ -314,7 +316,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       queryParams.put("releaseId", escaper.escape(previousConfig.getReleaseId()));
     }
 
-    String params = Joiner.on("&").withKeyValueSeparator("=").join(queryParams);
+    String params = MAP_JOINER.join(queryParams);
     if (!uri.endsWith("/")) {
       uri += "/";
     }

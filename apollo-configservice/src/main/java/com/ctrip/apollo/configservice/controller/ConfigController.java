@@ -42,10 +42,11 @@ public class ConfigController {
   @Autowired
   private AppNamespaceService appNamespaceService;
 
-  private Gson gson = new Gson();
-  private Type configurationTypeReference =
+  private static final Gson gson = new Gson();
+  private static final Type configurationTypeReference =
       new TypeToken<Map<java.lang.String, java.lang.String>>() {
       }.getType();
+  private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
 
   @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
@@ -89,7 +90,7 @@ public class ConfigController {
     }
 
     String mergedReleaseId = FluentIterable.from(releases).transform(
-        input -> String.valueOf(input.getId())).join(Joiner.on("|"));
+        input -> String.valueOf(input.getId())).join(STRING_JOINER);
 
     if (mergedReleaseId.equals(clientSideReleaseId)) {
       // Client side configuration is the same with server side, return 304
@@ -148,11 +149,11 @@ public class ConfigController {
   }
 
   private String assembleKey(String appId, String cluster, String namespace, String datacenter) {
-    String key = String.format("%s-%s-%s", appId, cluster, namespace);
+    List<String> keyParts = Lists.newArrayList(appId, cluster, namespace);
     if (!Strings.isNullOrEmpty(datacenter)) {
-      key += "-" + datacenter;
+      keyParts.add(datacenter);
     }
-    return key;
+    return STRING_JOINER.join(keyParts);
   }
 
 }

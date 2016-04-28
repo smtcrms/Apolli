@@ -1,5 +1,6 @@
 package com.ctrip.apollo.configservice.controller;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -243,7 +244,8 @@ public class ConfigControllerTest {
             .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
                 someAppSideReleaseId, someResponse);
 
-    assertEquals(String.format("%s|%s", someAppSideReleaseId, somePublicAppSideReleaseId),
+    assertEquals(Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+            .join(someAppSideReleaseId, somePublicAppSideReleaseId),
         result.getReleaseId());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());

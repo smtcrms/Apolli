@@ -1,7 +1,20 @@
 package com.ctrip.apollo.adminservice.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.base.Joiner;
+import com.google.gson.Gson;
+
+import com.ctrip.apollo.biz.entity.Namespace;
+import com.ctrip.apollo.biz.message.MessageSender;
+import com.ctrip.apollo.biz.message.Topics;
+import com.ctrip.apollo.biz.repository.ReleaseRepository;
+import com.ctrip.apollo.biz.service.NamespaceService;
+import com.ctrip.apollo.biz.service.ReleaseService;
+import com.ctrip.apollo.core.ConfigConsts;
+import com.ctrip.apollo.core.dto.AppDTO;
+import com.ctrip.apollo.core.dto.ClusterDTO;
+import com.ctrip.apollo.core.dto.ItemDTO;
+import com.ctrip.apollo.core.dto.NamespaceDTO;
+import com.ctrip.apollo.core.dto.ReleaseDTO;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,18 +29,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.ctrip.apollo.biz.entity.Namespace;
-import com.ctrip.apollo.biz.message.MessageSender;
-import com.ctrip.apollo.biz.message.Topics;
-import com.ctrip.apollo.biz.repository.ReleaseRepository;
-import com.ctrip.apollo.biz.service.NamespaceService;
-import com.ctrip.apollo.biz.service.ReleaseService;
-import com.ctrip.apollo.core.dto.AppDTO;
-import com.ctrip.apollo.core.dto.ClusterDTO;
-import com.ctrip.apollo.core.dto.ItemDTO;
-import com.ctrip.apollo.core.dto.NamespaceDTO;
-import com.ctrip.apollo.core.dto.ReleaseDTO;
-import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -119,7 +122,8 @@ public class ReleaseControllerTest extends AbstractControllerTest {
         .buildRelease(someAppId, someCluster, someNamespaceName, someName, someComment, someUser);
 
     verify(someMessageSender, times(1))
-        .sendMessage(String.format("%s-%s-%s", someAppId, someCluster, someNamespaceName),
+        .sendMessage(Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+                .join(someAppId, someCluster, someNamespaceName),
             Topics.APOLLO_RELEASE_TOPIC);
 
   }
