@@ -1,6 +1,9 @@
 package com.ctrip.apollo.configservice.integration;
 
-import com.ctrip.apollo.biz.message.Topics;
+import com.google.common.base.Joiner;
+
+import com.ctrip.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.apollo.biz.repository.ReleaseMessageRepository;
 import com.ctrip.apollo.configservice.controller.NotificationController;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
@@ -14,7 +17,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,6 +28,8 @@ import static org.junit.Assert.assertEquals;
 public class NotificationControllerIntegrationTest extends AbstractBaseIntegrationTest {
   @Autowired
   private NotificationController notificationController;
+  @Autowired
+  private ReleaseMessageRepository releaseMessageRepository;
   private String someAppId;
   private String someCluster;
   private String defaultNamespace;
@@ -43,20 +47,16 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
 
   @Test
   public void testPollNotificationWithDefaultNamespace() throws Exception {
-    Future<ResponseEntity<ApolloConfigNotification>> future =
-        executorService.submit(() -> restTemplate
-            .getForEntity(
-                "{baseurl}/notifications?appId={appId}&cluster={clusterName}&namespace={namespace}",
-                ApolloConfigNotification.class,
-                getHostUrl(), someAppId, someCluster, defaultNamespace));
+    AtomicBoolean stop = new AtomicBoolean();
+    perodicSendMessage(assembleKey(someAppId, someCluster, defaultNamespace), stop);
 
-    //wait for the request connected to server
-    TimeUnit.MILLISECONDS.sleep(500);
+    ResponseEntity<ApolloConfigNotification> result = restTemplate.getForEntity(
+        "{baseurl}/notifications?appId={appId}&cluster={clusterName}&namespace={namespace}",
+        ApolloConfigNotification.class,
+        getHostUrl(), someAppId, someCluster, defaultNamespace);
 
-    notificationController.handleMessage(assembleKey(someAppId, someCluster, defaultNamespace),
-        Topics.APOLLO_RELEASE_TOPIC);
+    stop.set(true);
 
-    ResponseEntity<ApolloConfigNotification> result = future.get(500, TimeUnit.MILLISECONDS);
     ApolloConfigNotification notification = result.getBody();
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(defaultNamespace, notification.getNamespace());
@@ -69,19 +69,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     String publicAppId = "somePublicAppId";
 
     AtomicBoolean stop = new AtomicBoolean();
-    executorService.submit((Runnable) () -> {
-      //wait for the request connected to server
-      while (!stop.get() && !Thread.currentThread().isInterrupted()) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(100);
-        } catch (InterruptedException e) {
-        }
-
-        notificationController.handleMessage(
-            assembleKey(publicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace),
-            Topics.APOLLO_RELEASE_TOPIC);
-      }
-    });
+    perodicSendMessage(assembleKey(publicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace), stop);
 
     ResponseEntity<ApolloConfigNotification> result = restTemplate
         .getForEntity(
@@ -104,19 +92,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     String someDC = "someDC";
 
     AtomicBoolean stop = new AtomicBoolean();
-    executorService.submit((Runnable) () -> {
-      //wait for the request connected to server
-      while (!stop.get() && !Thread.currentThread().isInterrupted()) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(100);
-        } catch (InterruptedException e) {
-        }
-
-        notificationController.handleMessage(
-            assembleKey(publicAppId, someDC, somePublicNamespace),
-            Topics.APOLLO_RELEASE_TOPIC);
-      }
-    });
+    perodicSendMessage(assembleKey(publicAppId, someDC, somePublicNamespace), stop);
 
     ResponseEntity<ApolloConfigNotification> result = restTemplate
         .getForEntity(
@@ -131,8 +107,22 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     assertEquals(somePublicNamespace, notification.getNamespace());
   }
 
-
   private String assembleKey(String appId, String cluster, String namespace) {
-    return String.format("%s-%s-%s", appId, cluster, namespace);
+    return Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).join(appId, cluster, namespace);
+  }
+
+  private void perodicSendMessage(String message, AtomicBoolean stop) {
+    executorService.submit((Runnable) () -> {
+      //wait for the request connected to server
+      while (!stop.get() && !Thread.currentThread().isInterrupted()) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {
+        }
+
+        ReleaseMessage releaseMessage = new ReleaseMessage(message);
+        releaseMessageRepository.save(releaseMessage);
+      }
+    });
   }
 }

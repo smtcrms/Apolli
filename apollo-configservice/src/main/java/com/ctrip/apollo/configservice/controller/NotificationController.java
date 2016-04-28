@@ -1,5 +1,7 @@
 package com.ctrip.apollo.configservice.controller;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
@@ -29,8 +31,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -40,8 +40,12 @@ public class NotificationController implements MessageListener {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
   private static final long TIMEOUT = 360 * 60 * 1000;//6 hours
   private final Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
-      deferredResults =
-      Multimaps.synchronizedSetMultimap(HashMultimap.create());
+      deferredResults = Multimaps.synchronizedSetMultimap(HashMultimap.create());
+  private static final ResponseEntity<ApolloConfigNotification>
+      NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+  private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
+  private static final Splitter STRING_SPLITTER =
+      Splitter.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
 
   @Autowired
   private AppNamespaceService appNamespaceService;
@@ -52,8 +56,7 @@ public class NotificationController implements MessageListener {
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
       @RequestParam(value = "dataCenter", required = false) String dataCenter,
-      @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
-      HttpServletResponse response) {
+      @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId) {
     List<String> watchedKeys = Lists.newArrayList(assembleKey(appId, cluster, namespace));
 
     //Listen on more namespaces, since it's not the default namespace
@@ -61,30 +64,32 @@ public class NotificationController implements MessageListener {
       watchedKeys.addAll(this.findPublicConfigWatchKey(appId, namespace, dataCenter));
     }
 
-    ResponseEntity<ApolloConfigNotification> body = new ResponseEntity<>(
-        HttpStatus.NOT_MODIFIED);
     DeferredResult<ResponseEntity<ApolloConfigNotification>> deferredResult =
-        new DeferredResult<>(TIMEOUT, body);
+        new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);
 
     //register all keys
     for (String key : watchedKeys) {
       this.deferredResults.put(key, deferredResult);
     }
 
+    deferredResult.onTimeout(() -> logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.TimeOutKeys"));
+
     deferredResult.onCompletion(() -> {
       //unregister all keys
       for (String key : watchedKeys) {
         deferredResults.remove(key, deferredResult);
       }
+      logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.CompletedKeys");
     });
 
+    logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.RegisteredKeys");
     logger.info("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
         watchedKeys, appId, cluster, namespace, dataCenter);
     return deferredResult;
   }
 
   private String assembleKey(String appId, String cluster, String namespace) {
-    return String.format("%s-%s-%s", appId, cluster, namespace);
+    return STRING_JOINER.join(appId, cluster, namespace);
   }
 
   private List<String> findPublicConfigWatchKey(String applicationId, String namespace,
@@ -114,20 +119,20 @@ public class NotificationController implements MessageListener {
   @Override
   public void handleMessage(String message, String channel) {
     logger.info("message received - channel: {}, message: {}", channel, message);
-    Cat.logEvent("Apollo.LongPoll.Message", message);
+    Cat.logEvent("Apollo.LongPoll.Messages", message);
     if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(message)) {
       return;
     }
-    String[] keys = message.split("-");
-    //message should be appId-cluster-namespace
-    if (keys.length != 3) {
+    List<String> keys = STRING_SPLITTER.splitToList(message);
+    //message should be appId|cluster|namespace
+    if (keys.size() != 3) {
       logger.error("message format invalid - {}", message);
       return;
     }
 
     ResponseEntity<ApolloConfigNotification> notification =
         new ResponseEntity<>(
-            new ApolloConfigNotification(keys[2]), HttpStatus.OK);
+            new ApolloConfigNotification(keys.get(2)), HttpStatus.OK);
 
     Collection<DeferredResult<ResponseEntity<ApolloConfigNotification>>>
         results = deferredResults.get(message);
@@ -135,6 +140,12 @@ public class NotificationController implements MessageListener {
 
     for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);
+    }
+  }
+
+  private void logWatchedKeysToCat(List<String> watchedKeys, String eventName) {
+    for (String watchedKey : watchedKeys) {
+      Cat.logEvent(eventName, watchedKey);
     }
   }
 }

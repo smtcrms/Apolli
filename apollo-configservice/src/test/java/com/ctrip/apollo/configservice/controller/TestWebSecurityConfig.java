@@ -1,4 +1,4 @@
-package com.ctrip.apollo.adminservice.controller;
+package com.ctrip.apollo.configservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +25,5 @@ public class TestWebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication().withUser("user").password("").roles("USER");
     auth.inMemoryAuthentication().withUser("apollo").password("").roles("USER", "ADMIN");
-    auth.inMemoryAuthentication().withUser("created").password("").roles("TEST");
-    auth.inMemoryAuthentication().withUser("updated").password("").roles("TEST");
-    auth.inMemoryAuthentication().withUser("deleted").password("").roles("TEST");
   }
 }

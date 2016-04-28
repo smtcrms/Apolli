@@ -25,7 +25,7 @@ public abstract class AbstractConfigRepository implements ConfigRepository {
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger
-          .warn("Sync config failed with repository {}, reason: {}", this.getClass(), ExceptionUtil
+          .warn("Sync config failed, will retry. Repository {}, reason: {}", this.getClass(), ExceptionUtil
               .getDetailMessage(ex));
     }
     return false;

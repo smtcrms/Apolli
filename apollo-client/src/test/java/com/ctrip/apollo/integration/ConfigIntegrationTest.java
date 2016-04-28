@@ -1,5 +1,6 @@
 package com.ctrip.apollo.integration;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -350,6 +351,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   }
 
   private String assembleLocalCacheFileName() {
-    return String.format("%s-%s-%s.properties", someAppId, someClusterName, defaultNamespace);
+    return String.format("%s.properties", Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+        .join(someAppId, someClusterName, defaultNamespace));
   }
 }

@@ -1,8 +1,10 @@
 package com.ctrip.apollo.internals;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 
+import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.util.ConfigUtil;
 
 import org.junit.After;
@@ -73,8 +75,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   }
 
   private String assembleLocalCacheFileName() {
-    return String.format("%s-%s-%s.properties", someAppId,
-            someCluster, someNamespace);
+    return String.format("%s.properties", Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+        .join(someAppId, someCluster, someNamespace));
   }
 
 
@@ -144,7 +146,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
     assertThat(
         "LocalFileConfigRepository should persist local cache files and return that afterwards",
-            someProperties.entrySet(), equalTo(anotherProperties.entrySet()));
+        someProperties.entrySet(), equalTo(anotherProperties.entrySet()));
 
   }
 

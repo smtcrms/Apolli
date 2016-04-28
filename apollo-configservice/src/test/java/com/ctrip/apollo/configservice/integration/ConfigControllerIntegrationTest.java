@@ -83,7 +83,8 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   public void testQueryConfigNotModified() throws Exception {
     String releaseId = String.valueOf(991);
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?releaseId={releaseId}", ApolloConfig.class,
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?releaseId={releaseId}",
+            ApolloConfig.class,
             getHostUrl(), someAppId, someCluster, someNamespace, releaseId);
 
     assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
@@ -94,7 +95,8 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryPublicConfigWithDataCenterFoundAndNoOverride() throws Exception {
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+            ApolloConfig.class,
             getHostUrl(), someAppId, someCluster, somePublicNamespace, someDC);
     ApolloConfig result = response.getBody();
 
@@ -111,11 +113,12 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryPublicConfigWithDataCenterFoundAndOverride() throws Exception {
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+            ApolloConfig.class,
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDC);
     ApolloConfig result = response.getBody();
 
-    assertEquals("994|993", result.getReleaseId());
+    assertEquals("994" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "993", result.getReleaseId());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
@@ -129,7 +132,8 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   public void testQueryPublicConfigWithDataCenterNotFoundAndNoOverride() throws Exception {
     String someDCNotFound = "someDCNotFound";
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+            ApolloConfig.class,
             getHostUrl(), someAppId, someCluster, somePublicNamespace, someDCNotFound);
     ApolloConfig result = response.getBody();
 
@@ -147,11 +151,12 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   public void testQueryPublicConfigWithDataCenterNotFoundAndOverride() throws Exception {
     String someDCNotFound = "someDCNotFound";
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}", ApolloConfig.class,
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+            ApolloConfig.class,
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDCNotFound);
     ApolloConfig result = response.getBody();
 
-    assertEquals("994|992", result.getReleaseId());
+    assertEquals("994" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "992", result.getReleaseId());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
