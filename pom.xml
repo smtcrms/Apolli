@@ -84,7 +84,6 @@
 		<jetty.version>9.2.15.v20160210</jetty.version>
 		<github.global.server>github</github.global.server>
 		<github.global.oauth2Token>${env.GITHUB_OAUTH_TOKEN}</github.global.oauth2Token>
-		<github.path></github.path>
 	</properties>
 
 	<modules>
@@ -250,7 +249,7 @@
 						<dependency>
 							<groupId>com.ctrip.apollo</groupId>
 							<artifactId>apollo-buildtools</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
+							<version>${project.version}</version>
 						</dependency>
 					</dependencies>
 					<configuration>
@@ -283,6 +282,16 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -293,6 +302,22 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
