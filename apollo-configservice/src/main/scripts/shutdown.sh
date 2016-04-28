@@ -2,4 +2,6 @@
 SERVICE_NAME=apollo-configservice
 
 cd `dirname $0`/..
-./$SERVICE_NAME".jar" stop
+if [[ -f $SERVICE_NAME".jar" ]]; then
+  ./$SERVICE_NAME".jar" stop
+fi
