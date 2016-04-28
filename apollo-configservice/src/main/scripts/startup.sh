@@ -1,7 +1,15 @@
 #!/bin/bash
 SERVICE_NAME=apollo-configservice
-PATH_TO_JAR=$SERVICE_NAME"-0.0.1-SNAPSHOT.jar"
-LOG_PATH=/opt/logs/100003171/
+VERSION=0.0.1-SNAPSHOT
+PATH_TO_JAR=$SERVICE_NAME"-"$VERSION".jar"
 
 cd `dirname $0`/..
-source bin/common.sh start
+
+if [[ -f $SERVICE_NAME".jar" ]]; then
+  rm -rf $SERVICE_NAME".jar"
+fi
+
+ln $PATH_TO_JAR $SERVICE_NAME".jar"
+./$SERVICE_NAME".jar" start
+
+exit 0;

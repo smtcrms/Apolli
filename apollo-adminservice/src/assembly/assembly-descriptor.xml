@@ -12,7 +12,7 @@
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
 				<include>*:apollo-buildtools:*</include>
-				<include>*:apollo-adminervice:*</include>
+				<include>*:apollo-adminservice:*</include>
 			</includes>
 			<sources>
 				<includeModuleDirectory>false</includeModuleDirectory>
@@ -30,6 +30,18 @@
 					<fileSet>
 						<directory>src/main/config</directory>
 						<outputDirectory>config</outputDirectory>
+						<excludes>
+							<exclude>apollo-adminservice.conf</exclude>
+						</excludes>
+						<lineEnding>unix</lineEnding>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/config</directory>
+						<outputDirectory>/</outputDirectory>
+						<includes>
+							<include>apollo-adminservice.conf</include>
+						</includes>
+						<lineEnding>unix</lineEnding>
 					</fileSet>
 					<!--artifact -->
 					<fileSet>
@@ -38,7 +50,7 @@
 						<includes>
 							<include>${project.artifactId}-*.jar</include>
 						</includes>
-						<fileMode>0444</fileMode>
+						<fileMode>0755</fileMode>
 					</fileSet>
 				</fileSets>
 			</sources>
