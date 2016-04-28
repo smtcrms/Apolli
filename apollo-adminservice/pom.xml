@@ -25,12 +25,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- end of apollo -->
-		<!-- eureka -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
-		<!-- end of eureka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-eureka-server</artifactId>
