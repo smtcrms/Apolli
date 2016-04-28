@@ -10,7 +10,7 @@ eureka:
       
 ctrip:
   eureka:
-    dev: http://${ctrip_eureka_dev:localhost}:8080/eureka/
-    fat: http://${ctrip_eureka_fat:localhost}:8080/eureka/
-    uat: http://${ctrip_eureka_uat:localhost}:8080/eureka/
-    pro: http://${ctrip_eureka_pro:localhost}:8080/eureka/
+    dev: ${ctrip_eureka_dev}
+    fat: ${ctrip_eureka_fat}
+    uat: ${ctrip_eureka_uat}
+    pro: ${ctrip_eureka_pro}

@@ -10,16 +10,16 @@ import com.ctrip.framework.foundation.Foundation;
 @Component
 public class CtripEurekaSettings {
 
-  @Value("${ctrip.eureka.dev:localhost}")
+  @Value("${ctrip.eureka.dev:http://localhost:8080/eureka}")
   private String devEureka;
 
-  @Value("${ctrip.eureka.fat:localhost}")
+  @Value("${ctrip.eureka.fat:http://localhost:8080/eureka}")
   private String fatEureka;
 
-  @Value("${ctrip.eureka.uat:localhost}")
+  @Value("${ctrip.eureka.uat:http://localhost:8080/eureka}")
   private String uatEureka;
 
-  @Value("${ctrip.eureka.pro:localhost}")
+  @Value("${ctrip.eureka.pro:http://localhost:8080/eureka}")
   private String proEureka;
 
   public String getDefaultEurekaUrl(String zone) {
