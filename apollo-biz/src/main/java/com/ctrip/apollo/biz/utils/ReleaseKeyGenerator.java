@@ -6,6 +6,7 @@ import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.core.utils.ByteUtil;
 import com.ctrip.apollo.core.utils.MachineUtil;
 
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ReleaseKeyGenerator {
   private static final DateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
-  private static final AtomicInteger releaseCounter = new AtomicInteger();
+  private static final AtomicInteger releaseCounter = new AtomicInteger(new SecureRandom().nextInt());
   private static final Joiner KEY_JOINER = Joiner.on("-");
 
   /**
