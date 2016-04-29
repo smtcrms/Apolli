@@ -7,10 +7,3 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:8080/eureka/
     healthcheck:
       enabled: true
-      
-ctrip:
-  eureka:
-    dev: ${ctrip_eureka_dev}
-    fat: ${ctrip_eureka_fat}
-    uat: ${ctrip_eureka_uat}
-    pro: ${ctrip_eureka_pro}
