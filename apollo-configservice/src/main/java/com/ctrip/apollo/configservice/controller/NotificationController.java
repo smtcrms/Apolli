@@ -45,7 +45,7 @@ public class NotificationController implements MessageListener {
       NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
   private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
   private static final Splitter STRING_SPLITTER =
-      Splitter.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
+      Splitter.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).omitEmptyStrings();
 
   @Autowired
   private AppNamespaceService appNamespaceService;
@@ -55,8 +55,7 @@ public class NotificationController implements MessageListener {
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
-      @RequestParam(value = "dataCenter", required = false) String dataCenter,
-      @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId) {
+      @RequestParam(value = "dataCenter", required = false) String dataCenter) {
     List<String> watchedKeys = Lists.newArrayList(assembleKey(appId, cluster, namespace));
 
     //Listen on more namespaces, since it's not the default namespace

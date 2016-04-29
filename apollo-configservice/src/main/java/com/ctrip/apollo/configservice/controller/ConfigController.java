@@ -51,17 +51,17 @@ public class ConfigController {
   @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @RequestParam(value = "dataCenter", required = false) String dataCenter,
-                                  @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
+                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
                                   HttpServletResponse response) throws IOException {
     return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_DEFAULT, dataCenter,
-        clientSideReleaseId, response);
+        clientSideReleaseKey, response);
   }
 
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
                                   @RequestParam(value = "dataCenter", required = false) String dataCenter,
-                                  @RequestParam(value = "releaseId", defaultValue = "-1") String clientSideReleaseId,
+                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
                                   HttpServletResponse response) throws IOException {
     List<Release> releases = Lists.newLinkedList();
 
@@ -89,10 +89,10 @@ public class ConfigController {
       return null;
     }
 
-    String mergedReleaseId = FluentIterable.from(releases).transform(
-        input -> String.valueOf(input.getId())).join(STRING_JOINER);
+    String mergedReleaseKey = FluentIterable.from(releases).transform(
+        input -> String.valueOf(input.getReleaseKey())).join(STRING_JOINER);
 
-    if (mergedReleaseId.equals(clientSideReleaseId)) {
+    if (mergedReleaseKey.equals(clientSideReleaseKey)) {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       Cat.logEvent("Apollo.Config.NotModified",
@@ -100,7 +100,7 @@ public class ConfigController {
       return null;
     }
 
-    ApolloConfig apolloConfig = new ApolloConfig(appId, clusterName, namespace, mergedReleaseId);
+    ApolloConfig apolloConfig = new ApolloConfig(appId, clusterName, namespace, mergedReleaseKey);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
     Cat.logEvent("Apollo.Config.Found", assembleKey(appId, clusterName, namespace, dataCenter));

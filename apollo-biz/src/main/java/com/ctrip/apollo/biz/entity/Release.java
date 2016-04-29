@@ -16,6 +16,8 @@ import javax.persistence.Table;
 @SQLDelete(sql = "Update Release set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
 public class Release extends BaseEntity {
+  @Column(name = "ReleaseKey", nullable = false)
+  private String releaseKey;
 
   @Column(name = "Name", nullable = false)
   private String name;
@@ -35,6 +37,10 @@ public class Release extends BaseEntity {
 
   @Column(name = "Comment", nullable = false)
   private String comment;
+
+  public String getReleaseKey() {
+    return releaseKey;
+  }
 
   public String getAppId() {
     return appId;
@@ -58,6 +64,10 @@ public class Release extends BaseEntity {
 
   public String getName() {
     return name;
+  }
+
+  public void setReleaseKey(String releaseKey) {
+    this.releaseKey = releaseKey;
   }
 
   public void setAppId(String appId) {

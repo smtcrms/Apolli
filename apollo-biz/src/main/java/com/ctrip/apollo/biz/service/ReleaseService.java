@@ -1,14 +1,6 @@
 package com.ctrip.apollo.biz.service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.google.gson.Gson;
 
 import com.ctrip.apollo.biz.entity.Audit;
 import com.ctrip.apollo.biz.entity.Item;
@@ -16,8 +8,18 @@ import com.ctrip.apollo.biz.entity.Namespace;
 import com.ctrip.apollo.biz.entity.Release;
 import com.ctrip.apollo.biz.repository.ItemRepository;
 import com.ctrip.apollo.biz.repository.ReleaseRepository;
+import com.ctrip.apollo.biz.utils.ReleaseKeyGenerator;
 import com.ctrip.apollo.core.utils.StringUtils;
-import com.google.gson.Gson;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -49,7 +51,7 @@ public class ReleaseService {
     }
     return releases;
   }
-  
+
   @Transactional
   public Release buildRelease(String name, String comment, Namespace namespace, String owner) {
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
@@ -62,6 +64,7 @@ public class ReleaseService {
     }
 
     Release release = new Release();
+    release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
     release.setDataChangeCreatedTime(new Date());
     release.setDataChangeCreatedBy(owner);
     release.setName(name);

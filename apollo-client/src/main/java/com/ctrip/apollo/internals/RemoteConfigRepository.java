@@ -11,6 +11,8 @@ import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfig;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.apollo.core.dto.ServiceDTO;
+import com.ctrip.apollo.core.schedule.ExponentialSchedulePolicy;
+import com.ctrip.apollo.core.schedule.SchedulePolicy;
 import com.ctrip.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.apollo.util.ConfigUtil;
 import com.ctrip.apollo.util.ExceptionUtil;
@@ -54,6 +56,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final String m_namespace;
   private final ScheduledExecutorService m_executorService;
   private final AtomicBoolean m_longPollingStopped;
+  private SchedulePolicy m_longPollSchedulePolicy;
 
   /**
    * Constructor.
@@ -72,8 +75,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       Cat.logError(ex);
       throw new IllegalStateException("Unable to load component!", ex);
     }
-    this.m_longPollingStopped = new AtomicBoolean(false);
-    this.m_executorService = Executors.newScheduledThreadPool(1,
+    m_longPollSchedulePolicy = new ExponentialSchedulePolicy(1, 120);
+    m_longPollingStopped = new AtomicBoolean(false);
+    m_executorService = Executors.newScheduledThreadPool(1,
         ApolloThreadFactory.create("RemoteConfigRepository", true));
     this.trySync();
     this.schedulePeriodicRefresh();
@@ -206,7 +210,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     }
 
     if (previousConfig != null) {
-      queryParams.put("releaseId", escaper.escape(String.valueOf(previousConfig.getReleaseId())));
+      queryParams.put("releaseKey", escaper.escape(String.valueOf(previousConfig.getReleaseKey())));
     }
 
     if (!Strings.isNullOrEmpty(dataCenter)) {
@@ -253,7 +257,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         String url =
             assembleLongPollRefreshUrl(lastServiceDto.getHomepageUrl(), appId, cluster,
-                m_namespace, dataCenter, m_configCache.get());
+                m_namespace, dataCenter);
 
         logger.debug("Long polling from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -275,18 +279,21 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             }
           });
         }
+        m_longPollSchedulePolicy.success();
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);
       } catch (Throwable ex) {
-        logger.warn("Long polling failed, will retry. appId: {}, cluster: {}, namespace: {}, reason: {}",
-            appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
         lastServiceDto = null;
         Cat.logError(ex);
         if (transaction != null) {
           transaction.setStatus(ex);
         }
+        long sleepTime = m_longPollSchedulePolicy.fail();
+        logger.warn(
+            "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespace: {}, reason: {}",
+            sleepTime, appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
         try {
-          TimeUnit.SECONDS.sleep(5);
+          TimeUnit.SECONDS.sleep(sleepTime);
         } catch (InterruptedException ie) {
           //ignore
         }
@@ -299,8 +306,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
-                                            String namespace, String dataCenter,
-                                            ApolloConfig previousConfig) {
+                                            String namespace, String dataCenter) {
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
     queryParams.put("appId", escaper.escape(appId));
@@ -311,9 +317,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     }
     if (!Strings.isNullOrEmpty(dataCenter)) {
       queryParams.put("dataCenter", escaper.escape(dataCenter));
-    }
-    if (previousConfig != null) {
-      queryParams.put("releaseId", escaper.escape(previousConfig.getReleaseId()));
     }
 
     String params = MAP_JOINER.join(queryParams);

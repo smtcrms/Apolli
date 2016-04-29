@@ -1,10 +1,7 @@
 package com.ctrip.apollo.biz.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.ctrip.apollo.biz.entity.Release;
+import com.ctrip.apollo.biz.repository.ReleaseRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +10,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.ctrip.apollo.biz.entity.Release;
-import com.ctrip.apollo.biz.repository.ReleaseRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -37,11 +37,15 @@ public class ConfigServiceTest {
     String someAppId = "1";
     String someClusterName = "someClusterName";
     String someNamespaceName = "someNamespaceName";
-    String someReleaseId = "1";
+    long someReleaseId = 1;
+    String someReleaseKey = "someKey";
     String someValidConfiguration = "{\"apollo.bar\": \"foo\"}";
 
-    Release someRelease = assembleRelease(someReleaseId, someAppId, someClusterName, someNamespaceName,
-        someValidConfiguration);
+    Release
+        someRelease =
+        assembleRelease(someReleaseId, someReleaseKey, someAppId, someClusterName,
+            someNamespaceName,
+            someValidConfiguration);
 
     when(releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(someAppId,
         someClusterName, someNamespaceName)).thenReturn(someRelease);
@@ -53,7 +57,8 @@ public class ConfigServiceTest {
             someNamespaceName);
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getClusterName());
-    assertEquals(someReleaseId, String.valueOf(result.getId()));
+    assertEquals(someReleaseId, result.getId());
+    assertEquals(someReleaseKey, result.getReleaseKey());
     assertEquals(someValidConfiguration, result.getConfigurations());
   }
 
@@ -73,10 +78,12 @@ public class ConfigServiceTest {
         someAppId, someClusterName, someNamespaceName);
   }
 
-  private Release assembleRelease(String releaseId, String appId, String clusterName,
-      String groupName, String configurations) {
+  private Release assembleRelease(long releaseId, String releaseKey, String appId,
+                                  String clusterName,
+                                  String groupName, String configurations) {
     Release release = new Release();
-    release.setId(Long.valueOf(releaseId));
+    release.setId(releaseId);
+    release.setReleaseKey(releaseKey);
     release.setAppId(appId);
     release.setClusterName(clusterName);
     release.setNamespaceName(groupName);
