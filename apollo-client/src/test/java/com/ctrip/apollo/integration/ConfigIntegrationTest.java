@@ -46,7 +46,7 @@ import static org.junit.Assert.assertTrue;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigIntegrationTest extends BaseIntegrationTest {
-  private String someReleaseId;
+  private String someReleaseKey;
   private File configDir;
   private String defaultNamespace;
 
@@ -55,7 +55,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     super.setUp();
 
     defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
-    someReleaseId = "1";
+    someReleaseKey = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     configDir.mkdirs();
   }
@@ -329,7 +329,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
     ApolloConfig apolloConfig =
-        new ApolloConfig(someAppId, someClusterName, defaultNamespace, someReleaseId);
+        new ApolloConfig(someAppId, someClusterName, defaultNamespace, someReleaseKey);
 
     apolloConfig.setConfigurations(configurations);
 

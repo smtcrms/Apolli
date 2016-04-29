@@ -3,6 +3,8 @@ package com.ctrip.apollo.core.dto;
 public class ReleaseDTO{
   private long id;
 
+  private String releaseKey;
+
   private String name;
 
   private String appId;
@@ -21,6 +23,14 @@ public class ReleaseDTO{
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getReleaseKey() {
+    return releaseKey;
+  }
+
+  public void setReleaseKey(String releaseKey) {
+    this.releaseKey = releaseKey;
   }
 
   public String getAppId() {

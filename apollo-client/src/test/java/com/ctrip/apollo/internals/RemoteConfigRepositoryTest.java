@@ -167,9 +167,9 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
     String someAppId = "appId";
     String someClusterName = "cluster";
-    String someReleaseId = "1";
+    String someReleaseKey = "1";
     ApolloConfig apolloConfig =
-        new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseId);
+        new ApolloConfig(someAppId, someClusterName, someNamespace, someReleaseKey);
 
     apolloConfig.setConfigurations(configurations);
 

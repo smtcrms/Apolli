@@ -43,7 +43,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     ApolloConfig result = response.getBody();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(String.valueOf(990), result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY1", result.getReleaseKey());
     assertEquals("v1", result.getConfigurations().get("k1"));
   }
 
@@ -57,7 +57,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     ApolloConfig result = response.getBody();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(String.valueOf(991), result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY2", result.getReleaseKey());
     assertEquals("v2", result.getConfigurations().get("k2"));
   }
 
@@ -81,11 +81,11 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryConfigNotModified() throws Exception {
-    String releaseId = String.valueOf(991);
+    String releaseKey = "TEST-RELEASE-KEY2";
     ResponseEntity<ApolloConfig> response = restTemplate
-        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?releaseId={releaseId}",
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?releaseKey={releaseKey}",
             ApolloConfig.class,
-            getHostUrl(), someAppId, someCluster, someNamespace, releaseId);
+            getHostUrl(), someAppId, someCluster, someNamespace, releaseKey);
 
     assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
   }
@@ -100,7 +100,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someCluster, somePublicNamespace, someDC);
     ApolloConfig result = response.getBody();
 
-    assertEquals("993", result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY4", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
@@ -118,7 +118,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDC);
     ApolloConfig result = response.getBody();
 
-    assertEquals("994" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "993", result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY4", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
@@ -137,7 +137,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someCluster, somePublicNamespace, someDCNotFound);
     ApolloConfig result = response.getBody();
 
-    assertEquals("992", result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY3", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
@@ -156,7 +156,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDCNotFound);
     ApolloConfig result = response.getBody();
 
-    assertEquals("994" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "992", result.getReleaseId());
+    assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY3", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespace());
