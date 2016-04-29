@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 25,
+      <title>File: 29,
              Errors: 0,
-             Warnings: 72,
+             Warnings: 79,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html</link>
@@ -130,6 +130,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.utils.ByteUtil.java">com/ctrip/apollo/core/utils/ByteUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.exception.BadRequestException.java">com/ctrip/apollo/core/exception/BadRequestException.java</a>
                 </td>
                 <td>
@@ -179,6 +193,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.schedule.SchedulePolicy.java">com/ctrip/apollo/core/schedule/SchedulePolicy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -354,6 +382,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.schedule.ExponentialSchedulePolicy.java">com/ctrip/apollo/core/schedule/ExponentialSchedulePolicy.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.dto.ItemChangeSets.java">com/ctrip/apollo/core/dto/ItemChangeSets.java</a>
                 </td>
                 <td>
@@ -369,6 +411,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.dto.ClusterDTO.java">com/ctrip/apollo/core/dto/ClusterDTO.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-core/checkstyle.html#com.ctrip.apollo.core.utils.MachineUtil.java">com/ctrip/apollo/core/utils/MachineUtil.java</a>
                 </td>
                 <td>
                   0
