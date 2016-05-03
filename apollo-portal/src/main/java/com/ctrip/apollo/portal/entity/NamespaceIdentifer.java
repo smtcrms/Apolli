@@ -1,22 +1,14 @@
-package com.ctrip.apollo.portal.entity.form;
-
+package com.ctrip.apollo.portal.entity;
 
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.utils.StringUtils;
+import com.ctrip.apollo.portal.entity.form.Verifiable;
 
-public class NamespaceReleaseModel implements Verifiable {
-
+public class NamespaceIdentifer implements Verifiable{
   private String appId;
   private String env;
   private String clusterName;
   private String namespaceName;
-  private String releaseBy;
-  private String releaseComment;
-
-  @Override
-  public boolean isInvalid() {
-    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, releaseBy);
-  }
 
   public String getAppId() {
     return appId;
@@ -50,20 +42,9 @@ public class NamespaceReleaseModel implements Verifiable {
     this.namespaceName = namespaceName;
   }
 
-  public String getReleaseBy() {
-    return releaseBy;
-  }
 
-  public void setReleaseBy(String releaseBy) {
-    this.releaseBy = releaseBy;
+  @Override
+  public boolean isInvalid() {
+    return StringUtils.isContainEmpty(env, clusterName, namespaceName);
   }
-
-  public String getReleaseComment() {
-    return releaseComment;
-  }
-
-  public void setReleaseComment(String releaseComment) {
-    this.releaseComment = releaseComment;
-  }
-
 }
