@@ -14,6 +14,7 @@ if [[ -f $SERVICE_NAME".jar" ]]; then
 fi
 
 ln $PATH_TO_JAR $SERVICE_NAME".jar"
+chmod a+x $SERVICE_NAME".jar"
 ./$SERVICE_NAME".jar" start
 
 exit 0;
