@@ -11,7 +11,7 @@
 		<!--scripts -->
 		<fileSet>
 			<directory>src/main/scripts</directory>
-			<outputDirectory>bin</outputDirectory>
+			<outputDirectory>scripts</outputDirectory>
 			<includes>
 				<include>*.sh</include>
 			</includes>
