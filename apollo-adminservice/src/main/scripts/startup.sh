@@ -5,6 +5,10 @@ PATH_TO_JAR=$SERVICE_NAME"-"$VERSION".jar"
 
 cd `dirname $0`/..
 
+if [[ ! -f PATH_TO_JAR && -d current ]]; then
+    cd current
+fi
+
 if [[ -f $SERVICE_NAME".jar" ]]; then
   rm -rf $SERVICE_NAME".jar"
 fi
