@@ -27,8 +27,8 @@ APP_BASE_DIR=/opt/ctrip/app
 APP_NAME=$1
 APP_DIR=$APP_BASE_DIR/$APP_NAME
 APP_RELEASE_DIR=$APP_BASE_DIR/apollo-$APP_NAME.releases/`date "+%Y-%m-%d.%H.%M.%S"`
-APP_STARTUP_SCRIPT=$APP_DIR/bin/startup.sh
-APP_SHUTDOWN_SCRIPT=$APP_DIR/bin/shutdown.sh
+APP_STARTUP_SCRIPT=$APP_DIR/scripts/startup.sh
+APP_SHUTDOWN_SCRIPT=$APP_DIR/scripts/shutdown.sh
 
 if [ -e $APP_STARTUP_SCRIPT ];then
 	$APP_SHUTDOWN_SCRIPT
