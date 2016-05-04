@@ -143,7 +143,7 @@ public class ConfigServiceTest {
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(null);
 
-    List<ItemDiffs> itemDiffses = configService.compare(sourceItems, namespaceIdentifers);
+    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
 
     assertEquals(1,itemDiffses.size());
     ItemDiffs itemDiffs = itemDiffses.get(0);
@@ -180,7 +180,7 @@ public class ConfigServiceTest {
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(targetItems);
 
-    List<ItemDiffs> itemDiffses = configService.compare(sourceItems, namespaceIdentifers);
+    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
     assertEquals(1, itemDiffses.size());
 
     ItemDiffs itemDiffs = itemDiffses.get(0);

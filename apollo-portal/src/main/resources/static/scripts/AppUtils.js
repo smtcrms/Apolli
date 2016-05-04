@@ -12,7 +12,7 @@ appUtil.service('AppUtil', [function () {
             if (!path) {
                 return {};
             }
-            if (path.startsWith("/")) {
+            if (path.indexOf('/') == 0) {
                 path = path.substring(1, path.length);
             }
             var params = path.split("&");

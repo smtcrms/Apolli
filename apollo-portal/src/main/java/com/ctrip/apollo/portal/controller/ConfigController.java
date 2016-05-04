@@ -14,6 +14,8 @@ import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.apollo.portal.service.ConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -102,7 +104,20 @@ public class ConfigController {
       throw new BadRequestException("request model is invalid");
     }
 
-    return configService.compare(model.getSyncItems(), model.getSyncToNamespaces());
+    return configService.compare(model.getSyncToNamespaces(), model.getSyncItems());
+  }
+
+  @RequestMapping(value = "/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
+      "application/json"})
+  public ResponseEntity<Void> update(@RequestBody NamespaceSyncModel model){
+    if (model == null){
+      throw new BadRequestException("request payload shoud not be null");
+    }
+    if (model.isInvalid()) {
+      throw new BadRequestException("request model is invalid");
+    }
+    configService.syncItems(model.getSyncToNamespaces(), model.getSyncItems());
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
 }

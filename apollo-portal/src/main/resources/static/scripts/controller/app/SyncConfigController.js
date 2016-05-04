@@ -1,6 +1,6 @@
 sync_item_module.controller("SyncItemController",
-                              ['$scope', '$location', 'toastr', 'AppService', 'AppUtil', 'ConfigService',
-                               function ($scope, $location, toastr, AppService, AppUtil, ConfigService) {
+                              ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil', 'ConfigService',
+                               function ($scope, $location, $window, toastr, AppService, AppUtil, ConfigService) {
 
                                    var params = AppUtil.parseParams($location.$$url);
                                    var currentUser = 'test_user';
@@ -13,15 +13,16 @@ sync_item_module.controller("SyncItemController",
                                    
                                    ////// load env //////
                                    AppService.load_nav_tree($scope.pageContext.appId).then(function (result) {
-                                       $scope.clusters = result.nodes;
-                                       $scope.clusters = [];
+                                       $scope.namespaceIdentifers = [];
                                        result.nodes.forEach(function (node) {
                                            var env = node.env;
                                            node.clusters.forEach(function (cluster) {
                                                cluster.env = env;
                                                cluster.checked = false;
-                                               $scope.clusters.push(cluster);
-                                           }) 
+                                               if (env != $scope.pageContext.env || cluster.name != $scope.pageContext.clusterName){
+                                                   $scope.namespaceIdentifers.push(cluster);
+                                               }
+                                           })
                                        });
                                    }, function (result) {
                                        toastr.error(AppUtil.errorMsg(result), "加载环境出错");    
@@ -30,8 +31,8 @@ sync_item_module.controller("SyncItemController",
                                    var envAllSelected = false;
                                    $scope.toggleEnvsCheckedStatus = function () {
                                        envAllSelected = !envAllSelected;
-                                       $scope.clusters.forEach(function (cluster) {
-                                           cluster.checked = envAllSelected;
+                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
+                                           namespaceIdentifer.checked = envAllSelected;
                                        })
                                    };
                                    
@@ -39,9 +40,12 @@ sync_item_module.controller("SyncItemController",
                                    ConfigService.find_items($scope.pageContext.appId, $scope.pageContext.env,
                                                             $scope.pageContext.clusterName, $scope.pageContext.namespaceName).then(function (result) {
 
-                                       $scope.sourceItems = result;
-                                       $scope.sourceItems.forEach(function (item) {
-                                           item.checked = false;
+                                       $scope.sourceItems = [];
+                                       result.forEach(function (item) {
+                                           if (item.key){
+                                               item.checked = false;
+                                               $scope.sourceItems.push(item);
+                                           }
                                        })
                                        
                                    }, function (result) {
@@ -56,6 +60,44 @@ sync_item_module.controller("SyncItemController",
                                        })       
                                    };
 
+                                   $scope.diff = function () {
+                                       ConfigService.diff($scope.pageContext.namespaceName, parseSyncSourceData()).then(function (result) {
+                                           $scope.diffs = result;
+                                           $scope.syncItemNextStep(1);
+                                       }, function (result) {
+                                           toastr.error(AppUtil.errorMsg(result));
+                                       });
+                                   };
+                                   
+                                   $scope.syncItems = function () {
+                                    ConfigService.sync_items($scope.pageContext.namespaceName, parseSyncSourceData()).then(function (result) {
+                                        $scope.syncItemStep += 1;
+                                    }, function (result) {
+                                        toastr.error(AppUtil.errorMsg(result));
+                                    });    
+                                   };
+                                   
+                                   function parseSyncSourceData() {
+                                       var sourceData = {
+                                           syncToNamespaces: [],
+                                           syncItems: []
+                                       };
+                                       var namespaceName = $scope.pageContext.namespaceName;
+                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
+                                           if (namespaceIdentifer.checked){
+                                               namespaceIdentifer.clusterName = namespaceIdentifer.name;
+                                               namespaceIdentifer.namespaceName = namespaceName;
+                                               sourceData.syncToNamespaces.push(namespaceIdentifer);
+                                           }
+                                       });
+                                       $scope.sourceItems.forEach(function (item) {
+                                           if (item.checked) {
+                                               sourceData.syncItems.push(item);
+                                           }
+                                       });
+                                       return sourceData;
+                                   }
+
                                    ////// flow control ///////
 
                                    $scope.syncItemStep = 1;
@@ -63,14 +105,12 @@ sync_item_module.controller("SyncItemController",
                                        $scope.syncItemStep += offset;
                                    };
 
-                                   $scope.syncItems = function () {
-                                       $scope.syncItemStep += 1;
+                                   $scope.backToAppHomePage = function () {
+                                       $window.location.href = '/views/app.html?#appid=' + $scope.pageContext.appId;
                                    };
 
-                                   $scope.destorySync = function () {
-                                       $scope.syncItemStep = 1;
+                                   $scope.switchSelect = function (o) {
+                                       o.checked = !o.checked;
                                    }
-
-
                                }]);
 
