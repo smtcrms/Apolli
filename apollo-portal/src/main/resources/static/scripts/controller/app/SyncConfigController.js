@@ -105,7 +105,7 @@ sync_item_module.controller("SyncItemController",
                                        $scope.syncItemStep += offset;
                                    };
 
-                                   $scope.return = function () {
+                                   $scope.backToAppHomePage = function () {
                                        $window.location.href = '/views/app.html?#appid=' + $scope.pageContext.appId;
                                    };
 
