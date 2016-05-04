@@ -47,4 +47,14 @@ public class NamespaceIdentifer implements Verifiable{
   public boolean isInvalid() {
     return StringUtils.isContainEmpty(env, clusterName, namespaceName);
   }
+
+  @Override
+  public String toString() {
+    return "NamespaceIdentifer{" +
+           "appId='" + appId + '\'' +
+           ", env='" + env + '\'' +
+           ", clusterName='" + clusterName + '\'' +
+           ", namespaceName='" + namespaceName + '\'' +
+           '}';
+  }
 }

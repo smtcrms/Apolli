@@ -54,11 +54,6 @@ public class ConfigService {
 
   /**
    * load cluster all namespace info with items
-   * 
-   * @param appId
-   * @param env
-   * @param clusterName
-   * @return
    */
   public List<NamespaceVO> findNampspaces(String appId, Env env, String clusterName) {
 
@@ -76,7 +71,7 @@ public class ConfigService {
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-            appId, env, clusterName, namespace.getNamespaceName(), e);
+                     appId, env, clusterName, namespace.getNamespaceName(), e);
         throw e;
       }
     }
@@ -85,7 +80,7 @@ public class ConfigService {
   }
 
   @SuppressWarnings("unchecked")
-  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace)   {
+  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
 
@@ -100,10 +95,10 @@ public class ConfigService {
     try {
       release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
       releaseItems = gson.fromJson(release.getConfigurations(), Map.class);
-    }catch (HttpClientErrorException e){
-      if (e.getStatusCode() == HttpStatus.NOT_FOUND){
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         logger.warn(ExceptionUtils.toString(e));
-      }else {
+      } else {
         throw e;
       }
     }
@@ -142,7 +137,7 @@ public class ConfigService {
 
   /**
    * parse config text and update config items
-   * 
+   *
    * @return parse result
    */
   public void updateConfigItemByText(NamespaceTextModel model) {
@@ -154,8 +149,8 @@ public class ConfigService {
     String configText = model.getConfigText();
 
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
-        itemAPI.findItems(appId, env, clusterName, namespaceName));
-    if (changeSets.isEmpty()){
+                                                 itemAPI.findItems(appId, env, clusterName, namespaceName));
+    if (changeSets.isEmpty()) {
       return;
     }
     try {
@@ -171,85 +166,107 @@ public class ConfigService {
 
   /**
    * createRelease config items
-   * 
-   * @return
    */
   public ReleaseDTO createRelease(NamespaceReleaseModel model) {
     return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(),
-        model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment());
+                              model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment());
   }
 
-  public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName){
+  public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
     return itemAPI.findItems(appId, env, clusterName, namespaceName);
   }
 
-  public List<ItemDiffs> compare(List<ItemDTO> sourceItems, List<NamespaceIdentifer> comparedNamespaces){
+  public void syncItems(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems){
+    List<ItemDiffs> itemDiffs = compare(comparedNamespaces, sourceItems);
+    for (ItemDiffs itemDiff: itemDiffs){
+      NamespaceIdentifer namespaceIdentifer = itemDiff.getNamespace();
+      try {
+        itemAPI
+            .updateItems(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),
+                         namespaceIdentifer.getClusterName(),
+                         namespaceIdentifer.getNamespaceName(), itemDiff.getDiffs());
+      } catch (HttpClientErrorException e) {
+        logger.error("sync items error. namespace:{}", namespaceIdentifer);
+        throw new ServiceException(String.format("sync item error. env:%s, clusterName:%s", namespaceIdentifer.getEnv(),
+                                                 namespaceIdentifer.getClusterName()), e);
+      }
+
+    }
+  }
+
+  public List<ItemDiffs> compare(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {
 
     List<ItemDiffs> result = new LinkedList<>();
 
-    String appId, clusterName, namespaceName;
-    Env env;
-    for (NamespaceIdentifer namespace: comparedNamespaces){
-      appId = namespace.getAppId();
-      clusterName = namespace.getClusterName();
-      namespaceName = namespace.getNamespaceName();
-      env = namespace.getEnv();
-      NamespaceDTO namespaceDTO = null;
-      try {
-        namespaceDTO = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
-      } catch (NotFoundException e){
-        logger.warn("namespace not exist. appId:{}, env:{}, clusterName:{}, namespaceName:{}", appId, env, clusterName,
-                    namespaceName);
-        throw new BadRequestException(String.format(
-            "namespace not exist. appId:%s, env:%s, clusterName:%s, namespaceName:%s", appId, env, clusterName,
-            namespaceName));
-      }
+    for (NamespaceIdentifer namespace : comparedNamespaces) {
 
       ItemDiffs itemDiffs = new ItemDiffs(namespace);
-      ItemChangeSets changeSets = new ItemChangeSets();
-      itemDiffs.setDiffs(changeSets);
-
-      List<ItemDTO>
-          targetItems =
-          itemAPI.findItems(namespace.getAppId(), namespace.getEnv(),
-                            namespace.getClusterName(), namespace.getNamespaceName());
-
-      long namespaceId = namespaceDTO.getId();
-      if (CollectionUtils.isEmpty(targetItems)){//all source items is added
-        int lineNum = 1;
-        for (ItemDTO sourceItem: sourceItems){
-          changeSets.addCreateItem(buildItem(namespaceId, lineNum++, sourceItem));
-        }
-      }else {
-        Map<String, ItemDTO> keyMapItem = BeanUtils.mapByKey("key", targetItems);
-        String key,sourceValue,sourceComment;
-        ItemDTO targetItem = null;
-        int maxLineNum = targetItems.size();//append to last
-        for (ItemDTO sourceItem: sourceItems){
-          key = sourceItem.getKey();
-          sourceValue = sourceItem.getValue();
-          sourceComment = sourceItem.getComment();
-          targetItem = keyMapItem.get(key);
-
-          if (targetItem == null) {//added items
-
-            changeSets.addCreateItem(buildItem(namespaceId, ++maxLineNum, sourceItem));
-
-          }else if (!sourceValue.equals(targetItem.getValue()) || !sourceComment.equals(targetItem.getComment())){//modified items
-            targetItem.setValue(sourceValue);
-            targetItem.setComment(sourceComment);
-            changeSets.addUpdateItem(targetItem);
-          }
-        }
-      }
-
+      itemDiffs.setDiffs(parseChangeSets(namespace, sourceItems));
       result.add(itemDiffs);
     }
 
     return result;
   }
 
-  private ItemDTO buildItem(long namespaceId, int lineNum, ItemDTO sourceItem){
+  private long getNamespaceId(NamespaceIdentifer namespaceIdentifer) {
+    String appId = namespaceIdentifer.getAppId();
+    String clusterName = namespaceIdentifer.getClusterName();
+    String namespaceName = namespaceIdentifer.getNamespaceName();
+    Env env = namespaceIdentifer.getEnv();
+    NamespaceDTO namespaceDTO = null;
+    try {
+      namespaceDTO = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    } catch (NotFoundException e) {
+      logger.warn("namespace not exist. appId:{}, env:{}, clusterName:{}, namespaceName:{}", appId, env, clusterName,
+                  namespaceName);
+      throw new BadRequestException(String.format(
+          "namespace not exist. appId:%s, env:%s, clusterName:%s, namespaceName:%s", appId, env, clusterName,
+          namespaceName));
+    }
+    return namespaceDTO.getId();
+  }
+
+  private ItemChangeSets parseChangeSets(NamespaceIdentifer namespace, List<ItemDTO> sourceItems){
+    ItemChangeSets changeSets = new ItemChangeSets();
+    List<ItemDTO>
+        targetItems =
+        itemAPI.findItems(namespace.getAppId(), namespace.getEnv(),
+                          namespace.getClusterName(), namespace.getNamespaceName());
+
+    long namespaceId = getNamespaceId(namespace);
+    if (CollectionUtils.isEmpty(targetItems)) {//all source items is added
+      int lineNum = 1;
+      for (ItemDTO sourceItem : sourceItems) {
+        changeSets.addCreateItem(buildItem(namespaceId, lineNum++, sourceItem));
+      }
+    } else {
+      Map<String, ItemDTO> keyMapItem = BeanUtils.mapByKey("key", targetItems);
+      String key, sourceValue, sourceComment;
+      ItemDTO targetItem = null;
+      int maxLineNum = targetItems.size();//append to last
+      for (ItemDTO sourceItem : sourceItems) {
+        key = sourceItem.getKey();
+        sourceValue = sourceItem.getValue();
+        sourceComment = sourceItem.getComment();
+        targetItem = keyMapItem.get(key);
+
+        if (targetItem == null) {//added items
+
+          changeSets.addCreateItem(buildItem(namespaceId, ++maxLineNum, sourceItem));
+
+        } else if (!sourceValue.equals(targetItem.getValue()) || !sourceComment
+            .equals(targetItem.getComment())) {//modified items
+          targetItem.setValue(sourceValue);
+          targetItem.setComment(sourceComment);
+          changeSets.addUpdateItem(targetItem);
+        }
+      }
+    }
+
+    return changeSets;
+  }
+
+  private ItemDTO buildItem(long namespaceId, int lineNum, ItemDTO sourceItem) {
     ItemDTO createdItem = new ItemDTO();
     BeanUtils.copyEntityProperties(sourceItem, createdItem);
     createdItem.setLineNum(lineNum++);

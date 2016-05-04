@@ -17,6 +17,16 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         release: {
             method: 'POST',
             url:'/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/release'
+        },
+        diff: {
+            method: 'POST',
+            url: '/namespaces/:namespaceName/diff',
+            isArray: true
+        },
+        sync_item: {
+            method: 'PUT',
+            url: '/namespaces/:namespaceName/items',
+            isArray: false
         }
     });
 
@@ -82,6 +92,30 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
                                       releaseBy: releaseBy,
                                       releaseComment: comment
                                   }, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+
+        diff: function (namespaceName, sourceData) {
+            var d = $q.defer();
+            config_source.diff({
+                                   namespaceName: namespaceName
+                               }, sourceData, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+
+        sync_items: function (namespaceName, sourceData) {
+            var d = $q.defer();
+            config_source.sync_item({
+                                   namespaceName: namespaceName
+                               }, sourceData, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
