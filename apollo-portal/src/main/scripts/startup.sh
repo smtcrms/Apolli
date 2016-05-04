@@ -3,6 +3,10 @@ SERVICE_NAME=apollo-portal
 VERSION=0.0.1-SNAPSHOT
 PATH_TO_JAR=$SERVICE_NAME"-"$VERSION".jar"
 
+if [[ -z "$JAVA_HOME" && -d /usr/java/latest/ ]]; then
+    export JAVA_HOME=/usr/java/latest/
+fi
+
 cd `dirname $0`/..
 
 if [[ ! -f PATH_TO_JAR && -d current ]]; then
