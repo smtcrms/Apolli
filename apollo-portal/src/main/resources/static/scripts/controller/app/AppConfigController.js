@@ -245,8 +245,8 @@ application_module.controller("AppConfigController",
                                            AppService.create(env, $scope.appBaseInfo).then(function (result) {
                                                toastr.success(env, '创建成功');
                                                count ++;
-                                               if (count == $scope.selectedEnvs){
-                                                 $route.reload();
+                                               if (count == $scope.selectedEnvs.length){
+                                                 location.reload(true);
                                                }
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), '创建失败:' + env);
