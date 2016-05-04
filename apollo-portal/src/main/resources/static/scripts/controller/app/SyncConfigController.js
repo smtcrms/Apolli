@@ -72,7 +72,9 @@ sync_item_module.controller("SyncItemController",
                                    $scope.syncItems = function () {
                                     ConfigService.sync_items($scope.pageContext.namespaceName, parseSyncSourceData()).then(function (result) {
                                         $scope.syncItemStep += 1;
+                                        $scope.syncSuccess = true;
                                     }, function (result) {
+                                        $scope.syncSuccess = false;
                                         toastr.error(AppUtil.errorMsg(result));
                                     });    
                                    };

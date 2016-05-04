@@ -159,7 +159,7 @@ application_module.controller("AppConfigController",
                                    $scope.commitChange = function () {
                                        ConfigService.modify_items($scope.pageContext.appId, $scope.pageContext.env, $scope.pageContext.clusterName,
                                                                   $scope.draft.namespace.namespaceName, $scope.draft.text,
-                                                                  $scope.draft.namespace.id, $scope.commitComment, currentUser).then(
+                                                                  $scope.draft.namespace.id, $scope.commitComment).then(
                                            function (result) {
                                                toastr.success("更新成功");
                                                //refresh all namespace items
@@ -205,10 +205,11 @@ application_module.controller("AppConfigController",
                                        releaseNamespace = namespace;        
                                    };
                                    $scope.releaseComment = '';
+                                   $scope.releaseTitle = '';
                                    $scope.release = function () {
                                        ConfigService.release($scope.pageContext.appId, $scope.pageContext.env, 
                                                              $scope.pageContext.clusterName,
-                                                             releaseNamespace.namespace.namespaceName, currentUser,
+                                                             releaseNamespace.namespace.namespaceName, $scope.releaseTitle,
                                                              $scope.releaseComment).then(
                                            function (result) {
                                                toastr.success("发布成功");

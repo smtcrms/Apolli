@@ -12,12 +12,11 @@ public class NamespaceTextModel implements Verifiable {
   private String namespaceName;
   private int namespaceId;
   private String configText;
-  private String modifyBy;
   private String comment;
 
   @Override
   public boolean isInvalid(){
-    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, configText, modifyBy) || namespaceId <= 0;
+    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, configText) || namespaceId <= 0;
   }
   public String getAppId() {
     return appId;
@@ -65,14 +64,6 @@ public class NamespaceTextModel implements Verifiable {
 
   public void setConfigText(String configText) {
     this.configText = configText;
-  }
-
-  public String getModifyBy() {
-    return modifyBy;
-  }
-
-  public void setModifyBy(String modifyBy) {
-    this.modifyBy = modifyBy;
   }
 
   public String getComment() {

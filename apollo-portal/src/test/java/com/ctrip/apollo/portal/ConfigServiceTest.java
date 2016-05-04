@@ -100,7 +100,6 @@ public class ConfigServiceTest {
 
     NamespaceTextModel model = new NamespaceTextModel();
     model.setEnv("DEV");
-    model.setModifyBy("ll");
     model.setNamespaceName(namespaceName);
     model.setClusterName(clusterName);
     model.setAppId(appId);

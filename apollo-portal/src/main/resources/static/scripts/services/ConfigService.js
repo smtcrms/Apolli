@@ -59,7 +59,7 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
             return d.promise;
         },
 
-        modify_items: function (appId, env, clusterName, namespaceName, configText, namespaceId, comment, modifyBy) {
+        modify_items: function (appId, env, clusterName, namespaceName, configText, namespaceId, comment) {
             var d = $q.defer();
             config_source.modify_items({
                                            appId: appId,
@@ -70,8 +70,7 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
                                        {
                                            configText: configText,
                                            namespaceId: namespaceId,
-                                           comment:comment,
-                                           modifyBy: modifyBy
+                                           comment:comment
                                        }, function (result) {
                     d.resolve(result);
 
