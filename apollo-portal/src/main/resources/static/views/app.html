@@ -334,12 +334,13 @@
                         <h4 class="modal-title">发布</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea rows="4" class="form-control" style="width:570px;" ng-model="releaseComment"
+                        <input type="text" class="form-control" placeholder="input release title" ng-model="releaseTitle" required="required">
+                        <textarea rows="4" class="form-control" style="margin-top: 15px;" ng-model="releaseComment"
                                   placeholder="input release log...."></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="release()">提交
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" ng-click="release()">提交
                         </button>
                     </div>
                 </div>

@@ -67,6 +67,7 @@ public class ReleaseService {
     release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
     release.setDataChangeCreatedTime(new Date());
     release.setDataChangeCreatedBy(owner);
+    release.setDataChangeLastModifiedBy(owner);
     release.setName(name);
     release.setComment(comment);
     release.setAppId(namespace.getAppId());

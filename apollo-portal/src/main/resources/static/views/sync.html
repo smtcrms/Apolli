@@ -162,9 +162,13 @@
 
 
             <!--step 3-->
-            <div class="row text-center" ng-show="syncItemStep == 3">
+            <div class="row text-center" ng-show="syncItemStep == 3 && syncSuccess">
                 <img src="../img/sync-succ.png" style="height: 100px; width: 100px">
-                <h3>同步成功!</h3>
+                <h3 >同步成功!</h3>
+            </div>
+            <div class="row text-center" ng-show="syncItemStep == 3 && !syncSuccess">
+                <img src="../img/sync-error.png" style="height: 100px; width: 100px">
+                <h3 >同步失败!</h3>
             </div>
 
         </div>
