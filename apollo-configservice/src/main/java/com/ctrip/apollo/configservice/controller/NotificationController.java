@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -133,13 +132,15 @@ public class NotificationController implements MessageListener {
         new ResponseEntity<>(
             new ApolloConfigNotification(keys.get(2)), HttpStatus.OK);
 
-    Collection<DeferredResult<ResponseEntity<ApolloConfigNotification>>>
-        results = deferredResults.get(message);
+    //create a new list to avoid ConcurrentModificationException
+    List<DeferredResult<ResponseEntity<ApolloConfigNotification>>> results =
+        Lists.newArrayList(deferredResults.get(message));
     logger.info("Notify {} clients for key {}", results.size(), message);
 
     for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);
     }
+    logger.info("Notification completed");
   }
 
   private void logWatchedKeysToCat(List<String> watchedKeys, String eventName) {
