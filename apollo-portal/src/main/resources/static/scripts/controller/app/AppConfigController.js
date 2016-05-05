@@ -4,7 +4,6 @@ application_module.controller("AppConfigController",
 
 
                                    var appId = AppUtil.parseParams($location.$$url).appid;
-                                   var currentUser = 'test_user';
                                    var pageContext = {
                                        appId: appId,
                                        env: '',
@@ -140,8 +139,7 @@ application_module.controller("AppConfigController",
                                            itemCnt ++;
                                        });
 
-                                       itemCnt > 30 ? 30 : itemCnt;
-                                       itemCnt < 9 ? 8 : itemCnt;
+                                       itemCnt = itemCnt > 30 ? 30 : itemCnt;
                                        namespace.itemCnt = itemCnt + 3;
                                        return result;
                                    }

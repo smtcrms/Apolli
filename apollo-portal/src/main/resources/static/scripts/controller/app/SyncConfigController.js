@@ -61,8 +61,15 @@ sync_item_module.controller("SyncItemController",
                                    };
 
                                    $scope.diff = function () {
+                                       $scope.hasDiff = false;
                                        ConfigService.diff($scope.pageContext.namespaceName, parseSyncSourceData()).then(function (result) {
+
                                            $scope.diffs = result;
+                                           result.forEach(function (diff) {
+                                               if (!$scope.hasDiff) {
+                                                   $scope.hasDiff = diff.diffs.createItems.length + diff.diffs.updateItems.length > 0;
+                                               }
+                                           });
                                            $scope.syncItemNextStep(1);
                                        }, function (result) {
                                            toastr.error(AppUtil.errorMsg(result));
