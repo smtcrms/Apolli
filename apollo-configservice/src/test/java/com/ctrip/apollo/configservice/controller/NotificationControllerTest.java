@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap;
 import com.ctrip.apollo.biz.entity.AppNamespace;
 import com.ctrip.apollo.biz.message.Topics;
 import com.ctrip.apollo.biz.service.AppNamespaceService;
+import com.ctrip.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 
@@ -15,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -39,6 +41,8 @@ public class NotificationControllerTest {
   private String someDataCenter;
   @Mock
   private AppNamespaceService appNamespaceService;
+  @Mock
+  private EntityManagerUtil entityManagerUtil;
   private Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
       deferredResults;
 
@@ -46,6 +50,7 @@ public class NotificationControllerTest {
   public void setUp() throws Exception {
     controller = new NotificationController();
     ReflectionTestUtils.setField(controller, "appNamespaceService", appNamespaceService);
+    ReflectionTestUtils.setField(controller, "entityManagerUtil", entityManagerUtil);
 
     someAppId = "someAppId";
     someCluster = "someCluster";

@@ -12,6 +12,7 @@ import com.ctrip.apollo.biz.entity.AppNamespace;
 import com.ctrip.apollo.biz.message.MessageListener;
 import com.ctrip.apollo.biz.message.Topics;
 import com.ctrip.apollo.biz.service.AppNamespaceService;
+import com.ctrip.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.dianping.cat.Cat;
@@ -48,6 +49,9 @@ public class NotificationController implements MessageListener {
 
   @Autowired
   private AppNamespaceService appNamespaceService;
+
+  @Autowired
+  private EntityManagerUtil entityManagerUtil;
 
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
@@ -94,6 +98,13 @@ public class NotificationController implements MessageListener {
                                                 String dataCenter) {
     List<String> publicWatchedKeys = Lists.newArrayList();
     AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
+    /**
+     * Manually close the entity manager.
+     * Since for async request, Spring won't do so until the request is finished,
+     * which is unacceptable since we are doing long polling - means the db connection would be hold
+     * for a very long time
+     */
+    entityManagerUtil.closeEntityManager();
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
