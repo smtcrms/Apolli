@@ -75,24 +75,24 @@
 
                         </div>
                     </a>
-                    <a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">
-                        <div class="row">
-                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
-                            <div class="col-md-7 hidden-xs">
-                                <p class="apps-description">添加集群</p>
-                            </div>
+                    <!--<a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">-->
+                        <!--<div class="row">-->
+                            <!--<div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>-->
+                            <!--<div class="col-md-7 hidden-xs">-->
+                                <!--<p class="apps-description">添加集群</p>-->
+                            <!--</div>-->
 
-                        </div>
-                    </a>
-                    <a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">
-                        <div class="row">
-                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
-                            <div class="col-md-7 hidden-xs">
-                                <p class="apps-description">添加Namespace</p>
-                            </div>
+                        <!--</div>-->
+                    <!--</a>-->
+                    <!--<a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">-->
+                        <!--<div class="row">-->
+                            <!--<div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>-->
+                            <!--<div class="col-md-7 hidden-xs">-->
+                                <!--<p class="apps-description">添加Namespace</p>-->
+                            <!--</div>-->
 
-                        </div>
-                    </a>
+                        <!--</div>-->
+                    <!--</a>-->
                     </section>
                 </div>
 
@@ -114,19 +114,19 @@
                                                         ng-disabled="namespace.isTextEditing"
                                                         ng-click="prepareReleaseNamespace(namespace)">发布
                                                 </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn">回滚
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_historyview_btn">
-                                                    查看历史版本
-                                                </button>
+                                                <!--<button type="button"-->
+                                                        <!--class="btn btn-default btn-sm J_tableview_btn">回滚-->
+                                                <!--</button>-->
+                                                <!--<button type="button"-->
+                                                        <!--class="btn btn-default btn-sm J_historyview_btn">-->
+                                                    <!--查看历史版本-->
+                                                <!--</button>-->
                                             </div>
                                             <div class="btn-group" role="group" aria-label="...">
                                                 <div class="btn-group" role="group">
-                                                    <button type="button"
-                                                            class="btn btn-default btn-sm J_tableview_btn">授权
-                                                    </button>
+                                                    <!--<button type="button"-->
+                                                            <!--class="btn btn-default btn-sm J_tableview_btn">授权-->
+                                                    <!--</button>-->
                                                     <a type="button" target="_blank"
                                                        href="sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
                                                        class="btn btn-default btn-sm J_tableview_btn">同步
@@ -142,11 +142,11 @@
                                                         class="btn btn-default btn-sm J_tableview_btn"
                                                         ng-click="switchView(namespace, 'table')">表格
                                                 </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_historyview_btn"
-                                                        ng-click="switchView(namespace, 'history')">
-                                                    更改日志
-                                                </button>
+                                                <!--<button type="button"-->
+                                                        <!--class="btn btn-default btn-sm J_historyview_btn"-->
+                                                        <!--ng-click="switchView(namespace, 'history')">-->
+                                                    <!--更改日志-->
+                                                <!--</button>-->
                                             </div>
                                         </div>
                                     </div>
@@ -202,16 +202,21 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr title="点击查看" data-toggle="modal" data-target="#oldValueModal" ng-repeat="config in namespace.items" ng-class="{warning:config.modified}"
-                                        ng-if="config.item.key" ng-click="watchItem(config.item.key, config.item.value, config.oldValue)">
+                                    <tr title="点击查看" data-toggle="modal" data-target="#oldValueModal"
+                                        ng-repeat="config in namespace.items" ng-class="{warning:config.modified}"
+                                        ng-if="config.item.key"
+                                        ng-click="watchItem(config.item.key, config.item.value, config.oldValue)">
                                         <td width="25%">
-                                            {{config.item.key | limitTo: 20}} {{config.item.key.length >  20 ? '...' : ''}}
+                                            {{config.item.key | limitTo: 20}} {{config.item.key.length > 20 ? '...' :
+                                            ''}}
                                         </td>
                                         <td width="30%">
-                                            {{config.item.value | limitTo: 20}} {{config.item.value.length >  20 ? '...' : ''}}
+                                            {{config.item.value | limitTo: 20}} {{config.item.value.length > 20 ? '...'
+                                            : ''}}
                                         </td>
                                         <td width="20%">
-                                            {{config.item.comment | limitTo: 20}} {{config.item.comment.length >  20 ? '...' : ''}}
+                                            {{config.item.comment | limitTo: 20}} {{config.item.comment.length > 20 ?
+                                            '...' : ''}}
                                         </td>
                                         <td width="10%">
                                             {{config.item.lastModifiedBy}}
@@ -334,7 +339,8 @@
                         <h4 class="modal-title">发布</h4>
                     </div>
                     <div class="modal-body">
-                        <input type="text" class="form-control" placeholder="input release title" ng-model="releaseTitle" required="required">
+                        <input type="text" class="form-control" placeholder="input release title"
+                               ng-model="releaseTitle" required="required">
                         <textarea rows="4" class="form-control" style="margin-top: 15px;" ng-model="releaseComment"
                                   placeholder="input release log...."></textarea>
                     </div>
@@ -377,9 +383,7 @@
             </div>
         </div>
 
-        </div>
     </div>
-
 </div>
 
 
