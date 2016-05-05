@@ -12,6 +12,7 @@ import com.ctrip.apollo.biz.entity.AppNamespace;
 import com.ctrip.apollo.biz.message.MessageListener;
 import com.ctrip.apollo.biz.message.Topics;
 import com.ctrip.apollo.biz.service.AppNamespaceService;
+import com.ctrip.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.apollo.core.ConfigConsts;
 import com.ctrip.apollo.core.dto.ApolloConfigNotification;
 import com.dianping.cat.Cat;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +49,9 @@ public class NotificationController implements MessageListener {
 
   @Autowired
   private AppNamespaceService appNamespaceService;
+
+  @Autowired
+  private EntityManagerUtil entityManagerUtil;
 
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
@@ -95,6 +98,13 @@ public class NotificationController implements MessageListener {
                                                 String dataCenter) {
     List<String> publicWatchedKeys = Lists.newArrayList();
     AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
+    /**
+     * Manually close the entity manager.
+     * Since for async request, Spring won't do so until the request is finished,
+     * which is unacceptable since we are doing long polling - means the db connection would be hold
+     * for a very long time
+     */
+    entityManagerUtil.closeEntityManager();
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
@@ -133,13 +143,15 @@ public class NotificationController implements MessageListener {
         new ResponseEntity<>(
             new ApolloConfigNotification(keys.get(2)), HttpStatus.OK);
 
-    Collection<DeferredResult<ResponseEntity<ApolloConfigNotification>>>
-        results = deferredResults.get(message);
+    //create a new list to avoid ConcurrentModificationException
+    List<DeferredResult<ResponseEntity<ApolloConfigNotification>>> results =
+        Lists.newArrayList(deferredResults.get(message));
     logger.info("Notify {} clients for key {}", results.size(), message);
 
     for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);
     }
+    logger.info("Notification completed");
   }
 
   private void logWatchedKeysToCat(List<String> watchedKeys, String eventName) {

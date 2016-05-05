@@ -14,6 +14,8 @@ import org.mockito.ArgumentCaptor;
 import org.unidal.lookup.ComponentTestCase;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -82,12 +84,13 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
   @Test
   public void testLoadConfigWithLocalFile() throws Exception {
-    File file = new File(someBaseDir, assembleLocalCacheFileName());
 
     String someKey = "someKey";
-    String someValue = "someValue";
+    String someValue = "someValue\nxxx\nyyy";
 
-    Files.write(someKey + "=" + someValue, file, Charsets.UTF_8);
+    Properties someProperties = new Properties();
+    someProperties.setProperty(someKey, someValue);
+    createLocalCachePropertyFile(someProperties);
 
     LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someBaseDir, someNamespace);
     Properties properties = localRepo.getConfig();
@@ -186,4 +189,17 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     }
   }
 
+  private File createLocalCachePropertyFile(Properties properties) throws IOException {
+    File file = new File(someBaseDir, assembleLocalCacheFileName());
+    FileOutputStream in = null;
+    try {
+      in = new FileOutputStream(file);
+      properties.store(in, "Persisted by LocalFileConfigRepositoryTest");
+    } finally {
+      if (in != null) {
+        in.close();
+      }
+    }
+    return file;
+  }
 }
