@@ -50,90 +50,6 @@ public class ConfigService {
   @Autowired
   private ConfigTextResolver resolver;
 
-  private Gson gson = new Gson();
-
-  /**
-   * load cluster all namespace info with items
-   */
-  public List<NamespaceVO> findNampspaces(String appId, Env env, String clusterName) {
-
-    List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
-    if (namespaces == null || namespaces.size() == 0) {
-      return Collections.emptyList();
-    }
-
-    List<NamespaceVO> namespaceVOs = new LinkedList<>();
-    for (NamespaceDTO namespace : namespaces) {
-
-      NamespaceVO namespaceVO = null;
-      try {
-        namespaceVO = parseNamespace(appId, env, clusterName, namespace);
-        namespaceVOs.add(namespaceVO);
-      } catch (Exception e) {
-        logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-                     appId, env, clusterName, namespace.getNamespaceName(), e);
-        throw e;
-      }
-    }
-
-    return namespaceVOs;
-  }
-
-  @SuppressWarnings("unchecked")
-  private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
-    NamespaceVO namespaceVO = new NamespaceVO();
-    namespaceVO.setNamespace(namespace);
-
-    List<NamespaceVO.ItemVO> itemVos = new LinkedList<>();
-    namespaceVO.setItems(itemVos);
-
-    String namespaceName = namespace.getNamespaceName();
-
-    //latest Release
-    ReleaseDTO release = null;
-    Map<String, String> releaseItems = new HashMap<>();
-    try {
-      release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
-      releaseItems = gson.fromJson(release.getConfigurations(), Map.class);
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-        logger.warn(ExceptionUtils.toString(e));
-      } else {
-        throw e;
-      }
-    }
-
-    //not Release config items
-    List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
-    int modifiedItemCnt = 0;
-    for (ItemDTO itemDTO : items) {
-
-      NamespaceVO.ItemVO itemVO = parseItemVO(itemDTO, releaseItems);
-
-      if (itemVO.isModified()) {
-        modifiedItemCnt++;
-      }
-
-      itemVos.add(itemVO);
-    }
-    namespaceVO.setItemModifiedCnt(modifiedItemCnt);
-
-    return namespaceVO;
-  }
-
-  private NamespaceVO.ItemVO parseItemVO(ItemDTO itemDTO, Map<String, String> releaseItems) {
-    String key = itemDTO.getKey();
-    NamespaceVO.ItemVO itemVO = new NamespaceVO.ItemVO();
-    itemVO.setItem(itemDTO);
-    String newValue = itemDTO.getValue();
-    String oldValue = releaseItems.get(key);
-    if (!StringUtils.isEmpty(key) && (oldValue == null || !newValue.equals(oldValue))) {
-      itemVO.setModified(true);
-      itemVO.setOldValue(oldValue == null ? "" : oldValue);
-      itemVO.setNewValue(newValue);
-    }
-    return itemVO;
-  }
 
   /**
    * parse config text and update config items
@@ -160,9 +76,7 @@ public class ConfigService {
                    namespaceName);
       throw new ServiceException(e.getMessage());
     }
-
   }
-
 
   /**
    * createRelease config items
@@ -190,7 +104,6 @@ public class ConfigService {
         throw new ServiceException(String.format("sync item error. env:%s, clusterName:%s", namespaceIdentifer.getEnv(),
                                                  namespaceIdentifer.getClusterName()), e);
       }
-
     }
   }
 

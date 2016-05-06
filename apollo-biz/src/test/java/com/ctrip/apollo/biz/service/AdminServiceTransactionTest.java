@@ -50,7 +50,7 @@ public class AdminServiceTransactionTest {
       System.out.println(app.getAppId());
     }
     Assert.assertEquals(0, appRepository.count());
-    Assert.assertEquals(0, appNamespaceRepository.count());
+    Assert.assertEquals(7, appNamespaceRepository.count());
     Assert.assertEquals(0, namespaceRepository.count());
     Assert.assertEquals(0, clusterRepository.count());
   }
@@ -58,7 +58,7 @@ public class AdminServiceTransactionTest {
   @Before
   public void setUpTestDataWithinTransaction() {
     Assert.assertEquals(0, appRepository.count());
-    Assert.assertEquals(0, appNamespaceRepository.count());
+    Assert.assertEquals(7, appNamespaceRepository.count());
     Assert.assertEquals(0, namespaceRepository.count());
     Assert.assertEquals(0, clusterRepository.count());
   }
@@ -82,7 +82,7 @@ public class AdminServiceTransactionTest {
   @After
   public void tearDownWithinTransaction() {
     Assert.assertEquals(1, appRepository.count());
-    Assert.assertEquals(1, appNamespaceRepository.count());
+    Assert.assertEquals(8, appNamespaceRepository.count());
     Assert.assertEquals(1, namespaceRepository.count());
     Assert.assertEquals(1, clusterRepository.count());
   }
@@ -90,7 +90,7 @@ public class AdminServiceTransactionTest {
   @AfterTransaction
   public void verifyFinalDatabaseState() {
     Assert.assertEquals(0, appRepository.count());
-    Assert.assertEquals(0, appNamespaceRepository.count());
+    Assert.assertEquals(7, appNamespaceRepository.count());
     Assert.assertEquals(0, namespaceRepository.count());
     Assert.assertEquals(0, clusterRepository.count());
   }

@@ -5,6 +5,7 @@ import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
+import com.ctrip.apollo.portal.entity.NamespaceVO;
 import com.ctrip.apollo.portal.service.NamespaceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 public class NamespaceController {
+
   @Autowired
   private NamespaceService namespaceService;
 
@@ -33,6 +35,16 @@ public class NamespaceController {
     }
     return namespaceService.save(Env.valueOf(env), namespace);
 
+  }
+
+  @RequestMapping("/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces")
+  public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
+                                          @PathVariable String clusterName) {
+    if (StringUtils.isContainEmpty(appId, env, clusterName)) {
+      throw new BadRequestException("app id and cluster name can not be empty");
+    }
+
+    return namespaceService.findNampspaces(appId, Env.valueOf(env), clusterName);
   }
 
 }

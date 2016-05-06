@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     ConfigServiceTest.class, PropertyResolverTest.class,
-    AppServiceTest.class
+    AppServiceTest.class, NamespaceServiceTest.class
   })
 public class AllTests {
 
