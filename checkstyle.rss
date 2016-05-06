@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 164,
+      <title>File: 167,
              Errors: 0,
-             Warnings: 747,
+             Warnings: 774,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -704,13 +704,27 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.core.dto.AppNamespaceDTO.java">com/ctrip/apollo/core/dto/AppNamespaceDTO.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.portal.service.ConfigService.java">com/ctrip/apollo/portal/service/ConfigService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  55
+                  44
                 </td>
                 <td>
                   0
@@ -1242,7 +1256,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  8
+                  10
                 </td>
                 <td>
                   0
@@ -1298,7 +1312,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  20
                 </td>
                 <td>
                   0
@@ -1446,6 +1460,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.portal.service.NamespaceService.java">com/ctrip/apollo/portal/service/NamespaceService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.PortalApplication.java">com/ctrip/apollo/PortalApplication.java</a>
                 </td>
                 <td>
@@ -1522,7 +1550,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  5
                 </td>
                 <td>
                   0
@@ -1579,6 +1607,20 @@ under the License.
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.portal.controller.NamespaceController.java">com/ctrip/apollo/portal/controller/NamespaceController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
                 </td>
                 <td>
                   0
@@ -2166,7 +2208,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  4
                 </td>
                 <td>
                   0
@@ -2306,7 +2348,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  27
+                  35
                 </td>
                 <td>
                   0
