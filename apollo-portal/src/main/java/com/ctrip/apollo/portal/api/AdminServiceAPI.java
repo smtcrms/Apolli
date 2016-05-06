@@ -1,6 +1,7 @@
 package com.ctrip.apollo.portal.api;
 
 
+import com.ctrip.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.dto.ClusterDTO;
@@ -61,6 +62,21 @@ public class AdminServiceAPI {
           + String.format("apps/%s/clusters/%s/namespaces/%s", appId, clusterName, namespaceName),
           NamespaceDTO.class);
     }
+
+    public List<AppNamespaceDTO> findPublicAppNamespaces(Env env){
+      AppNamespaceDTO[] appNamespaceDTOs = restTemplate.getForObject(
+          getAdminServiceHost(env)+ "appnamespaces/public",
+          AppNamespaceDTO[].class);
+      return Arrays.asList(appNamespaceDTOs);
+    }
+
+    public NamespaceDTO save(Env env, NamespaceDTO namespace) {
+      return restTemplate.postForEntity(getAdminServiceHost(env) +
+                                        String.format("/apps/%s/clusters/%s/namespaces", namespace.getAppId(),
+                                                      namespace.getClusterName()), namespace, NamespaceDTO.class)
+          .getBody();
+    }
+
   }
 
   @Service

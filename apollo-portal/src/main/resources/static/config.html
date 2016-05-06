@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>apollo</title>
-    <link rel="stylesheet" type="text/css" href="../vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../vendor/angular/angular-toastr-1.4.1.min.css">
-    <link rel="stylesheet" type="text/css" media='all' href="../vendor/angular/loading-bar.min.css">
-    <link rel="stylesheet" type="text/css" href="../styles/common-style.css">
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/angular/angular-toastr-1.4.1.min.css">
+    <link rel="stylesheet" type="text/css" media='all' href="vendor/angular/loading-bar.min.css">
+    <link rel="stylesheet" type="text/css" href="styles/common-style.css">
 </head>
 
 <body>
 
-<div ng-include="'common/nav.html'"></div>
+<div ng-include="'views/common/nav.html'"></div>
 
 <div class="container-fluid apollo-container">
     <div class="app" ng-controller="AppConfigController as appConfig">
@@ -28,7 +28,7 @@
                     <!--app info-->
                     <section class="panel">
                         <header class="panel-heading">
-                            <img src="../img/info.png" class="i-25-20"/> 应用信息
+                            <img src="img/info.png" class="i-25-20"/> 应用信息
                             <span class="tools pull-right">
                                 <a href="javascript:;" class="icon-chevron-down"></a>
                             </span>
@@ -68,14 +68,13 @@
                     <a class="list-group-item" data-toggle="modal" data-target="#createEnvModal"
                        ng-show="missEnvs.length > 0">
                         <div class="row">
-                            <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
+                            <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
                             <div class="col-md-7 hidden-xs">
-                                <p class="apps-description">添加环境</p>
+                                <p class="btn-title">添加环境</p>
                             </div>
-
                         </div>
                     </a>
-                    <!--<a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">-->
+                    <!--<a class="list-group-item" target="_blank" href="/views/config.html?#/appid={{app.appId}}">-->
                         <!--<div class="row">-->
                             <!--<div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>-->
                             <!--<div class="col-md-7 hidden-xs">-->
@@ -84,15 +83,14 @@
 
                         <!--</div>-->
                     <!--</a>-->
-                    <!--<a class="list-group-item" target="_blank" href="/views/app.html?#/appid={{app.appId}}">-->
-                        <!--<div class="row">-->
-                            <!--<div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>-->
-                            <!--<div class="col-md-7 hidden-xs">-->
-                                <!--<p class="apps-description">添加Namespace</p>-->
-                            <!--</div>-->
-
-                        <!--</div>-->
-                    <!--</a>-->
+                    <a class="list-group-item" target="_blank" href="namespace.html?#/appid={{pageContext.appId}}">
+                        <div class="row">
+                            <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
+                            <div class="col-md-7 hidden-xs">
+                                <p class="btn-title">添加Namespace</p>
+                            </div>
+                        </div>
+                    </a>
                     </section>
                 </div>
 
@@ -128,7 +126,7 @@
                                                             <!--class="btn btn-default btn-sm J_tableview_btn">授权-->
                                                     <!--</button>-->
                                                     <a type="button" target="_blank"
-                                                       href="sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
+                                                       href="config/sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
                                                        class="btn btn-default btn-sm J_tableview_btn">同步
                                                     </a>
                                                 </div>
@@ -236,7 +234,7 @@
                                 <div class="row">
                                     <div class="col-md-11 col-md-offset-1 list" style="">
                                         <div class="media">
-                                            <img src="../img/history.png"/>
+                                            <img src="img/history.png"/>
 
                                             <div class="row">
                                                 <div class="col-md-10"><h5 class="media-heading">2016-02-23
@@ -254,7 +252,7 @@
                                             <hr>
                                         </div>
                                         <div class="media">
-                                            <img src="../img/history.png"/>
+                                            <img src="img/history.png"/>
 
                                             <div class="row">
                                                 <div class="col-md-10"><h5 class="media-heading">2016-02-23
@@ -316,7 +314,7 @@
                         <h4 class="modal-title">Commit changes</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea rows="4" class="form-control" style="width:570px;" placeholder="input change log...."
+                        <textarea rows="4" class="form-control" style="width:570px;" placeholder="Add an optional extended description..."
                                   ng-model="commitComment"></textarea>
                     </div>
                     <div class="modal-footer">
@@ -342,7 +340,7 @@
                         <input type="text" class="form-control" placeholder="input release title"
                                ng-model="releaseTitle" required="required">
                         <textarea rows="4" class="form-control" style="margin-top: 15px;" ng-model="releaseComment"
-                                  placeholder="input release log...."></textarea>
+                                  placeholder="Add an optional extended description..."></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -387,41 +385,41 @@
 </div>
 
 
-<div ng-include="'common/footer.html'"></div>
+<div ng-include="'views/common/footer.html'"></div>
 
 
 <!-- jquery.js -->
-<script src="../vendor/jquery.js" type="text/javascript"></script>
+<script src="vendor/jquery.js" type="text/javascript"></script>
 
 <!--lodash.js-->
-<script src="../vendor/lodash.min.js" type="text/javascript"></script>
+<script src="vendor/lodash.min.js" type="text/javascript"></script>
 
 <!--nicescroll-->
-<script src="../vendor/jquery.nicescroll.min.js"></script>
+<script src="vendor/jquery.nicescroll.min.js"></script>
 
 <!--angular-->
-<script src="../vendor/angular/angular.min.js"></script>
-<script src="../vendor/angular/angular-ui-router.min.js"></script>
-<script src="../vendor/angular/angular-resource.min.js"></script>
-<script src="../vendor/angular/angular-toastr-1.4.1.tpls.min.js"></script>
-<script src="../vendor/angular/loading-bar.min.js"></script>
+<script src="vendor/angular/angular.min.js"></script>
+<script src="vendor/angular/angular-ui-router.min.js"></script>
+<script src="vendor/angular/angular-resource.min.js"></script>
+<script src="vendor/angular/angular-toastr-1.4.1.tpls.min.js"></script>
+<script src="vendor/angular/loading-bar.min.js"></script>
 
 <!-- bootstrap.js -->
-<script src="../vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="../vendor/bootstrap/js/bootstrap-treeview.min.js" type="text/javascript"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="vendor/bootstrap/js/bootstrap-treeview.min.js" type="text/javascript"></script>
 
 <!--biz script-->
-<script type="application/javascript" src="../scripts/app.js"></script>
+<script type="application/javascript" src="scripts/app.js"></script>
 
 <!--service-->
-<script type="application/javascript" src="../scripts/services/AppService.js"></script>
-<script type="application/javascript" src="../scripts/services/ConfigService.js"></script>
-<script type="application/javascript" src="../scripts/AppUtils.js"></script>
+<script type="application/javascript" src="scripts/services/AppService.js"></script>
+<script type="application/javascript" src="scripts/services/ConfigService.js"></script>
+<script type="application/javascript" src="scripts/AppUtils.js"></script>
 
 <!--controller-->
-<script type="application/javascript" src="../scripts/controller/app/AppConfigController.js"></script>
+<script type="application/javascript" src="scripts/controller/app/AppConfigController.js"></script>
 
-<script type="application/javascript" src="../scripts/PageCommon.js"></script>
+<script type="application/javascript" src="scripts/PageCommon.js"></script>
 
 </body>
 </html>

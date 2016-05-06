@@ -3,7 +3,6 @@ sync_item_module.controller("SyncItemController",
                                function ($scope, $location, $window, toastr, AppService, AppUtil, ConfigService) {
 
                                    var params = AppUtil.parseParams($location.$$url);
-                                   var currentUser = 'test_user';
                                    $scope.pageContext = {
                                        appId: params.appid,
                                        env: params.env,
@@ -115,7 +114,7 @@ sync_item_module.controller("SyncItemController",
                                    };
 
                                    $scope.backToAppHomePage = function () {
-                                       $window.location.href = '/views/app.html?#appid=' + $scope.pageContext.appId;
+                                       $window.location.href = '/views/config.html?#appid=' + $scope.pageContext.appId;
                                    };
 
                                    $scope.switchSelect = function (o) {
