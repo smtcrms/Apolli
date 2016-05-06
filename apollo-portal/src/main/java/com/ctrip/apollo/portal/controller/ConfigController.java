@@ -31,16 +31,6 @@ public class ConfigController {
   @Autowired
   private ConfigService configService;
 
-  @RequestMapping("/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces")
-  public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
-      @PathVariable String clusterName) {
-    if (StringUtils.isContainEmpty(appId, env, clusterName)) {
-      throw new BadRequestException("app id and cluster name can not be empty");
-    }
-
-    return configService.findNampspaces(appId, Env.valueOf(env), clusterName);
-  }
-
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
       "application/json"})
   public void modifyItems(@PathVariable String appId, @PathVariable String env,

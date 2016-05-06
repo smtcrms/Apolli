@@ -28,4 +28,8 @@ public class PortalSettings {
   public List<Env> getEnvs() {
     return envs;
   }
+
+  public Env getFirstEnv(){
+    return envs.get(0);
+  }
 }

@@ -259,3 +259,9 @@ table th {
     padding-bottom: 4px;
 }
 
+.list-group-item .btn-title{
+    color: gray;
+    font-family: "Apple Color Emoji";
+    font-size: 16px;
+}
+
