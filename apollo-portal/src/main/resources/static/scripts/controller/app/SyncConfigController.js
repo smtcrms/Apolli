@@ -114,7 +114,7 @@ sync_item_module.controller("SyncItemController",
                                    };
 
                                    $scope.backToAppHomePage = function () {
-                                       $window.location.href = '/views/config.html?#appid=' + $scope.pageContext.appId;
+                                       $window.location.href = '/config.html?#appid=' + $scope.pageContext.appId;
                                    };
 
                                    $scope.switchSelect = function (o) {
