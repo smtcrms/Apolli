@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,8 +51,19 @@ public class NamespaceService {
     return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstEnv());
   }
 
-  public NamespaceDTO save(Env env, NamespaceDTO namespace){
-    return namespaceAPI.save(env, namespace);
+  public NamespaceDTO saveNamespace(Env env, NamespaceDTO namespace){
+    return namespaceAPI.saveNamespace(env, namespace);
+  }
+
+  public void saveAppNamespace(AppNamespaceDTO appNamespace) {
+    for (Env env : portalSettings.getEnvs()) {
+      try {
+        namespaceAPI.saveAppNamespace(env, appNamespace);
+      } catch (HttpStatusCodeException e) {
+        logger.error(ExceptionUtils.toString(e));
+        throw e;
+      }
+    }
   }
 
   /**

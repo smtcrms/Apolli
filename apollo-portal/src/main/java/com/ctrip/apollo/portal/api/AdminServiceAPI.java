@@ -70,10 +70,16 @@ public class AdminServiceAPI {
       return Arrays.asList(appNamespaceDTOs);
     }
 
-    public NamespaceDTO save(Env env, NamespaceDTO namespace) {
+    public NamespaceDTO saveNamespace(Env env, NamespaceDTO namespace) {
       return restTemplate.postForEntity(getAdminServiceHost(env) +
                                         String.format("/apps/%s/clusters/%s/namespaces", namespace.getAppId(),
                                                       namespace.getClusterName()), namespace, NamespaceDTO.class)
+          .getBody();
+    }
+
+    public AppNamespaceDTO saveAppNamespace(Env env, AppNamespaceDTO appNamespace) {
+      return restTemplate.postForEntity(getAdminServiceHost(env) +
+                                        String.format("/apps/%s/appnamespaces", appNamespace.getAppId()), appNamespace, AppNamespaceDTO.class)
           .getBody();
     }
 
