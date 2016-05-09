@@ -1,75 +1,6 @@
-application_module.controller("AppConfigController",
-                              ['$scope', '$location', 'toastr', 'AppService', 'AppUtil', 'ConfigService',
-                               function ($scope, $location, toastr, AppService, AppUtil, ConfigService) {
-
-
-                                   var appId = AppUtil.parseParams($location.$$url).appid;
-                                   var pageContext = {
-                                       appId: appId,
-                                       env: '',
-                                       clusterName: 'default'
-                                   };
-
-                                   $scope.pageContext = pageContext;
-
-                                   ////// load cluster nav tree //////
-
-                                   AppService.load_nav_tree($scope.pageContext.appId).then(function (result) {
-                                       var navTree = [];
-                                       var nodes = result.nodes;
-                                       nodes.forEach(function (item) {
-                                           var node = {};
-                                           //first nav
-                                           node.text = item.env;
-                                           var clusterNodes = [];
-                                           //如果env下面只有一个default集群则不显示集群列表
-                                           if (item.clusters && item.clusters.length == 1 && item.clusters[0].name == 'default'){
-                                               node.selectable = true;
-                                           }else {
-                                               node.selectable = false;
-                                               //second nav
-                                               item.clusters.forEach(function (item) {
-                                                   var clusterNode = {},
-                                                       parentNode = [];
-
-                                                   clusterNode.text = item.name;
-                                                   parentNode.push(node.text);
-                                                   clusterNode.tags = parentNode;
-                                                   clusterNodes.push(clusterNode);
-                                               });
-                                           }
-                                           node.nodes = clusterNodes;
-                                           navTree.push(node);
-                                       });
-                                       $('#treeview').treeview({
-                                                                   color: "#428bca",
-                                                                   showBorder: true,
-                                                                   data: navTree,
-                                                                   levels: 99,
-                                                                   onNodeSelected: function (event, data) {
-                                                                       if (!data.tags){//first nav node
-                                                                           $scope.pageContext.env = data.text;
-                                                                           $scope.pageContext.clusterName = 'default';
-                                                                       }else {//second cluster node
-                                                                           $scope.pageContext.env = data.tags[0];
-                                                                           $scope.pageContext.clusterName = data.text;
-                                                                       }
-                                                                       refreshNamespaces();
-                                                                   }
-                                                               });
-                                   }, function (result) {
-                                       toastr.error(AppUtil.errorMsg(result), "加载导航出错");
-                                   });
-
-                                   ////// app info //////
-
-                                   AppService.load($scope.pageContext.appId).then(function (result) {
-                                       $scope.appBaseInfo = result.app;
-                                       $scope.missEnvs = result.missEnvs;
-                                       $scope.selectedEnvs = angular.copy($scope.missEnvs);
-                                   },function (result) {
-                                       toastr.error(AppUtil.errorMsg(result), "加载App信息出错");    
-                                   });
+application_module.controller("ConfigNamespaceController",
+                              ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService',
+                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService) {
 
                                    ////// namespace //////
 
@@ -79,14 +10,12 @@ application_module.controller("AppConfigController",
                                        LOG: 'log'
                                    };
 
-                                   refreshNamespaces();
-
-                                   function refreshNamespaces(viewType) {
-                                       if ($scope.pageContext.env == ''){
+                                   $rootScope.refreshNamespaces = function (viewType) {
+                                       if ($rootScope.pageContext.env == ''){
                                            return;
                                        }
-                                       ConfigService.load_all_namespaces($scope.pageContext.appId, $scope.pageContext.env,
-                                                                         $scope.pageContext.clusterName, viewType).then(
+                                       ConfigService.load_all_namespaces($rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                                                         $rootScope.pageContext.clusterName, viewType).then(
                                            function (result) {
                                                $scope.namespaces = result;
 
@@ -161,14 +90,13 @@ application_module.controller("AppConfigController",
                                            function (result) {
                                                toastr.success("更新成功");
                                                //refresh all namespace items
-                                               refreshNamespaces();
+                                               $rootScope.refreshNamespaces();
 
                                                $scope.draft.backupText = '';//清空备份文本
                                                $scope.toggleTextEditStatus($scope.draft);
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
-
                                            }
                                        );
                                    };
@@ -205,55 +133,20 @@ application_module.controller("AppConfigController",
                                    $scope.releaseComment = '';
                                    $scope.releaseTitle = '';
                                    $scope.release = function () {
-                                       ConfigService.release($scope.pageContext.appId, $scope.pageContext.env, 
-                                                             $scope.pageContext.clusterName,
+                                       ConfigService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                                             $rootScope.pageContext.clusterName,
                                                              releaseNamespace.namespace.namespaceName, $scope.releaseTitle,
                                                              $scope.releaseComment).then(
                                            function (result) {
                                                toastr.success("发布成功");
                                                //refresh all namespace items
-                                               refreshNamespaces();
+                                               $rootScope.refreshNamespaces();
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result),  "发布失败");
 
                                            }
                                        );    
-                                   }
-                                   
-                                   ////// create env //////
-
-                                   $scope.toggleSelection = function toggleSelection(env) {
-                                       var idx = $scope.selectedEnvs.indexOf(env);
-
-                                       // is currently selected
-                                       if (idx > -1) {
-                                           $scope.selectedEnvs.splice(idx, 1);
-                                       }
-
-                                       // is newly selected
-                                       else {
-                                           $scope.selectedEnvs.push(env);
-                                       }
-                                   };
-
-                                   $scope.createEnvs = function () {
-                                       var count = 0;
-                                       $scope.selectedEnvs.forEach(function (env) {
-                                           AppService.create(env, $scope.appBaseInfo).then(function (result) {
-                                               toastr.success(env, '创建成功');
-                                               count ++;
-                                               if (count == $scope.selectedEnvs.length){
-                                                 location.reload(true);
-                                               }
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), '创建失败:' + env);
-                                               count ++;
-                                               if (count == $scope.selectedEnvs){
-                                                   $route.reload();
-                                               }
-                                           });
-                                       });
                                    };
                                    
                                }]);
