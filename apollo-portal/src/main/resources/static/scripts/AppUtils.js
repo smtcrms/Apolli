@@ -22,13 +22,6 @@ appUtil.service('AppUtil', [function () {
                 result[kv[0]] = kv[1];
             });
             return result;
-        },
-        cutOffString: function (str, maxLength) {
-            if (!str || maxLength <= 0) {
-                return '';
-            }
-            return str.length > maxLength ? str.substr(0, maxLength) : str;
         }
-
     }
 }]);

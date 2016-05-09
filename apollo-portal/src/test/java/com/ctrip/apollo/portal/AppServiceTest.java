@@ -71,9 +71,9 @@ public class AppServiceTest {
 //    appDTO.setOwnerEmail("qq@qq.com");
 //    appDTO.setOwnerName("zz");
 //
-//    when(appService.save(appDTO)).thenReturn(appDTO);
+//    when(appService.createApp(appDTO)).thenReturn(appDTO);
 //
-//    AppDTO createApp = appService.save(appDTO);
+//    AppDTO createApp = appService.createApp(appDTO);
 //
 //    assertEquals(appId, createApp.getAppId());
 //    assertEquals(appName, createApp.getName());

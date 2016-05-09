@@ -83,7 +83,7 @@
 
                         <!--</div>-->
                     <!--</a>-->
-                    <a class="list-group-item" target="_blank" href="namespace.html?#/appid={{pageContext.appId}}">
+                    <a class="list-group-item" href="namespace.html?#/appid={{pageContext.appId}}&type=link">
                         <div class="row">
                             <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
                             <div class="col-md-7 hidden-xs">
@@ -294,7 +294,7 @@
                         {{watch.value}}
                         <div ng-show="watch.oldValue">
                             <hr>
-                            老的值:{{watch.oldValue}}
+                            <b>已发布的值:</b>{{watch.oldValue}}
                         </div>
                     </div>
                     <div class="modal-footer">

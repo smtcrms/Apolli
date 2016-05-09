@@ -1,6 +1,5 @@
 package com.ctrip.apollo.portal.service;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,11 +83,11 @@ public class AppService {
     return tree;
   }
 
-  public void save(AppDTO app) {
+  public void createAppInAllEnvs(AppDTO app) {
     List<Env> envs = portalSettings.getEnvs();
     for (Env env : envs) {
       try {
-        appAPI.save(env, app);
+        appAPI.createApp(env, app);
       } catch (HttpStatusCodeException e) {
         logger.error(ExceptionUtils.toString(e));
         throw e;
@@ -96,9 +95,9 @@ public class AppService {
     }
   }
 
-  public void save(Env env, AppDTO app) {
+  public void createApp(Env env, AppDTO app) {
     try {
-      appAPI.save(env, app);
+      appAPI.createApp(env, app);
     } catch (HttpStatusCodeException e) {
       logger.error(ExceptionUtils.toString(e));
       throw e;

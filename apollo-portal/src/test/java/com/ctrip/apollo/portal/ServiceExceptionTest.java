@@ -60,7 +60,7 @@ public class ServiceExceptionTest extends AbstractPortalTest {
     HttpStatusCodeException adminException =
         new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "admin server error",
             new Gson().toJson(errorAttributes).getBytes(), Charset.defaultCharset());
-    when(appAPI.save(any(Env.class), any(AppDTO.class))).thenThrow(adminException);
+    when(appAPI.createApp(any(Env.class), any(AppDTO.class))).thenThrow(adminException);
 
     AppDTO dto = generateSampleDTOData();
     try {

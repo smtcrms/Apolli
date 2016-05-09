@@ -9,7 +9,6 @@ import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.ItemDiffs;
 import com.ctrip.apollo.portal.entity.form.NamespaceSyncModel;
 import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.apollo.portal.entity.NamespaceVO;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.apollo.portal.service.ConfigService;
 

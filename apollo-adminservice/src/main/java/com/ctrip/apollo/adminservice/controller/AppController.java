@@ -40,6 +40,7 @@ public class AppController {
       entity = appService.update(managedEntity);
     } else {
       entity.setDataChangeCreatedBy(user.getUsername());
+      entity.setDataChangeLastModifiedBy(user.getUsername());
       entity = adminService.createNewApp(entity);
     }
 

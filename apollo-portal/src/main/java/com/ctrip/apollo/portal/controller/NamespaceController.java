@@ -29,12 +29,20 @@ public class NamespaceController {
   }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
-  public NamespaceDTO save(@PathVariable String env, @RequestBody NamespaceDTO namespace){
+  public NamespaceDTO createNamespace(@PathVariable String env, @RequestBody NamespaceDTO namespace){
     if (StringUtils.isContainEmpty(env, namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName())){
       throw new BadRequestException("request payload contains empty");
     }
-    return namespaceService.save(Env.valueOf(env), namespace);
+    return namespaceService.createNamespace(Env.valueOf(env), namespace);
+  }
 
+  @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
+  public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespaceDTO appNamespace){
+    if (StringUtils.isContainEmpty(appId, appNamespace.getAppId(), appNamespace.getName())){
+      throw new BadRequestException("request payload contains empty");
+    }
+
+    namespaceService.createAppNamespace(appNamespace);
   }
 
   @RequestMapping("/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces")
