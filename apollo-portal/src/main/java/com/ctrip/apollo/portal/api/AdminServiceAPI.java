@@ -38,7 +38,7 @@ public class AdminServiceAPI {
       return restTemplate.getForObject(getAdminServiceHost(env) + APP_API + "/" + appId, AppDTO.class);
     }
 
-    public AppDTO save(Env env, AppDTO app) {
+    public AppDTO createApp(Env env, AppDTO app) {
       return restTemplate.postForEntity(getAdminServiceHost(env) + APP_API, app, AppDTO.class)
           .getBody();
     }
@@ -70,14 +70,14 @@ public class AdminServiceAPI {
       return Arrays.asList(appNamespaceDTOs);
     }
 
-    public NamespaceDTO saveNamespace(Env env, NamespaceDTO namespace) {
+    public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
       return restTemplate.postForEntity(getAdminServiceHost(env) +
                                         String.format("/apps/%s/clusters/%s/namespaces", namespace.getAppId(),
                                                       namespace.getClusterName()), namespace, NamespaceDTO.class)
           .getBody();
     }
 
-    public AppNamespaceDTO saveAppNamespace(Env env, AppNamespaceDTO appNamespace) {
+    public AppNamespaceDTO createAppNamespace(Env env, AppNamespaceDTO appNamespace) {
       return restTemplate.postForEntity(getAdminServiceHost(env) +
                                         String.format("/apps/%s/appnamespaces", appNamespace.getAppId()), appNamespace, AppNamespaceDTO.class)
           .getBody();

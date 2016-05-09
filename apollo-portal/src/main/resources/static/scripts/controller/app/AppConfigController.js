@@ -121,6 +121,7 @@ application_module.controller("AppConfigController",
                                        namespace.viewType = viewType;
                                    };
                                    
+                                   var MAX_ROW_SIZE = 30;
                                    //把表格内容解析成文本
                                    function parseModel2Text(namespace) {
                                        
@@ -139,8 +140,7 @@ application_module.controller("AppConfigController",
                                            itemCnt ++;
                                        });
 
-                                       itemCnt = itemCnt > 30 ? 30 : itemCnt;
-                                       namespace.itemCnt = itemCnt + 3;
+                                       namespace.itemCnt = itemCnt > MAX_ROW_SIZE ? MAX_ROW_SIZE : itemCnt + 3;
                                        return result;
                                    }
 

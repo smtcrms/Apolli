@@ -49,9 +49,9 @@ public class AppController {
       throw new BadRequestException("request payload contains empty");
     }
     if ("ALL".equals(env)){
-      appService.save(app);
+      appService.createAppInAllEnvs(app);
     } else {
-      appService.save(Env.valueOf(env), app);
+      appService.createApp(Env.valueOf(env), app);
     }
     return ResponseEntity.ok().build();
   }

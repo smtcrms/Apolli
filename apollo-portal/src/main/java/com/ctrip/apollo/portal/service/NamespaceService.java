@@ -51,14 +51,14 @@ public class NamespaceService {
     return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstEnv());
   }
 
-  public NamespaceDTO saveNamespace(Env env, NamespaceDTO namespace){
-    return namespaceAPI.saveNamespace(env, namespace);
+  public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace){
+    return namespaceAPI.createNamespace(env, namespace);
   }
 
-  public void saveAppNamespace(AppNamespaceDTO appNamespace) {
+  public void createAppNamespace(AppNamespaceDTO appNamespace) {
     for (Env env : portalSettings.getEnvs()) {
       try {
-        namespaceAPI.saveAppNamespace(env, appNamespace);
+        namespaceAPI.createAppNamespace(env, appNamespace);
       } catch (HttpStatusCodeException e) {
         logger.error(ExceptionUtils.toString(e));
         throw e;
