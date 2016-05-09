@@ -15,17 +15,17 @@ a {
     cursor: pointer;
 }
 
-.i-20{
+.i-20 {
     height: 20px;
     width: 20px;
 }
 
-.i-25-20{
+.i-25-20 {
     height: 20px;
     width: 25px;
 }
 
-.i-15{
+.i-15 {
     height: 15px;
     width: 15px;
 }
@@ -109,6 +109,9 @@ table th {
     margin-top: 20px;
 }
 
+.node-treeview{
+    color: #797979;
+}
 .apps .apps-description {
     color: gray;
     font-family: "Apple Color Emoji";
@@ -150,7 +153,6 @@ table th {
 
 #config-info {
     min-height: 500px;
-    /*background-color: #ffffff;*/
 }
 
 #config-info .nav {
@@ -182,6 +184,24 @@ table th {
     padding-top: 19px;
 }
 
+.config-item-container .panel{
+    border-radius: 0px;
+}
+.config-item-container .panel-heading b {
+    font-size: 18px;
+}
+
+.config-item-container .panel-heading .badge {
+    padding: 1px 4px;
+    background: #ffffff;
+    color: #0f0f0f;
+}
+
+.config-item-container .form-control[disabled] {
+    background: #ffffff;
+    border: 0px;
+}
+
 .config-item-container .config-items {
     height: 500px;
     overflow: scroll;
@@ -195,10 +215,11 @@ table th {
     table-layout: fixed;
 }
 
-.namespace-view-table tr{
+.namespace-view-table tr {
     cursor: pointer;
 
 }
+
 .namespace-view-table td {
     word-wrap: break-word;
 }
@@ -258,7 +279,7 @@ table th {
     padding-bottom: 4px;
 }
 
-.list-group-item .btn-title{
+.list-group-item .btn-title {
     color: gray;
     font-family: "Apple Color Emoji";
     font-size: 16px;
