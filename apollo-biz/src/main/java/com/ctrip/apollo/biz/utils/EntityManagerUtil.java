@@ -1,5 +1,7 @@
 package com.ctrip.apollo.biz.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.orm.jpa.EntityManagerHolder;
@@ -11,6 +13,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 @Component
 public class EntityManagerUtil extends EntityManagerFactoryAccessor {
+  private static final Logger logger = LoggerFactory.getLogger(EntityManagerUtil.class);
   /**
    * close the entity manager.
    * Use it with caution! This is only intended for use with async request, which Spring won't
