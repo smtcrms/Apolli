@@ -33,6 +33,9 @@ application_module.controller("ConfigNamespaceController",
                                                        item.isTextEditing = false;
                                                    });
                                                }
+                                               setInterval(function () {
+                                                   $('[data-tooltip="tooltip"]').tooltip();
+                                               },2500);
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");

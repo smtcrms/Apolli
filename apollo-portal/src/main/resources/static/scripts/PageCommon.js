@@ -10,3 +10,7 @@ $(document).ready(function () {
                              zindex: '1000'
                          });
 });
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+});

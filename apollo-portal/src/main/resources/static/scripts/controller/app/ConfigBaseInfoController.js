@@ -42,7 +42,7 @@ application_module.controller("ConfigBaseInfoController",
                                            navTree.push(node);
                                        });
                                        $('#treeview').treeview({
-                                                                   color: "#428bca",
+                                                                   color: "#797979",
                                                                    showBorder: true,
                                                                    data: navTree,
                                                                    levels: 99,
