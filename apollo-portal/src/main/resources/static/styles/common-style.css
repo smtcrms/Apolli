@@ -15,6 +15,12 @@ a {
     cursor: pointer;
 }
 
+.logo {
+    width: 150px;
+    height: 50px;
+    background: url('../img/logo.png') no-repeat
+}
+
 .i-20 {
     height: 20px;
     width: 20px;
@@ -109,9 +115,10 @@ table th {
     margin-top: 20px;
 }
 
-.node-treeview{
+.node-treeview {
     color: #797979;
 }
+
 .apps .apps-description {
     color: gray;
     font-family: "Apple Color Emoji";
@@ -184,9 +191,10 @@ table th {
     padding-top: 19px;
 }
 
-.config-item-container .panel{
+.config-item-container .panel {
     border-radius: 0px;
 }
+
 .config-item-container .panel-heading b {
     font-size: 18px;
 }
@@ -283,5 +291,48 @@ table th {
     color: gray;
     font-family: "Apple Color Emoji";
     font-size: 16px;
+}
+
+/*搜索框*/
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0);
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background: rgba(255, 255, 255, 0);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+    background: rgba(255, 255, 255, 0);
+}
+
+.app-list {
+    width: 350px;
+    height: 200px;
+    position: absolute;
+    margin-left: 0px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    overflow-y: scroll;
+    z-index: 1000;
+}
+
+.app-list .app-item {
+    font-size: medium;
+    padding: 5px 10px;
+
+}
+
+.app-list .app-item:hover {
+    color: #ffffff;
+    background: #C3C3C3;
+}
+
+.app-list .app-selected {
+    color: #ffffff;
+    background: #c3c3c3;
 }
 

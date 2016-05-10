@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="application">
+<html ng-app="namespace">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- styles -->
@@ -13,7 +13,7 @@
 
 <body>
 
-<div ng-include="'views/common/nav.html'"></div>
+<apollonav></apollonav>
 
 <div class="container-fluid apollo-container" ng-controller="LinkNamespaceController">
 
@@ -121,8 +121,12 @@
 
 <script type="application/javascript" src="scripts/app.js"></script>
 <script type="application/javascript" src="scripts/services/AppService.js"></script>
+<script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/NamespaceService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
+
+<!--directive-->
+<script type="application/javascript" src="scripts/directive.js"></script>
 
 <script type="application/javascript" src="scripts/controller/NamespaceController.js"></script>
 

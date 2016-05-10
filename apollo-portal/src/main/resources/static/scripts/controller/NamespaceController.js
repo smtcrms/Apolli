@@ -1,4 +1,4 @@
-application_module.controller("LinkNamespaceController",
+namespace_module.controller("LinkNamespaceController",
                               ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil', 'NamespaceService',
                                function ($scope, $location, $window, toastr, AppService, AppUtil, NamespaceService) {
 
