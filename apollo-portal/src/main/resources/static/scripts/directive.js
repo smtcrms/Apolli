@@ -70,7 +70,7 @@ directive_module.directive('apollonav', function ($compile, $window, AppService,
                         scope.copyedApps[--selectedAppIdx].selected = true;
                     }
                 } else if (event.keyCode == 13) {
-                    if (scope.shouldShowAppList){
+                    if (scope.shouldShowAppList && selectedAppIdx > -1){
                         select(scope.copyedApps[selectedAppIdx]);
                         event.preventDefault();
                     }else {
