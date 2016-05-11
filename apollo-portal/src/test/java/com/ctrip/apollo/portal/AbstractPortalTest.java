@@ -1,6 +1,6 @@
 package com.ctrip.apollo.portal;
 
-import javax.annotation.PostConstruct;
+import com.ctrip.apollo.PortalApplication;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.apollo.PortalApplication;
+import javax.annotation.PostConstruct;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PortalApplication.class)

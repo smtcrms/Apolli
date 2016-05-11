@@ -20,7 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.jdbc.Sql;
@@ -69,11 +71,13 @@ public class ReleaseControllerTest extends AbstractControllerTest {
             ItemDTO[].class);
     Assert.assertEquals(3, items.length);
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
     parameters.add("name", "someReleaseName");
     parameters.add("comment", "someComment");
     HttpEntity<MultiValueMap<String, String>> entity =
-        new HttpEntity<MultiValueMap<String, String>>(parameters, null);
+        new HttpEntity<MultiValueMap<String, String>>(parameters, headers);
     ResponseEntity<ReleaseDTO> response = restTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/releases",
