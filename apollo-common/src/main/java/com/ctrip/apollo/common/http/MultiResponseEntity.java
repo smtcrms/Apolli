@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 一个Response中包含多个ResponseEntity,每个ResponseEntity都包含完整的Response信息
+ * 一个Response中包含多个ResponseEntity
  */
 public class MultiResponseEntity<T> {
 

@@ -2,10 +2,6 @@ package com.ctrip.apollo.common.http;
 
 import org.springframework.http.HttpStatus;
 
-/**
- * 增强ResponseEntity,使得ResponseEntity可以附加message信息
- * @param <T>
- */
 public class RichResponseEntity<T>{
 
   private int code;
