@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 50,
+      <title>File: 51,
              Errors: 0,
-             Warnings: 174,
+             Warnings: 175,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html</link>
@@ -397,6 +397,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.service.ConfigService.java">com/ctrip/apollo/biz/service/ConfigService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.apollo.biz.aop.RepositoryAspect.java">com/ctrip/apollo/biz/aop/RepositoryAspect.java</a>
                 </td>
                 <td>
                   0
