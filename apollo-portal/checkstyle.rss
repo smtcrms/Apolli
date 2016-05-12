@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 26,
+      <title>File: 25,
              Errors: 0,
-             Warnings: 271,
+             Warnings: 258,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html</link>
@@ -53,20 +53,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.entity.AppInfoVO.java">com/ctrip/apollo/portal/entity/AppInfoVO.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
                 </td>
                 <td>
                   0
@@ -108,7 +94,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  24
+                  28
                 </td>
                 <td>
                   0
@@ -200,20 +186,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.entity.ClusterNavTree.java">com/ctrip/apollo/portal/entity/ClusterNavTree.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  25
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.entity.form.Verifiable.java">com/ctrip/apollo/portal/entity/form/Verifiable.java</a>
                 </td>
                 <td>
@@ -221,6 +193,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.apollo.portal.entity.EnvClusterInfo.java">com/ctrip/apollo/portal/entity/EnvClusterInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -346,7 +332,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  19
+                  28
                 </td>
                 <td>
                   0
