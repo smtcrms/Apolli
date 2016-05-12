@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 168,
+      <title>File: 170,
              Errors: 0,
-             Warnings: 802,
+             Warnings: 801,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -612,7 +612,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  7
+                  0
                 </td>
                 <td>
                   0
@@ -725,6 +725,20 @@ under the License.
                 </td>
                 <td>
                   44
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.aop.RepositoryAspect.java">com/ctrip/apollo/biz/aop/RepositoryAspect.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -1852,6 +1866,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.common.controller.HttpMessageConverterConfiguration.java">com/ctrip/apollo/common/controller/HttpMessageConverterConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.eureka.ApolloEurekaClientConfig.java">com/ctrip/apollo/biz/eureka/ApolloEurekaClientConfig.java</a>
                 </td>
                 <td>
@@ -2026,7 +2054,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  13
+                  15
                 </td>
                 <td>
                   0
@@ -2040,7 +2068,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  14
+                  16
                 </td>
                 <td>
                   0
