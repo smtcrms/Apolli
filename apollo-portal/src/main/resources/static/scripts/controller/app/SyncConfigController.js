@@ -13,7 +13,8 @@ sync_item_module.controller("SyncItemController",
                                    ////// load env //////
                                    AppService.load_nav_tree($scope.pageContext.appId).then(function (result) {
                                        $scope.namespaceIdentifers = [];
-                                       result.nodes.forEach(function (node) {
+                                       var envClusterInfo = AppUtil.collectData(result);
+                                       envClusterInfo.forEach(function (node) {
                                            var env = node.env;
                                            node.clusters.forEach(function (cluster) {
                                                cluster.env = env;

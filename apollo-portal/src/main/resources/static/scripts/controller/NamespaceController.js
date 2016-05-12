@@ -11,7 +11,8 @@ namespace_module.controller("LinkNamespaceController",
                                    ////// load env //////
                                    AppService.load_nav_tree($scope.appId).then(function (result) {
                                        $scope.namespaceIdentifers = [];
-                                       result.nodes.forEach(function (node) {
+                                       var envClusterInfo = AppUtil.collectData(result);
+                                       envClusterInfo.forEach(function (node) {
                                            var env = node.env;
                                            node.clusters.forEach(function (cluster) {
                                                cluster.env = env;
