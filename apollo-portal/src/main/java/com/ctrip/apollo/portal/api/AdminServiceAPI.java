@@ -11,6 +11,8 @@ import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -130,11 +132,13 @@ public class AdminServiceAPI {
 
     public ReleaseDTO release(String appId, Env env, String clusterName, String namespace,
         String releaseBy, String comment) {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
       MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
       parameters.add("name", releaseBy);
       parameters.add("comment", comment);
       HttpEntity<MultiValueMap<String, String>> entity =
-          new HttpEntity<MultiValueMap<String, String>>(parameters, null);
+          new HttpEntity<MultiValueMap<String, String>>(parameters, headers);
       ResponseEntity<ReleaseDTO> response =
           restTemplate
               .postForEntity(

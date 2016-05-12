@@ -13,6 +13,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +23,8 @@ import com.google.common.io.BaseEncoding;
 
 @Component
 public class RestTemplateFactory implements FactoryBean<RestTemplate>, InitializingBean {
+  @Autowired
+  private HttpMessageConverters httpMessageConverters;
 
   private RestTemplate restTemplate;
 
@@ -49,7 +53,8 @@ public class RestTemplateFactory implements FactoryBean<RestTemplate>, Initializ
         HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider)
             .setDefaultHeaders(defaultHeaders).build();
 
-    restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
+    restTemplate = new RestTemplate(httpMessageConverters.getConverters());
+    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
   }
 
 }

@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,10 @@ public class ServiceLocator {
 
   private static final int DEFAULT_TIMEOUT_MS = 1000;
 
-  private RestTemplate restTemplate = new RestTemplate();
+  private RestTemplate restTemplate;
+
+  @Autowired
+  private HttpMessageConverters httpMessageConverters;
 
   private Map<Env, List<ServiceDTO>> serviceCaches = new ConcurrentHashMap<Env, List<ServiceDTO>>();
 
@@ -81,6 +86,7 @@ public class ServiceLocator {
 
   @PostConstruct
   private void postConstruct() {
+    restTemplate = new RestTemplate(httpMessageConverters.getConverters());
     if (restTemplate.getRequestFactory() instanceof SimpleClientHttpRequestFactory) {
       SimpleClientHttpRequestFactory rf =
           (SimpleClientHttpRequestFactory) restTemplate.getRequestFactory();

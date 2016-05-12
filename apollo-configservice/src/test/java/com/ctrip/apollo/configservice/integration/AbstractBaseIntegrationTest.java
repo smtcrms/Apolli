@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 @SpringApplicationConfiguration(classes = AbstractBaseIntegrationTest.TestConfiguration.class)
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractBaseIntegrationTest {
+
   RestTemplate restTemplate = new TestRestTemplate("user", "");
 
   @PostConstruct
