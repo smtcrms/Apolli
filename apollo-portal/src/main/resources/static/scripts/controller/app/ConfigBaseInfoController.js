@@ -81,7 +81,7 @@ application_module.controller("ConfigBaseInfoController",
                                        console.log(AppUtil.errorMsg(result));
                                    });
 
-
+                                   $scope.selectedEnvs = [];
                                    $scope.toggleSelection = function toggleSelection(env) {
                                        var idx = $scope.selectedEnvs.indexOf(env);
 
