@@ -8,6 +8,7 @@ import com.ctrip.apollo.biz.repository.ServerConfigRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
+@Primary
 public class ApolloEurekaClientConfig extends EurekaClientConfigBean {
   static final String EUREKA_URL_CONFIG = "eureka.service.url";
   private static final Splitter URL_SPLITTER = Splitter.on(",").omitEmptyStrings();

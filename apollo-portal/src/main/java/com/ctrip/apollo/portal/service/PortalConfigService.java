@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ConfigService {
+public class PortalConfigService {
 
-  private Logger logger = LoggerFactory.getLogger(ConfigService.class);
+  private Logger logger = LoggerFactory.getLogger(PortalConfigService.class);
 
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;

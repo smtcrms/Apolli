@@ -8,6 +8,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
+import com.ctrip.apollo.adminservice.AdminServiceApplication;
+
 @Configuration
 @ComponentScan(excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
         SampleAdminServiceApplication.class, AdminServiceApplication.class,

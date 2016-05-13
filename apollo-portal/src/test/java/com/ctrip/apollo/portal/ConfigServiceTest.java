@@ -9,7 +9,7 @@ import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ItemDiffs;
 import com.ctrip.apollo.portal.entity.NamespaceIdentifer;
 import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.apollo.portal.service.ConfigService;
+import com.ctrip.apollo.portal.service.PortalConfigService;
 import com.ctrip.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Assert;
@@ -39,7 +39,7 @@ public class ConfigServiceTest {
   private PropertyResolver resolver;
 
   @InjectMocks
-  private ConfigService configService;
+  private PortalConfigService configService;
 
   @Before
   public void setup() {

@@ -1,6 +1,7 @@
 package com.ctrip.apollo;
 
 import com.ctrip.apollo.common.controller.WebSecurityConfig;
+import com.ctrip.apollo.configservice.ConfigServiceApplication;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;

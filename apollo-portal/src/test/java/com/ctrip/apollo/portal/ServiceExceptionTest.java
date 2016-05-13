@@ -26,13 +26,13 @@ import com.ctrip.apollo.core.dto.AppDTO;
 import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.ServiceException;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.apollo.portal.service.AppService;
+import com.ctrip.apollo.portal.service.PortalAppService;
 import com.google.gson.Gson;
 
 public class ServiceExceptionTest extends AbstractPortalTest {
 
   @Autowired
-  private AppService appService;
+  private PortalAppService appService;
 
   @Mock
   private AdminServiceAPI.AppAPI appAPI;

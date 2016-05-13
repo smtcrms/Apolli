@@ -1,6 +1,6 @@
 package com.ctrip.apollo.portal;
 
-import com.ctrip.apollo.PortalApplication;
+import com.ctrip.apollo.portal.PortalApplication;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;

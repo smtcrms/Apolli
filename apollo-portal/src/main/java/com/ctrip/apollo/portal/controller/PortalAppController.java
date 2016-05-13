@@ -18,16 +18,16 @@ import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.PortalSettings;
 import com.ctrip.apollo.portal.entity.EnvClusterInfo;
-import com.ctrip.apollo.portal.service.AppService;
+import com.ctrip.apollo.portal.service.PortalAppService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/apps")
-public class AppController {
+public class PortalAppController {
 
   @Autowired
-  private AppService appService;
+  private PortalAppService appService;
 
   @Autowired
   private PortalSettings portalSettings;
