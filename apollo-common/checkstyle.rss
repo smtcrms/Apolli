@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 13,
              Errors: 0,
              Warnings: 83,
              Infos: 0
@@ -130,13 +130,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.auth.RestTemplateFactory.java">com/ctrip/apollo/common/auth/RestTemplateFactory.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.ApolloCommonConfig.java">com/ctrip/apollo/common/ApolloCommonConfig.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  16
+                  0
                 </td>
                 <td>
                   0
@@ -151,6 +151,34 @@ under the License.
                 </td>
                 <td>
                   11
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.utils.BeanUtils.java">com/ctrip/apollo/common/utils/BeanUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  29
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.auth.RestTemplateFactory.java">com/ctrip/apollo/common/auth/RestTemplateFactory.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  16
                 </td>
                 <td>
                   0
@@ -179,20 +207,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.utils.BeanUtils.java">com/ctrip/apollo/common/utils/BeanUtils.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  29
                 </td>
                 <td>
                   0
