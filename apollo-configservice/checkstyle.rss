@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 9,
+      <title>File: 10,
              Errors: 0,
-             Warnings: 16,
+             Warnings: 18,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html</link>
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.configservice.ServletInitializer.java">com/ctrip/apollo/configservice/ServletInitializer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.metaservice.controller.ServiceController.java">com/ctrip/apollo/metaservice/controller/ServiceController.java</a>
@@ -88,6 +102,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.configservice.ConfigServiceApplication.java">com/ctrip/apollo/configservice/ConfigServiceApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#META-INF.app.properties">META-INF/app.properties</a>
                 </td>
                 <td>
@@ -102,21 +130,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.ConfigServiceApplication.java">com/ctrip/apollo/ConfigServiceApplication.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.apollo.ServletInitializer.java">com/ctrip/apollo/ServletInitializer.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#configservice.properties">configservice.properties</a>
                 </td>
                 <td>
                   0
