@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 11,
+      <title>File: 12,
              Errors: 0,
-             Warnings: 113,
+             Warnings: 112,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html</link>
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.AdminServiceApplication.java">com/ctrip/apollo/adminservice/AdminServiceApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ItemSetController.java">com/ctrip/apollo/adminservice/controller/ItemSetController.java</a>
@@ -102,20 +116,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.AdminServiceApplication.java">com/ctrip/apollo/AdminServiceApplication.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
                 </td>
                 <td>
@@ -123,6 +123,20 @@ under the License.
                 </td>
                 <td>
                   18
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#adminservice.properties">adminservice.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
