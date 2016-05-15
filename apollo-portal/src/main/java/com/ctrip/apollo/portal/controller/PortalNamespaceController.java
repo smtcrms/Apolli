@@ -6,7 +6,7 @@ import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.entity.NamespaceVO;
-import com.ctrip.apollo.portal.service.NamespaceService;
+import com.ctrip.apollo.portal.service.PortalNamespaceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class NamespaceController {
+public class PortalNamespaceController {
 
   @Autowired
-  private NamespaceService namespaceService;
+  private PortalNamespaceService namespaceService;
 
   @RequestMapping("/appnamespaces/public")
   public List<AppNamespaceDTO> findPublicAppNamespaces(){

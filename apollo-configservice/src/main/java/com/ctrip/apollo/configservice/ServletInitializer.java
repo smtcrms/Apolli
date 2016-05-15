@@ -1,4 +1,4 @@
-package com.ctrip.apollo;
+package com.ctrip.apollo.configservice;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;

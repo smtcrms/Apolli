@@ -10,7 +10,7 @@ import com.ctrip.apollo.portal.entity.ItemDiffs;
 import com.ctrip.apollo.portal.entity.form.NamespaceSyncModel;
 import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
-import com.ctrip.apollo.portal.service.ConfigService;
+import com.ctrip.apollo.portal.service.PortalConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("")
-public class ConfigController {
+public class PortalConfigController {
 
   @Autowired
-  private ConfigService configService;
+  private PortalConfigService configService;
 
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
       "application/json"})

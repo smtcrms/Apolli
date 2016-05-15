@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
+import org.springframework.web.client.RestTemplate;
 
 import com.ctrip.apollo.biz.entity.Item;
 import com.ctrip.apollo.biz.repository.ItemRepository;
@@ -45,8 +46,9 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets itemSet = new ItemChangeSets();
-    restTemplate = new TestRestTemplate("created", "");
-
+    RestTemplate createdTemplate = new TestRestTemplate("created", "");
+    createdTemplate.setMessageConverters(restTemplate.getMessageConverters());
+    
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
       ItemDTO item = new ItemDTO();
@@ -57,7 +59,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     }
 
     ResponseEntity<Void> response =
-        restTemplate.postForEntity(
+        createdTemplate.postForEntity(
             "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/"
                 + cluster.getName() + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
             itemSet, Void.class);
@@ -92,7 +94,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
-    restTemplate = new TestRestTemplate("created", "");
+    RestTemplate createdRestTemplate = new TestRestTemplate("created", "");
+    createdRestTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
@@ -103,20 +106,21 @@ public class ItemSetControllerTest extends AbstractControllerTest {
       createChangeSet.addCreateItem(item);
     }
 
-    ResponseEntity<Void> response = restTemplate.postForEntity(
+    ResponseEntity<Void> response = createdRestTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
         createChangeSet, Void.class);
     Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 
     ItemDTO[] items =
-        restTemplate.getForObject(
+        createdRestTemplate.getForObject(
             "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/"
                 + cluster.getName() + "/namespaces/" + namespace.getNamespaceName() + "/items",
             ItemDTO[].class);
 
     ItemChangeSets udpateChangeSet = new ItemChangeSets();
-    restTemplate = new TestRestTemplate("updated", "");
+    RestTemplate updatedRestTemplate = new TestRestTemplate("updated", "");
+    updatedRestTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
     int updatedSize = 2;
     for (int i = 0; i < updatedSize; i++) {
@@ -124,7 +128,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
       udpateChangeSet.addUpdateItem(items[i]);
     }
 
-    response = restTemplate.postForEntity(
+    response = updatedRestTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
         udpateChangeSet, Void.class);
@@ -161,7 +165,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
-    restTemplate = new TestRestTemplate("created", "");
+    RestTemplate createdTemplate = new TestRestTemplate("created", "");
+    createdTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
     int createdSize = 3;
     for (int i = 0; i < createdSize; i++) {
@@ -172,7 +177,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
       createChangeSet.addCreateItem(item);
     }
 
-    ResponseEntity<Void> response = restTemplate.postForEntity(
+    ResponseEntity<Void> response = createdTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
         createChangeSet, Void.class);
@@ -185,7 +190,8 @@ public class ItemSetControllerTest extends AbstractControllerTest {
             ItemDTO[].class);
 
     ItemChangeSets deleteChangeSet = new ItemChangeSets();
-    restTemplate = new TestRestTemplate("deleted", "");
+    RestTemplate deletedTemplate = new TestRestTemplate("deleted", "");
+    deletedTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
     int deletedSize = 1;
     for (int i = 0; i < deletedSize; i++) {
@@ -193,7 +199,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
       deleteChangeSet.addDeleteItem(items[i]);
     }
 
-    response = restTemplate.postForEntity(
+    response = deletedTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
         deleteChangeSet, Void.class);

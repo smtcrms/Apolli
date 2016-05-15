@@ -20,17 +20,18 @@ import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.EnvClusterInfo;
 
 @Service
-public class AppService {
+public class PortalAppService {
 
-  private Logger logger = LoggerFactory.getLogger(AppService.class);
+  private Logger logger = LoggerFactory.getLogger(PortalAppService.class);
+
+  @Autowired
+  private PortalClusterService clusterService;
 
   @Autowired
   private PortalSettings portalSettings;
 
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
-
-  @Autowired ClusterService clusterService;
 
   public List<AppDTO> findAll(Env env) {
     return appAPI.findApps(env);

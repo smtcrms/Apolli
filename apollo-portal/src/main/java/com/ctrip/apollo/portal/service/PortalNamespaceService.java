@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class NamespaceService {
+public class PortalNamespaceService {
 
-  private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
+  private Logger logger = LoggerFactory.getLogger(PortalNamespaceService.class);
 
   @Autowired
   private AdminServiceAPI.ItemAPI itemAPI;
