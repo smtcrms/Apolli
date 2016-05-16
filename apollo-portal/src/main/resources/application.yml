@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: apollo-portal
+
+ctrip:
+  appid: 100003173
+  
+server:
+  port: 8070
+  
+logging:
+  file: /opt/logs/100003173/apollo-portal.log
+  
+endpoints:
+  shutdown:
+    enabled: true     
