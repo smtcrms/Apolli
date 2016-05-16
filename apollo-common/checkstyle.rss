@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 13,
+      <title>File: 15,
              Errors: 0,
-             Warnings: 83,
+             Warnings: 97,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html</link>
@@ -172,6 +172,34 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#application.properties">application.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.controller.CharacterEncodingFilterConfiguration.java">com/ctrip/apollo/common/controller/CharacterEncodingFilterConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.apollo.common.auth.RestTemplateFactory.java">com/ctrip/apollo/common/auth/RestTemplateFactory.java</a>
                 </td>
                 <td>
@@ -192,7 +220,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  7
                 </td>
                 <td>
                   0
