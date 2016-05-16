@@ -7,3 +7,7 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:8080/eureka/
     healthcheck:
       enabled: true
+
+endpoints:
+  shutdown:
+    enabled: true      
