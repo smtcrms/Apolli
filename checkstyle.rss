@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 178,
+      <title>File: 181,
              Errors: 0,
-             Warnings: 807,
+             Warnings: 821,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -654,7 +654,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  7
                 </td>
                 <td>
                   0
@@ -1474,6 +1474,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.metaservice.ApolloMetaServiceConfig.java">com/ctrip/apollo/metaservice/ApolloMetaServiceConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.biz.repository.AppRepository.java">com/ctrip/apollo/biz/repository/AppRepository.java</a>
                 </td>
                 <td>
@@ -1572,7 +1586,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.common.controller.CharacterEncodingFilterConfiguration.java">com/ctrip/apollo/common/controller/CharacterEncodingFilterConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#adminservice.properties">adminservice.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.apollo.adminservice.controller.IndexController.java">com/ctrip/apollo/adminservice/controller/IndexController.java</a>
                 </td>
                 <td>
                   0
