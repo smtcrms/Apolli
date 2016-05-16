@@ -12,7 +12,7 @@ import com.ctrip.apollo.adminservice.AdminServiceApplication;
 
 @Configuration
 @ComponentScan(excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-        SampleAdminServiceApplication.class, AdminServiceApplication.class,
+        LocalAdminServiceApplication.class, AdminServiceApplication.class,
         HttpMessageConverterConfiguration.class})})
 @EnableAutoConfiguration
 public class AdminServiceTestConfiguration {

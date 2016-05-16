@@ -10,12 +10,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableAspectJAutoProxy
 @EnableEurekaClient
 @Configuration
 @PropertySource(value = {"classpath:adminservice.properties"})
 @EnableAutoConfiguration
+@EnableTransactionManagement
 @ComponentScan(basePackageClasses = {com.ctrip.apollo.common.ApolloCommonConfig.class,
     com.ctrip.apollo.biz.ApolloBizConfig.class,
     com.ctrip.apollo.adminservice.AdminServiceApplication.class})

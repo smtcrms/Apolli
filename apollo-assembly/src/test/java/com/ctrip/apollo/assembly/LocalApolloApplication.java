@@ -16,7 +16,7 @@ import com.ctrip.apollo.portal.PortalApplication;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})
-public class ApolloApplication {
+public class LocalApolloApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(ApolloApplication.class);
 

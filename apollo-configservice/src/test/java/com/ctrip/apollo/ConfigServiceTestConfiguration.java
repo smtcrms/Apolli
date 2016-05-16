@@ -11,7 +11,7 @@ import org.springframework.context.annotation.FilterType;
 
 @Configuration
 @ComponentScan(excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-    SampleConfigServiceApplication.class, ConfigServiceApplication.class, WebSecurityConfig.class})})
+    LocalConfigServiceApplication.class, ConfigServiceApplication.class, WebSecurityConfig.class})})
 @EnableAutoConfiguration
 public class ConfigServiceTestConfiguration {
 

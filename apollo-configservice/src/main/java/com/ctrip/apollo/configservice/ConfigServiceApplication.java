@@ -10,6 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Spring boot application entry point
@@ -19,12 +20,14 @@ import org.springframework.context.annotation.PropertySource;
 
 @EnableEurekaServer
 @EnableAspectJAutoProxy
-@EnableAutoConfiguration//(exclude = EurekaClientConfigBean.class)
+@EnableAutoConfiguration // (exclude = EurekaClientConfigBean.class)
 @Configuration
+@EnableTransactionManagement
 @PropertySource(value = {"classpath:configservice.properties"})
 @ComponentScan(basePackageClasses = {com.ctrip.apollo.common.ApolloCommonConfig.class,
     com.ctrip.apollo.biz.ApolloBizConfig.class,
-    com.ctrip.apollo.configservice.ConfigServiceApplication.class})
+    com.ctrip.apollo.configservice.ConfigServiceApplication.class,
+    com.ctrip.apollo.metaservice.ApolloMetaServiceConfig.class})
 public class ConfigServiceApplication {
 
   public static void main(String[] args) throws Exception {
