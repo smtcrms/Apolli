@@ -44,6 +44,7 @@ ln -s $APP_RELEASE_DIR $APP_DIR
 
 chmod +x $APP_STARTUP_SCRIPT
 chmod +x $APP_SHUTDOWN_SCRIPT
+env spring.profiles.active=dev bash
 $APP_SHUTDOWN_SCRIPT 
 $APP_STARTUP_SCRIPT
 wait
