@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 13,
              Errors: 0,
              Warnings: 112,
              Infos: 0
@@ -47,6 +47,48 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.AdminServiceApplication.java">com/ctrip/apollo/adminservice/AdminServiceApplication.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#META-INF.app.properties">META-INF/app.properties</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.AdminServiceHealthIndicator.java">com/ctrip/apollo/adminservice/AdminServiceHealthIndicator.java</a>
                 </td>
                 <td>
                   0
@@ -88,20 +130,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#META-INF.app.properties">META-INF/app.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.NamespaceController.java">com/ctrip/apollo/adminservice/controller/NamespaceController.java</a>
                 </td>
                 <td>
@@ -109,20 +137,6 @@ under the License.
                 </td>
                 <td>
                   23
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.ClusterController.java">com/ctrip/apollo/adminservice/controller/ClusterController.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  18
                 </td>
                 <td>
                   0
@@ -186,13 +200,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.AdminServiceHealthIndicator.java">com/ctrip/apollo/adminservice/AdminServiceHealthIndicator.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.apollo.adminservice.controller.IndexController.java">com/ctrip/apollo/adminservice/controller/IndexController.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
