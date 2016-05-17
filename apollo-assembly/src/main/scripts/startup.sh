@@ -20,10 +20,10 @@ if [[ -f $SERVICE_NAME".jar" ]]; then
   rm -rf $SERVICE_NAME".jar"
 fi
 
-source ./scripts/run_args.sh
+source ./scripts/services.sh
 
 ln $PATH_TO_JAR $SERVICE_NAME".jar"
 chmod a+x $SERVICE_NAME".jar"
-./$SERVICE_NAME".jar" start $RUN_ARGS
+./$SERVICE_NAME".jar" start $SERVICES
 
 exit 0;
