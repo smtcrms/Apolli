@@ -30,6 +30,7 @@ APP_RELEASE_DIR=$APP_BASE_DIR/apollo-$APP_NAME.releases/`date "+%Y-%m-%d.%H.%M.%
 APP_STARTUP_SCRIPT=$APP_DIR/scripts/startup.sh
 APP_SHUTDOWN_SCRIPT=$APP_DIR/scripts/shutdown.sh
 
+chmod +x $APP_SHUTDOWN_SCRIPT
 if [ -e $APP_STARTUP_SCRIPT ];then
 	$APP_SHUTDOWN_SCRIPT
 fi
@@ -43,7 +44,5 @@ fi
 ln -s $APP_RELEASE_DIR $APP_DIR
 
 chmod +x $APP_STARTUP_SCRIPT
-chmod +x $APP_SHUTDOWN_SCRIPT
-$APP_SHUTDOWN_SCRIPT 
 $APP_STARTUP_SCRIPT
 wait
