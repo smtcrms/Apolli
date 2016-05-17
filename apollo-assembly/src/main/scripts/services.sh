@@ -1,2 +1,2 @@
 #!/bin/bash
-SERVICES='--configservice --adminservice --portal'
+SERVICES='--configservice --adminservice'

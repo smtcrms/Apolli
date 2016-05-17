@@ -33,6 +33,8 @@ APP_SHUTDOWN_SCRIPT=$APP_DIR/scripts/shutdown.sh
 chmod +x $APP_SHUTDOWN_SCRIPT
 if [ -e $APP_STARTUP_SCRIPT ];then
 	$APP_SHUTDOWN_SCRIPT
+	echo "Sleeping 5s to wait shutting down"
+	sleep 5s
 fi
 
 mkdir -p $APP_RELEASE_DIR

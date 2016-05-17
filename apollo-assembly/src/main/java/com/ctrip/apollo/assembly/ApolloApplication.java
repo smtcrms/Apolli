@@ -51,6 +51,8 @@ public class ApolloApplication {
 
     /**
      * Portal
+     * 
+     * WARNING: Do not start portal at the same pool as configservice, they will conflict on 8080
      */
     if (commonContext.getEnvironment().containsProperty("portal")) {
       ConfigurableApplicationContext portalContext =
