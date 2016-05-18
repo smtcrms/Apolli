@@ -1,39 +1,31 @@
 package com.ctrip.apollo.portal.service;
 
-import com.google.gson.Gson;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.apollo.common.utils.BeanUtils;
-import com.ctrip.apollo.common.utils.ExceptionUtils;
-import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.dto.ItemChangeSets;
 import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
+import com.ctrip.apollo.core.enums.Env;
 import com.ctrip.apollo.core.exception.BadRequestException;
 import com.ctrip.apollo.core.exception.NotFoundException;
 import com.ctrip.apollo.core.exception.ServiceException;
-import com.ctrip.apollo.core.utils.StringUtils;
 import com.ctrip.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.apollo.portal.entity.ItemDiffs;
 import com.ctrip.apollo.portal.entity.NamespaceIdentifer;
-import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.apollo.portal.entity.NamespaceVO;
 import com.ctrip.apollo.portal.entity.form.NamespaceReleaseModel;
+import com.ctrip.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.apollo.portal.service.txtresolver.ConfigTextResolver;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class PortalConfigService {
