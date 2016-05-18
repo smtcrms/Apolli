@@ -1,6 +1,8 @@
 spring:
   application:
     name: apollo-configservice
+  profiles:
+    active: ctrip
 
 ctrip:
   appid: 100003171
