@@ -128,15 +128,13 @@ public class PortalSettings {
             }
           } else {
             //maybe meta server up but admin server down
-            handleEnvDown(env);
-            hasUpdateStatus = true;
+            hasUpdateStatus = handleEnvDown(env);
           }
 
         } catch (Exception e) {
           //maybe meta server down
           logger.warn("health check fail. [env:{}]", env, e.getMessage());
-          handleEnvDown(env);
-          hasUpdateStatus = true;
+          hasUpdateStatus = handleEnvDown(env);
         }
       }
 
@@ -151,13 +149,17 @@ public class PortalSettings {
       return "UP".equals(health.getStatus().getCode());
     }
 
-    private void handleEnvDown(Env env) {
+    private boolean handleEnvDown(Env env) {
       long failCnt = healthCheckFailCnt.get(env);
       healthCheckFailCnt.put(env, ++failCnt);
 
-      if (failCnt >= ENV_DIED_THREADHOLD) {
+      if (envStatusMark.get(env) && failCnt >= ENV_DIED_THREADHOLD){
         envStatusMark.put(env, false);
-        logger.error("env down [env:{}]", env);
+        logger.error("env turn to down [env:{}]", env);
+        return true;
+      }else {
+        logger.warn("[env:{}] down yet.", env);
+        return false;
       }
     }
 
