@@ -19,10 +19,14 @@ application_module.controller("ConfigBaseInfoController",
                                        var nodes = AppUtil.collectData(result);
 
                                        nodes.forEach(function (item) {
+                                           if (!item.clusters || item.clusters.length == 0){
+                                                return;
+                                           }
                                            var node = {};
                                            //first nav
                                            node.text = item.env;
                                            var clusterNodes = [];
+
                                            //如果env下面只有一个default集群则不显示集群列表
                                            if (item.clusters && item.clusters.length == 1 && item.clusters[0].name == 'default'){
                                                node.selectable = true;
