@@ -47,7 +47,7 @@ public class PortalAppController {
       throw new BadRequestException("app id can not be empty.");
     }
     MultiResponseEntity<EnvClusterInfo> response = MultiResponseEntity.ok();
-    List<Env> envs = portalSettings.getEnvs();
+    List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
         response.addResponseEntity(RichResponseEntity.ok(appService.createEnvNavNode(env, appId)));
@@ -84,7 +84,7 @@ public class PortalAppController {
   @RequestMapping(value = "/{appId}/miss_envs")
   public MultiResponseEntity<Env> findMissEnvs(@PathVariable String appId) {
     MultiResponseEntity<Env> response = MultiResponseEntity.ok();
-    for (Env env : portalSettings.getEnvs()) {
+    for (Env env : portalSettings.getActiveEnvs()) {
       try {
         appService.load(env, appId);
       } catch (Exception e) {
