@@ -39,26 +39,25 @@
                                 <tbody>
                                 <tr>
                                     <th>应用ID:</th>
-                                    <td>{{appBaseInfo.appId}}</td>
+                                    <td ng-bind="appBaseInfo.appId"></td>
                                 </tr>
                                 <tr>
                                     <th>应用名:</th>
-                                    <td>{{appBaseInfo.name}}</td>
+                                    <td ng-bind="appBaseInfo.name"></td>
                                 </tr>
                                 <tr>
                                     <th>Owner:</th>
-                                    <td>{{appBaseInfo.ownerName}}</td>
+                                    <td ng-bind="appBaseInfo.ownerName"></td>
                                 </tr>
                                 <tr>
                                     <th>Owner Email:</th>
-                                    <td>{{appBaseInfo.ownerEmail}}</td>
+                                    <td ng-bind="appBaseInfo.ownerEmail"></td>
                                 </tr>
                                 <tr ng-show="missEnvs.length > 0">
                                     <th>缺失的环境:</th>
                                     <td>
-                                        <font ng-repeat="env in missEnvs">
-                                            {{env}}
-                                        </font>
+                                        <span ng-repeat="env in missEnvs" ng-bind="env">
+                                        </span>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -109,7 +108,7 @@
                                         <div class="checkbox" ng-repeat="env in missEnvs">
                                             <label>
                                                 <input type="checkbox" name="selectedEnvs[]" value="{{env}}"
-                                                       ng-checked="selectedEnvs.indexOf(env) > -1" ng-click="toggleSelection(env)">{{env}}
+                                                       ng-checked="selectedEnvs.indexOf(env) > -1" ng-click="toggleSelection(env)"><span ng-bind="env"><span/>
                                             </label>
                                         </div>
                                     </div>
@@ -126,15 +125,15 @@
                 </div>
 
                 <!--namespaces-->
-                <div class="col-md-9 config-item-container" ng-controller="ConfigNamespaceController">
+                <div class="col-md-9 config-item-container hide" ng-controller="ConfigNamespaceController">
                     <div ng-repeat="namespace in namespaces">
                         <div class="panel">
                             <header class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <b>{{namespace.namespace.namespaceName}}</b>
+                                        <b ng-bind="namespace.namespace.namespaceName"></b>
                                                 <span class="label label-primary" ng-show="namespace.itemModifiedCnt > 0">有修改
-                                                <span class="badge">{{namespace.itemModifiedCnt}}</span></span>
+                                                <span class="badge" ng-bind="namespace.itemModifiedCnt"></span></span>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="btn-toolbar" role="toolbar" aria-label="...">
@@ -204,8 +203,7 @@
                             <!--text view-->
                             <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
                                       ng-show="namespace.viewType == 'text'"
-                                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.text">
-{{namespace.text}}
+                                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.text" ng-bind="namespace.text">
                                 </textarea>
 
                             <!--table view-->
@@ -237,23 +235,21 @@
                                         ng-repeat="config in namespace.items" ng-class="{warning:config.modified}"
                                         ng-if="config.item.key"
                                         ng-click="watchItem(config.item.key, config.item.value, config.oldValue)">
-                                        <td width="25%">
-                                            {{config.item.key | limitTo: 20}} {{config.item.key.length > 20 ? '...' :
-                                            ''}}
+                                        <td width="25%" >
+                                            <span ng-bind="config.item.key | limitTo: 20"></span>
+                                            <span ng-bind="config.item.key.length > 20 ? '...' :''"></span>
                                         </td>
-                                        <td width="30%">
-                                            {{config.item.value | limitTo: 20}} {{config.item.value.length > 20 ? '...'
-                                            : ''}}
+                                        <td width="30%" >
+                                            <span ng-bind="config.item.value | limitTo: 20"></span>
+                                            <span ng-bind="config.item.value.length > 20 ? '...': ''"></span>
                                         </td>
-                                        <td width="20%">
-                                            {{config.item.comment | limitTo: 20}} {{config.item.comment.length > 20 ?
-                                            '...' : ''}}
+                                        <td width="20%" >
+                                            <span ng-bind="config.item.comment | limitTo: 20"></span>
+                                            <span ng-bind="config.item.comment.length > 20 ?'...' : ''"></span>
                                         </td>
-                                        <td width="10%">
-                                            {{config.item.lastModifiedBy}}
+                                        <td width="10%" ng-bind="config.item.lastModifiedBy">
                                         </td>
-                                        <td width="15%">
-                                            {{config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                        <td width="15%" ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
                                         </td>
 
                                     </tr>
