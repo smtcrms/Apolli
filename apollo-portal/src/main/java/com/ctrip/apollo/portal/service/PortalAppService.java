@@ -41,7 +41,7 @@ public class PortalAppService {
     //轮询环境直到能找到此app的信息
     AppDTO app = null;
     boolean isCallAdminServiceError = false;
-    for (Env env : portalSettings.getEnvs()) {
+    for (Env env : portalSettings.getActiveEnvs()) {
       try {
         app = appAPI.loadApp(env, appId);
         break;
@@ -71,7 +71,7 @@ public class PortalAppService {
   }
 
   public void createAppInAllEnvs(AppDTO app) {
-    List<Env> envs = portalSettings.getEnvs();
+    List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
         appAPI.createApp(env, app);

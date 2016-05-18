@@ -48,7 +48,7 @@ public class PortalNamespaceService {
 
 
   public List<AppNamespaceDTO> findPublicAppNamespaces(){
-    return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstEnv());
+    return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstAliveEnv());
   }
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace){
@@ -56,7 +56,7 @@ public class PortalNamespaceService {
   }
 
   public void createAppNamespace(AppNamespaceDTO appNamespace) {
-    for (Env env : portalSettings.getEnvs()) {
+    for (Env env : portalSettings.getActiveEnvs()) {
       try {
         namespaceAPI.createAppNamespace(env, appNamespace);
       } catch (HttpStatusCodeException e) {

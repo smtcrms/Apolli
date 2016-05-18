@@ -10,6 +10,7 @@ import com.ctrip.apollo.core.dto.ItemDTO;
 import com.ctrip.apollo.core.dto.NamespaceDTO;
 import com.ctrip.apollo.core.dto.ReleaseDTO;
 
+import org.springframework.boot.actuate.health.Health;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,6 +25,14 @@ import java.util.List;
 
 @Service
 public class AdminServiceAPI {
+
+  @Service
+  public static class HealthAPI extends API{
+
+    public Health health(Env env){
+      return restTemplate.getForObject(getAdminServiceHost(env) + "/health", Health.class);
+    }
+  }
 
   @Service
   public static class AppAPI extends API {
