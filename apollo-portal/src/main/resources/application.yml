@@ -1,6 +1,8 @@
 spring:
   application:
     name: apollo-portal
+  profiles:
+    active: ctrip
 
 ctrip:
   appid: 100003173
@@ -13,4 +15,4 @@ logging:
   
 endpoints:
   shutdown:
-    enabled: true     
+    enabled: true
