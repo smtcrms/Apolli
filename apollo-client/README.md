@@ -12,7 +12,7 @@
 Config config = ConfigService.getAppConfig();
 String someKey = "someKeyFromDefaultNamespace";
 String someDefaultValue = "someDefaultValueForTheKey";
-System.out.println(config.getProperty(someKey, someDefaultValue));
+System.out.println(String.format("Value for key %s is %s", someKey, config.getProperty(someKey, someDefaultValue)));
 ```
 
 ### 2. Register config change listener
@@ -24,7 +24,7 @@ config.addChangeListener(new ConfigChangeListener() {
 		System.out.println("Changes for namespace " + changeEvent.getNamespace());
 		for (String key : changeEvent.changedKeys()) {
 			ConfigChange change = changeEvent.getChange(key);
-			System.out.println(String.format("Change - key: %s, oldValue: %s, newValue: %s, changeType: %s", change.getPropertyName(), change.getOldValue(), change.getNewValue(), change.getChangeType()));
+			System.out.println(String.format("Found change - key: %s, oldValue: %s, newValue: %s, changeType: %s", change.getPropertyName(), change.getOldValue(), change.getNewValue(), change.getChangeType()));
 		}
 	}
 });
@@ -36,5 +36,5 @@ String somePublicNamespace = "CAT";
 Config config = ConfigService.getConfig(somePublicNamespace);
 String someKey = "someKeyFromPublicNamespace";
 String someDefaultValue = "someDefaultValueForTheKey";
-System.out.println(config.getProperty(someKey, someDefaultValue));
+System.out.println(String.format("Value for key %s is %s", someKey, config.getProperty(someKey, someDefaultValue)));
 ```
