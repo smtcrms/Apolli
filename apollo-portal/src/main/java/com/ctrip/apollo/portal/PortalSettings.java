@@ -9,8 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.PostConstruct;
 
@@ -98,7 +96,6 @@ public class PortalSettings {
     }
 
     public void run() {
-      logger.info("admin server health check start...");
 
       for (Env env : allEnvs) {
         try {
