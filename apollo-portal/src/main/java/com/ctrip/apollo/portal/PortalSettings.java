@@ -40,17 +40,12 @@ public class PortalSettings {
 
   private List<Env> allEnvs = new ArrayList<Env>();
 
-  private volatile boolean updatedFromLastHealthCheck = true;
-
-  //for cache
-  private List<Env> activeEnvs = new LinkedList<>();
+  private List<Env> activeEnvs;
 
   //mark env up or down
   private Map<Env, Boolean> envStatusMark = new ConcurrentHashMap<>();
 
   private ScheduledExecutorService healthCheckService;
-
-  private Lock lock = new ReentrantLock();
 
   @PostConstruct
   private void postConstruct() {
@@ -63,9 +58,6 @@ public class PortalSettings {
       envStatusMark.put(env, true);
     }
 
-    //init active envs
-    activeEnvs = refreshActiveEnvs();
-
     healthCheckService = Executors.newScheduledThreadPool(1);
 
     healthCheckService
@@ -75,24 +67,14 @@ public class PortalSettings {
   }
 
   public List<Env> getActiveEnvs() {
-    if (updatedFromLastHealthCheck) {
-      lock.lock();
-      //maybe refresh many times but not create a bad impression.
-      activeEnvs = refreshActiveEnvs();
-      lock.unlock();
-    }
-    return activeEnvs;
-  }
-
-  private List<Env> refreshActiveEnvs() {
-    List<Env> envs = new LinkedList<>();
+    List<Env> activeEnvs = new LinkedList<>();
     for (Env env : allEnvs) {
       if (envStatusMark.get(env)) {
-        envs.add(env);
+        activeEnvs.add(env);
       }
     }
-    logger.info("refresh active envs");
-    return envs;
+    this.activeEnvs = activeEnvs;
+    return activeEnvs;
   }
 
   public Env getFirstAliveEnv() {
@@ -117,7 +99,6 @@ public class PortalSettings {
 
     public void run() {
       logger.info("admin server health check start...");
-      boolean hasUpdateStatus = false;
 
       for (Env env : allEnvs) {
         try {
@@ -126,25 +107,20 @@ public class PortalSettings {
             if (!envStatusMark.get(env)) {
               envStatusMark.put(env, true);
               healthCheckFailCnt.put(env, 0l);
-              hasUpdateStatus = true;
               logger.info("env up again [env:{}]", env);
             }
           } else {
             //maybe meta server up but admin server down
-            hasUpdateStatus = handleEnvDown(env);
+            handleEnvDown(env);
           }
 
         } catch (Exception e) {
           //maybe meta server down
           logger.warn("health check fail. [env:{}]", env, e.getMessage());
-          hasUpdateStatus = handleEnvDown(env);
+          handleEnvDown(env);
         }
       }
 
-      if (!hasUpdateStatus) {
-        logger.info("admin server health check OK");
-      }
-      updatedFromLastHealthCheck = hasUpdateStatus;
     }
 
     private boolean isUp(Env env) {
@@ -152,17 +128,15 @@ public class PortalSettings {
       return "UP".equals(health.getStatus().getCode());
     }
 
-    private boolean handleEnvDown(Env env) {
+    private void handleEnvDown(Env env) {
       long failCnt = healthCheckFailCnt.get(env);
       healthCheckFailCnt.put(env, ++failCnt);
 
       if (envStatusMark.get(env) && failCnt >= ENV_DIED_THREADHOLD){
         envStatusMark.put(env, false);
         logger.error("env turn to down [env:{}]", env);
-        return true;
       }else {
         logger.warn("[env:{}] down yet.", env);
-        return false;
       }
     }
 
