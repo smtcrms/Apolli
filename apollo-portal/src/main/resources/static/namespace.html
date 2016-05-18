@@ -34,8 +34,7 @@
                     <form class="form-horizontal"  ng-show="step == 1" ng-submit="createNamespace()">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">应用ID</label>
-                            <div class="col-sm-6">
-                                {{appId}}
+                            <div class="col-sm-6" ng-bind="appId">
                             </div>
                         </div>
                         <div class="form-horizontal" ng-show="type == 'link'">
@@ -55,8 +54,8 @@
                                         <tr ng-repeat="namespaceIdentifer in namespaceIdentifers">
                                             <td width="10%"><input type="checkbox" ng-checked="namespaceIdentifer.checked"
                                                                    ng-click="switchSelect(namespaceIdentifer)"></td>
-                                            <td width="30%">{{namespaceIdentifer.env}}</td>
-                                            <td width="60%">{{namespaceIdentifer.name}}</td>
+                                            <td width="30%" ng-bind="namespaceIdentifer.env"></td>
+                                            <td width="60%" ng-bind="namespaceIdentifer.name"></td>
                                         </tr>
                                         </tbody>
                                     </table>

@@ -151,6 +151,7 @@ application_module.controller("ConfigNamespaceController",
                                            }
                                        );    
                                    };
-                                   
+
+                                   $('.config-item-container').removeClass('hide');
                                }]);
 

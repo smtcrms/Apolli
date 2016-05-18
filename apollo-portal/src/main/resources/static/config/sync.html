@@ -31,7 +31,8 @@
                     <button type="button" class="btn btn-primary" ng-show="syncItemStep < 2"
                             ng-click="diff()">下一步
                     </button>
-                    <button type="button" class="btn btn-success" ng-show="syncItemStep == 2 && hasDiff" ng-click="syncItems()">同步
+                    <button type="button" class="btn btn-success" ng-show="syncItemStep == 2 && hasDiff"
+                            ng-click="syncItems()">同步
                     </button>
                     <button type="button" class="btn btn-success" data-dismiss="modal" ng-show="syncItemStep == 3"
                             ng-click="backToAppHomePage()">返回
@@ -58,8 +59,8 @@
                                 <tr ng-repeat="namespaceIdentifer in namespaceIdentifers">
                                     <td width="10%"><input type="checkbox" ng-checked="namespaceIdentifer.checked"
                                                            ng-click="switchSelect(namespaceIdentifer)"></td>
-                                    <td width="30%">{{namespaceIdentifer.env}}</td>
-                                    <td width="60%">{{namespaceIdentifer.name}}</td>
+                                    <td width="30%" ng-bind="namespaceIdentifer.env"></td>
+                                    <td width="60%" ng-bind="namespaceIdentifer.name"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -88,11 +89,17 @@
                             <tr ng-repeat="item in sourceItems">
                                 <td width="10%"><input type="checkbox" ng-checked="item.checked"
                                                        ng-click="switchSelect(item)"></td>
-                                <td width="20%">{{item.key | limitTo: 30}} {{item.key.length > 30 ? '...' : ''}}</td>
-                                <td width="50%">{{item.value | limitTo: 45}} {{item.value.length > 45 ? '...' : ''}}
+                                <td width="20%">
+                                    <span ng-bind="item.key | limitTo: 30"></span>
+                                    <span ng-bind="item.key.length > 30 ? '...' : ''"></span>
                                 </td>
-                                <td width="20%">{{item.comment | limitTo: 15}}{{item.comment.length > 15 ? '...' :
-                                    ''}}
+                                <td width="50%">
+                                    <span ng-bind="item.value | limitTo: 45"></span>
+                                    <span ng-bind="item.value.length > 45 ? '...' : ''"></span>
+                                </td>
+                                <td width="20%">
+                                    <span ng-bind="item.comment | limitTo: 15"></span>
+                                    <span ng-bind="item.comment.length > 15 ? '...' :''"></span>
                                 </td>
                             </tr>
                             </tbody>
@@ -105,7 +112,8 @@
 
             <!--step 2-->
             <div class="row" ng-show="syncItemStep == 2" ng-repeat="diff in diffs">
-                <h4 class="text-center">环境:{{diff.namespace.env}} 集群:{{diff.namespace.clusterName}}
+                <h4 class="text-center">环境:<span ng-bind="diff.namespace.env"></span>
+                    集群:<span ng-bind="diff.namespace.clusterName"></span>
                     <em ng-show="diff.diffs.createItems.length == 0 && diff.diffs.updateItems.length == 0">没有更新的配置</em>
                 </h4>
                 <hr>
@@ -124,9 +132,9 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="createItem in diff.diffs.createItems">
-                                    <td width="30%">{{createItem.key}}</td>
-                                    <td width="40%">{{createItem.value}}</td>
-                                    <td width="30%">{{createItem.comment}}</td>
+                                    <td width="30%" ng-bind="createItem.key"></td>
+                                    <td width="40%" ng-bind="createItem.value"></td>
+                                    <td width="30%" ng-bind="createItem.comment"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -148,9 +156,9 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="updateItem in diff.diffs.updateItems">
-                                    <td width="30%">{{updateItem.key}}</td>
-                                    <td width="40%">{{updateItem.value}}</td>
-                                    <td width="30%">{{updateItem.comment}}</td>
+                                    <td width="30%" ng-bind="updateItem.key"></td>
+                                    <td width="40%" ng-bind="updateItem.value"></td>
+                                    <td width="30%" ng-bind="updateItem.comment"></td>
                                 </tr>
                                 </tbody>
                             </table>

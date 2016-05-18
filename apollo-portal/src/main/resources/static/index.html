@@ -14,7 +14,7 @@
 <body ng-controller="IndexController">
 
 <div class="site-notice">当前站点支持
-    &nbsp;<a ng-repeat="env in envs" ng-class="{selected:selectedEnv == env}" ng-click="switchEnv(env)"><em>{{env}}
+    &nbsp;<a ng-repeat="env in envs" ng-class="{selected:selectedEnv == env}" ng-click="switchEnv(env)"><em ng-bind="env">
         </em></a>&nbsp;
     环境点击切换
 </div>
@@ -24,7 +24,7 @@
         <div class="row">
             <div class="col-xs-12"><h1>Apollo</h1>
                 <p>携程统一配置中心<br>
-                    <span class="package-amount">共收录了 <strong>{{appsCount}}</strong> 个项目</span>
+                    <span class="package-amount">共收录了 <strong ng-bind="appsCount"></strong> 个项目</span>
                     <a class="btn btn-success" href="app.html">创建项目</a>
                 </p>
 
@@ -45,15 +45,15 @@
         <a class="package list-group-item" target="_blank" href="config.html?#/appid={{app.appId}}"
            ng-repeat="app in apps ">
             <div class="row">
-                <div class="col-md-3"><h4 class="apps-name">{{app.appId}}</h4></div>
+                <div class="col-md-3"><h4 class="apps-name" ng-bind="app.appId"></h4></div>
                 <div class="col-md-7 hidden-xs">
-                    <p class="apps-description">{{app.name}}</p>
+                    <p class="apps-description" ng-bind="app.name"></p>
                 </div>
                 <div class="col-md-2">
                     <p class="apps-description">
-                        {{app.ownerName}}
+                        <span ng-bind="app.ownerName"></span>
                         <br>
-                        {{app.ownerEmail}}
+                        <span ng-bind="app.ownerEmail"></span>
                     </p>
 
                 </div>
