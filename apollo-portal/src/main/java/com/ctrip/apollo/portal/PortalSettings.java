@@ -129,12 +129,17 @@ public class PortalSettings {
       long failCnt = healthCheckFailCnt.get(env);
       healthCheckFailCnt.put(env, ++failCnt);
 
-      if (envStatusMark.get(env) && failCnt >= ENV_DIED_THREADHOLD){
-        envStatusMark.put(env, false);
-        logger.error("env turn to down [env:{}]", env);
-      }else {
+      if (!envStatusMark.get(env)) {
         logger.warn("[env:{}] down yet.", env);
+      } else {
+        if (failCnt >= ENV_DIED_THREADHOLD) {
+          envStatusMark.put(env, false);
+          logger.error("env turn to down [env:{}]", env);
+        } else {
+          logger.warn("env health check fail first time. [env:{}]", env);
+        }
       }
+
     }
 
   }
