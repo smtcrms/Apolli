@@ -57,6 +57,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final ScheduledExecutorService m_executorService;
   private final AtomicBoolean m_longPollingStopped;
   private SchedulePolicy m_longPollSchedulePolicy;
+  private AtomicReference<ServiceDTO> m_longPollServiceDto;
 
   /**
    * Constructor.
@@ -79,6 +80,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     m_longPollingStopped = new AtomicBoolean(false);
     m_executorService = Executors.newScheduledThreadPool(1,
         ApolloThreadFactory.create("RemoteConfigRepository", true));
+    m_longPollServiceDto = new AtomicReference<>();
     this.trySync();
     this.schedulePeriodicRefresh();
     this.scheduleLongPollingRefresh();
@@ -148,8 +150,12 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     List<ServiceDTO> configServices = getConfigServices();
     for (int i = 0; i < maxRetries; i++) {
-      List<ServiceDTO> randomConfigServices = Lists.newArrayList(configServices);
+      List<ServiceDTO> randomConfigServices = Lists.newLinkedList(configServices);
       Collections.shuffle(randomConfigServices);
+      //Access the server which notifies the client first
+      if (m_longPollServiceDto.get() != null) {
+        randomConfigServices.add(0, m_longPollServiceDto.getAndSet(null));
+      }
 
       for (ServiceDTO configService : randomConfigServices) {
         String url =
@@ -272,6 +278,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         logger.debug("Long polling response: {}, url: {}", response.getStatusCode(), url);
         if (response.getStatusCode() == 200) {
+          m_longPollServiceDto.set(lastServiceDto);
           longPollingService.submit(new Runnable() {
             @Override
             public void run() {
