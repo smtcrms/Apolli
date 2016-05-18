@@ -95,7 +95,6 @@ public class ConfigServiceLocator implements Initializable {
         m_configUtil.getRefreshTimeUnit());
   }
 
-  //TODO periodically update config services
   private synchronized void updateConfigServices() {
     String domainName = m_configUtil.getMetaServerDomainName();
     String url = domainName + "/services/config";
