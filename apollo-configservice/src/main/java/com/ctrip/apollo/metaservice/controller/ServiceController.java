@@ -6,6 +6,7 @@ import com.netflix.appinfo.InstanceInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -39,7 +40,9 @@ public class ServiceController {
   }
 
   @RequestMapping("/config")
-  public List<ServiceDTO> getConfigService() {
+  public List<ServiceDTO> getConfigService(
+      @RequestParam(value = "appId", defaultValue = "") String appId,
+      @RequestParam(value = "ip", defaultValue = "") String clientIp) {
     List<InstanceInfo> instances = discoveryService.getConfigServiceInstances();
     List<ServiceDTO> result = instances.stream().map(new Function<InstanceInfo, ServiceDTO>() {
 
