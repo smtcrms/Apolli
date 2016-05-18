@@ -48,6 +48,8 @@ application_module.controller("ConfigBaseInfoController",
                                                                    showBorder: true,
                                                                    data: navTree,
                                                                    levels: 99,
+                                                                   expandIcon: '',
+                                                                   collapseIcon: '',
                                                                    onNodeSelected: function (event, data) {
                                                                        if (!data.tags){//first nav node
                                                                            $rootScope.pageContext.env = data.text;
