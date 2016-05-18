@@ -63,6 +63,9 @@ public class PortalSettings {
       envStatusMark.put(env, true);
     }
 
+    //init active envs
+    activeEnvs = refreshActiveEnvs();
+
     healthCheckService = Executors.newScheduledThreadPool(1);
 
     healthCheckService
