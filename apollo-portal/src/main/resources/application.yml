@@ -8,7 +8,7 @@ ctrip:
   appid: 100003173
   
 server:
-  port: 8070
+  port: 8080
   
 logging:
   file: /opt/logs/100003173/apollo-portal.log
