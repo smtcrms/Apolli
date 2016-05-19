@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<groupId>com.ctrip.apollo</groupId>
+		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
@@ -17,11 +17,11 @@
 	<dependencies>
 		<!-- apollo -->
 		<dependency>
-			<groupId>com.ctrip.apollo</groupId>
+			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ctrip.apollo</groupId>
+			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-buildtools</artifactId>
 			<scope>test</scope>
 		</dependency>
