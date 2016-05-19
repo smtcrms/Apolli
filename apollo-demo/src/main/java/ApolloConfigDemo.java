@@ -1,11 +1,11 @@
 
 import com.google.common.base.Strings;
 
-import com.ctrip.apollo.Config;
-import com.ctrip.apollo.ConfigChangeListener;
-import com.ctrip.apollo.ConfigService;
-import com.ctrip.apollo.model.ConfigChange;
-import com.ctrip.apollo.model.ConfigChangeEvent;
+import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigChangeListener;
+import com.ctrip.framework.apollo.ConfigService;
+import com.ctrip.framework.apollo.model.ConfigChange;
+import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
