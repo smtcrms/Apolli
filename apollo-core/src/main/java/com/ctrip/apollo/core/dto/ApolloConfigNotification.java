@@ -4,21 +4,21 @@ package com.ctrip.apollo.core.dto;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloConfigNotification {
-  private String namespace;
+  private String namespaceName;
 
   //for json converter
   public ApolloConfigNotification() {
   }
 
-  public ApolloConfigNotification(String namespace) {
-    this.namespace = namespace;
+  public ApolloConfigNotification(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 
-  public String getNamespace() {
-    return namespace;
+  public String getNamespaceName() {
+    return namespaceName;
   }
 
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 }

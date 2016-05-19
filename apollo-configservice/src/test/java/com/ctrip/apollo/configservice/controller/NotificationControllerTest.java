@@ -122,7 +122,7 @@ public class NotificationControllerTest {
     ApolloConfigNotification notification = response.getBody();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(defaultNamespace, notification.getNamespace());
+    assertEquals(defaultNamespace, notification.getNamespaceName());
   }
 
   @Test
@@ -149,7 +149,7 @@ public class NotificationControllerTest {
     ApolloConfigNotification notification = response.getBody();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(somePublicNamespace, notification.getNamespace());
+    assertEquals(somePublicNamespace, notification.getNamespaceName());
 
   }
 

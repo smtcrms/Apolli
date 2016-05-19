@@ -103,7 +103,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals("TEST-RELEASE-KEY4", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someCluster, result.getCluster());
-    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("someDC-v1", result.getConfigurations().get("k1"));
     assertEquals("someDC-v2", result.getConfigurations().get("k2"));
   }
@@ -121,7 +121,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY4", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
-    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("override-v1", result.getConfigurations().get("k1"));
     assertEquals("someDC-v2", result.getConfigurations().get("k2"));
   }
@@ -140,7 +140,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals("TEST-RELEASE-KEY3", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someCluster, result.getCluster());
-    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("default-v1", result.getConfigurations().get("k1"));
     assertEquals("default-v2", result.getConfigurations().get("k2"));
   }
@@ -159,7 +159,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY3", result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
-    assertEquals(somePublicNamespace, result.getNamespace());
+    assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("override-v1", result.getConfigurations().get("k1"));
     assertEquals("default-v2", result.getConfigurations().get("k2"));
 
