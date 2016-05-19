@@ -59,7 +59,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
 
     ApolloConfigNotification notification = result.getBody();
     assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertEquals(defaultNamespace, notification.getNamespace());
+    assertEquals(defaultNamespace, notification.getNamespaceName());
   }
 
   @Test(timeout = 5000L)
@@ -81,7 +81,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
 
     ApolloConfigNotification notification = result.getBody();
     assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertEquals(somePublicNamespace, notification.getNamespace());
+    assertEquals(somePublicNamespace, notification.getNamespaceName());
   }
 
   @Test(timeout = 5000L)
@@ -104,7 +104,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
 
     ApolloConfigNotification notification = result.getBody();
     assertEquals(HttpStatus.OK, result.getStatusCode());
-    assertEquals(somePublicNamespace, notification.getNamespace());
+    assertEquals(somePublicNamespace, notification.getNamespaceName());
   }
 
   private String assembleKey(String appId, String cluster, String namespace) {

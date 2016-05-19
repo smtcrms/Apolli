@@ -88,7 +88,7 @@ public class ConfigControllerTest {
     verify(configService, times(1)).findRelease(someAppId, someClusterName, defaultNamespaceName);
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(defaultNamespaceName, result.getNamespace());
+    assertEquals(defaultNamespaceName, result.getNamespaceName());
     assertEquals(someServerSideNewReleaseKey, result.getReleaseKey());
   }
 
@@ -151,7 +151,7 @@ public class ConfigControllerTest {
     assertEquals(someServerSideReleaseKey, result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(someAppOwnNamespaceName, result.getNamespace());
+    assertEquals(someAppOwnNamespaceName, result.getNamespaceName());
     assertEquals("foo", result.getConfigurations().get("apollo.bar"));
   }
 
@@ -180,7 +180,7 @@ public class ConfigControllerTest {
     assertEquals(someServerSideReleaseKey, result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals(somePublicNamespaceName, result.getNamespaceName());
     assertEquals("foo", result.getConfigurations().get("apollo.public.bar"));
   }
 
@@ -212,7 +212,7 @@ public class ConfigControllerTest {
     assertEquals(someServerSideReleaseKey, result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals(somePublicNamespaceName, result.getNamespaceName());
     assertEquals("foo", result.getConfigurations().get("apollo.public.bar"));
   }
 
@@ -249,7 +249,7 @@ public class ConfigControllerTest {
         result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someClusterName, result.getCluster());
-    assertEquals(somePublicNamespaceName, result.getNamespace());
+    assertEquals(somePublicNamespaceName, result.getNamespaceName());
     assertEquals("foo-override", result.getConfigurations().get("apollo.public.foo"));
     assertEquals("bar", result.getConfigurations().get("apollo.public.bar"));
   }

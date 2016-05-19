@@ -13,7 +13,7 @@ public class ApolloConfig {
 
   private String cluster;
 
-  private String namespace;
+  private String namespaceName;
 
   private Map<String, String> configurations;
 
@@ -24,11 +24,11 @@ public class ApolloConfig {
 
   public ApolloConfig(String appId,
                       String cluster,
-                      String namespace,
+                      String namespaceName,
                       String releaseKey) {
     this.appId = appId;
     this.cluster = cluster;
-    this.namespace = namespace;
+    this.namespaceName = namespaceName;
     this.releaseKey = releaseKey;
   }
 
@@ -40,8 +40,8 @@ public class ApolloConfig {
     return cluster;
   }
 
-  public String getNamespace() {
-    return namespace;
+  public String getNamespaceName() {
+    return namespaceName;
   }
 
   public String getReleaseKey() {
@@ -60,8 +60,8 @@ public class ApolloConfig {
     this.cluster = cluster;
   }
 
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
   }
 
   public void setReleaseKey(String releaseKey) {
@@ -78,7 +78,7 @@ public class ApolloConfig {
         .omitNullValues()
         .add("appId", appId)
         .add("cluster", cluster)
-        .add("namespace", namespace)
+        .add("namespaceName", namespaceName)
         .add("releaseKey", releaseKey)
         .add("configurations", configurations)
         .toString();
