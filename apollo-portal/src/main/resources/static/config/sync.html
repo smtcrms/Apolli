@@ -46,24 +46,8 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">同步到那个集群</label>
                         <div class="col-sm-6">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <td><input type="checkbox" ng-click="toggleEnvsCheckedStatus()"></td>
-                                    </td>
-                                    <td>环境</td>
-                                    <td>集群</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="namespaceIdentifer in namespaceIdentifers">
-                                    <td width="10%"><input type="checkbox" ng-checked="namespaceIdentifer.checked"
-                                                           ng-click="switchSelect(namespaceIdentifer)"></td>
-                                    <td width="30%" ng-bind="namespaceIdentifer.env"></td>
-                                    <td width="60%" ng-bind="namespaceIdentifer.name"></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <apolloclusterselector apollo-app-id="pageContext.appId" apollo-default-checked="true"
+                                                   apollo-select="collectSelectedClusters"></apolloclusterselector>
                         </div>
                     </div>
                 </div>

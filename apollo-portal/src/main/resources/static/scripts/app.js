@@ -5,7 +5,7 @@ var appService = angular.module('app.service', ['ngResource']);
 var appUtil = angular.module('app.util', ['toastr']);
 
 /** directive */
-var directive_module = angular.module('apollo.directive', ['app.service']);
+var directive_module = angular.module('apollo.directive', ['app.service', 'app.util', 'toastr']);
 
 /** page module 定义*/
 // 首页

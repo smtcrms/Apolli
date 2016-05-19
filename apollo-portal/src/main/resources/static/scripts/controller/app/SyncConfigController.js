@@ -10,31 +10,7 @@ sync_item_module.controller("SyncItemController",
                                        namespaceName: params.namespaceName
                                    };
                                    
-                                   ////// load env //////
-                                   AppService.load_nav_tree($scope.pageContext.appId).then(function (result) {
-                                       $scope.namespaceIdentifers = [];
-                                       var envClusterInfo = AppUtil.collectData(result);
-                                       envClusterInfo.forEach(function (node) {
-                                           var env = node.env;
-                                           node.clusters.forEach(function (cluster) {
-                                               cluster.env = env;
-                                               cluster.checked = false;
-                                               if (env != $scope.pageContext.env || cluster.name != $scope.pageContext.clusterName){
-                                                   $scope.namespaceIdentifers.push(cluster);
-                                               }
-                                           })
-                                       });
-                                   }, function (result) {
-                                       toastr.error(AppUtil.errorMsg(result), "加载环境出错");    
-                                   });
 
-                                   var envAllSelected = false;
-                                   $scope.toggleEnvsCheckedStatus = function () {
-                                       envAllSelected = !envAllSelected;
-                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
-                                           namespaceIdentifer.checked = envAllSelected;
-                                       })
-                                   };
                                    
                                    ////// load items //////
                                    ConfigService.find_items($scope.pageContext.appId, $scope.pageContext.env,
@@ -85,6 +61,11 @@ sync_item_module.controller("SyncItemController",
                                         toastr.error(AppUtil.errorMsg(result));
                                     });    
                                    };
+
+                                   var selectedClusters = [];
+                                   $scope.collectSelectedClusters = function (data) {
+                                       selectedClusters = data;
+                                   };
                                    
                                    function parseSyncSourceData() {
                                        var sourceData = {
@@ -92,11 +73,11 @@ sync_item_module.controller("SyncItemController",
                                            syncItems: []
                                        };
                                        var namespaceName = $scope.pageContext.namespaceName;
-                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
-                                           if (namespaceIdentifer.checked){
-                                               namespaceIdentifer.clusterName = namespaceIdentifer.name;
-                                               namespaceIdentifer.namespaceName = namespaceName;
-                                               sourceData.syncToNamespaces.push(namespaceIdentifer);
+                                       selectedClusters.forEach(function (cluster) {
+                                           if (cluster.checked){
+                                               cluster.clusterName = cluster.name;
+                                               cluster.namespaceName = namespaceName;
+                                               sourceData.syncToNamespaces.push(cluster);
                                            }
                                        });
                                        $scope.sourceItems.forEach(function (item) {
