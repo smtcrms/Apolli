@@ -1,3 +1,5 @@
+
+/** navbar */
 directive_module.directive('apollonav', function ($compile, $window, AppService, EnvService) {
     return {
         restrict: 'E',
@@ -109,6 +111,68 @@ directive_module.directive('apollonav', function ($compile, $window, AppService,
                 selectedAppIdx = -1;
 
             }
+        }
+    }
+
+});
+
+/** env cluster selector*/
+
+directive_module.directive('apolloclusterselector', function ($compile, $window, AppService, AppUtil, toastr) {
+    return {
+        restrict: 'E',
+        templateUrl: '../views/component/env-selector.html',
+        transclude: true,
+        replace: true,
+        scope: {
+            appId: '=apolloAppId',
+            defaultChecked: '=apolloDefaultChecked',
+            select: '=apolloSelect'
+        },
+        link: function (scope, element, attrs) {
+            ////// load env //////
+            AppService.load_nav_tree(scope.appId).then(function (result) {
+                scope.clusters = [];
+                var envClusterInfo = AppUtil.collectData(result);
+                envClusterInfo.forEach(function (node) {
+                    var env = node.env;
+                    node.clusters.forEach(function (cluster) {
+                        cluster.env = env;
+                        cluster.checked = scope.defaultChecked;
+                        scope.clusters.push(cluster);
+                    })
+                });
+                scope.select(collectSelectedClusters());
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "加载环境信息出错");
+            });
+
+            scope.envAllSelected = scope.defaultChecked;
+
+            scope.toggleEnvsCheckedStatus = function () {
+                scope.envAllSelected = !scope.envAllSelected;
+                scope.clusters.forEach(function (cluster) {
+                    cluster.checked = scope.envAllSelected;
+                });
+                scope.select(collectSelectedClusters());
+            };
+
+            scope.switchSelect = function (o) {
+                o.checked = !o.checked;
+                scope.select(collectSelectedClusters());
+            };
+
+            function collectSelectedClusters() {
+                var selectedClusters = [];
+                scope.clusters.forEach(function (cluster) {
+                    if (cluster.checked){
+                        cluster.clusterName = cluster.name;
+                        selectedClusters.push(cluster);
+                    }
+                });
+                return selectedClusters;
+            }
+            
         }
     }
 

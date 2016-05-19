@@ -8,22 +8,6 @@ namespace_module.controller("LinkNamespaceController",
 
                                    $scope.step = 1;
 
-                                   ////// load env //////
-                                   AppService.load_nav_tree($scope.appId).then(function (result) {
-                                       $scope.namespaceIdentifers = [];
-                                       var envClusterInfo = AppUtil.collectData(result);
-                                       envClusterInfo.forEach(function (node) {
-                                           var env = node.env;
-                                           node.clusters.forEach(function (cluster) {
-                                               cluster.env = env;
-                                               cluster.checked = false;
-                                               $scope.namespaceIdentifers.push(cluster);
-                                           })
-                                       });
-                                   }, function (result) {
-                                       toastr.error(AppUtil.errorMsg(result), "加载环境出错");
-                                   });
-                                   
                                    NamespaceService.find_public_namespaces().then(function (result) {
                                        var publicNamespaces = [];
                                        result.forEach(function (item) {
@@ -45,9 +29,13 @@ namespace_module.controller("LinkNamespaceController",
                                        name:'',
                                        comment:''
                                    };
+
+                                   var selectedClusters = [];
+                                   $scope.collectSelectedClusters = function (data) {
+                                        selectedClusters = data;
+                                   };
                                    $scope.createNamespace = function () {
                                        if ($scope.type == 'link'){
-                                           var selectedClusters = collectSelectedClusters();
                                            if (selectedClusters.length == 0){
                                                toastr.warning("请选择集群");
                                                return;
@@ -85,35 +73,11 @@ namespace_module.controller("LinkNamespaceController",
 
                                    };
 
-                                   var envAllSelected = false;
-                                   $scope.toggleEnvsCheckedStatus = function () {
-                                       envAllSelected = !envAllSelected;
-                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
-                                           namespaceIdentifer.checked = envAllSelected;
-                                       })
-                                   };
-
-                                   function collectSelectedClusters() {
-                                       var selectedClusters = [];
-                                       $scope.namespaceIdentifers.forEach(function (namespaceIdentifer) {
-                                           if (namespaceIdentifer.checked){
-                                               namespaceIdentifer.clusterName = namespaceIdentifer.name;
-                                               selectedClusters.push(namespaceIdentifer);
-                                           }
-                                       });
-                                       return selectedClusters;
-                                   }
-
-
                                    $scope.namespaceType = 1;
                                    $scope.selectNamespaceType = function (type) {
                                        $scope.namespaceType = type;
                                    };
 
-                                   $scope.switchSelect = function (o) {
-                                       o.checked = !o.checked;
-                                   };
-                                   
                                    $scope.back = function () {
                                        $window.location.href = '/config.html?#appid=' + $scope.appId;    
                                    };
