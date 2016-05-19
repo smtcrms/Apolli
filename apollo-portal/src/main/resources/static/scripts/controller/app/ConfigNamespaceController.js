@@ -141,7 +141,6 @@ application_module.controller("ConfigNamespaceController",
                                                              releaseNamespace.namespace.namespaceName, $scope.releaseTitle,
                                                              $scope.releaseComment).then(
                                            function (result) {
-                                               $('#releaseModal').modal('hide');
                                                toastr.success("发布成功");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
