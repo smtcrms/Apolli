@@ -1,6 +1,6 @@
 ## Maven Dependency
 		<dependency>
-			<groupId>com.ctrip.apollo</groupId>
+			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

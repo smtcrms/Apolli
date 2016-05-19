@@ -2,17 +2,17 @@
 	<components>
 		<component>
 			<role>com.dianping.cat.configuration.ClientConfigManager</role>
-			<implementation>com.ctrip.apollo.cat.NullClientConfigManager
+			<implementation>com.ctrip.framework.apollo.cat.NullClientConfigManager
 			</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.message.io.TransportManager</role>
-			<implementation>com.ctrip.apollo.cat.NullTransportManager
+			<implementation>com.ctrip.framework.apollo.cat.NullTransportManager
 			</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.MessageManager</role>
-			<implementation>com.ctrip.apollo.cat.NullMessageManager
+			<implementation>com.ctrip.framework.apollo.cat.NullMessageManager
 			</implementation>
 			<requirements>
 				<requirement>
@@ -22,7 +22,7 @@
 		</component>
 		<component>
 			<role>com.dianping.cat.message.MessageProducer</role>
-			<implementation>com.ctrip.apollo.cat.NullMessageProducer
+			<implementation>com.ctrip.framework.apollo.cat.NullMessageProducer
 			</implementation>
 			<requirements>
 				<requirement>
@@ -35,7 +35,7 @@
 		</component>
 		<component>
 			<role>org.codehaus.plexus.logging.LoggerManager</role>
-			<implementation>com.ctrip.apollo.cat.NullLoggerManager
+			<implementation>com.ctrip.framework.apollo.cat.NullLoggerManager
 			</implementation>
 		</component>
 	</components>
