@@ -36,7 +36,14 @@ public class ItemController {
       BeanUtils.copyEntityProperties(entity, managedEntity);
       entity = itemService.update(managedEntity);
     } else {
+      Item lastItem = itemService.findLastOne(appId, clusterName, namespaceName);
+      int lineNum = 1;
+      if (lastItem != null){
+        lineNum = lastItem.getLineNum() + 1;
+      }
+      entity.setLineNum(lineNum);
       entity.setDataChangeCreatedBy(user.getUsername());
+      entity.setDataChangeLastModifiedBy(user.getUsername());
       entity = itemService.save(entity);
     }
 

@@ -212,20 +212,19 @@ table th {
 }
 
 .namespace-view-table {
-    max-height: 700px;
+
 }
 
 .namespace-view-table table {
-    table-layout: fixed;
-}
-
-.namespace-view-table tr {
-    cursor: pointer;
-
+    table-layout: inherit;
 }
 
 .namespace-view-table td {
     word-wrap: break-word;
+}
+
+.namespace-view-table .glyphicon{
+    cursor: pointer;
 }
 
 .history-view {

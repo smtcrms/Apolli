@@ -1,4 +1,3 @@
-
 /** navbar */
 directive_module.directive('apollonav', function ($compile, $window, AppService, EnvService) {
     return {
@@ -10,7 +9,7 @@ directive_module.directive('apollonav', function ($compile, $window, AppService,
 
             scope.sourceApps = [];
             scope.copyedApps = [];
-            
+
             EnvService.find_all_envs().then(function (result) {
                 //default select first env
                 AppService.find_all_app(result[0]).then(function (result) {
@@ -35,23 +34,23 @@ directive_module.directive('apollonav', function ($compile, $window, AppService,
 
             scope.changeSearchKey = function () {
                 scope.copyedApps = [];
-                    scope.sourceApps.forEach(function (app) {
-                        if (app.name.indexOf(scope.searchKey) > -1 || app.appId.indexOf(scope.searchKey) > -1) {
-                            scope.copyedApps.push(app);
-                        }
-                    });
+                scope.sourceApps.forEach(function (app) {
+                    if (app.name.indexOf(scope.searchKey) > -1 || app.appId.indexOf(scope.searchKey) > -1) {
+                        scope.copyedApps.push(app);
+                    }
+                });
                 scope.shouldShowAppList = true;
             };
-            
+
             scope.jumpToConfigPage = function () {
-                if (selectedApp.appId){
+                if (selectedApp.appId) {
                     var needReloadPage = false;
-                    if ($window.location.href.indexOf("config.html") > -1){
+                    if ($window.location.href.indexOf("config.html") > -1) {
                         needReloadPage = true;
                     }
                     $window.location.href = '/config.html?#appid=' + selectedApp.appId;
 
-                    if (needReloadPage){
+                    if (needReloadPage) {
                         $window.location.reload();
                     }
                 }
@@ -72,10 +71,10 @@ directive_module.directive('apollonav', function ($compile, $window, AppService,
                         scope.copyedApps[--selectedAppIdx].selected = true;
                     }
                 } else if (event.keyCode == 13) {
-                    if (scope.shouldShowAppList && selectedAppIdx > -1){
+                    if (scope.shouldShowAppList && selectedAppIdx > -1) {
                         select(scope.copyedApps[selectedAppIdx]);
                         event.preventDefault();
-                    }else {
+                    } else {
                         scope.jumpToConfigPage();
                     }
 
@@ -157,23 +156,39 @@ directive_module.directive('apolloclusterselector', function ($compile, $window,
                 scope.select(collectSelectedClusters());
             };
 
-            scope.switchSelect = function (o) {
+            scope.switchSelect = function (o, $event) {
                 o.checked = !o.checked;
+                $event.stopPropagation();
+                scope.select(collectSelectedClusters());
+            };
+
+            scope.toggleClusterCheckedStatus = function (cluster) {
+                cluster.checked = !cluster.checked;
                 scope.select(collectSelectedClusters());
             };
 
             function collectSelectedClusters() {
                 var selectedClusters = [];
                 scope.clusters.forEach(function (cluster) {
-                    if (cluster.checked){
+                    if (cluster.checked) {
                         cluster.clusterName = cluster.name;
                         selectedClusters.push(cluster);
                     }
                 });
                 return selectedClusters;
             }
-            
+
         }
+    }
+
+});
+
+directive_module.directive('apollorequiredfiled', function ($compile, $window) {
+    return {
+        restrict: 'E',
+        template: '<span style="color: red">*</span>',
+        transclude: true,
+        replace: true
     }
 
 });

@@ -37,7 +37,7 @@ public class PortalConfigController {
       @RequestBody NamespaceTextModel model) {
 
     if (model == null) {
-      throw new BadRequestException("request payload shoud not be null");
+      throw new BadRequestException("request payload should not be null");
     }
     model.setAppId(appId);
     model.setClusterName(clusterName);
@@ -51,13 +51,39 @@ public class PortalConfigController {
     configService.updateConfigItemByText(model);
   }
 
+  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item", method = RequestMethod.POST)
+  public ItemDTO createItem(@PathVariable String appId, @PathVariable String env,
+                            @PathVariable String clusterName, @PathVariable String namespaceName,
+                            @RequestBody ItemDTO item){
+    if (StringUtils.isContainEmpty(appId, env, clusterName, namespaceName)){
+      throw new BadRequestException("request payload should not be contain empty.");
+    }
+    if (!isValidItem(item) && item.getNamespaceId() <= 0){
+      throw new BadRequestException("request model is invalid");
+    }
+    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+  }
+
+  @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item", method = RequestMethod.PUT)
+  public ItemDTO updateItem(@PathVariable String appId, @PathVariable String env,
+                            @PathVariable String clusterName, @PathVariable String namespaceName,
+                            @RequestBody ItemDTO item){
+    if (StringUtils.isContainEmpty(appId, env, clusterName, namespaceName)){
+      throw new BadRequestException("request payload should not be contain empty.");
+    }
+    if (!isValidItem(item)){
+      throw new BadRequestException("request model is invalid");
+    }
+    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+  }
+
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {
       "application/json"})
   public ReleaseDTO createRelease(@PathVariable String appId,
                                   @PathVariable String env, @PathVariable String clusterName,
                                   @PathVariable String namespaceName, @RequestBody NamespaceReleaseModel model) {
     if (model == null) {
-      throw new BadRequestException("request payload shoud not be null");
+      throw new BadRequestException("request payload should not be null");
     }
     model.setAppId(appId);
     model.setClusterName(clusterName);
@@ -77,7 +103,7 @@ public class PortalConfigController {
                                  @PathVariable String clusterName, @PathVariable String namespaceName){
 
     if (StringUtils.isContainEmpty(appId, env, clusterName, namespaceName)){
-      throw new BadRequestException("appid,env,cluster name,namespace name can not be null");
+      throw new BadRequestException("appid,env,cluster name,namespace name can not be empty");
     }
 
     return configService.findItems(appId, Env.valueOf(env), clusterName, namespaceName);
@@ -87,7 +113,7 @@ public class PortalConfigController {
       "application/json"})
   public List<ItemDiffs> diff(@RequestBody NamespaceSyncModel model){
     if (model == null){
-      throw new BadRequestException("request payload shoud not be null");
+      throw new BadRequestException("request payload should not be null");
     }
     if (model.isInvalid()) {
       throw new BadRequestException("request model is invalid");
@@ -100,13 +126,17 @@ public class PortalConfigController {
       "application/json"})
   public ResponseEntity<Void> update(@RequestBody NamespaceSyncModel model){
     if (model == null){
-      throw new BadRequestException("request payload shoud not be null");
+      throw new BadRequestException("request payload should not be null");
     }
     if (model.isInvalid()) {
       throw new BadRequestException("request model is invalid");
     }
     configService.syncItems(model.getSyncToNamespaces(), model.getSyncItems());
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  private boolean isValidItem(ItemDTO item){
+    return item != null && !StringUtils.isContainEmpty(item.getKey(), item.getValue());
   }
 
 }
