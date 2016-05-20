@@ -71,6 +71,11 @@ public class PortalConfigService {
     }
   }
 
+
+  public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item){
+    return itemAPI.createOrUpdateItem(appId, env, clusterName, namespaceName, item);
+
+  }
   /**
    * createRelease config items
    */

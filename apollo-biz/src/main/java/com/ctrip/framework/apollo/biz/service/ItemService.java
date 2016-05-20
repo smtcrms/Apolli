@@ -45,6 +45,17 @@ public class ItemService {
     return item;
   }
 
+  public Item findLastOne(String appId, String clusterName, String namespaceName) {
+    Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
+                                                                                        clusterName, namespaceName);
+    if (namespace == null) {
+      throw new NotFoundException(
+          String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+    }
+    Item item = itemRepository.findFirst1ByNamespaceIdOrderByLineNumDesc(namespace.getId());
+    return item;
+  }
+
   public Item findOne(long itemId) {
     Item item = itemRepository.findOne(itemId);
     return item;

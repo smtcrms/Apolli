@@ -115,6 +115,12 @@ public class AdminServiceAPI {
           .format("apps/%s/clusters/%s/namespaces/%s/itemset", appId, clusterName, namespace),
           changeSets, Void.class);
     }
+
+    public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespace, ItemDTO item){
+      return restTemplate.postForEntity(getAdminServiceHost(env) + String
+                                     .format("apps/%s/clusters/%s/namespaces/%s/items", appId, clusterName, namespace),
+                                 item, ItemDTO.class).getBody();
+    }
   }
 
   @Service
