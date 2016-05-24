@@ -1,6 +1,9 @@
 package com.ctrip.framework.apollo.portal;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +25,8 @@ import org.springframework.stereotype.Component;
 
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
+import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 
 @Component
 public class PortalSettings {
@@ -30,11 +35,14 @@ public class PortalSettings {
 
   private static final int HEALTH_CHECK_INTERVAL = 5000;
 
-  @Value("#{'${apollo.portal.env}'.split(',')}")
+  @Value("#{'${apollo.portal.envs}'.split(',')}")
   private List<String> allStrEnvs;
 
   @Autowired
   ApplicationContext applicationContext;
+
+  @Autowired
+  private ServerConfigRepository serverConfigRepository;
 
   private List<Env> allEnvs = new ArrayList<Env>();
 
@@ -47,10 +55,19 @@ public class PortalSettings {
 
   @PostConstruct
   private void postConstruct() {
-    //init origin config envs
+    //初始化portal支持操作的环境集合,线上的portal可能支持所有的环境操作,而线下环境则支持一部分.
+    // 每个环境的portal支持哪些环境配置在数据库里
+    ServerConfig serverConfig = serverConfigRepository.findByKey("apollo.portal.envs");
+    // TODO: 16/5/24 线上环境暂时从本地配置里拿,之后也放在数据库上并提供界面可操作
+    if (serverConfig != null){//如果db有配置则从db里取
+      String[] configedEnvs = serverConfig.getValue().split(",");
+      allStrEnvs = Arrays.asList(configedEnvs);
+    }
+
     for (String e : allStrEnvs) {
       allEnvs.add(Env.valueOf(e.toUpperCase()));
     }
+
 
     for (Env env : allEnvs) {
       envStatusMark.put(env, true);
