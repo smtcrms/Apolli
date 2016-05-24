@@ -86,9 +86,9 @@
 <th><img src="images/icon_warning_sml.gif" alt="" />&#160;Warnings</th>
 <th><img src="images/icon_error_sml.gif" alt="" />&#160;Errors</th></tr>
 <tr class="b">
-<td>26</td>
+<td>28</td>
 <td>0</td>
-<td>291</td>
+<td>293</td>
 <td>0</td></tr></table></div>
 <div class="section">
 <h2>Files<a name="Files"></a></h2>
@@ -126,7 +126,7 @@
 <tr class="a">
 <td><a href="#com.ctrip.framework.apollo.portal.controller.PortalConfigController.java">com/ctrip/framework/apollo/portal/controller/PortalConfigController.java</a></td>
 <td>0</td>
-<td>33</td>
+<td>35</td>
 <td>0</td></tr>
 <tr class="b">
 <td><a href="#com.ctrip.framework.apollo.portal.controller.PortalEnvController.java">com/ctrip/framework/apollo/portal/controller/PortalEnvController.java</a></td>
@@ -139,26 +139,6 @@
 <td>12</td>
 <td>0</td></tr>
 <tr class="b">
-<td><a href="#com.ctrip.framework.apollo.portal.entity.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/EnvClusterInfo.java</a></td>
-<td>0</td>
-<td>1</td>
-<td>0</td></tr>
-<tr class="a">
-<td><a href="#com.ctrip.framework.apollo.portal.entity.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/ItemDiffs.java</a></td>
-<td>0</td>
-<td>2</td>
-<td>0</td></tr>
-<tr class="b">
-<td><a href="#com.ctrip.framework.apollo.portal.entity.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/NamespaceIdentifer.java</a></td>
-<td>0</td>
-<td>5</td>
-<td>0</td></tr>
-<tr class="a">
-<td><a href="#com.ctrip.framework.apollo.portal.entity.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/NamespaceVO.java</a></td>
-<td>0</td>
-<td>4</td>
-<td>0</td></tr>
-<tr class="b">
 <td><a href="#com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel.java">com/ctrip/framework/apollo/portal/entity/form/NamespaceSyncModel.java</a></td>
 <td>0</td>
 <td>3</td>
@@ -167,6 +147,26 @@
 <td><a href="#com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel.java">com/ctrip/framework/apollo/portal/entity/form/NamespaceTextModel.java</a></td>
 <td>0</td>
 <td>3</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/vo/EnvClusterInfo.java</a></td>
+<td>0</td>
+<td>1</td>
+<td>0</td></tr>
+<tr class="a">
+<td><a href="#com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/vo/ItemDiffs.java</a></td>
+<td>0</td>
+<td>2</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceIdentifer.java</a></td>
+<td>0</td>
+<td>5</td>
+<td>0</td></tr>
+<tr class="a">
+<td><a href="#com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceVO.java</a></td>
+<td>0</td>
+<td>4</td>
 <td>0</td></tr>
 <tr class="b">
 <td><a href="#com.ctrip.framework.apollo.portal.service.PortalAppService.java">com/ctrip/framework/apollo/portal/service/PortalAppService.java</a></td>
@@ -218,7 +218,7 @@
 <li>sortImportsInGroupAlphabetically: <tt>&quot;true&quot;</tt></li>
 <li>specialImportsRegExp: <tt>&quot;com.google&quot;</tt></li>
 <li>customImportOrderRules: <tt>&quot;STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE&quot;</tt></li></ul></td>
-<td>75</td>
+<td>77</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
 <tr class="a">
 <td>javadoc</td>
@@ -788,7 +788,7 @@
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
-<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.EnvClusterInfo' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
 <td>20</td></tr>
 <tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
@@ -929,7 +929,19 @@
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
-<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel' import. Should be before 'com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel'.</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel' import. Should be before 'com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs'.</td>
+<td>10</td></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel' import. Should be before 'com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs'.</td>
+<td>11</td></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel' import. Should be before 'com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs'.</td>
 <td>12</td></tr>
 <tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
@@ -1214,114 +1226,6 @@
 <td>Missing a Javadoc comment.</td>
 <td>48</td></tr></table></div>
 <div class="section">
-<h3 id="com.ctrip.framework.apollo.portal.entity.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/EnvClusterInfo.java</h3>
-<table border="0" class="bodyTable">
-<tr class="a">
-<th>Severity</th>
-<th>Category</th>
-<th>Rule</th>
-<th>Message</th>
-<th>Line</th></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>WhitespaceAround</td>
-<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
-<td>12</td></tr></table></div>
-<div class="section">
-<h3 id="com.ctrip.framework.apollo.portal.entity.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/ItemDiffs.java</h3>
-<table border="0" class="bodyTable">
-<tr class="a">
-<th>Severity</th>
-<th>Category</th>
-<th>Rule</th>
-<th>Message</th>
-<th>Line</th></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>WhitespaceAround</td>
-<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
-<td>9</td></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>EmptyLineSeparator</td>
-<td>'METHOD_DEF' should be separated from previous statement.</td>
-<td>12</td></tr></table></div>
-<div class="section">
-<h3 id="com.ctrip.framework.apollo.portal.entity.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/NamespaceIdentifer.java</h3>
-<table border="0" class="bodyTable">
-<tr class="b">
-<th>Severity</th>
-<th>Category</th>
-<th>Rule</th>
-<th>Message</th>
-<th>Line</th></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>OperatorWrap</td>
-<td>'+' should be on a new line.</td>
-<td>53</td></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>OperatorWrap</td>
-<td>'+' should be on a new line.</td>
-<td>54</td></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>OperatorWrap</td>
-<td>'+' should be on a new line.</td>
-<td>55</td></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>OperatorWrap</td>
-<td>'+' should be on a new line.</td>
-<td>56</td></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>OperatorWrap</td>
-<td>'+' should be on a new line.</td>
-<td>57</td></tr></table></div>
-<div class="section">
-<h3 id="com.ctrip.framework.apollo.portal.entity.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/NamespaceVO.java</h3>
-<table border="0" class="bodyTable">
-<tr class="b">
-<th>Severity</th>
-<th>Category</th>
-<th>Rule</th>
-<th>Message</th>
-<th>Line</th></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>EmptyLineSeparator</td>
-<td>'import' should be separated from previous statement.</td>
-<td>2</td></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>naming</td>
-<td>AbbreviationAsWordInName</td>
-<td>Abbreviation in name 'NamespaceVO' must contain no more than '1' capital letters.</td>
-<td>7</td></tr>
-<tr class="a">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>naming</td>
-<td>AbbreviationAsWordInName</td>
-<td>Abbreviation in name 'ItemVO' must contain no more than '1' capital letters.</td>
-<td>37</td></tr>
-<tr class="b">
-<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
-<td>whitespace</td>
-<td>WhitespaceAround</td>
-<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
-<td>37</td></tr></table></div>
-<div class="section">
 <h3 id="com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel.java">com/ctrip/framework/apollo/portal/entity/form/NamespaceSyncModel.java</h3>
 <table border="0" class="bodyTable">
 <tr class="a">
@@ -1375,6 +1279,114 @@
 <td>EmptyLineSeparator</td>
 <td>'METHOD_DEF' should be separated from previous statement.</td>
 <td>21</td></tr></table></div>
+<div class="section">
+<h3 id="com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/vo/EnvClusterInfo.java</h3>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>WhitespaceAround</td>
+<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
+<td>12</td></tr></table></div>
+<div class="section">
+<h3 id="com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/vo/ItemDiffs.java</h3>
+<table border="0" class="bodyTable">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>WhitespaceAround</td>
+<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
+<td>9</td></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>EmptyLineSeparator</td>
+<td>'METHOD_DEF' should be separated from previous statement.</td>
+<td>12</td></tr></table></div>
+<div class="section">
+<h3 id="com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceIdentifer.java</h3>
+<table border="0" class="bodyTable">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>OperatorWrap</td>
+<td>'+' should be on a new line.</td>
+<td>53</td></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>OperatorWrap</td>
+<td>'+' should be on a new line.</td>
+<td>54</td></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>OperatorWrap</td>
+<td>'+' should be on a new line.</td>
+<td>55</td></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>OperatorWrap</td>
+<td>'+' should be on a new line.</td>
+<td>56</td></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>OperatorWrap</td>
+<td>'+' should be on a new line.</td>
+<td>57</td></tr></table></div>
+<div class="section">
+<h3 id="com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceVO.java</h3>
+<table border="0" class="bodyTable">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>EmptyLineSeparator</td>
+<td>'import' should be separated from previous statement.</td>
+<td>2</td></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>naming</td>
+<td>AbbreviationAsWordInName</td>
+<td>Abbreviation in name 'NamespaceVO' must contain no more than '1' capital letters.</td>
+<td>7</td></tr>
+<tr class="a">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>naming</td>
+<td>AbbreviationAsWordInName</td>
+<td>Abbreviation in name 'ItemVO' must contain no more than '1' capital letters.</td>
+<td>37</td></tr>
+<tr class="b">
+<td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
+<td>whitespace</td>
+<td>WhitespaceAround</td>
+<td>WhitespaceAround: '{' is not preceded with whitespace.</td>
+<td>37</td></tr></table></div>
 <div class="section">
 <h3 id="com.ctrip.framework.apollo.portal.service.PortalAppService.java">com/ctrip/framework/apollo/portal/service/PortalAppService.java</h3>
 <table border="0" class="bodyTable">
@@ -1472,7 +1484,7 @@
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
-<td>Import statement for 'com.ctrip.framework.apollo.portal.entity.EnvClusterInfo' is in the wrong order. Should be in the 'THIRD_PARTY_PACKAGE' group, expecting not assigned imports on this line.</td>
+<td>Import statement for 'com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo' is in the wrong order. Should be in the 'THIRD_PARTY_PACKAGE' group, expecting not assigned imports on this line.</td>
 <td>20</td></tr>
 <tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
@@ -1652,13 +1664,13 @@
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
-<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.ItemDiffs' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
 <td>21</td></tr>
 <tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>imports</td>
 <td>CustomImportOrder</td>
-<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.NamespaceIdentifer' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
+<td>Wrong lexicographical order for 'com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer' import. Should be before 'org.springframework.web.client.HttpClientErrorException'.</td>
 <td>22</td></tr>
 <tr class="a">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
