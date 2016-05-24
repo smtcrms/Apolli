@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 181,
+      <title>File: 183,
              Errors: 0,
-             Warnings: 859,
+             Warnings: 860,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -172,20 +172,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/ItemDiffs.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.core.exception.ServiceException.java">com/ctrip/framework/apollo/core/exception/ServiceException.java</a>
                 </td>
                 <td>
@@ -221,20 +207,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanEntityManager.java">com/ctrip/framework/apollo/biz/datasource/TitanEntityManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
                 </td>
                 <td>
                   0
@@ -298,20 +270,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanSettings.java">com/ctrip/framework/apollo/biz/datasource/TitanSettings.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.cat.NullClientConfigManager.java">com/ctrip/framework/apollo/cat/NullClientConfigManager.java</a>
                 </td>
                 <td>
@@ -354,20 +312,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Namespace.java">com/ctrip/framework/apollo/biz/entity/Namespace.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#application-ctrip.properties">application-ctrip.properties</a>
                 </td>
                 <td>
@@ -375,6 +319,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Namespace.java">com/ctrip/framework/apollo/biz/entity/Namespace.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -424,20 +382,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanCondition.java">com/ctrip/framework/apollo/biz/datasource/TitanCondition.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.cat.NullMessageProducer.java">com/ctrip/framework/apollo/cat/NullMessageProducer.java</a>
                 </td>
                 <td>
@@ -472,7 +416,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  33
+                  35
                 </td>
                 <td>
                   0
@@ -515,6 +459,20 @@ under the License.
                 </td>
                 <td>
                   15
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceVO.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
                 </td>
                 <td>
                   0
@@ -886,6 +844,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.po.ServerConfig.java">com/ctrip/framework/apollo/portal/entity/po/ServerConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.auth.RestTemplateFactory.java">com/ctrip/framework/apollo/common/auth/RestTemplateFactory.java</a>
                 </td>
                 <td>
@@ -1019,20 +991,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.NamespaceVO.java">com/ctrip/framework/apollo/portal/entity/NamespaceVO.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
                 </td>
                 <td>
                   0
@@ -1474,6 +1432,34 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.datasource.TitanSettings.java">com/ctrip/framework/apollo/common/datasource/TitanSettings.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/vo/EnvClusterInfo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.service.PrivilegeService.java">com/ctrip/framework/apollo/biz/service/PrivilegeService.java</a>
                 </td>
                 <td>
@@ -1509,6 +1495,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs.java">com/ctrip/framework/apollo/portal/entity/vo/ItemDiffs.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -1564,7 +1564,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -1726,20 +1726,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.EnvClusterInfo.java">com/ctrip/framework/apollo/portal/entity/EnvClusterInfo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.repository.NamespaceRepository.java">com/ctrip/framework/apollo/biz/repository/NamespaceRepository.java</a>
                 </td>
                 <td>
@@ -1783,6 +1769,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.metaservice.ApolloMetaServiceConfig.java">com/ctrip/framework/apollo/metaservice/ApolloMetaServiceConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.repository.ServerConfigRepository.java">com/ctrip/framework/apollo/portal/repository/ServerConfigRepository.java</a>
                 </td>
                 <td>
                   0
@@ -2090,6 +2090,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.datasource.TitanCondition.java">com/ctrip/framework/apollo/common/datasource/TitanCondition.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.customize.TomcatContainerCustomizer.java">com/ctrip/framework/apollo/biz/customize/TomcatContainerCustomizer.java</a>
                 </td>
                 <td>
@@ -2160,7 +2174,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/NamespaceIdentifer.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer.java">com/ctrip/framework/apollo/portal/entity/vo/NamespaceIdentifer.java</a>
                 </td>
                 <td>
                   0
@@ -2181,20 +2195,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.entity.BaseEntity.java">com/ctrip/framework/apollo/biz/entity/BaseEntity.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
                 </td>
                 <td>
                   0
@@ -2314,6 +2314,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.datasource.TitanEntityManager.java">com/ctrip/framework/apollo/common/datasource/TitanEntityManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.controller.GlobalDefaultExceptionHandler.java">com/ctrip/framework/apollo/common/controller/GlobalDefaultExceptionHandler.java</a>
                 </td>
                 <td>
@@ -2391,6 +2405,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.entity.BaseEntity.java">com/ctrip/framework/apollo/common/entity/BaseEntity.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
                 </td>
                 <td>
                   0
