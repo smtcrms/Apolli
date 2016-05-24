@@ -5,7 +5,7 @@ import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.entity.NamespaceVO;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.service.PortalNamespaceService;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 

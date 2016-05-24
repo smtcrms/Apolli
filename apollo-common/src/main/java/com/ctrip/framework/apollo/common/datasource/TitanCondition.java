@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.biz.datasource;
+package com.ctrip.framework.apollo.common.datasource;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

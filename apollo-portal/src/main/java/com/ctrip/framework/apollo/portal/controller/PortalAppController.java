@@ -17,7 +17,7 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
-import com.ctrip.framework.apollo.portal.entity.EnvClusterInfo;
+import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 import com.ctrip.framework.apollo.portal.service.PortalAppService;
 
 import java.util.List;

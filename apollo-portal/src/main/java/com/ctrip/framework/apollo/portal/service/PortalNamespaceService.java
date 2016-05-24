@@ -11,7 +11,7 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.entity.NamespaceVO;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
