@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 53,
+      <title>File: 46,
              Errors: 0,
-             Warnings: 182,
+             Warnings: 164,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html</link>
@@ -53,412 +53,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.PrivilegeService.java">com/ctrip/framework/apollo/biz/service/PrivilegeService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.MessageSender.java">com/ctrip/framework/apollo/biz/message/MessageSender.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository.java">com/ctrip/framework/apollo/biz/repository/ReleaseMessageRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.AppNamespaceService.java">com/ctrip/framework/apollo/biz/service/AppNamespaceService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  21
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.ApolloBizConfig.java">com/ctrip/framework/apollo/biz/ApolloBizConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanEntityManager.java">com/ctrip/framework/apollo/biz/datasource/TitanEntityManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Commit.java">com/ctrip/framework/apollo/biz/entity/Commit.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#application.properties">application.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.DatabaseMessageSender.java">com/ctrip/framework/apollo/biz/message/DatabaseMessageSender.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanSettings.java">com/ctrip/framework/apollo/biz/datasource/TitanSettings.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.ReleaseService.java">com/ctrip/framework/apollo/biz/service/ReleaseService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.App.java">com/ctrip/framework/apollo/biz/entity/App.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ClusterRepository.java">com/ctrip/framework/apollo/biz/repository/ClusterRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Namespace.java">com/ctrip/framework/apollo/biz/entity/Namespace.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#application-ctrip.properties">application-ctrip.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.ReleaseMessage.java">com/ctrip/framework/apollo/biz/entity/ReleaseMessage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.NamespaceRepository.java">com/ctrip/framework/apollo/biz/repository/NamespaceRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.datasource.TitanCondition.java">com/ctrip/framework/apollo/biz/datasource/TitanCondition.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.CommitService.java">com/ctrip/framework/apollo/biz/service/CommitService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.AuditRepository.java">com/ctrip/framework/apollo/biz/repository/AuditRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.NamespaceService.java">com/ctrip/framework/apollo/biz/service/NamespaceService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  15
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.Topics.java">com/ctrip/framework/apollo/biz/message/Topics.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Cluster.java">com/ctrip/framework/apollo/biz/entity/Cluster.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.utils.EntityManagerUtil.java">com/ctrip/framework/apollo/biz/utils/EntityManagerUtil.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Release.java">com/ctrip/framework/apollo/biz/entity/Release.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.MessageListener.java">com/ctrip/framework/apollo/biz/message/MessageListener.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ItemRepository.java">com/ctrip/framework/apollo/biz/repository/ItemRepository.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#application-dev.properties">application-dev.properties</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.ReleaseMessageScanner.java">com/ctrip/framework/apollo/biz/message/ReleaseMessageScanner.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
                 </td>
                 <td>
                   0
@@ -508,6 +102,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.PrivilegeService.java">com/ctrip/framework/apollo/biz/service/PrivilegeService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.ItemSetService.java">com/ctrip/framework/apollo/biz/service/ItemSetService.java</a>
                 </td>
                 <td>
@@ -522,6 +130,34 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.MessageSender.java">com/ctrip/framework/apollo/biz/message/MessageSender.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository.java">com/ctrip/framework/apollo/biz/repository/ReleaseMessageRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.ClusterService.java">com/ctrip/framework/apollo/biz/service/ClusterService.java</a>
                 </td>
                 <td>
@@ -529,6 +165,34 @@ under the License.
                 </td>
                 <td>
                   16
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.AppNamespaceService.java">com/ctrip/framework/apollo/biz/service/AppNamespaceService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.ApolloBizConfig.java">com/ctrip/framework/apollo/biz/ApolloBizConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -578,6 +242,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Commit.java">com/ctrip/framework/apollo/biz/entity/Commit.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.AppRepository.java">com/ctrip/framework/apollo/biz/repository/AppRepository.java</a>
                 </td>
                 <td>
@@ -585,6 +263,20 @@ under the License.
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.DatabaseMessageSender.java">com/ctrip/framework/apollo/biz/message/DatabaseMessageSender.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -620,13 +312,41 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.BaseEntity.java">com/ctrip/framework/apollo/biz/entity/BaseEntity.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.ReleaseService.java">com/ctrip/framework/apollo/biz/service/ReleaseService.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  5
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.App.java">com/ctrip/framework/apollo/biz/entity/App.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ClusterRepository.java">com/ctrip/framework/apollo/biz/repository/ClusterRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -676,6 +396,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Namespace.java">com/ctrip/framework/apollo/biz/entity/Namespace.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.PrivilegeRepository.java">com/ctrip/framework/apollo/biz/repository/PrivilegeRepository.java</a>
                 </td>
                 <td>
@@ -683,6 +417,34 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.ReleaseMessage.java">com/ctrip/framework/apollo/biz/entity/ReleaseMessage.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.NamespaceRepository.java">com/ctrip/framework/apollo/biz/repository/NamespaceRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
                 </td>
                 <td>
                   0
@@ -718,6 +480,48 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.CommitService.java">com/ctrip/framework/apollo/biz/service/CommitService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.AuditRepository.java">com/ctrip/framework/apollo/biz/repository/AuditRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.NamespaceService.java">com/ctrip/framework/apollo/biz/service/NamespaceService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator.java">com/ctrip/framework/apollo/biz/utils/ReleaseKeyGenerator.java</a>
                 </td>
                 <td>
@@ -732,6 +536,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.Topics.java">com/ctrip/framework/apollo/biz/message/Topics.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.customize.LoggingCustomizer.java">com/ctrip/framework/apollo/biz/customize/LoggingCustomizer.java</a>
                 </td>
                 <td>
@@ -739,6 +557,34 @@ under the License.
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Cluster.java">com/ctrip/framework/apollo/biz/entity/Cluster.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.utils.EntityManagerUtil.java">com/ctrip/framework/apollo/biz/utils/EntityManagerUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -781,6 +627,62 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.entity.Release.java">com/ctrip/framework/apollo/biz/entity/Release.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.MessageListener.java">com/ctrip/framework/apollo/biz/message/MessageListener.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.ItemRepository.java">com/ctrip/framework/apollo/biz/repository/ItemRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.message.ReleaseMessageScanner.java">com/ctrip/framework/apollo/biz/message/ReleaseMessageScanner.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
                 </td>
                 <td>
                   0
