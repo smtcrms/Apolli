@@ -73,6 +73,13 @@ public class PortalConfigService {
 
 
   public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item){
+    NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    if (namespace == null){
+      throw new BadRequestException(
+          "namespace:" + namespaceName + " not exist in env:" + env + ", cluster:" + clusterName);
+    }
+
+    item.setNamespaceId(namespace.getId());
     return itemAPI.createOrUpdateItem(appId, env, clusterName, namespaceName, item);
 
   }

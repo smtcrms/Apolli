@@ -181,7 +181,6 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.createItem = function (namespace) {
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.CREATE);
                                        $scope.item = {};
-                                       $scope.item.namespaceId = namespace.namespace.id;
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
                                    };
 
