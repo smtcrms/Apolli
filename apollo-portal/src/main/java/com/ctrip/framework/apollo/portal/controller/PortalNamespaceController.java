@@ -5,7 +5,7 @@ import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.ctrip.framework.apollo.portal.entity.NamespaceVO;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.service.PortalNamespaceService;
 
 import org.springframework.beans.factory.annotation.Autowired;

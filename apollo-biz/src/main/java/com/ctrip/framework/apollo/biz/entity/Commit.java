@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.biz.entity;
 
+import com.ctrip.framework.apollo.common.entity.BaseEntity;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -11,7 +13,7 @@ import javax.persistence.Table;
 @Table(name = "commit")
 @SQLDelete(sql = "Update commit set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
-public class Commit extends BaseEntity{
+public class Commit extends BaseEntity {
 
   @Column(name = "ChangeSets", nullable = false)
   private String changeSets;

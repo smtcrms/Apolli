@@ -17,7 +17,7 @@ import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.entity.EnvClusterInfo;
+import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 
 @Service
 public class PortalAppService {

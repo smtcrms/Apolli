@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.entity;
+package com.ctrip.framework.apollo.portal.entity.vo;
 
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;

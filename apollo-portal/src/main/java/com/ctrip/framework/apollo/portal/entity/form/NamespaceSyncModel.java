@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.entity.form;
 
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.portal.entity.NamespaceIdentifer;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 
 import org.springframework.util.CollectionUtils;
 
