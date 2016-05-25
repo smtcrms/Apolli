@@ -28,10 +28,6 @@ public class PropertyResolver implements ConfigTextResolver {
   @Override
   public ItemChangeSets resolve(long namespaceId, String configText, List<ItemDTO> baseItems) {
 
-    if (StringUtils.isEmpty(configText)){
-      throw new BadRequestException("config text can not be empty");
-    }
-
     Map<Integer, ItemDTO> oldLineNumMapItem = BeanUtils.mapByKey("lineNum", baseItems);
     Map<String, ItemDTO> oldKeyMapItem = BeanUtils.mapByKey("key", baseItems);
 

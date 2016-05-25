@@ -36,13 +36,16 @@ application_module.controller("ConfigNamespaceController",
                                                }
                                                setInterval(function () {
                                                    $('[data-tooltip="tooltip"]').tooltip();
-                                                   $('.namespace-view-table').bind( 'mousewheel DOMMouseScroll', function ( e ) {
-                                                       var e0 = e.originalEvent,
-                                                           delta = e0.wheelDelta || -e0.detail;
+                                                   $('.namespace-view-table').bind('mousewheel DOMMouseScroll',
+                                                                                   function (e) {
+                                                                                       var e0 = e.originalEvent,
+                                                                                           delta = e0.wheelDelta
+                                                                                                   || -e0.detail;
 
-                                                       this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
-                                                       e.preventDefault();
-                                                   });
+                                                                                       this.scrollTop +=
+                                                                                           ( delta < 0 ? 1 : -1 ) * 30;
+                                                                                       e.preventDefault();
+                                                                                   });
                                                }, 2500);
 
                                            }, function (result) {
@@ -62,6 +65,7 @@ application_module.controller("ConfigNamespaceController",
                                    };
 
                                    var MAX_ROW_SIZE = 30;
+                                   var APPEND_ROW_SIZE = 8;
                                    //把表格内容解析成文本
                                    function parseModel2Text(namespace) {
 
@@ -80,16 +84,17 @@ application_module.controller("ConfigNamespaceController",
                                            itemCnt++;
                                        });
 
-                                       namespace.itemCnt = itemCnt > MAX_ROW_SIZE ? MAX_ROW_SIZE : itemCnt + 3;
+                                       namespace.itemCnt =
+                                           itemCnt > MAX_ROW_SIZE ? MAX_ROW_SIZE : itemCnt + APPEND_ROW_SIZE;
                                        return result;
                                    }
 
                                    ////// text view oper //////
 
-                                   $scope.draft = {};
-                                   //保存草稿
-                                   $scope.saveDraft = function (namespace) {
-                                       $scope.draft = namespace;
+                                   $scope.toCommitNamespace = {};
+
+                                   $scope.setCommitNamespace = function (namespace) {
+                                       $scope.toCommitNamespace = namespace;
                                    };
 
                                    $scope.commitComment = '';
@@ -97,16 +102,17 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.commitChange = function () {
                                        ConfigService.modify_items($scope.pageContext.appId, $scope.pageContext.env,
                                                                   $scope.pageContext.clusterName,
-                                                                  $scope.draft.namespace.namespaceName,
-                                                                  $scope.draft.text,
-                                                                  $scope.draft.namespace.id, $scope.commitComment).then(
+                                                                  $scope.toCommitNamespace.namespace.namespaceName,
+                                                                  $scope.toCommitNamespace.text,
+                                                                  $scope.toCommitNamespace.namespace.id,
+                                                                  $scope.commitComment).then(
                                            function (result) {
                                                toastr.success("更新成功");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
 
-                                               $scope.draft.backupText = '';//清空备份文本
-                                               $scope.toggleTextEditStatus($scope.draft);
+                                               $scope.toCommitNamespace.commited = true;
+                                               $scope.toggleTextEditStatus($scope.toCommitNamespace);
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
@@ -117,11 +123,12 @@ application_module.controller("ConfigNamespaceController",
                                    //文本编辑框状态切换
                                    $scope.toggleTextEditStatus = function (namespace) {
                                        namespace.isTextEditing = !namespace.isTextEditing;
-                                       if (namespace.isTextEditing) {//切换为编辑状态,保存一下原来值
-                                           $scope.draft.backupText = namespace.text;
+                                       if (namespace.isTextEditing) {//切换为编辑状态
+                                           $scope.toCommitNamespace.commited = false;
+                                           namespace.backupText = namespace.text;
                                        } else {
-                                           if ($scope.draft.backupText) {//取消编辑,则复原
-                                               namespace.text = $scope.draft.backupText;
+                                           if (!$scope.toCommitNamespace.commited) {//取消编辑,则复原
+                                               namespace.text = namespace.backupText;
                                            }
                                        }
                                    };
@@ -167,6 +174,20 @@ application_module.controller("ConfigNamespaceController",
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.RETRIEVE);
                                        $scope.item = item;
                                        $scope.item.oldValue = oldValue;
+                                   };
+
+                                   var toDeleteItemId = 0;
+                                   $scope.preDeleteItem = function (itemId) {
+                                       toDeleteItemId = itemId;
+                                   };
+
+                                   $scope.deleteItem = function () {
+                                       ConfigService.delete_item($rootScope.pageContext.env, toDeleteItemId).then(function (result) {
+                                           toastr.success("删除成功!");
+                                           $rootScope.refreshNamespaces();
+                                       }, function (result) {
+                                           toastr.error(AppUtil.errorMsg(result), "删除失败"); 
+                                       });
                                    };
 
                                    var toOperationNamespaceName = '';

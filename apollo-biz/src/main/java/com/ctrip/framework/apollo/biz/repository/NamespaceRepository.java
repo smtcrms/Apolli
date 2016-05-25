@@ -8,7 +8,7 @@ import com.ctrip.framework.apollo.biz.entity.Namespace;
 
 public interface NamespaceRepository extends PagingAndSortingRepository<Namespace, Long> {
 
-  List<Namespace> findByAppIdAndClusterName(String appId, String clusterName);
+  List<Namespace> findByAppIdAndClusterNameOrderByIdAsc(String appId, String clusterName);
 
   Namespace findByAppIdAndClusterNameAndNamespaceName(String appId, String clusterName, String namespaceName);
 }

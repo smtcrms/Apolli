@@ -81,7 +81,10 @@ public class PortalConfigService {
 
     item.setNamespaceId(namespace.getId());
     return itemAPI.createOrUpdateItem(appId, env, clusterName, namespaceName, item);
+  }
 
+  public void deleteItem(Env env, long itemId){
+    itemAPI.deleteItem(env, itemId);
   }
   /**
    * createRelease config items
