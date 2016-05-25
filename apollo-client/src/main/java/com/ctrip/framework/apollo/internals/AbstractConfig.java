@@ -74,6 +74,12 @@ public abstract class AbstractConfig implements Config {
     return value == null ? defaultValue : Boolean.parseBoolean(value);
   }
 
+  @Override
+  public String[] getArrayProperty(String key, String delimiter, String[] defaultValue) {
+    String value = getProperty(key, null);
+    return value == null ? defaultValue : value.split(delimiter);
+  }
+
   protected void fireConfigChange(ConfigChangeEvent changeEvent) {
     for (ConfigChangeListener listener : m_listeners) {
       try {
@@ -85,9 +91,8 @@ public abstract class AbstractConfig implements Config {
     }
   }
 
-  List<ConfigChange> calcPropertyChanges(String namespace,
-                                         Properties previous,
-                                         Properties current) {
+  List<ConfigChange> calcPropertyChanges(String namespace, Properties previous,
+      Properties current) {
     if (previous == null) {
       previous = new Properties();
     }
@@ -106,9 +111,8 @@ public abstract class AbstractConfig implements Config {
     List<ConfigChange> changes = Lists.newArrayList();
 
     for (String newKey : newKeys) {
-      changes
-          .add(new ConfigChange(namespace, newKey, null, current.getProperty(newKey),
-                                PropertyChangeType.ADDED));
+      changes.add(new ConfigChange(namespace, newKey, null, current.getProperty(newKey),
+          PropertyChangeType.ADDED));
     }
 
     for (String removedKey : removedKeys) {
@@ -122,8 +126,8 @@ public abstract class AbstractConfig implements Config {
       if (Objects.equal(previousValue, currentValue)) {
         continue;
       }
-      changes.add(new ConfigChange(namespace, commonKey, previousValue,
-          currentValue, PropertyChangeType.MODIFIED));
+      changes.add(new ConfigChange(namespace, commonKey, previousValue, currentValue,
+          PropertyChangeType.MODIFIED));
     }
 
     return changes;
