@@ -100,7 +100,7 @@ public interface Config {
    * exist.
    * 
    * @param key the property name
-   * @param delimiter
+   * @param delimiter the delimiter regex
    * @param defaultValue the default value when key is not found
    * @return
    */
