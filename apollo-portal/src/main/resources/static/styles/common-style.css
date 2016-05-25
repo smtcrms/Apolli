@@ -15,7 +15,7 @@ a {
     cursor: pointer;
 }
 
-p td span{
+p, td, span {
     word-wrap: break-word;
     word-break: break-all;
 }
