@@ -114,9 +114,14 @@ public class ConfigServiceLocator implements Initializable {
       transaction.addData("Url", url);
       try {
         HttpResponse<List<ServiceDTO>> response = m_httpUtil.doGet(request, m_responseType);
-        m_configServices.set(response.getBody());
-        logConfigServicesToCat(response.getBody());
         transaction.setStatus(Message.SUCCESS);
+        List<ServiceDTO> services = response.getBody();
+        if (services == null || services.isEmpty()) {
+          logConfigServiceToCat("Empty response!");
+          continue;
+        }
+        m_configServices.set(services);
+        logConfigServicesToCat(services);
         return;
       } catch (Throwable ex) {
         Cat.logError(ex);
@@ -151,7 +156,11 @@ public class ConfigServiceLocator implements Initializable {
 
   private void logConfigServicesToCat(List<ServiceDTO> serviceDtos) {
     for (ServiceDTO serviceDto : serviceDtos) {
-      Cat.logEvent("Apollo.Config.Services", serviceDto.getHomepageUrl());
+      logConfigServiceToCat(serviceDto.getHomepageUrl());
     }
+  }
+
+  private void logConfigServiceToCat(String serviceUrl) {
+    Cat.logEvent("Apollo.Config.Services", serviceUrl);
   }
 }

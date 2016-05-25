@@ -1,6 +1,3 @@
-
-import com.google.common.base.Strings;
-
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.ConfigService;
@@ -39,7 +36,7 @@ public class ApolloConfigDemo implements ConfigChangeListener {
     while (true) {
       System.out.print("> ");
       String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
-      if (Strings.isNullOrEmpty(input)) {
+      if (input == null || input.length() == 0) {
         continue;
       }
       input = input.trim();
