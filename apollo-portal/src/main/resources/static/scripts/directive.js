@@ -1,5 +1,5 @@
 /** navbar */
-directive_module.directive('apollonav', function ($compile, $window, AppService, EnvService) {
+directive_module.directive('apollonav', function ($compile, $window, toastr, AppUtil, AppService, EnvService) {
     return {
         restrict: 'E',
         templateUrl: '../views/common/nav.html',

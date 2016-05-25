@@ -49,7 +49,7 @@ public class NamespaceService {
   }
 
   public List<Namespace> findNamespaces(String appId, String clusterName) {
-    List<Namespace> groups = namespaceRepository.findByAppIdAndClusterName(appId, clusterName);
+    List<Namespace> groups = namespaceRepository.findByAppIdAndClusterNameOrderByIdAsc(appId, clusterName);
     if (groups == null) {
       return Collections.emptyList();
     }

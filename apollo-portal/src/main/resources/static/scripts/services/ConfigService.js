@@ -35,6 +35,10 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         update_item: {
             method: 'PUT',
             url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/item'
+        },
+        delete_item: {
+            method: 'DELETE',
+            url: '/envs/:env/items/:itemId'
         }
     });
 
@@ -153,6 +157,19 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
                                           clusterName: clusterName,
                                           namespaceName: namespaceName
                                       }, item, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+
+        delete_item: function (env, itemId) {
+            var d = $q.defer();
+            config_source.delete_item({
+                                          env: env,
+                                          itemId: itemId
+                                      }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

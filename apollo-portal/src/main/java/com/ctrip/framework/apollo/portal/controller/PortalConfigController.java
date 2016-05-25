@@ -77,6 +77,14 @@ public class PortalConfigController {
     return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
+  @RequestMapping(value = "/envs/{env}/items/{itemId}", method = RequestMethod.DELETE)
+  public void deleteItem(@PathVariable String env, @PathVariable long itemId){
+    if (itemId <= 0){
+      throw new BadRequestException("item id invalid");
+    }
+    configService.deleteItem(Env.valueOf(env), itemId);
+  }
+
   @RequestMapping(value = "/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {
       "application/json"})
   public ReleaseDTO createRelease(@PathVariable String appId,

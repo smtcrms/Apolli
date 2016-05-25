@@ -60,7 +60,7 @@
                         <label class="control-label">需要同步的配置</label>
                     </div>
                     <div class="col-sm-10">
-                        <table class="table table-bordered table-striped table-hover" >
+                        <table class="table table-bordered table-striped table-hover">
                             <thead>
                             <tr>
                                 <td><input type="checkbox" ng-click="toggleItemsCheckedStatus()"></td>
@@ -74,16 +74,16 @@
                                 <td width="10%"><input type="checkbox" ng-checked="item.checked"
                                                        ng-click="switchSelect(item)"></td>
                                 <td width="20%">
-                                    <span ng-bind="item.key | limitTo: 30"></span>
-                                    <span ng-bind="item.key.length > 30 ? '...' : ''"></span>
+                                    <span ng-bind="item.key | limitTo: 250"></span>
+                                    <span ng-bind="item.key.length > 250 ? '...' : ''"></span>
                                 </td>
                                 <td width="50%">
-                                    <span ng-bind="item.value | limitTo: 45"></span>
-                                    <span ng-bind="item.value.length > 45 ? '...' : ''"></span>
+                                    <span ng-bind="item.value | limitTo: 250"></span>
+                                    <span ng-bind="item.value.length > 250 ? '...' : ''"></span>
                                 </td>
                                 <td width="20%">
-                                    <span ng-bind="item.comment | limitTo: 15"></span>
-                                    <span ng-bind="item.comment.length > 15 ? '...' :''"></span>
+                                    <span ng-bind="item.comment | limitTo: 250"></span>
+                                    <span ng-bind="item.comment.length > 250 ? '...' :''"></span>
                                 </td>
                             </tr>
                             </tbody>

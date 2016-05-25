@@ -198,7 +198,7 @@
                                         <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
                                            data-toggle="modal" data-target="#commitModal"
                                            ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                           ng-click="saveDraft(namespace)">
+                                           ng-click="setCommitNamespace(namespace)">
                                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                         </a>
 
@@ -249,17 +249,17 @@
 
                                     <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
                                         ng-if="config.item.key">
-                                        <td width="20%">
-                                            <span ng-bind="config.item.key | limitTo: 20"></span>
-                                            <span ng-bind="config.item.key.length > 20 ? '...' :''"></span>
+                                        <td width="20%" title="{{config.item.key}}">
+                                            <span ng-bind="config.item.key | limitTo: 250"></span>
+                                            <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                                         </td>
-                                        <td width="25%">
-                                            <span ng-bind="config.item.value | limitTo: 20"></span>
-                                            <span ng-bind="config.item.value.length > 20 ? '...': ''"></span>
+                                        <td width="25%" title="{{config.item.value}}">
+                                            <span ng-bind="config.item.value | limitTo: 250"></span>
+                                            <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
                                         </td>
-                                        <td width="20%">
-                                            <span ng-bind="config.item.comment | limitTo: 20"></span>
-                                            <span ng-bind="config.item.comment.length > 20 ?'...' : ''"></span>
+                                        <td width="20%" title="{{config.item.comment}}">
+                                            <span ng-bind="config.item.comment | limitTo: 250"></span>
+                                            <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
                                         </td>
                                         <td width="10%" ng-bind="config.item.lastModifiedBy">
                                         </td>
@@ -278,6 +278,12 @@
                                                   data-tooltip="tooltip" data-placement="bottom" title="修改"
                                                   data-toggle="modal" data-target="#itemModal"
                                                   ng-click="editItem(namespace, config.item)">
+                                            </span>
+                                            &nbsp;
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                                  data-toggle="modal" data-target="#deleteModal"
+                                                  data-tooltip="tooltip" data-placement="bottom" title="删除"
+                                            ng-click="preDeleteItem(config.item.id)">
                                             </span>
                                         </td>
 
@@ -358,6 +364,29 @@
                         </div>
                     </div>
 
+                    <!-- delete modal-->
+                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header panel-primary">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">删除配置</h4>
+                                </div>
+                                <div class="modal-body">
+                                    确定要删除配置吗?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                            ng-click="deleteItem()">
+                                        确定
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--create release modal-->
                     <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
                           ng-submit="release()">
@@ -422,24 +451,22 @@
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>Value</label>
                                         <div class="col-sm-10">
-                                            <textarea type="text" class="form-control" rows="4" ng-model="item.value"
-                                                      ng-required="true" ng-disabled="tableViewOperType == 'retrieve'">
+                                            <textarea type="text" class="form-control" rows="6" ng-model="item.value"
+                                                      ng-required="true" ng-show="tableViewOperType != 'retrieve'">
                                                 </textarea>
+                                            <span ng-bind="item.value" ng-show="tableViewOperType == 'retrieve'"></span>
                                         </div>
                                     </div>
                                     <div class="form-group" ng-show="tableViewOperType == 'retrieve'">
                                         <label class="col-sm-2 control-label">Released Value</label>
                                         <div class="col-sm-10">
-                                            <textarea type="text" class="form-control" rows="4" ng-model="item.oldValue"
-                                                      ng-disabled="true" ng-show="item.oldVale">
-                                                </textarea>
                                             <span ng-show="!item.oldVale">这是新增的配置</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Comment</label>
                                         <div class="col-sm-10">
-                                            <textarea class="form-control" ng-model="item.comment" rows="4"
+                                            <textarea class="form-control" ng-model="item.comment" rows="2"
                                                       ng-disabled="tableViewOperType == 'retrieve'">
 
                                             </textarea>
@@ -490,10 +517,14 @@
 <script src="vendor/angular/angular-resource.min.js"></script>
 <script src="vendor/angular/angular-toastr-1.4.1.tpls.min.js"></script>
 <script src="vendor/angular/loading-bar.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.2/ui-bootstrap-tpls.min.js"></script>
+<script src="vendor/angular/angular-bootstrap-confirm.min.js"></script>
 
 <!-- bootstrap.js -->
 <script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="vendor/bootstrap/js/bootstrap-treeview.min.js" type="text/javascript"></script>
+
 
 <!--biz script-->
 <script type="application/javascript" src="scripts/app.js"></script>

@@ -121,6 +121,10 @@ public class AdminServiceAPI {
                                      .format("apps/%s/clusters/%s/namespaces/%s/items", appId, clusterName, namespace),
                                  item, ItemDTO.class).getBody();
     }
+
+    public void deleteItem( Env env, long itemId){
+      restTemplate.delete(getAdminServiceHost(env) + "items/" + itemId);
+    }
   }
 
   @Service
