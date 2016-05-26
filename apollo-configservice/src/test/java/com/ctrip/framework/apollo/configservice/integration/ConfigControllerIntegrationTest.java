@@ -110,6 +110,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
 
   @Test
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-release-public-dc-override.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryPublicConfigWithDataCenterFoundAndOverride() throws Exception {
     ResponseEntity<ApolloConfig> response = restTemplate
@@ -118,11 +119,13 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDC);
     ApolloConfig result = response.getBody();
 
-    assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY4", result.getReleaseKey());
+    assertEquals(
+        "TEST-RELEASE-KEY6" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY4",
+        result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
-    assertEquals(someDefaultCluster, result.getCluster());
+    assertEquals(someDC, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespaceName());
-    assertEquals("override-v1", result.getConfigurations().get("k1"));
+    assertEquals("override-someDC-v1", result.getConfigurations().get("k1"));
     assertEquals("someDC-v2", result.getConfigurations().get("k2"));
   }
 
@@ -147,6 +150,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
 
   @Test
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-release-public-default-override.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryPublicConfigWithDataCenterNotFoundAndOverride() throws Exception {
     String someDCNotFound = "someDCNotFound";
@@ -156,7 +160,9 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDCNotFound);
     ApolloConfig result = response.getBody();
 
-    assertEquals("TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY3", result.getReleaseKey());
+    assertEquals(
+        "TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-RELEASE-KEY3",
+        result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
     assertEquals(someDefaultCluster, result.getCluster());
     assertEquals(somePublicNamespace, result.getNamespaceName());

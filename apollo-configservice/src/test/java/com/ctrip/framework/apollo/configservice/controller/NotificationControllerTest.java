@@ -35,6 +35,7 @@ public class NotificationControllerTest {
   private NotificationController controller;
   private String someAppId;
   private String someCluster;
+  private String defaultCluster;
   private String defaultNamespace;
   private String somePublicNamespace;
   private String someDataCenter;
@@ -53,6 +54,7 @@ public class NotificationControllerTest {
 
     someAppId = "someAppId";
     someCluster = "someCluster";
+    defaultCluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
     defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
     somePublicNamespace = "somePublicNamespace";
     someDataCenter = "someDC";
@@ -68,11 +70,58 @@ public class NotificationControllerTest {
         deferredResult = controller
         .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter);
 
-    String key =
-        Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
-            .join(someAppId, someCluster, defaultNamespace);
-    assertEquals(1, deferredResults.size());
-    assertTrue(deferredResults.get(key).contains(deferredResult));
+    List<String> clusters =
+        Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
+
+    assertEquals(clusters.size(), deferredResults.size());
+
+    for (String cluster : clusters) {
+      String key =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, defaultNamespace);
+      assertTrue(deferredResults.get(key).contains(deferredResult));
+    }
+  }
+
+  @Test
+  public void testPollNotificationWithDefaultNamespaceWithDefaultClusterWithDataCenter()
+      throws Exception {
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, someDataCenter);
+
+    List<String> clusters =
+        Lists.newArrayList(someDataCenter, defaultCluster);
+
+    assertEquals(clusters.size(), deferredResults.size());
+
+    for (String cluster : clusters) {
+      String key =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, defaultNamespace);
+      assertTrue(deferredResults.get(key).contains(deferredResult));
+    }
+  }
+
+  @Test
+  public void testPollNotificationWithDefaultNamespaceWithDefaultClusterWithNoDataCenter()
+      throws Exception {
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, null);
+
+    List<String> clusters =
+        Lists.newArrayList(defaultCluster);
+
+    assertEquals(clusters.size(), deferredResults.size());
+
+    for (String cluster : clusters) {
+      String key =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, defaultNamespace);
+      assertTrue(deferredResults.get(key).contains(deferredResult));
+    }
+
   }
 
   @Test
@@ -88,16 +137,19 @@ public class NotificationControllerTest {
         deferredResult = controller
         .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter);
 
-    List<String> publicClusters =
-        Lists.newArrayList(someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
+    List<String> clusters =
+        Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
 
-    assertEquals(3, deferredResults.size());
-    String key =
-        Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
-            .join(someAppId, someCluster, somePublicNamespace);
-    assertTrue(deferredResults.get(key).contains(deferredResult));
+    assertEquals(clusters.size() * 2, deferredResults.size());
 
-    for (String cluster : publicClusters) {
+    for (String cluster : clusters) {
+      String publicKey =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, somePublicNamespace);
+      assertTrue(deferredResults.get(publicKey).contains(deferredResult));
+    }
+
+    for (String cluster : clusters) {
       String publicKey =
           Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
               .join(somePublicAppId, cluster, somePublicNamespace);

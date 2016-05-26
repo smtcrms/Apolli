@@ -7,6 +7,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.biz.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.message.MessageListener;
@@ -30,6 +31,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -59,11 +61,11 @@ public class NotificationController implements MessageListener {
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
       @RequestParam(value = "dataCenter", required = false) String dataCenter) {
-    List<String> watchedKeys = Lists.newArrayList(assembleKey(appId, cluster, namespace));
+    Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
 
     //Listen on more namespaces, since it's not the default namespace
     if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
-      watchedKeys.addAll(this.findPublicConfigWatchKey(appId, namespace, dataCenter));
+      watchedKeys.addAll(this.findPublicConfigWatchKey(appId, cluster, namespace, dataCenter));
     }
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>> deferredResult =
@@ -94,9 +96,9 @@ public class NotificationController implements MessageListener {
     return STRING_JOINER.join(appId, cluster, namespace);
   }
 
-  private List<String> findPublicConfigWatchKey(String applicationId, String namespace,
-                                                String dataCenter) {
-    List<String> publicWatchedKeys = Lists.newArrayList();
+  private Set<String> findPublicConfigWatchKey(String applicationId, String clusterName,
+                                               String namespace,
+                                               String dataCenter) {
     AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
     /**
      * Manually close the entity manager.
@@ -108,21 +110,32 @@ public class NotificationController implements MessageListener {
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
-      return publicWatchedKeys;
+      return Sets.newHashSet();
     }
 
     String publicConfigAppId = appNamespace.getAppId();
 
+    return assembleWatchKeys(publicConfigAppId, clusterName, namespace, dataCenter);
+  }
+
+  private Set<String> assembleWatchKeys(String appId, String clusterName, String namespace,
+                                        String dataCenter) {
+    Set<String> watchedKeys = Sets.newHashSet();
+
+    //watch specified cluster config change
+    if (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusterName)) {
+      watchedKeys.add(assembleKey(appId, clusterName, namespace));
+    }
+
     //watch data center config change
-    if (!Objects.isNull(dataCenter)) {
-      publicWatchedKeys.add(assembleKey(publicConfigAppId, dataCenter, namespace));
+    if (!Objects.isNull(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
+      watchedKeys.add(assembleKey(appId, dataCenter, namespace));
     }
 
     //watch default cluster config change
-    publicWatchedKeys
-        .add(assembleKey(publicConfigAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace));
+    watchedKeys.add(assembleKey(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace));
 
-    return publicWatchedKeys;
+    return watchedKeys;
   }
 
   @Override
@@ -154,7 +167,7 @@ public class NotificationController implements MessageListener {
     logger.info("Notification completed");
   }
 
-  private void logWatchedKeysToCat(List<String> watchedKeys, String eventName) {
+  private void logWatchedKeysToCat(Set<String> watchedKeys, String eventName) {
     for (String watchedKey : watchedKeys) {
       Cat.logEvent(eventName, watchedKey);
     }

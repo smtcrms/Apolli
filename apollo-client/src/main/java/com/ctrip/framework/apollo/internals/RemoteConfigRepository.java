@@ -178,9 +178,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             logger.debug("Config server responds with 304 HTTP status code.");
             return m_configCache.get();
           }
-          logger.debug("Loaded config: {}", response.getBody());
 
-          return response.getBody();
+          ApolloConfig result = response.getBody();
+
+          Cat.logEvent("Apollo.Client.ConfigLoaded." + result.getNamespaceName(), result.getReleaseKey());
+          logger.debug("Loaded config for {}: {}", m_namespace, result);
+
+          return result;
         } catch (Throwable ex) {
           Cat.logError(ex);
           transaction.setStatus(ex);
