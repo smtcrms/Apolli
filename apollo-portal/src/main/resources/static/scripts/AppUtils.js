@@ -26,12 +26,12 @@ appUtil.service('AppUtil', ['toastr', function (toastr) {
         collectData: function (response) {
             var data = [];
             response.entities.forEach(function (entity) {
-                if (entity.code == 200){
+                if (entity.code == 200) {
                     data.push(entity.body);
-                }else {
+                } else {
                     toastr.warning(entity.message);
                 }
-            });  
+            });
             return data;
         }
     }

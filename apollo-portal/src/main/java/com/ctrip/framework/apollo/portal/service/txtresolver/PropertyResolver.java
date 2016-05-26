@@ -3,7 +3,6 @@ package com.ctrip.framework.apollo.portal.service.txtresolver;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 
 import org.springframework.stereotype.Component;

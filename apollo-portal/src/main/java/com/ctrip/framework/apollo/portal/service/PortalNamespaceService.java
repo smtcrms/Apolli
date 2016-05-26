@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -47,11 +48,11 @@ public class PortalNamespaceService {
   private Gson gson = new Gson();
 
 
-  public List<AppNamespaceDTO> findPublicAppNamespaces(){
+  public List<AppNamespaceDTO> findPublicAppNamespaces() {
     return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstAliveEnv());
   }
 
-  public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace){
+  public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
     return namespaceAPI.createNamespace(env, namespace);
   }
 
