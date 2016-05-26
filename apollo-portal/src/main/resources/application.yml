@@ -12,7 +12,14 @@ server:
   
 logging:
   file: /opt/logs/100003173/apollo-portal.log
-  
+
 endpoints:
-  shutdown:
-    enabled: true
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false
+  health:
+    status:
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP 

@@ -11,5 +11,12 @@ eureka:
       enabled: true
 
 endpoints:
-  shutdown:
-    enabled: true     
+  health:
+    sensitive: false
+
+management:
+  security:
+    enabled: false
+  health:
+    status:
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP   
