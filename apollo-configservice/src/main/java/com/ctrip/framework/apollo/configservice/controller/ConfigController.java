@@ -65,15 +65,18 @@ public class ConfigController {
                                   HttpServletResponse response) throws IOException {
     List<Release> releases = Lists.newLinkedList();
 
-    Release currentAppRelease = configService.findRelease(appId, clusterName, namespace);
+    Release currentAppRelease = loadConfig(appId, clusterName, namespace, dataCenter);
+    String appClusterNameLoaded = clusterName;
 
     if (currentAppRelease != null) {
       releases.add(currentAppRelease);
+      //we have cluster search process, so the cluster name might be overridden
+      appClusterNameLoaded = currentAppRelease.getClusterName();
     }
 
     //if namespace is not 'application', should check if it's a public configuration
     if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
-      Release publicRelease = this.findPublicConfig(appId, namespace, dataCenter);
+      Release publicRelease = this.findPublicConfig(appId, clusterName, namespace, dataCenter);
       if (!Objects.isNull(publicRelease)) {
         releases.add(publicRelease);
       }
@@ -96,14 +99,14 @@ public class ConfigController {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       Cat.logEvent("Apollo.Config.NotModified",
-          assembleKey(appId, clusterName, namespace, dataCenter));
+          assembleKey(appId, appClusterNameLoaded, namespace, dataCenter));
       return null;
     }
 
-    ApolloConfig apolloConfig = new ApolloConfig(appId, clusterName, namespace, mergedReleaseKey);
+    ApolloConfig apolloConfig = new ApolloConfig(appId, appClusterNameLoaded, namespace, mergedReleaseKey);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
-    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, clusterName, namespace, dataCenter));
+    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded, namespace, dataCenter));
     return apolloConfig;
   }
 
@@ -112,7 +115,7 @@ public class ConfigController {
    * @param namespace     the namespace
    * @param dataCenter    the datacenter
    */
-  private Release findPublicConfig(String applicationId, String namespace, String dataCenter) {
+  private Release findPublicConfig(String applicationId, String clusterName, String namespace, String dataCenter) {
     AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
 
     //check whether the namespace's appId equals to current one
@@ -122,10 +125,24 @@ public class ConfigController {
 
     String publicConfigAppId = appNamespace.getAppId();
 
+    return loadConfig(publicConfigAppId, clusterName, namespace, dataCenter);
+  }
+
+  private Release loadConfig(String appId, String clusterName, String namespace, String dataCenter) {
+    //load from specified cluster fist
+    if (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusterName)) {
+      Release clusterRelease =
+          configService.findRelease(appId, clusterName, namespace);
+
+      if (!Objects.isNull(clusterRelease)) {
+        return clusterRelease;
+      }
+    }
+
     //try to load via data center
-    if (!Objects.isNull(dataCenter)) {
+    if (!Objects.isNull(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
       Release dataCenterRelease =
-          configService.findRelease(publicConfigAppId, dataCenter, namespace);
+          configService.findRelease(appId, dataCenter, namespace);
       if (!Objects.isNull(dataCenterRelease)) {
         return dataCenterRelease;
       }
@@ -133,7 +150,7 @@ public class ConfigController {
 
     //fallback to default release
     return configService
-        .findRelease(publicConfigAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace);
+        .findRelease(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace);
   }
 
   /**

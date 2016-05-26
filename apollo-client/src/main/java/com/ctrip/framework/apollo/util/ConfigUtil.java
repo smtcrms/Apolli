@@ -25,6 +25,7 @@ public class ConfigUtil {
 
   /**
    * Get the app id for the current application.
+   *
    * @return the app id
    * @throws IllegalStateException if app id is not set
    */
@@ -36,18 +37,30 @@ public class ConfigUtil {
 
   /**
    * Get the data center info for the current application.
+   *
    * @return the current data center, null if there is no such info.
    */
   public String getDataCenter() {
-    return Foundation.server().getDataCenter();
+    String dataCenter = Foundation.server().getDataCenter();
+    //TODO use sub env from framework foundation if data center is null
+    return dataCenter;
   }
 
   /**
    * Get the cluster name for the current application.
+   *
    * @return the cluster name, or "default" if not specified
    */
   public String getCluster() {
+    //Load data center from system property
     String cluster = System.getProperty("apollo.cluster");
+
+    //Use data center as cluster
+    if (cluster == null) {
+      cluster = getDataCenter();
+    }
+
+    //Use default cluster
     if (cluster == null) {
       cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
     }
@@ -56,6 +69,7 @@ public class ConfigUtil {
 
   /**
    * Get the current environment.
+   *
    * @return the env
    * @throws IllegalStateException if env is set
    */
