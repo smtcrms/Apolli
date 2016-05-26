@@ -222,7 +222,8 @@
                             <!--table view-->
                             <div class="namespace-view-table">
                                 <table class="table table-bordered table-striped text-center table-hover"
-                                       ng-show="namespace.viewType == 'table' && namespace.items.length > 0">
+                                       ng-show="namespace.viewType == 'table' && namespace.items.length > 0
+                                       && !(namespace.items.length == 1 && !namespace.items[0].key)">
                                     <thead>
                                     <tr>
                                         <th>
@@ -283,7 +284,7 @@
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"
                                                   data-toggle="modal" data-target="#deleteModal"
                                                   data-tooltip="tooltip" data-placement="bottom" title="删除"
-                                            ng-click="preDeleteItem(config.item.id)">
+                                                  ng-click="preDeleteItem(config.item.id)">
                                             </span>
                                         </td>
 
@@ -390,7 +391,7 @@
                     <!--create release modal-->
                     <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
                           ng-submit="release()">
-                        <div class="modal-dialog" role="document">
+                        <div class="modal-dialog" role="document" style="width: 960px">
                             <div class="modal-content">
                                 <div class="modal-header panel-primary">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -399,17 +400,71 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">
+                                        <label class="col-sm-2 control-label">
+                                            Changes:</label>
+                                        <div class="col-sm-10">
+                                            <table class="table table-bordered table-striped text-center table-hover"
+                                                   ng-show="toReleaseNamespace.itemModifiedCnt">
+                                                <thead>
+                                                <tr>
+                                                    <th>
+                                                        Key
+                                                    </th>
+                                                    <th>
+                                                        Old Value
+                                                    </th>
+                                                    <th>
+                                                        New Value
+                                                    </th>
+                                                    <th>
+                                                        最后修改人
+                                                    </th>
+                                                    <th>
+                                                        最后修改时间
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr ng-repeat="config in toReleaseNamespace.items"
+                                                    ng-if="config.item.key && config.isModified">
+                                                    <td width="20%" title="{{config.item.key}}">
+                                                        <span ng-bind="config.item.key | limitTo: 250"></span>
+                                                        <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
+                                                    </td>
+                                                    <td width="25%" title="{{config.oldValue}}">
+                                                        <span ng-bind="config.oldValue | limitTo: 250"></span>
+                                                        <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
+                                                    </td>
+                                                    <td width="25%" title="{{config.item.value}}">
+                                                        <span ng-bind="config.item.value | limitTo: 250"></span>
+                                                        <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
+                                                    </td>
+                                                    <td width="15%" ng-bind="config.item.lastModifiedBy">
+                                                    </td>
+                                                    <td width="15%"
+                                                        ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <span ng-show="!toReleaseNamespace.itemModifiedCnt">
+                                                配置没有变化
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">
                                             <apollorequiredfiled></apollorequiredfiled>
                                             Release Name:</label>
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-5">
                                             <input type="text" class="form-control" placeholder="input release title"
                                                    ng-model="releaseTitle" ng-required="true">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">Comment:</label>
-                                        <div class="col-sm-9">
+                                        <label class="col-sm-2 control-label">Comment:</label>
+                                        <div class="col-sm-10">
                                             <textarea rows="4" class="form-control" style="margin-top: 15px;"
                                                       ng-model="releaseComment"
                                                       placeholder="Add an optional extended description..."></textarea>
@@ -420,7 +475,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="submit" class="btn btn-primary">提交
+                                    <button type="submit" class="btn btn-primary">发布
                                     </button>
                                 </div>
                             </div>
@@ -442,14 +497,22 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>Key</label>
+                                        <label class="col-sm-2 control-label">
+                                            <apollorequiredfiled
+                                                    ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                            Key
+                                        </label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" ng-model="item.key"
                                                    ng-required="true" ng-disabled="tableViewOperType != 'create'">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>Value</label>
+                                        <label class="col-sm-2 control-label">
+                                            <apollorequiredfiled
+                                                    ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                            Value
+                                        </label>
                                         <div class="col-sm-10">
                                             <textarea type="text" class="form-control" rows="6" ng-model="item.value"
                                                       ng-required="true" ng-show="tableViewOperType != 'retrieve'">
@@ -460,7 +523,8 @@
                                     <div class="form-group" ng-show="tableViewOperType == 'retrieve'">
                                         <label class="col-sm-2 control-label">Released Value</label>
                                         <div class="col-sm-10">
-                                            <span ng-show="!item.oldVale">这是新增的配置</span>
+                                            <p ng-show="!item.oldValue">这是新增的配置</p>
+                                            <p ng-show="item.oldValue" ng-bind="item.oldValue"></p>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -473,18 +537,28 @@
                                         </div>
                                     </div>
                                     <div class="form-group" ng-show="tableViewOperType != 'retrieve'">
-                                        <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>选择集群</label>
+                                        <label class="col-sm-2 control-label">
+                                            <apollorequiredfiled></apollorequiredfiled>
+                                            选择集群</label>
                                         <div class="col-sm-10">
-                                            <apolloclusterselector apollo-app-id="pageContext.appId" apollo-default-checked="false"
-                                                                   apollo-select="collectSelectedClusters"></apolloclusterselector>
+                                            <apolloclusterselector apollo-app-id="pageContext.appId"
+                                                                   apollo-default-all-checked="false"
+                                                                   apollo-default-checked-env="pageContext.env"
+                                                                   apollo-default-checked-cluster="pageContext.clusterName"
+                                                                   apollo-select="collectSelectedClusters">
+
+                                            </apolloclusterselector>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" ng-click="switchToEdit()" ng-show="tableViewOperType == 'retrieve'">修改</button>
+                                    <button type="button" class="btn btn-default" ng-click="switchToEdit()"
+                                            ng-show="tableViewOperType == 'retrieve'">修改
+                                    </button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                                     </button>
-                                    <button type="submit" class="btn btn-primary" ng-show="tableViewOperType != 'retrieve'">提交
+                                    <button type="submit" class="btn btn-primary"
+                                            ng-show="tableViewOperType != 'retrieve'">提交
                                     </button>
                                 </div>
                             </div>
@@ -503,7 +577,7 @@
 
 
 <!-- jquery.js -->
-<script src="vendor/jquery.js" type="text/javascript"></script>
+<script src="vendor/jquery.min.js" type="text/javascript"></script>
 
 <!--lodash.js-->
 <script src="vendor/lodash.min.js" type="text/javascript"></script>

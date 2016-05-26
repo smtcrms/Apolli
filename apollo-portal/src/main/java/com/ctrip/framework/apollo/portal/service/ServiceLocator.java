@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,56 +31,20 @@ public class ServiceLocator {
 
   private static final int DEFAULT_TIMEOUT_MS = 1000;
 
+  private static final int RETRY_TIMES = 3;
+
+  private static final int CALL_META_SERVER_THRESHOLD = 10;
+
+  private static final String ADMIN_SERVICE_URL_PATH = "/services/admin";
+
   private RestTemplate restTemplate;
 
   @Autowired
   private HttpMessageConverters httpMessageConverters;
 
-  private Map<Env, List<ServiceDTO>> serviceCaches = new ConcurrentHashMap<Env, List<ServiceDTO>>();
+  private Map<Env, ServiceDTO[]> serviceAddressCache = new ConcurrentHashMap<>();
 
   private final AtomicInteger adminCallCounts = new AtomicInteger(0);
-
-  private final AtomicInteger configCallCounts = new AtomicInteger(0);
-
-  public ServiceDTO getAdminService(Env env) throws ServiceException {
-    List<ServiceDTO> services = getServices(env, "admin");
-    if (services == null || services.size() == 0) {
-      throw new ServiceException("No available admin service");
-    }
-    return services.get(Math.abs(adminCallCounts.getAndIncrement()) % services.size());
-  }
-
-  public ServiceDTO getConfigService(Env env) throws ServiceException {
-    List<ServiceDTO> services = getServices(env, "config");
-    if (services == null || services.size() == 0) {
-      throw new ServiceException("No available config service");
-    }
-    return services.get(Math.abs(configCallCounts.getAndIncrement()) % services.size());
-  }
-
-  private List<ServiceDTO> getServices(Env env, String serviceUrl) {
-    String domainName = MetaDomainConsts.getDomain(env);
-    String url = domainName + "/services/" + serviceUrl;
-    List<ServiceDTO> serviceDtos = null;
-    try {
-      ServiceDTO[] services = restTemplate.getForObject(new URI(url), ServiceDTO[].class);
-      if (services != null && services.length > 0) {
-        if (!serviceCaches.containsKey(env)) {
-          serviceDtos = new ArrayList<ServiceDTO>();
-          serviceCaches.put(env, serviceDtos);
-        } else {
-          serviceDtos = serviceCaches.get(env);
-          serviceDtos.clear();
-        }
-        for (ServiceDTO service : services) {
-          serviceDtos.add(service);
-        }
-      }
-    } catch (Exception ex) {
-      logger.warn(ex.getMessage());
-    }
-    return serviceDtos;
-  }
 
   @PostConstruct
   private void postConstruct() {
@@ -99,4 +61,55 @@ public class ServiceLocator {
       rf.setConnectTimeout(DEFAULT_TIMEOUT_MS);
     }
   }
+
+
+  public ServiceDTO getServiceAddress(Env env) throws ServiceException {
+
+    if (adminCallCounts.get() % CALL_META_SERVER_THRESHOLD == 0) {
+      return getServiceAddressFromMetaServer(env);
+    } else {
+      //if cached then return from cache
+      ServiceDTO[] serviceDTOs = serviceAddressCache.get(env);
+      if (serviceDTOs != null && serviceDTOs.length > 0){
+        return randomServiceAddress(serviceDTOs);
+      }else {//return from meta server
+        return getServiceAddressFromMetaServer(env);
+      }
+    }
+
+
+  }
+
+  public ServiceDTO getServiceAddressFromMetaServer(Env env) {
+    //retry
+    for (int i = 0; i < RETRY_TIMES; i++) {
+      ServiceDTO[] services = getServices(env);
+      if (services != null && services.length > 0) {
+        serviceAddressCache.put(env, services);
+        return randomServiceAddress(services);
+      } else {
+        logger.warn(String.format("can not get %s admin service address at %d time", env, i));
+      }
+    }
+    logger.error(String.format("can not get %s admin service address", env));
+    throw new ServiceException("No available admin service");
+  }
+
+
+  private ServiceDTO[] getServices(Env env) {
+    String domainName = MetaDomainConsts.getDomain(env);
+    String url = domainName + ADMIN_SERVICE_URL_PATH;
+
+    try {
+      return restTemplate.getForObject(new URI(url), ServiceDTO[].class);
+    } catch (Exception ex) {
+      logger.warn(ex.getMessage());
+      return null;
+    }
+  }
+
+  private ServiceDTO randomServiceAddress(ServiceDTO[] services){
+    return services[Math.abs(adminCallCounts.getAndIncrement()) % services.length];
+  }
+
 }

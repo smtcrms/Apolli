@@ -3,20 +3,20 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         load_all_namespaces: {
             method: 'GET',
             isArray: true,
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces'
         },
         find_items: {
             method: 'GET',
             isArray: true,
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/items'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/items'
         },
         modify_items: {
             method: 'PUT',
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/items'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/items'
         },
         release: {
             method: 'POST',
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/release'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/release'
         },
         diff: {
             method: 'POST',
@@ -30,11 +30,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         },
         create_item: {
             method: 'POST',
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/item'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/item'
         },
         update_item: {
             method: 'PUT',
-            url: '/apps/:appId/env/:env/clusters/:clusterName/namespaces/:namespaceName/item'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/item'
         },
         delete_item: {
             method: 'DELETE',
@@ -56,6 +56,7 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
             });
             return d.promise;
         },
+
         find_items: function (appId, env, clusterName, namespaceName) {
             var d = $q.defer();
             config_source.find_items({

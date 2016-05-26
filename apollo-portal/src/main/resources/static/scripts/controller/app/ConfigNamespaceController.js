@@ -2,8 +2,6 @@ application_module.controller("ConfigNamespaceController",
                               ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService',
                                function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService) {
 
-                                   ////// namespace //////
-
                                    var namespace_view_type = {
                                        TEXT: 'text',
                                        TABLE: 'table',
@@ -53,8 +51,6 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    };
 
-                                   ////// global view oper //////
-
                                    $scope.switchView = function (namespace, viewType) {
                                        if (namespace_view_type.TEXT == viewType) {
                                            namespace.text = parseModel2Text(namespace);
@@ -88,8 +84,6 @@ application_module.controller("ConfigNamespaceController",
                                            itemCnt > MAX_ROW_SIZE ? MAX_ROW_SIZE : itemCnt + APPEND_ROW_SIZE;
                                        return result;
                                    }
-
-                                   ////// text view oper //////
 
                                    $scope.toCommitNamespace = {};
 
@@ -133,19 +127,20 @@ application_module.controller("ConfigNamespaceController",
                                        }
                                    };
 
-                                   /////// release ///////
                                    var releaseModal = $('#releaseModal');
-                                   var releaseNamespace = {};
+                                   $scope.toReleaseNamespace = {};
 
                                    $scope.prepareReleaseNamespace = function (namespace) {
-                                       releaseNamespace = namespace;
+                                       $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                                       $scope.toReleaseNamespace = namespace;
                                    };
+
                                    $scope.releaseComment = '';
-                                   $scope.releaseTitle = '';
+
                                    $scope.release = function () {
                                        ConfigService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                              $rootScope.pageContext.clusterName,
-                                                             releaseNamespace.namespace.namespaceName,
+                                                             $scope.toReleaseNamespace.namespace.namespaceName,
                                                              $scope.releaseTitle,
                                                              $scope.releaseComment).then(
                                            function (result) {
@@ -182,12 +177,13 @@ application_module.controller("ConfigNamespaceController",
                                    };
 
                                    $scope.deleteItem = function () {
-                                       ConfigService.delete_item($rootScope.pageContext.env, toDeleteItemId).then(function (result) {
-                                           toastr.success("删除成功!");
-                                           $rootScope.refreshNamespaces();
-                                       }, function (result) {
-                                           toastr.error(AppUtil.errorMsg(result), "删除失败"); 
-                                       });
+                                       ConfigService.delete_item($rootScope.pageContext.env, toDeleteItemId).then(
+                                           function (result) {
+                                               toastr.success("删除成功!");
+                                               $rootScope.refreshNamespaces();
+                                           }, function (result) {
+                                               toastr.error(AppUtil.errorMsg(result), "删除失败");
+                                           });
                                    };
 
                                    var toOperationNamespaceName = '';

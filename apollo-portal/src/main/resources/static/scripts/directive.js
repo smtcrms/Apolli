@@ -116,7 +116,6 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
 });
 
 /** env cluster selector*/
-
 directive_module.directive('apolloclusterselector', function ($compile, $window, AppService, AppUtil, toastr) {
     return {
         restrict: 'E',
@@ -125,28 +124,42 @@ directive_module.directive('apolloclusterselector', function ($compile, $window,
         replace: true,
         scope: {
             appId: '=apolloAppId',
-            defaultChecked: '=apolloDefaultChecked',
-            select: '=apolloSelect'
+            defaultAllChecked: '=apolloDefaultAllChecked',
+            select: '=apolloSelect',
+            defaultCheckedEnv: '=apolloDefaultCheckedEnv',
+            defaultCheckedCluster: '=apolloDefaultCheckedCluster'
         },
         link: function (scope, element, attrs) {
             ////// load env //////
-            AppService.load_nav_tree(scope.appId).then(function (result) {
-                scope.clusters = [];
-                var envClusterInfo = AppUtil.collectData(result);
-                envClusterInfo.forEach(function (node) {
-                    var env = node.env;
-                    node.clusters.forEach(function (cluster) {
-                        cluster.env = env;
-                        cluster.checked = scope.defaultChecked;
-                        scope.clusters.push(cluster);
-                    })
-                });
-                scope.select(collectSelectedClusters());
-            }, function (result) {
-                toastr.error(AppUtil.errorMsg(result), "加载环境信息出错");
+
+            scope.$watch("defaultCheckedEnv", function (newValue, oldValue) {
+                refreshClusterList();
             });
 
-            scope.envAllSelected = scope.defaultChecked;
+            refreshClusterList();
+
+            function refreshClusterList() {
+                AppService.load_nav_tree(scope.appId).then(function (result) {
+                    scope.clusters = [];
+                    var envClusterInfo = AppUtil.collectData(result);
+                    envClusterInfo.forEach(function (node) {
+                        var env = node.env;
+                        node.clusters.forEach(function (cluster) {
+                            cluster.env = env;
+                            cluster.checked = scope.defaultAllChecked ||
+                                              (cluster.env == scope.defaultCheckedEnv && cluster.name
+                                                                                         == scope.defaultCheckedCluster);
+                            scope.clusters.push(cluster);
+                        })
+                    });
+                    scope.select(collectSelectedClusters());
+                }, function (result) {
+                    toastr.error(AppUtil.errorMsg(result), "加载环境信息出错");
+                });
+            }
+
+
+            scope.envAllSelected = scope.defaultAllChecked;
 
             scope.toggleEnvsCheckedStatus = function () {
                 scope.envAllSelected = !scope.envAllSelected;

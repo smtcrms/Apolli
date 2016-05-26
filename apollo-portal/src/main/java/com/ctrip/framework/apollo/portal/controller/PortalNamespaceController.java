@@ -45,7 +45,7 @@ public class PortalNamespaceController {
     namespaceService.createAppNamespace(appNamespace);
   }
 
-  @RequestMapping("/apps/{appId}/env/{env}/clusters/{clusterName}/namespaces")
+  @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces")
   public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
                                           @PathVariable String clusterName) {
     if (StringUtils.isContainEmpty(appId, env, clusterName)) {
