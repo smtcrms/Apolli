@@ -3,6 +3,7 @@ eureka:
     hostname: ${hostname:localhost}
     preferIpAddress: true
   server:
+    peerEurekaNodesUpdateIntervalMs: 1 * 60 * 1000 # 1 min
     enableSelfPreservation: false
   client:
     serviceUrl:
@@ -19,4 +20,4 @@ management:
     enabled: false
   health:
     status:
-      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP   
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP
