@@ -39,6 +39,7 @@ public class NotificationControllerTest {
   private String defaultNamespace;
   private String somePublicNamespace;
   private String someDataCenter;
+  private String someClientIp;
   @Mock
   private AppNamespaceService appNamespaceService;
   @Mock
@@ -58,6 +59,7 @@ public class NotificationControllerTest {
     defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
     somePublicNamespace = "somePublicNamespace";
     someDataCenter = "someDC";
+    someClientIp = "someClientIp";
 
     deferredResults =
         (Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>) ReflectionTestUtils
@@ -68,7 +70,7 @@ public class NotificationControllerTest {
   public void testPollNotificationWithDefaultNamespace() throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter);
+        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
@@ -88,7 +90,7 @@ public class NotificationControllerTest {
       throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, defaultCluster, defaultNamespace, someDataCenter);
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, someDataCenter, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someDataCenter, defaultCluster);
@@ -108,7 +110,7 @@ public class NotificationControllerTest {
       throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, defaultCluster, defaultNamespace, null);
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, null, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(defaultCluster);
@@ -135,7 +137,7 @@ public class NotificationControllerTest {
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter);
+        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
@@ -161,7 +163,7 @@ public class NotificationControllerTest {
   public void testPollNotificationWithDefaultNamespaceAndHandleMessage() throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter);
+        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter, someClientIp);
 
     String key =
         Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
@@ -188,7 +190,7 @@ public class NotificationControllerTest {
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter);
+        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter, someClientIp);
 
     String key =
         Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)

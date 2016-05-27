@@ -42,7 +42,7 @@ public class ServiceController {
   @RequestMapping("/config")
   public List<ServiceDTO> getConfigService(
       @RequestParam(value = "appId", defaultValue = "") String appId,
-      @RequestParam(value = "ip", defaultValue = "") String clientIp) {
+      @RequestParam(value = "ip", required = false) String clientIp) {
     List<InstanceInfo> instances = discoveryService.getConfigServiceInstances();
     List<ServiceDTO> result = instances.stream().map(new Function<InstanceInfo, ServiceDTO>() {
 

@@ -60,7 +60,8 @@ public class NotificationController implements MessageListener {
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
-      @RequestParam(value = "dataCenter", required = false) String dataCenter) {
+      @RequestParam(value = "dataCenter", required = false) String dataCenter,
+      @RequestParam(value = "ip", required = false) String clientIp) {
     Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
 
     //Listen on more namespaces, since it's not the default namespace
@@ -128,7 +129,7 @@ public class NotificationController implements MessageListener {
     }
 
     //watch data center config change
-    if (!Objects.isNull(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
+    if (!Strings.isNullOrEmpty(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
       watchedKeys.add(assembleKey(appId, dataCenter, namespace));
     }
 
