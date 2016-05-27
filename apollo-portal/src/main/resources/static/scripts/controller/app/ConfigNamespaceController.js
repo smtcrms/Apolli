@@ -63,7 +63,7 @@ application_module.controller("ConfigNamespaceController",
                                    var MAX_ROW_SIZE = 30;
                                    var APPEND_ROW_SIZE = 8;
                                    //把表格内容解析成文本
-                                   function parseModel2Text(namespace) {
+                                   function parseModel2Text(namespace, modeType) {
 
                                        if (!namespace.items) {
                                            return "无配置信息";
@@ -72,8 +72,18 @@ application_module.controller("ConfigNamespaceController",
                                        var itemCnt = 0;
                                        namespace.items.forEach(function (item) {
                                            if (item.item.key) {
+                                               var itemValue = item.item.value;
+                                               if (modeType == 'edit') {//编辑状态下替换value的换行符
+                                                   if (item.item.value && (item.item.value.indexOf("\n") > -1)) {
+                                                       alert("警告:[" + item.item.key + "]的值包含换行符\\n,文本编辑会过滤掉换行符.");
+                                                       while (itemValue.indexOf("\n") > -1) {
+                                                           itemValue = itemValue.replace("\n", "");
+                                                       }
+                                                   }
+                                               }
+
                                                result +=
-                                                   item.item.key + " = " + item.item.value + "\n";
+                                                   item.item.key + " = " + itemValue + "\n";
                                            } else {
                                                result += item.item.comment + "\n";
                                            }
@@ -97,7 +107,7 @@ application_module.controller("ConfigNamespaceController",
                                        ConfigService.modify_items($scope.pageContext.appId, $scope.pageContext.env,
                                                                   $scope.pageContext.clusterName,
                                                                   $scope.toCommitNamespace.namespace.namespaceName,
-                                                                  $scope.toCommitNamespace.text,
+                                                                  $scope.toCommitNamespace.editText,
                                                                   $scope.toCommitNamespace.namespace.id,
                                                                   $scope.commitComment).then(
                                            function (result) {
@@ -120,6 +130,8 @@ application_module.controller("ConfigNamespaceController",
                                        if (namespace.isTextEditing) {//切换为编辑状态
                                            $scope.toCommitNamespace.commited = false;
                                            namespace.backupText = namespace.text;
+                                           namespace.editText = parseModel2Text(namespace, 'edit');
+
                                        } else {
                                            if (!$scope.toCommitNamespace.commited) {//取消编辑,则复原
                                                namespace.text = namespace.backupText;
@@ -234,7 +246,7 @@ application_module.controller("ConfigNamespaceController",
                                                            itemModal.modal('hide');
                                                            $rootScope.refreshNamespaces(namespace_view_type.TABLE);
                                                        }, function (result) {
-                                                           AppUtil.errorMsg(result);
+                                                           toastr.error(AppUtil.errorMsg(result), "添加失败");
                                                        });
 
                                                } else if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.UPDATE) {
@@ -250,7 +262,7 @@ application_module.controller("ConfigNamespaceController",
                                                            itemModal.modal('hide');
                                                            $rootScope.refreshNamespaces(namespace_view_type.TABLE);
                                                        }, function (result) {
-                                                           AppUtil.errorMsg(result);
+                                                           toastr.error(AppUtil.errorMsg(result), "更新失败");
                                                        });
                                                }
                                            });
