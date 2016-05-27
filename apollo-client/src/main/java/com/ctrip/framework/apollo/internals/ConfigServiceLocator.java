@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
-import org.unidal.net.Networks;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -138,18 +138,21 @@ public class ConfigServiceLocator implements Initializable {
       }
     }
 
-    throw new RuntimeException("Get config services failed", exception);
+    throw new RuntimeException(
+        String.format("Get config services failed from %s", url), exception);
   }
 
   private String assembleMetaServiceUrl() {
     String domainName = m_configUtil.getMetaServerDomainName();
     String appId = m_configUtil.getAppId();
-    String localIp = Networks.forIp().getLocalHostAddress();
+    String localIp = m_configUtil.getLocalIp();
 
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
     queryParams.put("appId", escaper.escape(appId));
-    queryParams.put("ip", escaper.escape(localIp));
+    if (!Strings.isNullOrEmpty(localIp)) {
+      queryParams.put("ip", escaper.escape(localIp));
+    }
 
     return domainName + "/services/config?" + MAP_JOINER.join(queryParams);
   }

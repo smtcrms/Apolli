@@ -181,7 +181,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
           ApolloConfig result = response.getBody();
 
-          Cat.logEvent("Apollo.Client.ConfigLoaded." + result.getNamespaceName(), result.getReleaseKey());
+          Cat.logEvent("Apollo.Client.ConfigLoaded." + result.getNamespaceName(),
+              result.getReleaseKey());
           logger.debug("Loaded config for {}: {}", m_namespace, result);
 
           return result;
@@ -225,6 +226,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     if (!Strings.isNullOrEmpty(dataCenter)) {
       queryParams.put("dataCenter", escaper.escape(dataCenter));
+    }
+
+    String localIp = m_configUtil.getLocalIp();
+    if (!Strings.isNullOrEmpty(localIp)) {
+      queryParams.put("ip", escaper.escape(localIp));
     }
 
     String pathExpanded = String.format(path, pathParams.toArray());
@@ -328,6 +334,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     }
     if (!Strings.isNullOrEmpty(dataCenter)) {
       queryParams.put("dataCenter", escaper.escape(dataCenter));
+    }
+    String localIp = m_configUtil.getLocalIp();
+    if (!Strings.isNullOrEmpty(localIp)) {
+      queryParams.put("ip", escaper.escape(localIp));
     }
 
     String params = MAP_JOINER.join(queryParams);

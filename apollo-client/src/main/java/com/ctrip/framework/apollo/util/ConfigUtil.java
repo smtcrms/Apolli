@@ -9,6 +9,7 @@ import com.ctrip.framework.apollo.core.enums.EnvUtils;
 import com.ctrip.framework.foundation.Foundation;
 
 import org.unidal.lookup.annotation.Named;
+import org.unidal.net.Networks;
 
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +78,10 @@ public class ConfigUtil {
     Env env = EnvUtils.transformEnv(Foundation.server().getEnvType());
     Preconditions.checkState(env != null, "env is not set");
     return env;
+  }
+
+  public String getLocalIp() {
+    return Networks.forIp().getLocalHostAddress();
   }
 
   public String getMetaServerDomainName() {

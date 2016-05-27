@@ -48,20 +48,12 @@ public class ConfigController {
       }.getType();
   private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
 
-  @RequestMapping(value = "/{appId}/{clusterName}", method = RequestMethod.GET)
-  public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
-                                  @RequestParam(value = "dataCenter", required = false) String dataCenter,
-                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
-                                  HttpServletResponse response) throws IOException {
-    return this.queryConfig(appId, clusterName, ConfigConsts.NAMESPACE_DEFAULT, dataCenter,
-        clientSideReleaseKey, response);
-  }
-
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
                                   @RequestParam(value = "dataCenter", required = false) String dataCenter,
                                   @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
+                                  @RequestParam(value = "ip", required = false) String clientIp,
                                   HttpServletResponse response) throws IOException {
     List<Release> releases = Lists.newLinkedList();
 
@@ -140,7 +132,7 @@ public class ConfigController {
     }
 
     //try to load via data center
-    if (!Objects.isNull(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
+    if (!Strings.isNullOrEmpty(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
       Release dataCenterRelease =
           configService.findRelease(appId, dataCenter, namespace);
       if (!Objects.isNull(dataCenterRelease)) {
