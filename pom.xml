@@ -354,6 +354,7 @@
 					<include>**/*.yml</include>
 					<include>**/*.yaml</include>
 					<include>**/*.properties</include>
+					<include>**/*.xml</include>
 				</includes>
 			</resource>
 			<resource>
@@ -363,6 +364,7 @@
 					<exclude>**/*.yml</exclude>
 					<exclude>**/*.yaml</exclude>
 					<exclude>**/*.properties</exclude>
+					<exclude>**/*.xml</exclude>
 				</excludes>
 			</resource>
 		</resources>
