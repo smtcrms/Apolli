@@ -3,13 +3,14 @@ eureka:
     hostname: ${hostname:localhost}
     preferIpAddress: true
   server:
-    peerEurekaNodesUpdateIntervalMs: 1 * 60 * 1000 # 1 min
+    peerEurekaNodesUpdateIntervalMs: 60000
     enableSelfPreservation: false
   client:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8080/eureka/
     healthcheck:
       enabled: true
+    eurekaServiceUrlPollIntervalSeconds: 60
 
 endpoints:
   health:
