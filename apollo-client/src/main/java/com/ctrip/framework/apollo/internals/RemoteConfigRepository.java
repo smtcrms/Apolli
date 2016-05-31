@@ -274,8 +274,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         logger.debug("Long polling from {}", url);
         HttpRequest request = new HttpRequest(url);
-        //no timeout for read
-        request.setReadTimeout(0);
+        //longer timeout for read - 1 minute
+        request.setReadTimeout(60000);
 
         transaction = Cat.newTransaction("Apollo.ConfigService", "pollNotification");
         transaction.addData("Url", url);
