@@ -55,6 +55,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private volatile AtomicReference<ApolloConfig> m_configCache;
   private final String m_namespace;
   private final ScheduledExecutorService m_executorService;
+  private final ExecutorService m_longPollingService;
   private final AtomicBoolean m_longPollingStopped;
   private SchedulePolicy m_longPollSchedulePolicy;
   private AtomicReference<ServiceDTO> m_longPollServiceDto;
@@ -80,6 +81,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     m_longPollingStopped = new AtomicBoolean(false);
     m_executorService = Executors.newScheduledThreadPool(1,
         ApolloThreadFactory.create("RemoteConfigRepository", true));
+    m_longPollingService = Executors.newFixedThreadPool(2,
+            ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
     m_longPollServiceDto = new AtomicReference<>();
     this.trySync();
     this.schedulePeriodicRefresh();
@@ -211,14 +214,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
                                         String dataCenter, ApolloConfig previousConfig) {
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
-    String path = "configs/%s/%s";
-    List<String> pathParams = Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster));
+    String path = "configs/%s/%s/%s";
+    List<String> pathParams =
+        Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster),
+            escaper.escape(namespace));
     Map<String, String> queryParams = Maps.newHashMap();
-
-    if (!Strings.isNullOrEmpty(namespace)) {
-      path = path + "/%s";
-      pathParams.add(escaper.escape(namespace));
-    }
 
     if (previousConfig != null) {
       queryParams.put("releaseKey", escaper.escape(String.valueOf(previousConfig.getReleaseKey())));
@@ -248,13 +248,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     final String appId = m_configUtil.getAppId();
     final String cluster = m_configUtil.getCluster();
     final String dataCenter = m_configUtil.getDataCenter();
-    final ExecutorService longPollingService =
-        Executors.newFixedThreadPool(2,
-            ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
-    longPollingService.submit(new Runnable() {
+    m_longPollingService.submit(new Runnable() {
       @Override
       public void run() {
-        doLongPollingRefresh(appId, cluster, dataCenter, longPollingService);
+        doLongPollingRefresh(appId, cluster, dataCenter, m_longPollingService);
       }
     });
   }
