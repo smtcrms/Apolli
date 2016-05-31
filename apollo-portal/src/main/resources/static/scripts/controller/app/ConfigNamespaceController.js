@@ -72,15 +72,8 @@ application_module.controller("ConfigNamespaceController",
                                        var itemCnt = 0;
                                        namespace.items.forEach(function (item) {
                                            if (item.item.key) {
-                                               var itemValue = item.item.value;
-                                               if (modeType == 'edit') {//编辑状态下替换value的换行符
-                                                   if (item.item.value && (item.item.value.indexOf("\n") > -1)) {
-                                                       alert("警告:[" + item.item.key + "]的值包含换行符\\n,文本编辑会过滤掉换行符.");
-                                                       while (itemValue.indexOf("\n") > -1) {
-                                                           itemValue = itemValue.replace("\n", "");
-                                                       }
-                                                   }
-                                               }
+                                               //use string \n to display as new line
+                                               var itemValue = item.item.value.replace(/\n/g,"\\n");
 
                                                result +=
                                                    item.item.key + " = " + itemValue + "\n";

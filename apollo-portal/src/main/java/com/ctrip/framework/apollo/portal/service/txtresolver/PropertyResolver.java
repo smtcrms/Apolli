@@ -127,7 +127,7 @@ public class PropertyResolver implements ConfigTextResolver {
     }
 
     String newKey = kv[0];
-    String newValue = kv[1];
+    String newValue = kv[1].replace("\\n", "\n"); //handle user input \n
 
     ItemDTO oldItem = keyMapOldItem.get(newKey);
 
