@@ -40,7 +40,7 @@ import java.util.Set;
 @RequestMapping("/notifications")
 public class NotificationController implements MessageListener {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
-  private static final long TIMEOUT = 360 * 60 * 1000;//6 hours
+  private static final long TIMEOUT = 30 * 1000;//30 seconds
   private final Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
       deferredResults = Multimaps.synchronizedSetMultimap(HashMultimap.create());
   private static final ResponseEntity<ApolloConfigNotification>
