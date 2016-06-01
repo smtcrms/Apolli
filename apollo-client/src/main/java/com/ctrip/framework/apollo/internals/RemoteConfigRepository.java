@@ -59,6 +59,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final AtomicBoolean m_longPollingStopped;
   private SchedulePolicy m_longPollSchedulePolicy;
   private AtomicReference<ServiceDTO> m_longPollServiceDto;
+  private AtomicReference<ApolloConfigNotification> m_longPollResult;
 
   /**
    * Constructor.
@@ -82,8 +83,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     m_executorService = Executors.newScheduledThreadPool(1,
         ApolloThreadFactory.create("RemoteConfigRepository", true));
     m_longPollingService = Executors.newFixedThreadPool(2,
-            ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
+        ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
     m_longPollServiceDto = new AtomicReference<>();
+    m_longPollResult = new AtomicReference<>();
     this.trySync();
     this.schedulePeriodicRefresh();
     this.scheduleLongPollingRefresh();
@@ -270,7 +272,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         String url =
             assembleLongPollRefreshUrl(lastServiceDto.getHomepageUrl(), appId, cluster,
-                m_namespace, dataCenter);
+                m_namespace, dataCenter, m_longPollResult.get());
 
         logger.debug("Long polling from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -286,6 +288,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         logger.debug("Long polling response: {}, url: {}", response.getStatusCode(), url);
         if (response.getStatusCode() == 200) {
           m_longPollServiceDto.set(lastServiceDto);
+          if (response.getBody() != null) {
+            m_longPollResult.set(response.getBody());
+            transaction.addData("Result", response.getBody().toString());
+          }
           longPollingService.submit(new Runnable() {
             @Override
             public void run() {
@@ -320,7 +326,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
-                                            String namespace, String dataCenter) {
+                                            String namespace, String dataCenter,
+                                            ApolloConfigNotification previousResult) {
     Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
     queryParams.put("appId", escaper.escape(appId));
@@ -335,6 +342,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     String localIp = m_configUtil.getLocalIp();
     if (!Strings.isNullOrEmpty(localIp)) {
       queryParams.put("ip", escaper.escape(localIp));
+    }
+
+    if (previousResult != null) {
+      //number doesn't need encode
+      queryParams.put("notificationId", String.valueOf(previousResult.getNotificationId()));
     }
 
     String params = MAP_JOINER.join(queryParams);

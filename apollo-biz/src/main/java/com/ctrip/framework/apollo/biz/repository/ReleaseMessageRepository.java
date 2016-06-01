@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,4 +14,6 @@ public interface ReleaseMessageRepository extends PagingAndSortingRepository<Rel
   List<ReleaseMessage> findFirst500ByIdGreaterThanOrderByIdAsc(Long id);
 
   ReleaseMessage findTopByOrderByIdDesc();
+
+  ReleaseMessage findTopByMessageInOrderByIdDesc(Collection<String> messages);
 }

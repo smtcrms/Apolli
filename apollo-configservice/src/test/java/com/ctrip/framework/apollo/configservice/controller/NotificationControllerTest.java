@@ -5,8 +5,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
 import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
+import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
@@ -25,6 +27,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -39,9 +43,12 @@ public class NotificationControllerTest {
   private String defaultNamespace;
   private String somePublicNamespace;
   private String someDataCenter;
+  private long someNotificationId;
   private String someClientIp;
   @Mock
   private AppNamespaceService appNamespaceService;
+  @Mock
+  private ReleaseMessageService releaseMessageService;
   @Mock
   private EntityManagerUtil entityManagerUtil;
   private Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
@@ -51,6 +58,7 @@ public class NotificationControllerTest {
   public void setUp() throws Exception {
     controller = new NotificationController();
     ReflectionTestUtils.setField(controller, "appNamespaceService", appNamespaceService);
+    ReflectionTestUtils.setField(controller, "releaseMessageService", releaseMessageService);
     ReflectionTestUtils.setField(controller, "entityManagerUtil", entityManagerUtil);
 
     someAppId = "someAppId";
@@ -59,6 +67,7 @@ public class NotificationControllerTest {
     defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
     somePublicNamespace = "somePublicNamespace";
     someDataCenter = "someDC";
+    someNotificationId = 1;
     someClientIp = "someClientIp";
 
     deferredResults =
@@ -70,7 +79,8 @@ public class NotificationControllerTest {
   public void testPollNotificationWithDefaultNamespace() throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter, someClientIp);
+        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter,
+            someNotificationId, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
@@ -86,11 +96,34 @@ public class NotificationControllerTest {
   }
 
   @Test
+  public void testPollNotificationWithDefaultNamespaceWithNotificationIdOutDated() throws Exception {
+    long notificationId = someNotificationId + 1;
+    ReleaseMessage someReleaseMessage = mock(ReleaseMessage.class);
+
+    when(someReleaseMessage.getId()).thenReturn(notificationId);
+    when(releaseMessageService.findLatestReleaseMessageForMessages(anyCollectionOf(String.class)))
+        .thenReturn(someReleaseMessage);
+
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter,
+            someNotificationId, someClientIp);
+
+    ResponseEntity<ApolloConfigNotification> result =
+        (ResponseEntity<ApolloConfigNotification>) deferredResult.getResult();
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(defaultNamespace, result.getBody().getNamespaceName());
+    assertEquals(notificationId, result.getBody().getNotificationId());
+  }
+
+  @Test
   public void testPollNotificationWithDefaultNamespaceWithDefaultClusterWithDataCenter()
       throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, defaultCluster, defaultNamespace, someDataCenter, someClientIp);
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, someDataCenter,
+            someNotificationId, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someDataCenter, defaultCluster);
@@ -110,7 +143,7 @@ public class NotificationControllerTest {
       throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, defaultCluster, defaultNamespace, null, someClientIp);
+        .pollNotification(someAppId, defaultCluster, defaultNamespace, null, someNotificationId, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(defaultCluster);
@@ -137,7 +170,8 @@ public class NotificationControllerTest {
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter, someClientIp);
+        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter,
+            someNotificationId, someClientIp);
 
     List<String> clusters =
         Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
@@ -160,16 +194,49 @@ public class NotificationControllerTest {
   }
 
   @Test
+  public void testPollNotificationWithPublicNamespaceWithNotificationIdOutDated() throws Exception {
+    long notificationId = someNotificationId + 1;
+    ReleaseMessage someReleaseMessage = mock(ReleaseMessage.class);
+
+    when(someReleaseMessage.getId()).thenReturn(notificationId);
+    when(releaseMessageService.findLatestReleaseMessageForMessages(anyCollectionOf(String.class)))
+        .thenReturn(someReleaseMessage);
+
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assmbleAppNamespace(somePublicAppId, somePublicNamespace);
+
+    when(appNamespaceService.findByNamespaceName(somePublicNamespace))
+        .thenReturn(somePublicAppNamespace);
+
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter,
+            someNotificationId, someClientIp);
+
+    ResponseEntity<ApolloConfigNotification> result =
+        (ResponseEntity<ApolloConfigNotification>) deferredResult.getResult();
+
+    assertEquals(HttpStatus.OK, result.getStatusCode());
+    assertEquals(somePublicNamespace, result.getBody().getNamespaceName());
+    assertEquals(notificationId, result.getBody().getNotificationId());
+  }
+
+  @Test
   public void testPollNotificationWithDefaultNamespaceAndHandleMessage() throws Exception {
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter, someClientIp);
+        .pollNotification(someAppId, someCluster, defaultNamespace, someDataCenter,
+            someNotificationId, someClientIp);
 
     String key =
         Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
             .join(someAppId, someCluster, defaultNamespace);
+    long someId = 1;
+    ReleaseMessage someReleaseMessage = new ReleaseMessage(key);
+    someReleaseMessage.setId(someId);
 
-    controller.handleMessage(key, Topics.APOLLO_RELEASE_TOPIC);
+    controller.handleMessage(someReleaseMessage, Topics.APOLLO_RELEASE_TOPIC);
 
     ResponseEntity<ApolloConfigNotification> response =
         (ResponseEntity<ApolloConfigNotification>) deferredResult.getResult();
@@ -177,6 +244,7 @@ public class NotificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(defaultNamespace, notification.getNamespaceName());
+    assertEquals(someId, notification.getNotificationId());
   }
 
   @Test
@@ -190,13 +258,17 @@ public class NotificationControllerTest {
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
         deferredResult = controller
-        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter, someClientIp);
+        .pollNotification(someAppId, someCluster, somePublicNamespace, someDataCenter,
+            someNotificationId, someClientIp);
 
     String key =
         Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
             .join(somePublicAppId, someDataCenter, somePublicNamespace);
+    long someId = 1;
+    ReleaseMessage someReleaseMessage = new ReleaseMessage(key);
+    someReleaseMessage.setId(someId);
 
-    controller.handleMessage(key, Topics.APOLLO_RELEASE_TOPIC);
+    controller.handleMessage(someReleaseMessage, Topics.APOLLO_RELEASE_TOPIC);
 
     ResponseEntity<ApolloConfigNotification> response =
         (ResponseEntity<ApolloConfigNotification>) deferredResult.getResult();
@@ -204,7 +276,7 @@ public class NotificationControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(somePublicNamespace, notification.getNamespaceName());
-
+    assertEquals(someId, notification.getNotificationId());
   }
 
   private AppNamespace assmbleAppNamespace(String appId, String namespace) {

@@ -19,7 +19,7 @@ public class ResourceUtils {
   @SuppressWarnings("unchecked")
   public static Properties readConfigFile(String configPath, Properties defaults) {
     InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(configPath);
-    logger.info("Reading config from resource {}", configPath);
+    logger.debug("Reading config from resource {}", configPath);
     Properties props = new Properties();
     try {
       if (in == null) {
@@ -27,9 +27,9 @@ public class ResourceUtils {
         Path path = new File(System.getProperty("user.dir") + configPath).toPath();
         if (Files.isReadable(path)) {
           in = new FileInputStream(path.toFile());
-          logger.info("Reading config from file {} ", path);
+          logger.debug("Reading config from file {} ", path);
         } else {
-          logger.info("Could not find available config file");
+          logger.warn("Could not find available config file");
         }
       }
       if (defaults != null) {
@@ -59,9 +59,9 @@ public class ResourceUtils {
       sb.append(key).append('=').append(val).append('\n');
     }
     if (sb.length() > 0) {
-      logger.info("Reading properties: \n" + sb.toString());
+      logger.debug("Reading properties: \n" + sb.toString());
     } else {
-      logger.info("No available properties");
+      logger.warn("No available properties");
     }
     return props;
   }

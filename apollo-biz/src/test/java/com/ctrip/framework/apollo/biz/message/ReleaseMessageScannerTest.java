@@ -44,8 +44,8 @@ public class ReleaseMessageScannerTest {
 
   @Test
   public void testScanMessageAndNotifyMessageListener() throws Exception {
-    SettableFuture<String> someListenerFuture = SettableFuture.create();
-    MessageListener someListener = (message, channel) -> someListenerFuture.set(message);
+    SettableFuture<ReleaseMessage> someListenerFuture = SettableFuture.create();
+    ReleaseMessageListener someListener = (message, channel) -> someListenerFuture.set(message);
     releaseMessageScanner.addMessageListener(someListener);
 
     String someMessage = "someMessage";
@@ -55,13 +55,14 @@ public class ReleaseMessageScannerTest {
     when(releaseMessageRepository.findFirst500ByIdGreaterThanOrderByIdAsc(0L)).thenReturn(
         Lists.newArrayList(someReleaseMessage));
 
-    String someListenerMessage =
+    ReleaseMessage someListenerMessage =
         someListenerFuture.get(5000, TimeUnit.MILLISECONDS);
 
-    assertEquals(someMessage, someListenerMessage);
+    assertEquals(someMessage, someListenerMessage.getMessage());
+    assertEquals(someId, someListenerMessage.getId());
 
-    SettableFuture<String> anotherListenerFuture = SettableFuture.create();
-    MessageListener anotherListener = (message, channel) -> anotherListenerFuture.set(message);
+    SettableFuture<ReleaseMessage> anotherListenerFuture = SettableFuture.create();
+    ReleaseMessageListener anotherListener = (message, channel) -> anotherListenerFuture.set(message);
     releaseMessageScanner.addMessageListener(anotherListener);
 
     String anotherMessage = "anotherMessage";
@@ -71,10 +72,11 @@ public class ReleaseMessageScannerTest {
     when(releaseMessageRepository.findFirst500ByIdGreaterThanOrderByIdAsc(someId)).thenReturn(
         Lists.newArrayList(anotherReleaseMessage));
 
-    String anotherListenerMessage =
+    ReleaseMessage anotherListenerMessage =
         anotherListenerFuture.get(5000, TimeUnit.MILLISECONDS);
 
-    assertEquals(anotherMessage, anotherListenerMessage);
+    assertEquals(anotherMessage, anotherListenerMessage.getMessage());
+    assertEquals(anotherId, anotherListenerMessage.getId());
 
   }
 

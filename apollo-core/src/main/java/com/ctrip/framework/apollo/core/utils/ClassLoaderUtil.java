@@ -18,7 +18,7 @@ public class ClassLoaderUtil {
 
   static {
     if (loader == null) {
-      logger.info("Using system class loader");
+      logger.warn("Using system class loader");
       loader = ClassLoader.getSystemClassLoader();
     }
 
