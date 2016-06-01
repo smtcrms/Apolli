@@ -234,6 +234,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     final String someKey = "someKey";
     final String someValue = "someValue";
     final String anotherValue = "anotherValue";
+    long someNotificationId = 1;
 
     long pollTimeoutInMS = 50;
     Map<String, String> configurations = Maps.newHashMap();
@@ -242,7 +243,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     ContextHandler pollHandler =
         mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
-            new ApolloConfigNotification(apolloConfig.getNamespaceName()), false);
+            new ApolloConfigNotification(apolloConfig.getNamespaceName(), someNotificationId), false);
 
     startServerWithHandlers(configHandler, pollHandler);
 

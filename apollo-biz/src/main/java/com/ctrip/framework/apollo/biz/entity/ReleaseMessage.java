@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.biz.entity;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -54,5 +56,15 @@ public class ReleaseMessage {
 
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .omitNullValues()
+        .add("id", id)
+        .add("message", message)
+        .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime)
+        .toString();
   }
 }

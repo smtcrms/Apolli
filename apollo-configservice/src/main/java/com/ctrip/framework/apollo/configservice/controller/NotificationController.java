@@ -10,9 +10,11 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.biz.entity.AppNamespace;
-import com.ctrip.framework.apollo.biz.message.MessageListener;
+import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.framework.apollo.biz.message.ReleaseMessageListener;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
+import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
@@ -38,7 +40,7 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping("/notifications")
-public class NotificationController implements MessageListener {
+public class NotificationController implements ReleaseMessageListener {
   private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
   private static final long TIMEOUT = 30 * 1000;//30 seconds
   private final Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
@@ -53,6 +55,9 @@ public class NotificationController implements MessageListener {
   private AppNamespaceService appNamespaceService;
 
   @Autowired
+  private ReleaseMessageService releaseMessageService;
+
+  @Autowired
   private EntityManagerUtil entityManagerUtil;
 
   @RequestMapping(method = RequestMethod.GET)
@@ -61,6 +66,7 @@ public class NotificationController implements MessageListener {
       @RequestParam(value = "cluster") String cluster,
       @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
       @RequestParam(value = "dataCenter", required = false) String dataCenter,
+      @RequestParam(value = "notificationId", defaultValue = "-1") long notificationId,
       @RequestParam(value = "ip", required = false) String clientIp) {
     Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
 
@@ -72,24 +78,42 @@ public class NotificationController implements MessageListener {
     DeferredResult<ResponseEntity<ApolloConfigNotification>> deferredResult =
         new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);
 
-    //register all keys
-    for (String key : watchedKeys) {
-      this.deferredResults.put(key, deferredResult);
+    //check whether client is out-dated
+    ReleaseMessage latest = releaseMessageService.findLatestReleaseMessageForMessages(watchedKeys);
+
+    /**
+     * Manually close the entity manager.
+     * Since for async request, Spring won't do so until the request is finished,
+     * which is unacceptable since we are doing long polling - means the db connection would be hold
+     * for a very long time
+     */
+    entityManagerUtil.closeEntityManager();
+
+    if (latest != null && latest.getId() != notificationId) {
+      deferredResult.setResult(new ResponseEntity<>(
+          new ApolloConfigNotification(namespace, latest.getId()), HttpStatus.OK));
+    } else {
+      //register all keys
+      for (String key : watchedKeys) {
+        this.deferredResults.put(key, deferredResult);
+      }
+
+      deferredResult
+          .onTimeout(() -> logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.TimeOutKeys"));
+
+      deferredResult.onCompletion(() -> {
+        //unregister all keys
+        for (String key : watchedKeys) {
+          deferredResults.remove(key, deferredResult);
+        }
+        logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.CompletedKeys");
+      });
+
+      logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.RegisteredKeys");
+      logger.info("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
+          watchedKeys, appId, cluster, namespace, dataCenter);
     }
 
-    deferredResult.onTimeout(() -> logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.TimeOutKeys"));
-
-    deferredResult.onCompletion(() -> {
-      //unregister all keys
-      for (String key : watchedKeys) {
-        deferredResults.remove(key, deferredResult);
-      }
-      logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.CompletedKeys");
-    });
-
-    logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.RegisteredKeys");
-    logger.info("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
-        watchedKeys, appId, cluster, namespace, dataCenter);
     return deferredResult;
   }
 
@@ -101,13 +125,6 @@ public class NotificationController implements MessageListener {
                                                String namespace,
                                                String dataCenter) {
     AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
-    /**
-     * Manually close the entity manager.
-     * Since for async request, Spring won't do so until the request is finished,
-     * which is unacceptable since we are doing long polling - means the db connection would be hold
-     * for a very long time
-     */
-    entityManagerUtil.closeEntityManager();
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
@@ -140,27 +157,29 @@ public class NotificationController implements MessageListener {
   }
 
   @Override
-  public void handleMessage(String message, String channel) {
+  public void handleMessage(ReleaseMessage message, String channel) {
     logger.info("message received - channel: {}, message: {}", channel, message);
-    Cat.logEvent("Apollo.LongPoll.Messages", message);
-    if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(message)) {
+
+    String content = message.getMessage();
+    Cat.logEvent("Apollo.LongPoll.Messages", content);
+    if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(content)) {
       return;
     }
-    List<String> keys = STRING_SPLITTER.splitToList(message);
-    //message should be appId|cluster|namespace
+    List<String> keys = STRING_SPLITTER.splitToList(content);
+    //message should be appId+cluster+namespace
     if (keys.size() != 3) {
-      logger.error("message format invalid - {}", message);
+      logger.error("message format invalid - {}", content);
       return;
     }
 
     ResponseEntity<ApolloConfigNotification> notification =
         new ResponseEntity<>(
-            new ApolloConfigNotification(keys.get(2)), HttpStatus.OK);
+            new ApolloConfigNotification(keys.get(2), message.getId()), HttpStatus.OK);
 
     //create a new list to avoid ConcurrentModificationException
     List<DeferredResult<ResponseEntity<ApolloConfigNotification>>> results =
-        Lists.newArrayList(deferredResults.get(message));
-    logger.info("Notify {} clients for key {}", results.size(), message);
+        Lists.newArrayList(deferredResults.get(content));
+    logger.info("Notify {} clients for key {}", results.size(), content);
 
     for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);

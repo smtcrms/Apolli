@@ -33,7 +33,7 @@ public class ReleaseMessageScanner implements InitializingBean {
   @Autowired
   private ReleaseMessageRepository releaseMessageRepository;
   private int databaseScanInterval;
-  private List<MessageListener> listeners;
+  private List<ReleaseMessageListener> listeners;
   private ScheduledExecutorService executorService;
   private long maxIdScanned;
 
@@ -66,7 +66,7 @@ public class ReleaseMessageScanner implements InitializingBean {
    * add message listeners for release message
    * @param listener
    */
-  public void addMessageListener(MessageListener listener) {
+  public void addMessageListener(ReleaseMessageListener listener) {
     if (!listeners.contains(listener)) {
       listeners.add(listener);
     }
@@ -115,9 +115,9 @@ public class ReleaseMessageScanner implements InitializingBean {
    */
   private void fireMessageScanned(List<ReleaseMessage> messages) {
     for (ReleaseMessage message : messages) {
-      for (MessageListener listener : listeners) {
+      for (ReleaseMessageListener listener : listeners) {
         try {
-          listener.handleMessage(message.getMessage(), Topics.APOLLO_RELEASE_TOPIC);
+          listener.handleMessage(message, Topics.APOLLO_RELEASE_TOPIC);
         } catch (Throwable ex) {
           Cat.logError(ex);
           logger.error("Failed to invoke message listener {}", listener.getClass(), ex);
