@@ -24,6 +24,14 @@ public class ApolloConfigNotification {
     return notificationId;
   }
 
+  public void setNamespaceName(String namespaceName) {
+    this.namespaceName = namespaceName;
+  }
+
+  public void setNotificationId(long notificationId) {
+    this.notificationId = notificationId;
+  }
+
   @Override
   public String toString() {
     return "ApolloConfigNotification{" +
