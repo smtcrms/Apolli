@@ -65,7 +65,7 @@ public class PortalUserInfoController {
 
     //重定向到SSO的logout地址
     String casServerUrl = serverConfigRepository.findByKey("casServerUrlPrefix").getValue();
-    String serverName = serverConfigRepository.findByKey("casServerUrlPrefix").getValue();
+    String serverName = serverConfigRepository.findByKey("serverName").getValue();
 
     response.sendRedirect(casServerUrl + "/logout?service=" + serverName);
   }
