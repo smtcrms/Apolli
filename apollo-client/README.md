@@ -46,12 +46,12 @@ Apollo supports config separated by clusters, which means for one appId and one 
 If you need this functionality, you could specify the cluster as follows:
 
 1. As Java System Property
-	* You could specify environment as java system property `apollo.cluster`
+	* You could specify cluster as java system property `apollo.cluster`
 	* For example, when starting the java application, it can be configured via `-Dapollo.cluster=xxx`
 	* Please note the key should be lower case
 2. As Property file
 	* You could create a file `/opt/settings/server.properties` on the target machine
-	* And specify the environment in the file as `idc=xxx`
+	* And specify the idc cluster in the file as `idc=xxx`
 	* Please note the key should be lower case
 
 ##### Cluster Precedence
