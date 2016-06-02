@@ -47,16 +47,6 @@
 
 	<developers>
 		<developer>
-			<id>yiming187</id>
-			<name>Billy(Yiming) Liu</name>
-			<email>liuyiming.vip at gmail.com</email>
-			<organization>Ctrip, Inc.</organization>
-			<organizationUrl>http://www.ctrip.com</organizationUrl>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
 			<id>nobodyiam</id>
 			<name>Jason(Shun) Song</name>
 			<email>nobodyiam at gmail.com</email>
@@ -74,6 +64,16 @@
 			<organizationUrl>http://www.ctrip.com</organizationUrl>
 			<roles>
 				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>yiming187</id>
+			<name>Billy(Yiming) Liu</name>
+			<email>liuyiming.vip at gmail.com</email>
+			<organization>Ctrip, Inc.</organization>
+			<organizationUrl>http://www.ctrip.com</organizationUrl>
+			<roles>
+				<role>Developer(Inactive)</role>
 			</roles>
 		</developer>
 	</developers>
