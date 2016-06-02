@@ -25,7 +25,7 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 184,
+      <title>File: 185,
              Errors: 0,
              Warnings: 886,
              Infos: 0
@@ -570,7 +570,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  23
+                  18
                 </td>
                 <td>
                   0
@@ -949,6 +949,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.controller.PortalServerConfigController.java">com/ctrip/framework/apollo/portal/controller/PortalServerConfigController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
                 </td>
                 <td>
                   0
