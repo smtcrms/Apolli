@@ -186,6 +186,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.framework.apollo.common.auth.WebSecurityConfig.java">com/ctrip/framework/apollo/common/auth/WebSecurityConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.framework.apollo.common.datasource.TitanCondition.java">com/ctrip/framework/apollo/common/datasource/TitanCondition.java</a>
                 </td>
                 <td>
@@ -249,20 +263,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-common/checkstyle.html#com.ctrip.framework.apollo.common.controller.WebSecurityConfig.java">com/ctrip/framework/apollo/common/controller/WebSecurityConfig.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
