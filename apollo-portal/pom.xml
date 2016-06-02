@@ -58,4 +58,18 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>ctrip</id>
+			<properties>
+				<package.environment>ctrip</package.environment>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.jasig.cas.client</groupId>
+					<artifactId>cas-client-core-infosec-credis</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

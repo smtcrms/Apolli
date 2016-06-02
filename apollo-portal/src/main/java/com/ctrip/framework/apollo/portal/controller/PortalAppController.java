@@ -34,6 +34,7 @@ public class PortalAppController {
 
   @RequestMapping("/envs/{env}")
   public List<AppDTO> findAllApp(@PathVariable String env){
+
     if (StringUtils.isEmpty(env)){
       throw new BadRequestException("env can not be empty");
     }

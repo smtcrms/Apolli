@@ -1,5 +1,5 @@
 /** navbar */
-directive_module.directive('apollonav', function ($compile, $window, toastr, AppUtil, AppService, EnvService) {
+directive_module.directive('apollonav', function ($compile, $window, toastr, AppUtil, AppService, EnvService, UserService) {
     return {
         restrict: 'E',
         templateUrl: '../views/common/nav.html',
@@ -110,6 +110,12 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
                 selectedAppIdx = -1;
 
             }
+
+            UserService.load_user().then(function (result) {
+                scope.userName = result.username;
+            }, function (result) {
+
+            });
         }
     }
 
