@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal;
 
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -25,4 +26,5 @@ public abstract class AbstractPortalTest {
 
   @Value("${local.server.port}")
   int port;
+
 }
