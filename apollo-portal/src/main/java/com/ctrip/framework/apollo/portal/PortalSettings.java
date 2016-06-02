@@ -1,6 +1,5 @@
 package com.ctrip.framework.apollo.portal;
 
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,8 +57,7 @@ public class PortalSettings {
     //初始化portal支持操作的环境集合,线上的portal可能支持所有的环境操作,而线下环境则支持一部分.
     // 每个环境的portal支持哪些环境配置在数据库里
     ServerConfig serverConfig = serverConfigRepository.findByKey("apollo.portal.envs");
-    // TODO: 16/5/24 线上环境暂时从本地配置里拿,之后也放在数据库上并提供界面可操作
-    if (serverConfig != null){//如果db有配置则从db里取
+    if (serverConfig != null){
       String[] configedEnvs = serverConfig.getValue().split(",");
       allStrEnvs = Arrays.asList(configedEnvs);
     }
