@@ -33,7 +33,7 @@ public class ServiceLocator {
 
   private static final int RETRY_TIMES = 3;
 
-  private static final int CALL_META_SERVER_THRESHOLD = 10;
+  private static final int CALL_META_SERVER_THRESHOLD = 2;
 
   private static final String ADMIN_SERVICE_URL_PATH = "/services/admin";
 
@@ -91,6 +91,8 @@ public class ServiceLocator {
         logger.warn(String.format("can not get %s admin service address at %d time", env, i));
       }
     }
+    //clear cache
+    serviceAddressCache.remove(env);
     logger.error(String.format("can not get %s admin service address", env));
     throw new ServiceException("No available admin service");
   }
