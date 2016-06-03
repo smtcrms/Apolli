@@ -2,6 +2,9 @@ appUtil.service('AppUtil', ['toastr', function (toastr) {
 
     return {
         errorMsg: function (response) {
+            if (response.status == -1) {
+                return "您的登录信息已过期,请重新登录";
+            }
             var msg = "Code:" + response.status;
             if (response.data.message != null) {
                 msg += " Msg:" + response.data.message;
