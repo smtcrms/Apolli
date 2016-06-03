@@ -21,7 +21,7 @@ public class CtripUserInfoHolder implements UserInfoHolder{
       assertionHolder = clazz.newInstance();
       getAssertion = assertionHolder.getClass().getMethod("getAssertion");
     } catch (Exception e) {
-      throw new RuntimeException("instance listener fail", e);
+      throw new RuntimeException("init AssertionHolder fail", e);
     }
   }
 
@@ -40,7 +40,7 @@ public class CtripUserInfoHolder implements UserInfoHolder{
 
       return userInfo;
     } catch (Exception e) {
-      throw new RuntimeException("", e);
+      throw new RuntimeException("get user info from assertion holder error", e);
     }
   }
 

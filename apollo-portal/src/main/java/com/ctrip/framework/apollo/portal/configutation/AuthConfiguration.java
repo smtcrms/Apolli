@@ -1,10 +1,13 @@
 package com.ctrip.framework.apollo.portal.configutation;
 
+import com.ctrip.framework.apollo.portal.auth.CtripLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.CtripUserInfoHolder;
-import com.ctrip.framework.apollo.portal.auth.NotCtripUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +34,7 @@ public class AuthConfiguration {
    */
   @Configuration
   @Profile("ctrip")
-  static class CtripProfileConfiguration{
+  static class CtripAuthAutoConfiguration {
 
     @Autowired
     private ServerConfigRepository serverConfigRepository;
@@ -109,6 +112,11 @@ public class AuthConfiguration {
       return new CtripUserInfoHolder();
     }
 
+    @Bean
+    public CtripLogoutHandler logoutHandler(){
+      return new CtripLogoutHandler();
+    }
+
     private Filter filter(String className){
       Class clazz = null;
       try {
@@ -137,11 +145,17 @@ public class AuthConfiguration {
    * 默认实现
    */
   @Configuration
-  static class NotCtripProfileConfiguration{
+  @ConditionalOnMissingBean(CtripUserInfoHolder.class)
+  static class DefaultAuthAutoConfiguration {
 
     @Bean
-    public NotCtripUserInfoHolder notCtripUserInfoHolder(){
-      return new NotCtripUserInfoHolder();
+    public DefaultUserInfoHolder notCtripUserInfoHolder(){
+      return new DefaultUserInfoHolder();
+    }
+
+    @Bean
+    public DefaultLogoutHandler logoutHandler(){
+      return new DefaultLogoutHandler();
     }
   }
 

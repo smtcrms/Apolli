@@ -5,10 +5,10 @@ import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 /**
  * 不是ctrip的公司默认提供一个假用户
  */
-public class NotCtripUserInfoHolder implements UserInfoHolder{
+public class DefaultUserInfoHolder implements UserInfoHolder{
 
 
-  public NotCtripUserInfoHolder(){
+  public DefaultUserInfoHolder(){
 
   }
 
