@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.core.dto;
 
-public class ReleaseDTO{
+public class ReleaseDTO extends BaseDTO{
   private long id;
 
   private String releaseKey;

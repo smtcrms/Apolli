@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.framework.apollo.biz.entity.App;
 import com.ctrip.framework.apollo.biz.service.AdminService;
 import com.ctrip.framework.apollo.biz.service.AppService;
-import com.ctrip.framework.apollo.common.auth.ActiveUser;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
@@ -31,16 +29,13 @@ public class AppController {
   private AdminService adminService;
 
   @RequestMapping(path = "/apps", method = RequestMethod.POST)
-  public AppDTO createOrUpdate(@RequestBody AppDTO dto, @ActiveUser UserDetails user) {
+  public AppDTO createOrUpdate(@RequestBody AppDTO dto) {
     App entity = BeanUtils.transfrom(App.class, dto);
     App managedEntity = appService.findOne(entity.getAppId());
     if (managedEntity != null) {
-      managedEntity.setDataChangeLastModifiedBy(user.getUsername());
       BeanUtils.copyEntityProperties(entity, managedEntity);
       entity = appService.update(managedEntity);
     } else {
-      entity.setDataChangeCreatedBy(user.getUsername());
-      entity.setDataChangeLastModifiedBy(user.getUsername());
       entity = adminService.createNewApp(entity);
     }
 
@@ -49,10 +44,10 @@ public class AppController {
   }
 
   @RequestMapping(path = "/apps/{appId}", method = RequestMethod.DELETE)
-  public void delete(@PathVariable("appId") String appId, @ActiveUser UserDetails user) {
+  public void delete(@PathVariable("appId") String appId, @RequestParam String operator) {
     App entity = appService.findOne(appId);
     if (entity == null) throw new NotFoundException("app not found for appId " + appId);
-    appService.delete(entity.getId(), user.getUsername());
+    appService.delete(entity.getId(), operator);
   }
 
   @RequestMapping("/apps")

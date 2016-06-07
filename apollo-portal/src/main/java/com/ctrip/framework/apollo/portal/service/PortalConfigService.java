@@ -17,7 +17,9 @@ import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
@@ -34,12 +36,13 @@ public class PortalConfigService {
   private Logger logger = LoggerFactory.getLogger(PortalConfigService.class);
 
   @Autowired
+  private UserInfoHolder userInfoHolder;
+  @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
   private AdminServiceAPI.ItemAPI itemAPI;
   @Autowired
   private AdminServiceAPI.ReleaseAPI releaseAPI;
-
   @Autowired
   private ConfigTextResolver resolver;
 
@@ -62,7 +65,9 @@ public class PortalConfigService {
     if (changeSets.isEmpty()) {
       return;
     }
+
     try {
+      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
       itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
     } catch (Exception e) {
       logger.error("itemAPI.updateItems error. appId{},env:{},clusterName:{},namespaceName:{}", appId, env, clusterName,
@@ -72,41 +77,49 @@ public class PortalConfigService {
   }
 
 
-  public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item){
+  public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
-    if (namespace == null){
+    if (namespace == null) {
       throw new BadRequestException(
           "namespace:" + namespaceName + " not exist in env:" + env + ", cluster:" + clusterName);
     }
-
+    String username = userInfoHolder.getUser().getUsername();
+    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())) {
+      item.setDataChangeCreatedBy(username);
+    }
+    item.setDataChangeLastModifiedBy(username);
     item.setNamespaceId(namespace.getId());
     return itemAPI.createOrUpdateItem(appId, env, clusterName, namespaceName, item);
   }
 
-  public void deleteItem(Env env, long itemId){
-    itemAPI.deleteItem(env, itemId);
+  public void deleteItem(Env env, long itemId) {
+    itemAPI.deleteItem(env, itemId, userInfoHolder.getUser().getUsername());
   }
+
   /**
    * createRelease config items
    */
   public ReleaseDTO createRelease(NamespaceReleaseModel model) {
     return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(),
-                              model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment());
+                              model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment()
+        , userInfoHolder.getUser().getUsername());
   }
 
   public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
     return itemAPI.findItems(appId, env, clusterName, namespaceName);
   }
 
-  public void syncItems(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems){
+  public void syncItems(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {
     List<ItemDiffs> itemDiffs = compare(comparedNamespaces, sourceItems);
-    for (ItemDiffs itemDiff: itemDiffs){
+    for (ItemDiffs itemDiff : itemDiffs) {
       NamespaceIdentifer namespaceIdentifer = itemDiff.getNamespace();
+      ItemChangeSets changeSets = itemDiff.getDiffs();
+      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
       try {
         itemAPI
             .updateItems(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),
                          namespaceIdentifer.getClusterName(),
-                         namespaceIdentifer.getNamespaceName(), itemDiff.getDiffs());
+                         namespaceIdentifer.getNamespaceName(), changeSets);
       } catch (HttpClientErrorException e) {
         logger.error("sync items error. namespace:{}", namespaceIdentifer);
         throw new ServiceException(String.format("sync item error. env:%s, clusterName:%s", namespaceIdentifer.getEnv(),
@@ -147,7 +160,7 @@ public class PortalConfigService {
     return namespaceDTO.getId();
   }
 
-  private ItemChangeSets parseChangeSets(NamespaceIdentifer namespace, List<ItemDTO> sourceItems){
+  private ItemChangeSets parseChangeSets(NamespaceIdentifer namespace, List<ItemDTO> sourceItems) {
     ItemChangeSets changeSets = new ItemChangeSets();
     List<ItemDTO>
         targetItems =
@@ -175,8 +188,7 @@ public class PortalConfigService {
 
           changeSets.addCreateItem(buildItem(namespaceId, ++maxLineNum, sourceItem));
 
-        } else if (!sourceValue.equals(targetItem.getValue()) || !sourceComment
-            .equals(targetItem.getComment())) {//modified items
+        } else if (isModified(sourceValue, targetItem.getValue(), sourceComment, targetItem.getComment())) {//modified items
           targetItem.setValue(sourceValue);
           targetItem.setComment(sourceComment);
           changeSets.addUpdateItem(targetItem);
@@ -193,5 +205,20 @@ public class PortalConfigService {
     createdItem.setLineNum(lineNum++);
     createdItem.setNamespaceId(namespaceId);
     return createdItem;
+  }
+
+  private boolean isModified(String sourceValue, String targetValue, String sourceComment, String targetComment) {
+
+    if (!sourceValue.equals(targetValue)) {
+      return true;
+    }
+
+    if (sourceComment == null) {
+      return !StringUtils.isEmpty(targetComment);
+    } else if (targetComment != null) {
+      return !sourceComment.equals(targetComment);
+    } else {
+      return false;
+    }
   }
 }

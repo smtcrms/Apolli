@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.core.dto;
 
-public class ClusterDTO {
+public class ClusterDTO extends BaseDTO{
 
   private long id;
 

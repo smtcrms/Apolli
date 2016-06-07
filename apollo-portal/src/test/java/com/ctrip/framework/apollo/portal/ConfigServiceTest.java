@@ -6,6 +6,8 @@ import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
@@ -37,6 +39,8 @@ public class ConfigServiceTest {
   private AdminServiceAPI.ItemAPI itemAPI;
   @Mock
   private PropertyResolver resolver;
+  @Mock
+  private UserInfoHolder userInfoHolder;
 
   @InjectMocks
   private PortalConfigService configService;
@@ -64,6 +68,11 @@ public class ConfigServiceTest {
 
     when(itemAPI.findItems(appId, Env.DEV, clusterName, namespaceName)).thenReturn(itemDTOs);
     when(resolver.resolve(0, model.getConfigText(), itemDTOs)).thenReturn(changeSets);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUsername("test");
+    when(userInfoHolder.getUser()).thenReturn(userInfo);
+
     try {
       configService.updateConfigItemByText(model);
     }catch (Exception e){
@@ -94,6 +103,10 @@ public class ConfigServiceTest {
 
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(null);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUsername("test");
+    when(userInfoHolder.getUser()).thenReturn(userInfo);
 
     List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
 
@@ -131,6 +144,10 @@ public class ConfigServiceTest {
 
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(targetItems);
+
+    UserInfo userInfo = new UserInfo();
+    userInfo.setUsername("test");
+    when(userInfoHolder.getUser()).thenReturn(userInfo);
 
     List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
     assertEquals(1, itemDiffses.size());

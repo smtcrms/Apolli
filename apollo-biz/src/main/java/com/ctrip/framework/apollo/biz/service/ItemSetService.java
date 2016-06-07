@@ -21,7 +21,8 @@ public class ItemSetService {
   private AuditService auditService;
 
   @Transactional
-  public void updateSet(ItemChangeSets changeSet, String owner) {
+  public void updateSet(ItemChangeSets changeSet) {
+    String owner = changeSet.getDataChangeLastModifiedBy();
     if (changeSet.getCreateItems() != null) {
       for (ItemDTO item : changeSet.getCreateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);

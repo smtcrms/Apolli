@@ -76,6 +76,7 @@ public class ReleaseControllerTest extends AbstractControllerTest {
     MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
     parameters.add("name", "someReleaseName");
     parameters.add("comment", "someComment");
+    parameters.add("operator", "test");
     HttpEntity<MultiValueMap<String, String>> entity =
         new HttpEntity<MultiValueMap<String, String>>(parameters, headers);
     ResponseEntity<ReleaseDTO> response = restTemplate.postForEntity(
@@ -111,7 +112,6 @@ public class ReleaseControllerTest extends AbstractControllerTest {
     ReleaseService someReleaseService = mock(ReleaseService.class);
     MessageSender someMessageSender = mock(MessageSender.class);
     Namespace someNamespace = mock(Namespace.class);
-    UserDetails someUser = mock(UserDetails.class);
 
     ReleaseController releaseController = new ReleaseController();
     ReflectionTestUtils.setField(releaseController, "releaseService", someReleaseService);
@@ -120,10 +120,9 @@ public class ReleaseControllerTest extends AbstractControllerTest {
 
     when(someNamespaceService.findOne(someAppId, someCluster, someNamespaceName))
         .thenReturn(someNamespace);
-    when(someUser.getUsername()).thenReturn(someUserName);
 
     releaseController
-        .buildRelease(someAppId, someCluster, someNamespaceName, someName, someComment, someUser);
+        .buildRelease(someAppId, someCluster, someNamespaceName, someName, someComment, "test");
 
     verify(someMessageSender, times(1))
         .sendMessage(Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)

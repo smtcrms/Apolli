@@ -85,8 +85,7 @@ public class ControllerExceptionTest {
     when(adminService.createNewApp(any(App.class)))
         .thenThrow(new ServiceException("create app failed"));
 
-    UserDetails user = new User("user", "", new ArrayList<GrantedAuthority>());
-    appController.createOrUpdate(dto, user);
+    appController.createOrUpdate(dto);
   }
 
   private AppDTO generateSampleDTOData() {
@@ -95,6 +94,8 @@ public class ControllerExceptionTest {
     dto.setName("someName");
     dto.setOwnerName("someOwner");
     dto.setOwnerEmail("someOwner@ctrip.com");
+    dto.setDataChangeLastModifiedBy("test");
+    dto.setDataChangeCreatedBy("test");
     return dto;
   }
 }

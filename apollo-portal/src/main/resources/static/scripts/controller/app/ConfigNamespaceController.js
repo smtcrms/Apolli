@@ -170,10 +170,11 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.tableViewOperType = '', $scope.item = {};
 
                                    //查看配置
-                                   $scope.retrieveItem = function (item, oldValue) {
+                                   $scope.retrieveItem = function (namespace, item, oldValue) {
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.RETRIEVE);
                                        $scope.item = item;
                                        $scope.item.oldValue = oldValue;
+                                       toOperationNamespaceName = namespace.namespace.namespaceName;
                                    };
 
                                    var toDeleteItemId = 0;
@@ -234,8 +235,8 @@ application_module.controller("ConfigNamespaceController",
                                                                              toOperationNamespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
-                                                           toastr.success("[" + cluster.env + "," + cluster.name + "]",
-                                                                          "创建成功");
+                                                           toastr.success(cluster.env + " , " + $scope.item.key,
+                                                                          "添加成功");
                                                            itemModal.modal('hide');
                                                            $rootScope.refreshNamespaces(namespace_view_type.TABLE);
                                                        }, function (result) {
