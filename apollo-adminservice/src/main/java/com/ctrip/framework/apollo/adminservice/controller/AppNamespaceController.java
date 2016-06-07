@@ -39,7 +39,6 @@ public class AppNamespaceController {
     AppNamespace managedEntity = appNamespaceService.findOne(entity.getAppId(), entity.getName());
 
     if (managedEntity != null){
-      managedEntity.setDataChangeLastModifiedBy(entity.getDataChangeLastModifiedBy());
       BeanUtils.copyEntityProperties(entity, managedEntity);
       entity = appNamespaceService.update(managedEntity);
     }else {

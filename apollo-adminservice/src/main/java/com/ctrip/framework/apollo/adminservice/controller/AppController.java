@@ -33,7 +33,6 @@ public class AppController {
     App entity = BeanUtils.transfrom(App.class, dto);
     App managedEntity = appService.findOne(entity.getAppId());
     if (managedEntity != null) {
-      managedEntity.setDataChangeLastModifiedBy(entity.getDataChangeLastModifiedBy());
       BeanUtils.copyEntityProperties(entity, managedEntity);
       entity = appService.update(managedEntity);
     } else {
