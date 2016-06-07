@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.MetaDomainConsts;
@@ -8,6 +9,8 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.enums.EnvUtils;
 import com.ctrip.framework.foundation.Foundation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.net.Networks;
 
@@ -18,11 +21,19 @@ import java.util.concurrent.TimeUnit;
  */
 @Named(type = ConfigUtil.class)
 public class ConfigUtil {
-  //TODO read from config?
-  private static final int refreshInterval = 5;
-  private static final TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
-  private static final int connectTimeout = 5000; //5 seconds
-  private static final int readTimeout = 10000; //10 seconds
+  private static final Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
+  private int refreshInterval = 5;
+  private TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
+  private int connectTimeout = 5000; //5 seconds
+  private int readTimeout = 10000; //10 seconds
+  private String cluster;
+
+  public ConfigUtil() {
+    initRefreshInterval();
+    initConnectTimeout();
+    initReadTimeout();
+    initCluster();
+  }
 
   /**
    * Get the app id for the current application.
@@ -42,9 +53,22 @@ public class ConfigUtil {
    * @return the current data center, null if there is no such info.
    */
   public String getDataCenter() {
-    String dataCenter = Foundation.server().getDataCenter();
-    //TODO use sub env from framework foundation if data center is null
-    return dataCenter;
+    return Foundation.server().getDataCenter();
+  }
+
+  private void initCluster() {
+    //Load data center from system property
+    cluster = System.getProperty("apollo.cluster");
+
+    //Use data center as cluster
+    if (Strings.isNullOrEmpty(cluster)) {
+      cluster = getDataCenter();
+    }
+
+    //Use default cluster
+    if (Strings.isNullOrEmpty(cluster)) {
+      cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
+    }
   }
 
   /**
@@ -53,18 +77,6 @@ public class ConfigUtil {
    * @return the cluster name, or "default" if not specified
    */
   public String getCluster() {
-    //Load data center from system property
-    String cluster = System.getProperty("apollo.cluster");
-
-    //Use data center as cluster
-    if (cluster == null) {
-      cluster = getDataCenter();
-    }
-
-    //Use default cluster
-    if (cluster == null) {
-      cluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
-    }
     return cluster;
   }
 
@@ -88,12 +100,45 @@ public class ConfigUtil {
     return MetaDomainConsts.getDomain(getApolloEnv());
   }
 
+  private void initConnectTimeout() {
+    String customizedConnectTimeout = System.getProperty("apollo.connectTimeout");
+    if (!Strings.isNullOrEmpty(customizedConnectTimeout)) {
+      try {
+        connectTimeout = Integer.parseInt(customizedConnectTimeout);
+      } catch (Throwable ex) {
+        logger.error("Config for apollo.connectTimeout is invalid: {}", customizedConnectTimeout);
+      }
+    }
+  }
+
   public int getConnectTimeout() {
     return connectTimeout;
   }
 
+  private void initReadTimeout() {
+    String customizedReadTimeout = System.getProperty("apollo.readTimeout");
+    if (!Strings.isNullOrEmpty(customizedReadTimeout)) {
+      try {
+        readTimeout = Integer.parseInt(customizedReadTimeout);
+      } catch (Throwable ex) {
+        logger.error("Config for apollo.readTimeout is invalid: {}", customizedReadTimeout);
+      }
+    }
+  }
+
   public int getReadTimeout() {
     return readTimeout;
+  }
+
+  private void initRefreshInterval() {
+    String customizedRefreshInterval = System.getProperty("apollo.refreshInterval");
+    if (!Strings.isNullOrEmpty(customizedRefreshInterval)) {
+      try {
+        refreshInterval = Integer.parseInt(customizedRefreshInterval);
+      } catch (Throwable ex) {
+        logger.error("Config for apollo.refreshInterval is invalid: {}", customizedRefreshInterval);
+      }
+    }
   }
 
   public int getRefreshInterval() {

@@ -19,7 +19,7 @@ public class DefaultConfigRegistryTest extends ComponentTestCase {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    defaultConfigRegistry = (DefaultConfigRegistry) lookup(ConfigRegistry.class, "default");
+    defaultConfigRegistry = (DefaultConfigRegistry) lookup(ConfigRegistry.class);
   }
 
   @Test

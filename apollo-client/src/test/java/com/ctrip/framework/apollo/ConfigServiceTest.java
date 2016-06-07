@@ -46,7 +46,7 @@ public class ConfigServiceTest extends ComponentTestCase {
 
     Config config = ConfigService.getAppConfig();
 
-    assertEquals(ConfigConsts.NAMESPACE_DEFAULT + ":" + someKey,
+    assertEquals(ConfigConsts.NAMESPACE_APPLICATION + ":" + someKey,
         config.getProperty(someKey, null));
   }
 

@@ -91,7 +91,7 @@ public class NamespaceService {
     Namespace ns = new Namespace();
     ns.setAppId(appId);
     ns.setClusterName(ConfigConsts.CLUSTER_NAME_DEFAULT);
-    ns.setNamespaceName(ConfigConsts.NAMESPACE_DEFAULT);
+    ns.setNamespaceName(ConfigConsts.NAMESPACE_APPLICATION);
     ns.setDataChangeCreatedBy(createBy);
     ns.setDataChangeLastModifiedBy(createBy);
     namespaceRepository.save(ns);

@@ -22,7 +22,7 @@ public class DefaultConfigFactoryManagerTest extends ComponentTestCase {
     super.setUp();
     defineComponent(ConfigRegistry.class, MockConfigRegistry.class);
     defaultConfigFactoryManager =
-        (DefaultConfigFactoryManager) lookup(ConfigFactoryManager.class, "default");
+        (DefaultConfigFactoryManager) lookup(ConfigFactoryManager.class);
   }
 
   @Test
@@ -60,7 +60,7 @@ public class DefaultConfigFactoryManagerTest extends ComponentTestCase {
   @Test
   public void testGetFactoryFromDefault() throws Exception {
     String someNamespace = "someName";
-    defineComponent(ConfigFactory.class, "default", AnotherConfigFactory.class);
+    defineComponent(ConfigFactory.class, AnotherConfigFactory.class);
 
     ConfigFactory result = defaultConfigFactoryManager.getFactory(someNamespace);
 

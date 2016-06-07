@@ -14,9 +14,9 @@ public interface ConfigRepository {
 
   /**
    * Set the fallback repo for this repository.
-   * @param fallbackConfigRepository the fallback repo
+   * @param upstreamConfigRepository the fallback repo
    */
-  public void setFallback(ConfigRepository fallbackConfigRepository);
+  public void setUpstreamRepository(ConfigRepository upstreamConfigRepository);
 
   /**
    * Add change listener.

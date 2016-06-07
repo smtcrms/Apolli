@@ -41,7 +41,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
   public void setUp() throws Exception {
     someAppId = "someAppId";
     someCluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
-    defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
+    defaultNamespace = ConfigConsts.NAMESPACE_APPLICATION;
     somePublicNamespace = "somePublicNamespace";
     executorService = Executors.newSingleThreadExecutor();
   }

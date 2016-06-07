@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.core;
 
 public interface ConfigConsts {
-  String NAMESPACE_DEFAULT = "application";
+  String NAMESPACE_APPLICATION = "application";
   String CLUSTER_NAME_DEFAULT = "default";
   String CLUSTER_NAMESPACE_SEPARATOR = "+";
 }

@@ -54,7 +54,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
+    defaultNamespace = ConfigConsts.NAMESPACE_APPLICATION;
     someReleaseKey = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     configDir.mkdirs();

@@ -67,7 +67,7 @@ public class ConfigController {
     }
 
     //if namespace is not 'application', should check if it's a public configuration
-    if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
+    if (!Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespace)) {
       Release publicRelease = this.findPublicConfig(appId, clusterName, namespace, dataCenter);
       if (!Objects.isNull(publicRelease)) {
         releases.add(publicRelease);

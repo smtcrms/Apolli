@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
@@ -85,7 +86,7 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     remoteConfigRepository.stopLongPollingRefresh();
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test(expected = ApolloConfigException.class)
   public void testGetRemoteConfigWithServerError() throws Exception {
 
     when(someResponse.getStatusCode()).thenReturn(500);

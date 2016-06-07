@@ -26,7 +26,7 @@ public class AppNamespaceRepositoryTest {
 
   @Test
   public void testFindAllPublicAppNamespaces(){
-    List<AppNamespace> appNamespaceList = repository.findByNameNot(ConfigConsts.NAMESPACE_DEFAULT);
+    List<AppNamespace> appNamespaceList = repository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
     Assert.assertEquals(4, appNamespaceList.size());
   }
 
