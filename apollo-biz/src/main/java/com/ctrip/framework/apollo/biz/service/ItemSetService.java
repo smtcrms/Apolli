@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.biz.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Item;
@@ -23,7 +24,7 @@ public class ItemSetService {
   @Transactional
   public void updateSet(ItemChangeSets changeSet) {
     String owner = changeSet.getDataChangeLastModifiedBy();
-    if (changeSet.getCreateItems() != null) {
+    if (!CollectionUtils.isEmpty(changeSet.getCreateItems())) {
       for (ItemDTO item : changeSet.getCreateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
         entity.setDataChangeCreatedBy(owner);
@@ -33,7 +34,7 @@ public class ItemSetService {
       auditService.audit("ItemSet", null, Audit.OP.INSERT, owner);
     }
 
-    if (changeSet.getUpdateItems() != null) {
+    if (!CollectionUtils.isEmpty(changeSet.getUpdateItems())) {
       for (ItemDTO item : changeSet.getUpdateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
         Item managedItem = itemRepository.findOne(entity.getId());
@@ -44,7 +45,7 @@ public class ItemSetService {
       auditService.audit("ItemSet", null, Audit.OP.UPDATE, owner);
     }
 
-    if (changeSet.getDeleteItems() != null) {
+    if (!CollectionUtils.isEmpty(changeSet.getDeleteItems())) {
       for (ItemDTO item : changeSet.getDeleteItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
         entity.setDataChangeLastModifiedBy(owner);
