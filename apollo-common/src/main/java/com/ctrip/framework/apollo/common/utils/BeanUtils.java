@@ -218,7 +218,7 @@ public class BeanUtils {
 
   /**
    * The copy will ignore <em>BaseEntity</em> field
-   * 
+   *
    * @param source
    * @param target
    */
@@ -226,5 +226,5 @@ public class BeanUtils {
     org.springframework.beans.BeanUtils.copyProperties(source, target, COPY_IGNORED_PROPERTIES);
   }
   
-  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedTime", "dataChangeLastModifiedTime"};
+  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedBy", "dataChangeCreatedTime", "dataChangeLastModifiedTime"};
 }

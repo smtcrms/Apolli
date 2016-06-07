@@ -4,6 +4,7 @@ package com.ctrip.framework.apollo.portal.controller;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 
@@ -21,6 +22,8 @@ public class PortalServerConfigController {
 
   @Autowired
   private ServerConfigRepository serverConfigRepository;
+  @Autowired
+  private UserInfoHolder userInfoHolder;
 
   @RequestMapping(value = "/server/config", method = RequestMethod.POST)
   public ServerConfig createOrUpdate(@RequestBody ServerConfig serverConfig) {
@@ -29,8 +32,7 @@ public class PortalServerConfigController {
       throw new BadRequestException("request payload contains empty");
     }
 
-    // TODO: 16/6/2 接入sso之后改成当前登录用户
-    String modifiedBy = "admin";
+    String modifiedBy = userInfoHolder.getUser().getUsername();
 
     ServerConfig storedConfig = serverConfigRepository.findByKey(serverConfig.getKey());
 
