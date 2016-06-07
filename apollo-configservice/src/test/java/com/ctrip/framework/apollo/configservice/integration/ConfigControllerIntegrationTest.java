@@ -39,7 +39,7 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   public void testQueryConfigWithDefaultClusterAndDefaultNamespaceOK() throws Exception {
     ResponseEntity<ApolloConfig> response = restTemplate
         .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}", ApolloConfig.class,
-            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, ConfigConsts.NAMESPACE_DEFAULT);
+            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, ConfigConsts.NAMESPACE_APPLICATION);
     ApolloConfig result = response.getBody();
 
     assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -4,6 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
@@ -22,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 
 /**
@@ -30,12 +33,13 @@ import java.util.Properties;
 public class LocalFileConfigRepository extends AbstractConfigRepository
     implements RepositoryChangeListener {
   private static final Logger logger = LoggerFactory.getLogger(LocalFileConfigRepository.class);
+  private static final String CONFIG_DIR = "/config-cache";
   private final PlexusContainer m_container;
   private final String m_namespace;
-  private final File m_baseDir;
+  private File m_baseDir;
   private final ConfigUtil m_configUtil;
   private volatile Properties m_fileProperties;
-  private volatile ConfigRepository m_fallback;
+  private volatile ConfigRepository m_upstream;
 
   /**
    * Constructor.
@@ -43,16 +47,21 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
    * @param baseDir   the base dir for this local file config repository
    * @param namespace the namespace
    */
-  public LocalFileConfigRepository(File baseDir, String namespace) {
-    m_baseDir = baseDir;
+  public LocalFileConfigRepository(String namespace) {
     m_namespace = namespace;
     m_container = ContainerLoader.getDefaultContainer();
     try {
       m_configUtil = m_container.lookup(ConfigUtil.class);
     } catch (ComponentLookupException ex) {
       Cat.logError(ex);
-      throw new IllegalStateException("Unable to load component!", ex);
+      throw new ApolloConfigException("Unable to load component!", ex);
     }
+    this.initialize(new File(ClassLoaderUtil.getClassPath() + CONFIG_DIR));
+  }
+
+  void initialize(File baseDir) {
+    m_baseDir = baseDir;
+    this.checkLocalConfigCacheDir(m_baseDir);
     this.trySync();
   }
 
@@ -67,14 +76,14 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
   }
 
   @Override
-  public void setFallback(ConfigRepository fallbackConfigRepository) {
+  public void setUpstreamRepository(ConfigRepository upstreamConfigRepository) {
     //clear previous listener
-    if (m_fallback != null) {
-      m_fallback.removeChangeListener(this);
+    if (m_upstream != null) {
+      m_upstream.removeChangeListener(this);
     }
-    m_fallback = fallbackConfigRepository;
-    trySyncFromFallback();
-    fallbackConfigRepository.addChangeListener(this);
+    m_upstream = upstreamConfigRepository;
+    trySyncFromUpstream();
+    upstreamConfigRepository.addChangeListener(this);
   }
 
   @Override
@@ -90,7 +99,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   @Override
   protected void sync() {
-    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "queryLocalConfigFile");
+    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "syncLocalConfig");
     Throwable exception = null;
     try {
       transaction.addData("Basedir", m_baseDir.getAbsolutePath());
@@ -106,25 +115,25 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     }
 
     //sync with fallback immediately
-    trySyncFromFallback();
+    trySyncFromUpstream();
 
     if (m_fileProperties == null) {
-      throw new RuntimeException(
+      throw new ApolloConfigException(
           "Load config from local config failed!", exception);
     }
   }
 
-  private void trySyncFromFallback() {
-    if (m_fallback == null) {
+  private void trySyncFromUpstream() {
+    if (m_upstream == null) {
       return;
     }
     try {
-      Properties properties = m_fallback.getConfig();
+      Properties properties = m_upstream.getConfig();
       updateFileProperties(properties);
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger
-          .warn("Sync config from fallback repository {} failed, reason: {}", m_fallback.getClass(),
+          .warn("Sync config from upstream repository {} failed, reason: {}", m_upstream.getClass(),
               ExceptionUtil.getDetailMessage(ex));
     }
   }
@@ -153,7 +162,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
         properties.load(in);
       } catch (IOException ex) {
         Cat.logError(ex);
-        throw new RuntimeException(String
+        throw new ApolloConfigException(String
             .format("Loading config from local cache file %s failed", file.getAbsolutePath()), ex);
       } finally {
         try {
@@ -165,7 +174,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
         }
       }
     } else {
-      throw new RuntimeException(
+      throw new ApolloConfigException(
           String.format("Cannot read from local cache file %s", file.getAbsolutePath()));
     }
 
@@ -187,8 +196,11 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       m_fileProperties.store(out, "Persisted by DefaultConfig");
       transaction.setStatus(Message.SUCCESS);
     } catch (IOException ex) {
-      Cat.logError(ex);
-      transaction.setStatus(ex);
+      ApolloConfigException exception =
+          new ApolloConfigException(
+              String.format("Persist local cache file %s failed", file.getAbsolutePath()), ex);
+      Cat.logError(exception);
+      transaction.setStatus(exception);
       logger.warn("Persist local cache file {} failed, reason: {}.", file.getAbsolutePath(),
           ExceptionUtil.getDetailMessage(ex));
     } finally {
@@ -203,8 +215,30 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     }
   }
 
-  File assembleLocalCacheFile(File baseDir, String namespace) {
+  private void checkLocalConfigCacheDir(File baseDir) {
+    if (baseDir.exists()) {
+      return;
+    }
+    Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "createLocalConfigDir");
+    transaction.addData("BaseDir", baseDir.getAbsolutePath());
+    try {
+      Files.createDirectory(baseDir.toPath());
+      transaction.setStatus(Message.SUCCESS);
+    } catch (IOException ex) {
+      ApolloConfigException exception =
+          new ApolloConfigException(
+              String.format("Create local config directory %s failed", baseDir), ex);
+      Cat.logError(exception);
+      transaction.setStatus(exception);
+      logger.warn(
+          "Unable to create local config cache directory {}, reason: {}. Will not able to cache config file.",
+          baseDir, ExceptionUtil.getDetailMessage(ex));
+    } finally {
+      transaction.complete();
+    }
+  }
 
+  File assembleLocalCacheFile(File baseDir, String namespace) {
     String fileName =
         String.format("%s.properties", Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
             .join(m_configUtil.getAppId(), m_configUtil.getCluster(), namespace));

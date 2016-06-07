@@ -37,6 +37,14 @@ Environment could be configured in 3 ways:
 	* And specify the environment in the file as `env=YOUR-ENVIRONMENT`
 	* Please note the key should be lower case
 
+Currently, `env` allows the following values (case-insensitive):
+
+* DEV
+* FWS
+* FAT
+* UAT
+* PRO
+
 ### I.II Optional Setup
 
 #### Cluster
@@ -76,7 +84,7 @@ If you need this functionality, you could specify the cluster as follows:
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-client</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 
 ## III. Client Usage

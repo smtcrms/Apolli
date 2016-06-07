@@ -5,6 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.unidal.helper.Files;
@@ -46,7 +47,7 @@ public class HttpUtil {
    * @param httpRequest  the request
    * @param responseType the response type
    * @return the response
-   * @throws RuntimeException if any error happened or response code is neither 200 nor 304
+   * @throws ApolloConfigException if any error happened or response code is neither 200 nor 304
    */
   public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Class<T> responseType) {
     Function<String, T> convertResponse = new Function<String, T>() {
@@ -65,7 +66,7 @@ public class HttpUtil {
    * @param httpRequest  the request
    * @param responseType the response type
    * @return the response
-   * @throws RuntimeException if any error happened or response code is neither 200 nor 304
+   * @throws ApolloConfigException if any error happened or response code is neither 200 nor 304
    */
   public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Type responseType) {
     Function<String, T> convertResponse = new Function<String, T>() {
@@ -116,7 +117,7 @@ public class HttpUtil {
       }
 
     } catch (Throwable ex) {
-      throw new RuntimeException("Could not complete get operation", ex);
+      throw new ApolloConfigException("Could not complete get operation", ex);
     } finally {
       if (is != null) {
         try {
@@ -126,7 +127,7 @@ public class HttpUtil {
         }
       }
     }
-    throw new RuntimeException(String.format("Get operation failed for %s, status code - %d",
+    throw new ApolloConfigException(String.format("Get operation failed for %s, status code - %d",
         httpRequest.getUrl(), statusCode));
   }
 

@@ -64,7 +64,7 @@ public class NotificationControllerTest {
     someAppId = "someAppId";
     someCluster = "someCluster";
     defaultCluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
-    defaultNamespace = ConfigConsts.NAMESPACE_DEFAULT;
+    defaultNamespace = ConfigConsts.NAMESPACE_APPLICATION;
     somePublicNamespace = "somePublicNamespace";
     someDataCenter = "someDC";
     someNotificationId = 1;

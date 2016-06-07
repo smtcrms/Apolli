@@ -22,7 +22,7 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
   public void setUp() throws Exception {
     super.setUp();
     defineComponent(ConfigFactoryManager.class, MockConfigManager.class);
-    defaultConfigManager = (DefaultConfigManager) lookup(ConfigManager.class, "default");
+    defaultConfigManager = (DefaultConfigManager) lookup(ConfigManager.class);
   }
 
   @Test

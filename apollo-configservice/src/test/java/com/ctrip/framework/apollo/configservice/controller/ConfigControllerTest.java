@@ -64,7 +64,7 @@ public class ConfigControllerTest {
     someAppId = "1";
     someClusterName = "someClusterName";
     defaultClusterName = ConfigConsts.CLUSTER_NAME_DEFAULT;
-    defaultNamespaceName = ConfigConsts.NAMESPACE_DEFAULT;
+    defaultNamespaceName = ConfigConsts.NAMESPACE_APPLICATION;
     somePublicNamespaceName = "somePublicNamespace";
     someDataCenter = "someDC";
     someClientIp = "someClientIp";

@@ -17,7 +17,7 @@ public class MetaDomainConsts {
 
   private static Map<Env, Object> domains = new HashMap<>();
 
-  public static final String DEFAULT_META_URL = "http://localhost:8080";
+  public static final String DEFAULT_META_URL = "http://config.local";
 
   static {
     Properties prop = new Properties();

@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
@@ -28,7 +29,7 @@ public class ConfigService {
    * @return config instance
    */
   public static Config getAppConfig() {
-    return getConfig(ConfigConsts.NAMESPACE_DEFAULT);
+    return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   /**
@@ -37,7 +38,7 @@ public class ConfigService {
    * @return config instance
    */
   public static Config getConfig(String namespace) {
-    Cat.logEvent("Apollo.Client.Version", Apollo.VERSION);
+
     return getManager().getConfig(namespace);
   }
 
@@ -45,8 +46,9 @@ public class ConfigService {
     try {
       return s_instance.m_container.lookup(ConfigManager.class);
     } catch (ComponentLookupException ex) {
-      Cat.logError(ex);
-      throw new IllegalStateException("Unable to load ConfigManager!", ex);
+      ApolloConfigException exception = new ApolloConfigException("Unable to load ConfigManager!", ex);
+      Cat.logError(exception);
+      throw exception;
     }
   }
 
@@ -54,13 +56,14 @@ public class ConfigService {
     try {
       return s_instance.m_container.lookup(ConfigRegistry.class);
     } catch (ComponentLookupException ex) {
-      Cat.logError(ex);
-      throw new IllegalStateException("Unable to load ConfigRegistry!", ex);
+      ApolloConfigException exception = new ApolloConfigException("Unable to load ConfigRegistry!", ex);
+      Cat.logError(exception);
+      throw exception;
     }
   }
 
   static void setConfig(Config config) {
-    setConfig(ConfigConsts.NAMESPACE_DEFAULT, config);
+    setConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
   }
 
   /**
@@ -78,7 +81,7 @@ public class ConfigService {
   }
 
   static void setConfigFactory(ConfigFactory factory) {
-    setConfigFactory(ConfigConsts.NAMESPACE_DEFAULT, factory);
+    setConfigFactory(ConfigConsts.NAMESPACE_APPLICATION, factory);
   }
 
   /**

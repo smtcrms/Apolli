@@ -49,7 +49,7 @@ public class AppNamespaceService {
     }
     AppNamespace appNs = new AppNamespace();
     appNs.setAppId(appId);
-    appNs.setName(ConfigConsts.NAMESPACE_DEFAULT);
+    appNs.setName(ConfigConsts.NAMESPACE_APPLICATION);
     appNs.setComment("default app namespace");
     appNs.setDataChangeCreatedBy(createBy);
     appNs.setDataChangeLastModifiedBy(createBy);
@@ -74,7 +74,7 @@ public class AppNamespaceService {
   }
 
   public List<AppNamespace> findPublicAppNamespaces(){
-    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_DEFAULT);
+    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   public AppNamespace update(AppNamespace appNamespace){

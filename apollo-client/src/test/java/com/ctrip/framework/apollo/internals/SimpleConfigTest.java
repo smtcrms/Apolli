@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.SettableFuture;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -79,18 +81,20 @@ public class SimpleConfigTest {
 
     when(configRepository.getConfig()).thenReturn(someProperties);
 
-    ConfigChangeListener someListener = mock(ConfigChangeListener.class);
+    final SettableFuture<ConfigChangeEvent> configChangeFuture = SettableFuture.create();
+    ConfigChangeListener someListener = new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        configChangeFuture.set(changeEvent);
+      }
+    };
 
     SimpleConfig config = new SimpleConfig(someNamespace, configRepository);
     config.addChangeListener(someListener);
 
     config.onRepositoryChange(someNamespace, anotherProperties);
 
-    ArgumentCaptor<ConfigChangeEvent> captor = ArgumentCaptor.forClass(ConfigChangeEvent.class);
-
-    verify(someListener, times(1)).onChange(captor.capture());
-
-    ConfigChangeEvent changeEvent = captor.getValue();
+    ConfigChangeEvent changeEvent = configChangeFuture.get(500, TimeUnit.MILLISECONDS);
 
     assertEquals(someNamespace, changeEvent.getNamespace());
     assertEquals(3, changeEvent.changedKeys().size());

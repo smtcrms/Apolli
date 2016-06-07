@@ -28,7 +28,7 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    defaultConfigFactory = spy((DefaultConfigFactory) lookup(ConfigFactory.class, "default"));
+    defaultConfigFactory = spy((DefaultConfigFactory) lookup(ConfigFactory.class));
   }
 
   @Test

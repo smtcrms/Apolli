@@ -6,10 +6,13 @@ import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
+import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.enums.PropertyChangeType;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +20,22 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public abstract class AbstractConfig implements Config {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
+  private static ExecutorService m_executorService;
   private List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
+
+  static {
+    m_executorService = Executors.newCachedThreadPool(ApolloThreadFactory
+        .create("Config", true));
+
+  }
 
   @Override
   public void addChangeListener(ConfigChangeListener listener) {
@@ -80,19 +92,30 @@ public abstract class AbstractConfig implements Config {
     return value == null ? defaultValue : value.split(delimiter);
   }
 
-  protected void fireConfigChange(ConfigChangeEvent changeEvent) {
-    for (ConfigChangeListener listener : m_listeners) {
-      try {
-        listener.onChange(changeEvent);
-      } catch (Throwable ex) {
-        Cat.logError(ex);
-        logger.error("Failed to invoke config change listener {}", listener.getClass(), ex);
-      }
+  protected void fireConfigChange(final ConfigChangeEvent changeEvent) {
+    for (final ConfigChangeListener listener : m_listeners) {
+      m_executorService.submit(new Runnable() {
+        @Override
+        public void run() {
+          String listenerName = listener.getClass().getName();
+          Transaction transaction = Cat.newTransaction("Apollo.ConfigChangeListener", listenerName);
+          try {
+            listener.onChange(changeEvent);
+            transaction.setStatus(Message.SUCCESS);
+          } catch (Throwable ex) {
+            transaction.setStatus(ex);
+            Cat.logError(ex);
+            logger.error("Failed to invoke config change listener {}", listenerName, ex);
+          } finally {
+            transaction.complete();
+          }
+        }
+      });
     }
   }
 
   List<ConfigChange> calcPropertyChanges(String namespace, Properties previous,
-      Properties current) {
+                                         Properties current) {
     if (previous == null) {
       previous = new Properties();
     }

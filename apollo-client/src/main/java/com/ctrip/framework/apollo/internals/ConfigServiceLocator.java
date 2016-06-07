@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
@@ -92,11 +93,8 @@ public class ConfigServiceLocator implements Initializable {
           @Override
           public void run() {
             logger.debug("refresh config services");
-            Transaction transaction = Cat.newTransaction("Apollo.MetaService", "periodicRefresh");
-            boolean syncResult = tryUpdateConfigServices();
-            String status = syncResult ? Message.SUCCESS : "-1";
-            transaction.setStatus(status);
-            transaction.complete();
+            Cat.logEvent("Apollo.MetaService", "periodicRefresh");
+            tryUpdateConfigServices();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
         m_configUtil.getRefreshTimeUnit());
@@ -138,7 +136,7 @@ public class ConfigServiceLocator implements Initializable {
       }
     }
 
-    throw new RuntimeException(
+    throw new ApolloConfigException(
         String.format("Get config services failed from %s", url), exception);
   }
 

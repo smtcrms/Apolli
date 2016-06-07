@@ -88,7 +88,7 @@ public class ConfigServiceTest {
     List<ItemDTO> sourceItems = Arrays.asList(sourceItem1);
 
     String appId = "6666", env = "LOCAL", clusterName = ConfigConsts.CLUSTER_NAME_DEFAULT,
-        namespaceName = ConfigConsts.NAMESPACE_DEFAULT;
+        namespaceName = ConfigConsts.NAMESPACE_APPLICATION;
     List<NamespaceIdentifer> namespaceIdentifers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
     NamespaceDTO namespaceDTO = generateNamespaceDTO(appId, clusterName, namespaceName);
 
@@ -125,7 +125,7 @@ public class ConfigServiceTest {
     List<ItemDTO> targetItems = Arrays.asList(targetItem1, targetItem2, targetItem3);
 
     String appId = "6666", env = "LOCAL", clusterName = ConfigConsts.CLUSTER_NAME_DEFAULT,
-        namespaceName = ConfigConsts.NAMESPACE_DEFAULT;
+        namespaceName = ConfigConsts.NAMESPACE_APPLICATION;
     List<NamespaceIdentifer> namespaceIdentifers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
     NamespaceDTO namespaceDTO = generateNamespaceDTO(appId, clusterName, namespaceName);
 

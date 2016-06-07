@@ -21,6 +21,18 @@ public class ApolloConfigDemo implements ConfigChangeListener {
   public ApolloConfigDemo() {
     config = ConfigService.getAppConfig();
     config.addChangeListener(this);
+    config.addChangeListener(new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        logger.info("Changes2 for namespace {}", changeEvent.getNamespace());
+        for (String key : changeEvent.changedKeys()) {
+          ConfigChange change = changeEvent.getChange(key);
+          logger.info("Change2 - key: {}, oldValue: {}, newValue: {}, changeType: {}",
+              change.getPropertyName(), change.getOldValue(), change.getNewValue(),
+              change.getChangeType());
+        }
+      }
+    });
   }
 
   private String getConfig(String key) {

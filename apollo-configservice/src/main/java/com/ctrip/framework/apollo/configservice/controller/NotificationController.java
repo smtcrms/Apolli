@@ -64,14 +64,14 @@ public class NotificationController implements ReleaseMessageListener {
   public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
       @RequestParam(value = "appId") String appId,
       @RequestParam(value = "cluster") String cluster,
-      @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_DEFAULT) String namespace,
+      @RequestParam(value = "namespace", defaultValue = ConfigConsts.NAMESPACE_APPLICATION) String namespace,
       @RequestParam(value = "dataCenter", required = false) String dataCenter,
       @RequestParam(value = "notificationId", defaultValue = "-1") long notificationId,
       @RequestParam(value = "ip", required = false) String clientIp) {
     Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
 
     //Listen on more namespaces, since it's not the default namespace
-    if (!Objects.equals(ConfigConsts.NAMESPACE_DEFAULT, namespace)) {
+    if (!Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespace)) {
       watchedKeys.addAll(this.findPublicConfigWatchKey(appId, cluster, namespace, dataCenter));
     }
 

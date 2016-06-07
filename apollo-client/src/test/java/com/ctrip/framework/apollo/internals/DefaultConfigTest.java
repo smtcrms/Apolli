@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.internals;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.common.util.concurrent.SettableFuture;
 
 import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
@@ -17,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -135,7 +137,14 @@ public class DefaultConfigTest {
     DefaultConfig defaultConfig =
         new DefaultConfig(someNamespace, configRepository);
 
-    ConfigChangeListener someListener = mock(ConfigChangeListener.class);
+    final SettableFuture<ConfigChangeEvent> configChangeFuture = SettableFuture.create();
+    ConfigChangeListener someListener = new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        configChangeFuture.set(changeEvent);
+      }
+    };
+
     defaultConfig.addChangeListener(someListener);
 
     Properties newProperties = new Properties();
@@ -146,14 +155,9 @@ public class DefaultConfigTest {
     newProperties.putAll(ImmutableMap
         .of(someKey, someKeyNewValue, anotherKey, anotherKeyNewValue, newKey, newValue));
 
-    final ArgumentCaptor<ConfigChangeEvent> captor =
-        ArgumentCaptor.forClass(ConfigChangeEvent.class);
-
     defaultConfig.onRepositoryChange(someNamespace, newProperties);
 
-    verify(someListener, times(1)).onChange(captor.capture());
-
-    ConfigChangeEvent changeEvent = captor.getValue();
+    ConfigChangeEvent changeEvent = configChangeFuture.get(500, TimeUnit.MILLISECONDS);
 
     assertEquals(someNamespace, changeEvent.getNamespace());
     assertEquals(4, changeEvent.changedKeys().size());

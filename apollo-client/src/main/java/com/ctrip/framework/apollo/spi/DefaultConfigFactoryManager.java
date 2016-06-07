@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@Named(type = ConfigFactoryManager.class, value = "default")
+@Named(type = ConfigFactoryManager.class)
 public class DefaultConfigFactoryManager extends ContainerHolder implements ConfigFactoryManager {
   @Inject
   private ConfigRegistry m_registry;
@@ -44,7 +44,7 @@ public class DefaultConfigFactoryManager extends ContainerHolder implements Conf
 
     // step 4: check default config factory
     if (factory == null) {
-      factory = lookup(ConfigFactory.class, "default");
+      factory = lookup(ConfigFactory.class);
     }
 
     m_factories.put(namespace, factory);
