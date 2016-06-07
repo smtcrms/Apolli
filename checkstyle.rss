@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 196,
+      <title>File: 197,
              Errors: 0,
-             Warnings: 939,
+             Warnings: 942,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -66,7 +66,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  16
+                  19
                 </td>
                 <td>
                   0
@@ -220,7 +220,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  24
+                  23
                 </td>
                 <td>
                   0
@@ -374,7 +374,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  26
+                  22
                 </td>
                 <td>
                   0
@@ -430,7 +430,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  46
+                  50
                 </td>
                 <td>
                   0
@@ -710,7 +710,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  11
+                  12
                 </td>
                 <td>
                   0
@@ -1088,7 +1088,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  28
+                  30
                 </td>
                 <td>
                   0
@@ -1102,7 +1102,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -1354,7 +1354,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -1564,7 +1564,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  12
+                  10
                 </td>
                 <td>
                   0
@@ -1774,7 +1774,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  3
                 </td>
                 <td>
                   0
@@ -1816,7 +1816,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  47
+                  45
                 </td>
                 <td>
                   0
@@ -1914,7 +1914,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -2026,7 +2026,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  23
+                  21
                 </td>
                 <td>
                   0
@@ -2250,7 +2250,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -2426,6 +2426,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.core.dto.BaseDTO.java">com/ctrip/framework/apollo/core/dto/BaseDTO.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#application-dev.properties">application-dev.properties</a>
                 </td>
                 <td>
@@ -2446,7 +2460,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  29
+                  30
                 </td>
                 <td>
                   0
