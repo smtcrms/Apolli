@@ -9,14 +9,12 @@ import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.ConfigService;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseService;
-import com.ctrip.framework.apollo.common.auth.ActiveUser;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -78,13 +76,13 @@ public class ReleaseController {
                                  @PathVariable("namespaceName") String namespaceName,
                                  @RequestParam("name") String name,
                                  @RequestParam(name = "comment", required = false) String comment,
-                                 @ActiveUser UserDetails user) {
+                                 @RequestParam("operator") String operator) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) {
       throw new NotFoundException(String.format("Could not find namespace for %s %s %s", appId,
           clusterName, namespaceName));
     }
-    Release release = releaseService.buildRelease(name, comment, namespace, user.getUsername());
+    Release release = releaseService.buildRelease(name, comment, namespace, operator);
     messageSender.sendMessage(assembleKey(appId, clusterName, namespaceName),
         Topics.APOLLO_RELEASE_TOPIC);
     return BeanUtils.transfrom(ReleaseDTO.class, release);

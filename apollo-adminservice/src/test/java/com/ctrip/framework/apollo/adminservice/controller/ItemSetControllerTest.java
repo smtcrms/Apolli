@@ -46,6 +46,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets itemSet = new ItemChangeSets();
+    itemSet.setDataChangeLastModifiedBy("created");
     RestTemplate createdTemplate = new TestRestTemplate("created", "");
     createdTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
@@ -94,6 +95,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
+    createChangeSet.setDataChangeLastModifiedBy("created");
     RestTemplate createdRestTemplate = new TestRestTemplate("created", "");
     createdRestTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
@@ -118,20 +120,22 @@ public class ItemSetControllerTest extends AbstractControllerTest {
                 + cluster.getName() + "/namespaces/" + namespace.getNamespaceName() + "/items",
             ItemDTO[].class);
 
-    ItemChangeSets udpateChangeSet = new ItemChangeSets();
+    ItemChangeSets updateChangeSet = new ItemChangeSets();
+    updateChangeSet.setDataChangeLastModifiedBy("updated");
+
     RestTemplate updatedRestTemplate = new TestRestTemplate("updated", "");
     updatedRestTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
     int updatedSize = 2;
     for (int i = 0; i < updatedSize; i++) {
       items[i].setValue("updated_value_" + i);
-      udpateChangeSet.addUpdateItem(items[i]);
+      updateChangeSet.addUpdateItem(items[i]);
     }
 
     response = updatedRestTemplate.postForEntity(
         "http://localhost:" + port + "/apps/" + app.getAppId() + "/clusters/" + cluster.getName()
             + "/namespaces/" + namespace.getNamespaceName() + "/itemset",
-        udpateChangeSet, Void.class);
+        updateChangeSet, Void.class);
     Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     List<Item> savedItems = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
     Assert.assertEquals(createdSize, savedItems.size());
@@ -165,6 +169,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
     Assert.assertEquals("application", namespace.getNamespaceName());
 
     ItemChangeSets createChangeSet = new ItemChangeSets();
+    createChangeSet.setDataChangeLastModifiedBy("created");
     RestTemplate createdTemplate = new TestRestTemplate("created", "");
     createdTemplate.setMessageConverters(restTemplate.getMessageConverters());
     
@@ -190,6 +195,7 @@ public class ItemSetControllerTest extends AbstractControllerTest {
             ItemDTO[].class);
 
     ItemChangeSets deleteChangeSet = new ItemChangeSets();
+    deleteChangeSet.setDataChangeLastModifiedBy("deleted");
     RestTemplate deletedTemplate = new TestRestTemplate("deleted", "");
     deletedTemplate.setMessageConverters(restTemplate.getMessageConverters());
     

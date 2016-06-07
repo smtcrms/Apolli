@@ -17,12 +17,16 @@ import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 
 @Service
 public class PortalAppService {
 
   private Logger logger = LoggerFactory.getLogger(PortalAppService.class);
+
+  @Autowired
+  private UserInfoHolder userInfoHolder;
 
   @Autowired
   private PortalClusterService clusterService;
@@ -71,6 +75,7 @@ public class PortalAppService {
   }
 
   public void createAppInAllEnvs(AppDTO app) {
+    enrichUserInfo(app);
     List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
@@ -83,12 +88,19 @@ public class PortalAppService {
   }
 
   public void createApp(Env env, AppDTO app) {
+    enrichUserInfo(app);
     try {
       appAPI.createApp(env, app);
     } catch (HttpStatusCodeException e) {
       logger.error(ExceptionUtils.toString(e));
       throw e;
     }
+  }
+
+  private void enrichUserInfo(AppDTO app){
+    String username = userInfoHolder.getUser().getUsername();
+    app.setDataChangeCreatedBy(username);
+    app.setDataChangeLastModifiedBy(username);
   }
 
   public EnvClusterInfo createEnvNavNode(Env env, String appId){

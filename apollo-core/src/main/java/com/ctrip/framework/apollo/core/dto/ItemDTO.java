@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.core.dto;
 
 import java.util.Date;
 
-public class ItemDTO {
+public class ItemDTO extends BaseDTO{
 
   private long id;
 

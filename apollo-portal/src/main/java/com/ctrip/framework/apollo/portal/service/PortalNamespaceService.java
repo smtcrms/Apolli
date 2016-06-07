@@ -8,10 +8,10 @@ import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 
 import org.slf4j.Logger;
@@ -34,14 +34,13 @@ public class PortalNamespaceService {
   private Logger logger = LoggerFactory.getLogger(PortalNamespaceService.class);
 
   @Autowired
+  private UserInfoHolder userInfoHolder;
+  @Autowired
   private AdminServiceAPI.ItemAPI itemAPI;
-
   @Autowired
   private AdminServiceAPI.ReleaseAPI releaseAPI;
-
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
-
   @Autowired
   private PortalSettings portalSettings;
 
@@ -53,13 +52,22 @@ public class PortalNamespaceService {
   }
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
+    if (StringUtils.isEmpty(namespace.getDataChangeCreatedBy())){
+      namespace.setDataChangeCreatedBy(userInfoHolder.getUser().getUsername());
+    }
+    namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
     return namespaceAPI.createNamespace(env, namespace);
   }
 
   public void createAppNamespace(AppNamespaceDTO appNamespace) {
+    String operator = userInfoHolder.getUser().getUsername();
+    if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())){
+      appNamespace.setDataChangeCreatedBy(operator);
+    }
+    appNamespace.setDataChangeLastModifiedBy(operator);
     for (Env env : portalSettings.getActiveEnvs()) {
       try {
-        namespaceAPI.createAppNamespace(env, appNamespace);
+        namespaceAPI.createOrUpdate(env, appNamespace);
       } catch (HttpStatusCodeException e) {
         logger.error(ExceptionUtils.toString(e));
         throw e;

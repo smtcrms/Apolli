@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * storage cud result
  */
-public class ItemChangeSets {
+public class ItemChangeSets extends BaseDTO{
 
   private List<ItemDTO> createItems = new LinkedList<>();
   private List<ItemDTO> updateItems = new LinkedList<>();

@@ -226,6 +226,5 @@ public class BeanUtils {
     org.springframework.beans.BeanUtils.copyProperties(source, target, COPY_IGNORED_PROPERTIES);
   }
   
-  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedBy",
-      "dataChangeCreatedTime", "dataChangeLastModifiedBy", "dataChangeLastModifiedTime"};
+  private static final String[] COPY_IGNORED_PROPERTIES = {"id", "dataChangeCreatedTime", "dataChangeLastModifiedTime"};
 }
