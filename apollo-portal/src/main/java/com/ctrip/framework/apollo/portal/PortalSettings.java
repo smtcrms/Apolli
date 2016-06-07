@@ -73,9 +73,9 @@ public class PortalSettings {
 
     healthCheckService = Executors.newScheduledThreadPool(1);
 
-//    healthCheckService
-//        .scheduleWithFixedDelay(new HealthCheckTask(applicationContext), 1000, HEALTH_CHECK_INTERVAL,
-//                                TimeUnit.MILLISECONDS);
+    healthCheckService
+        .scheduleWithFixedDelay(new HealthCheckTask(applicationContext), 1000, HEALTH_CHECK_INTERVAL,
+                                TimeUnit.MILLISECONDS);
 
   }
 

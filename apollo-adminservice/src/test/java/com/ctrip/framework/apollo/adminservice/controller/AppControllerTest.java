@@ -109,7 +109,7 @@ public class AppControllerTest extends AbstractControllerTest {
     App app = BeanUtils.transfrom(App.class, dto);
     app = appRepository.save(app);
 
-    restTemplate.delete(getBaseAppUrl() + dto.getAppId());
+    restTemplate.delete("http://localhost:{port}/apps/{appId}?operator={operator}", port, app.getAppId(), "test");
 
     App deletedApp = appRepository.findOne(app.getId());
     Assert.assertNull(deletedApp);
