@@ -227,12 +227,12 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     } catch (IOException ex) {
       ApolloConfigException exception =
           new ApolloConfigException(
-              String.format("Create local config directory %s failed", baseDir), ex);
+              String.format("Create local config directory %s failed", baseDir.getAbsolutePath()), ex);
       Cat.logError(exception);
       transaction.setStatus(exception);
       logger.warn(
           "Unable to create local config cache directory {}, reason: {}. Will not able to cache config file.",
-          baseDir, ExceptionUtil.getDetailMessage(ex));
+          baseDir.getAbsolutePath(), ExceptionUtil.getDetailMessage(ex));
     } finally {
       transaction.complete();
     }
