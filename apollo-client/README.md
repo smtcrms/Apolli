@@ -1,6 +1,10 @@
 ## I. Prerequisite
 
-### I.I Mandatory Setup
+### I.I Requirements
+
+* Java: 1.7+
+
+### I.II Mandatory Setup
 Apollo client requires `AppId` and `Environment` information available to function properly, so please read the following and configure them properly:
 
 #### 1. AppId
@@ -45,7 +49,7 @@ Currently, `env` allows the following values (case-insensitive):
 * UAT
 * PRO
 
-### I.II Optional Setup
+### I.III Optional Setup
 
 #### Cluster
 
