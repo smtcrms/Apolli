@@ -259,15 +259,22 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private void scheduleLongPollingRefresh() {
-    final String appId = m_configUtil.getAppId();
-    final String cluster = m_configUtil.getCluster();
-    final String dataCenter = m_configUtil.getDataCenter();
-    m_longPollingService.submit(new Runnable() {
-      @Override
-      public void run() {
-        doLongPollingRefresh(appId, cluster, dataCenter);
-      }
-    });
+    try {
+      final String appId = m_configUtil.getAppId();
+      final String cluster = m_configUtil.getCluster();
+      final String dataCenter = m_configUtil.getDataCenter();
+      m_longPollingService.submit(new Runnable() {
+        @Override
+        public void run() {
+          doLongPollingRefresh(appId, cluster, dataCenter);
+        }
+      });
+    } catch (Throwable ex) {
+      ApolloConfigException exception =
+          new ApolloConfigException("Schedule long polling refresh failed", ex);
+      Cat.logError(exception);
+      logger.warn(ExceptionUtil.getDetailMessage(exception));
+    }
   }
 
   private void doLongPollingRefresh(String appId, String cluster, String dataCenter) {
