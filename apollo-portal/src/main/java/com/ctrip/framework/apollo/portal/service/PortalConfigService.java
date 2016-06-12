@@ -189,23 +189,24 @@ public class PortalConfigService {
 
           changeSets.addCreateItem(buildItem(namespaceId, ++maxLineNum, sourceItem));
 
-        } else if (isModified(sourceValue, targetItem.getValue(), sourceComment, targetItem.getComment())) {//modified items
+        } else if (isModified(sourceValue, targetItem.getValue(), sourceComment,
+                              targetItem.getComment())) {//modified items
           targetItem.setValue(sourceValue);
           targetItem.setComment(sourceComment);
           changeSets.addUpdateItem(targetItem);
         }
       }
-    }
 
-    //parse deleted items
-    List<ItemDTO> deletedItems = new LinkedList<>();
-    Map<String, ItemDTO> sourceItemMap = BeanUtils.mapByKey("key", sourceItems);
-    for (ItemDTO targetItem: targetItems){
-      if (sourceItemMap.get(targetItem.getKey()) == null){
-        deletedItems.add(targetItem);
+      //parse deleted items
+      List<ItemDTO> deletedItems = new LinkedList<>();
+      Map<String, ItemDTO> sourceItemMap = BeanUtils.mapByKey("key", sourceItems);
+      for (ItemDTO item : targetItems) {
+        if (sourceItemMap.get(item.getKey()) == null) {
+          deletedItems.add(item);
+        }
       }
+      changeSets.setDeleteItems(deletedItems);
     }
-    changeSets.setDeleteItems(deletedItems);
 
     return changeSets;
   }
