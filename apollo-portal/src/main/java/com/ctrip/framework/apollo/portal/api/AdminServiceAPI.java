@@ -104,11 +104,6 @@ public class AdminServiceAPI {
       return Arrays.asList(itemDTOs);
     }
 
-    public ItemDTO loadItem(String appId, Env env, String clusterName, String namespaceName, String key){
-      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key}",
-                                       ItemDTO.class, getAdminServiceHost(env), appId, clusterName, namespaceName, key);
-    }
-
     public void updateItems(String appId, Env env, String clusterName, String namespace,
                             ItemChangeSets changeSets) {
       restTemplate.postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset",
