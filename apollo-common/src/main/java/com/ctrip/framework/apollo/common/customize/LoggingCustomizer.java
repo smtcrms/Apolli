@@ -1,41 +1,30 @@
-package com.ctrip.framework.apollo.biz.customize;
+package com.ctrip.framework.apollo.common.customize;
 
 import com.google.common.base.Strings;
 
-import com.ctrip.framework.apollo.biz.entity.ServerConfig;
-import com.ctrip.framework.apollo.biz.repository.ServerConfigRepository;
 import com.ctrip.framework.foundation.Foundation;
 import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-import java.util.Objects;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Appender;
 
 /**
+ * clogging config.only used in ctrip
  * @author Jason Song(song_s@ctrip.com)
  */
-@Component
-public class LoggingCustomizer implements InitializingBean {
+public abstract class LoggingCustomizer implements InitializingBean {
   private static final Logger logger = LoggerFactory.getLogger(LoggingCustomizer.class);
   private static final String cLoggingAppenderClass =
       "com.ctrip.framework.clogging.agent.appender.CLoggingAppender";
   private static boolean cLoggingAppenderPresent =
       ClassUtils.isPresent(cLoggingAppenderClass, LoggingCustomizer.class.getClassLoader());
-
-  private static final String CLOGGING_SERVER_URL_KEY = "clogging.server.url";
-  private static final String CLOGGING_SERVER_PORT_KEY = "clogging.server.port";
-
-  @Autowired
-  private ServerConfigRepository serverConfigRepository;
 
   @Override
   public void afterPropertiesSet() {
@@ -59,13 +48,6 @@ public class LoggingCustomizer implements InitializingBean {
       return;
     }
 
-    ServerConfig cloggingUrl = serverConfigRepository.findByKey(CLOGGING_SERVER_URL_KEY);
-    ServerConfig cloggingPort = serverConfigRepository.findByKey(CLOGGING_SERVER_PORT_KEY);
-
-    if (Objects.isNull(cloggingUrl) || Objects.isNull(cloggingPort)) {
-      logger.warn("CLogging config is not set!");
-      return;
-    }
 
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     Class clazz = Class.forName(cLoggingAppenderClass);
@@ -73,9 +55,9 @@ public class LoggingCustomizer implements InitializingBean {
 
     ReflectionUtils.findMethod(clazz, "setAppId", String.class).invoke(cLoggingAppender, appId);
     ReflectionUtils.findMethod(clazz, "setServerIp", String.class)
-        .invoke(cLoggingAppender, cloggingUrl.getValue());
+        .invoke(cLoggingAppender, cloggingUrl());
     ReflectionUtils.findMethod(clazz, "setServerPort", int.class)
-        .invoke(cLoggingAppender, Integer.parseInt(cloggingPort.getValue()));
+        .invoke(cLoggingAppender, Integer.parseInt(cloggingPort()));
 
     cLoggingAppender.setName("CentralLogging");
     cLoggingAppender.setContext(loggerContext);
@@ -86,5 +68,18 @@ public class LoggingCustomizer implements InitializingBean {
     logger.addAppender(cLoggingAppender);
 
   }
+
+  /**
+   * clogging server url
+   * @return
+   */
+  protected abstract String cloggingUrl();
+
+  /**
+   * clogging server port
+   * @return
+   */
+  protected abstract String cloggingPort();
+
 
 }

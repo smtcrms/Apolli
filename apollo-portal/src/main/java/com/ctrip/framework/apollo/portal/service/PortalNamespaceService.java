@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.gson.Gson;
 
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
@@ -139,9 +140,39 @@ public class PortalNamespaceService {
 
       itemVos.add(itemVO);
     }
+
+    //deleted items
+    List<NamespaceVO.ItemVO> deletedItems = countDeletedItemNum(items, releaseItems);
+    itemVos.addAll(deletedItems);
+    modifiedItemCnt += deletedItems.size();
+
     namespaceVO.setItemModifiedCnt(modifiedItemCnt);
 
     return namespaceVO;
+  }
+
+  private List<NamespaceVO.ItemVO> countDeletedItemNum(List<ItemDTO> newItems, Map<String, String> releaseItems) {
+    Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
+
+    List<NamespaceVO.ItemVO> deletedItems = new LinkedList<>();
+    for (Map.Entry<String, String> entry: releaseItems.entrySet()){
+      String key = entry.getKey();
+      if (newItemMap.get(key) == null){
+        NamespaceVO.ItemVO deletedItem = new NamespaceVO.ItemVO();
+
+        ItemDTO deletedItemDto = new ItemDTO();
+        deletedItemDto.setKey(key);
+        String oldValue = entry.getValue();
+        deletedItem.setItem(deletedItemDto);
+
+        deletedItemDto.setValue(oldValue);
+        deletedItem.setModified(true);
+        deletedItem.setOldValue(oldValue);
+        deletedItem.setNewValue("");
+        deletedItems.add(deletedItem);
+      }
+    }
+    return deletedItems;
   }
 
   private NamespaceVO.ItemVO parseItemVO(ItemDTO itemDTO, Map<String, String> releaseItems) {
@@ -150,6 +181,7 @@ public class PortalNamespaceService {
     itemVO.setItem(itemDTO);
     String newValue = itemDTO.getValue();
     String oldValue = releaseItems.get(key);
+    //new item or modified
     if (!StringUtils.isEmpty(key) && (oldValue == null || !newValue.equals(oldValue))) {
       itemVO.setModified(true);
       itemVO.setOldValue(oldValue == null ? "" : oldValue);

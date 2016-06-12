@@ -168,13 +168,14 @@ public class PortalConfigService {
                           namespace.getClusterName(), namespace.getNamespaceName());
 
     long namespaceId = getNamespaceId(namespace);
+
     if (CollectionUtils.isEmpty(targetItems)) {//all source items is added
       int lineNum = 1;
       for (ItemDTO sourceItem : sourceItems) {
         changeSets.addCreateItem(buildItem(namespaceId, lineNum++, sourceItem));
       }
     } else {
-      Map<String, ItemDTO> keyMapItem = BeanUtils.mapByKey("key", targetItems);
+      Map<String, ItemDTO> targetItemMap = BeanUtils.mapByKey("key", targetItems);
       String key, sourceValue, sourceComment;
       ItemDTO targetItem = null;
       int maxLineNum = targetItems.size();//append to last
@@ -182,7 +183,7 @@ public class PortalConfigService {
         key = sourceItem.getKey();
         sourceValue = sourceItem.getValue();
         sourceComment = sourceItem.getComment();
-        targetItem = keyMapItem.get(key);
+        targetItem = targetItemMap.get(key);
 
         if (targetItem == null) {//added items
 
@@ -195,6 +196,16 @@ public class PortalConfigService {
         }
       }
     }
+
+    //parse deleted items
+    List<ItemDTO> deletedItems = new LinkedList<>();
+    Map<String, ItemDTO> sourceItemMap = BeanUtils.mapByKey("key", sourceItems);
+    for (ItemDTO targetItem: targetItems){
+      if (sourceItemMap.get(targetItem.getKey()) == null){
+        deletedItems.add(targetItem);
+      }
+    }
+    changeSets.setDeleteItems(deletedItems);
 
     return changeSets;
   }

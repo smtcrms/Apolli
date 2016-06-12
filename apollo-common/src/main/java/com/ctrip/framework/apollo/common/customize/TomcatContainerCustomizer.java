@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.biz.customize;
+package com.ctrip.framework.apollo.common.customize;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ProtocolHandler;
