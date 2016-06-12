@@ -141,7 +141,7 @@ public class PortalNamespaceService {
       itemVos.add(itemVO);
     }
 
-    //count deleted item num
+    //deleted items
     List<NamespaceVO.ItemVO> deletedItems = countDeletedItemNum(items, releaseItems);
     itemVos.addAll(deletedItems);
     modifiedItemCnt += deletedItems.size();
