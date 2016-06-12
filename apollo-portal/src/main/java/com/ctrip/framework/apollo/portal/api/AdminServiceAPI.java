@@ -95,13 +95,18 @@ public class AdminServiceAPI {
   @Service
   public static class ItemAPI extends API {
 
-    public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespace) {
+    public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
       ItemDTO[] itemDTOs =
           restTemplate
               .getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
                             ItemDTO[].class,
-                            getAdminServiceHost(env), appId, clusterName, namespace);
+                            getAdminServiceHost(env), appId, clusterName, namespaceName);
       return Arrays.asList(itemDTOs);
+    }
+
+    public ItemDTO loadItem(String appId, Env env, String clusterName, String namespaceName, String key){
+      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key}",
+                                       ItemDTO.class, getAdminServiceHost(env), appId, clusterName, namespaceName, key);
     }
 
     public void updateItems(String appId, Env env, String clusterName, String namespace,

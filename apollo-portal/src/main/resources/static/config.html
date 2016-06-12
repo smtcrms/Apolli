@@ -14,568 +14,563 @@
 
 <apollonav></apollonav>
 
-<div class="container-fluid apollo-container">
-    <div class="app">
+<div class="container-fluid apollo-container app" id="config-info">
 
-        <!--配置信息-->
-        <div id="config-info">
+    <!--具体配置信息-->
+    <div class="row config-info-container">
 
-            <!--具体配置信息-->
-            <div class="row config-info-container">
-
-                <!--tag导航-->
-                <div class="col-md-3" ng-controller="ConfigBaseInfoController">
-                    <div id="treeview"></div>
-                    <!--app info-->
-                    <section class="panel">
-                        <header class="panel-heading">
-                            <img src="img/info.png" class="i-25-20"/> 应用信息
+        <!--tag导航-->
+        <div class="col-md-3" ng-controller="ConfigBaseInfoController">
+            <div id="treeview"></div>
+            <!--app info-->
+            <section class="panel">
+                <header class="panel-heading">
+                    <img src="img/info.png" class="i-25-20"/> 应用信息
                             <span class="tools pull-right">
                                 <a href="javascript:;" class="icon-chevron-down"></a>
                             </span>
-                        </header>
-                        <div class="panel-body">
-                            <table class="project-info">
-                                <tbody>
-                                <tr>
-                                    <th>应用ID:</th>
-                                    <td ng-bind="appBaseInfo.appId"></td>
-                                </tr>
-                                <tr>
-                                    <th>应用名:</th>
-                                    <td ng-bind="appBaseInfo.name"></td>
-                                </tr>
-                                <tr>
-                                    <th>Owner:</th>
-                                    <td ng-bind="appBaseInfo.ownerName"></td>
-                                </tr>
-                                <tr>
-                                    <th>Owner Email:</th>
-                                    <td ng-bind="appBaseInfo.ownerEmail"></td>
-                                </tr>
-                                <tr ng-show="missEnvs.length > 0">
-                                    <th>缺失的环境:</th>
-                                    <td>
+                </header>
+                <div class="panel-body">
+                    <table class="project-info">
+                        <tbody>
+                        <tr>
+                            <th>应用ID:</th>
+                            <td ng-bind="appBaseInfo.appId"></td>
+                        </tr>
+                        <tr>
+                            <th>应用名:</th>
+                            <td ng-bind="appBaseInfo.name"></td>
+                        </tr>
+                        <tr>
+                            <th>Owner:</th>
+                            <td ng-bind="appBaseInfo.ownerName"></td>
+                        </tr>
+                        <tr>
+                            <th>Owner Email:</th>
+                            <td ng-bind="appBaseInfo.ownerEmail"></td>
+                        </tr>
+                        <tr ng-show="missEnvs.length > 0">
+                            <th>缺失的环境:</th>
+                            <td>
                                         <span ng-repeat="env in missEnvs" ng-bind="env">
                                         </span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
+                </div>
+            </section>
+            <a class="list-group-item" data-toggle="modal" data-target="#createEnvModal"
+               ng-show="missEnvs.length > 0">
+                <div class="row">
+                    <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
+                    <div class="col-md-7 hidden-xs">
+                        <p class="btn-title">添加环境</p>
+                    </div>
+                </div>
+            </a>
+            <a class="list-group-item" href="#" disabled="disabled" ng-show="false">
+                <div class="row">
+                    <div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>
+                    <div class="col-md-7 hidden-xs">
+                        <p class="btn-title">添加集群</p>
+                    </div>
+
+                </div>
+            </a>
+            <a class="list-group-item" href="namespace.html?#/appid={{pageContext.appId}}&type=link">
+                <div class="row">
+                    <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
+                    <div class="col-md-7 hidden-xs">
+                        <p class="btn-title">添加Namespace</p>
+                    </div>
+                </div>
+            </a>
+            </section>
+
+            <!--create env modal-->
+            <div class="modal fade" id="createEnvModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">添加环境</h4>
                         </div>
-                    </section>
-                    <a class="list-group-item" data-toggle="modal" data-target="#createEnvModal"
-                       ng-show="missEnvs.length > 0">
-                        <div class="row">
-                            <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
-                            <div class="col-md-7 hidden-xs">
-                                <p class="btn-title">添加环境</p>
-                            </div>
-                        </div>
-                    </a>
-                    <!--<a class="list-group-item" target="_blank" href="/views/config.html?#/appid={{app.appId}}">-->
-                    <!--<div class="row">-->
-                    <!--<div class="col-md-2"><img src="../img/plus.png" class="i-20"></div>-->
-                    <!--<div class="col-md-7 hidden-xs">-->
-                    <!--<p class="apps-description">添加集群</p>-->
-                    <!--</div>-->
-
-                    <!--</div>-->
-                    <!--</a>-->
-                    <a class="list-group-item" href="namespace.html?#/appid={{pageContext.appId}}&type=link">
-                        <div class="row">
-                            <div class="col-md-2"><img src="img/plus.png" class="i-20"></div>
-                            <div class="col-md-7 hidden-xs">
-                                <p class="btn-title">添加Namespace</p>
-                            </div>
-                        </div>
-                    </a>
-                    </section>
-
-                    <!--create env modal-->
-                    <div class="modal fade" id="createEnvModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header panel-primary">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">添加环境</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label>请选择环境:</label>
-                                        <div class="checkbox" ng-repeat="env in missEnvs">
-                                            <label>
-                                                <input type="checkbox" name="selectedEnvs[]" value="{{env}}"
-                                                       ng-checked="selectedEnvs.indexOf(env) > -1"
-                                                       ng-click="toggleSelection(env)"><span ng-bind="env"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                            ng-click="createEnvs()">添加
-                                    </button>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>请选择环境:</label>
+                                <div class="checkbox" ng-repeat="env in missEnvs">
+                                    <label>
+                                        <input type="checkbox" name="selectedEnvs[]" value="{{env}}"
+                                               ng-checked="selectedEnvs.indexOf(env) > -1"
+                                               ng-click="toggleSelection(env)"><span ng-bind="env"></span>
+                                    </label>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="createEnvs()">添加
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!--namespaces-->
-                <div class="col-md-9 config-item-container hide" ng-controller="ConfigNamespaceController">
-                    <div ng-repeat="namespace in namespaces">
-                        <div class="panel">
-                            <header class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <b ng-bind="namespace.namespace.namespaceName"></b>
+        <!--namespaces-->
+        <div class="col-md-9 config-item-container hide" ng-controller="ConfigNamespaceController">
+            <div ng-repeat="namespace in namespaces">
+                <div class="panel">
+                    <header class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b ng-bind="namespace.namespace.namespaceName"></b>
                                                 <span class="label label-primary"
                                                       ng-show="namespace.itemModifiedCnt > 0">有修改
                                                 <span class="badge" ng-bind="namespace.itemModifiedCnt"></span></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                            <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button" data-toggle="modal" data-target="#releaseModal"
-                                                        class="btn btn-default btn-sm J_tableview_btn"
-                                                        ng-disabled="namespace.isTextEditing"
-                                                        ng-click="prepareReleaseNamespace(namespace)">发布
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn">回滚
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_historyview_btn">
-                                                    查看历史版本
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn">授权
-                                                </button>
-                                                <a type="button"
-                                                   href="config/sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
-                                                   class="btn btn-default btn-sm J_tableview_btn">同步
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                            <div class="btn-group" role="group" aria-label="...">
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn"
-                                                        ng-click="switchView(namespace, 'text')">文本
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_tableview_btn"
-                                                        ng-click="switchView(namespace, 'table')">表格
-                                                </button>
-                                                <button type="button"
-                                                        class="btn btn-default btn-sm J_historyview_btn"
-                                                        ng-click="switchView(namespace, 'history')">
-                                                    更改历史
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1 text-right">
-                                        <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
-                                           ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                           ng-click="toggleTextEditStatus(namespace)">
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                        </a>
-                                        <a data-tooltip="tooltip" data-placement="bottom" title="修改配置"
-                                           ng-show="!namespace.isTextEditing && namespace.viewType == 'text'"
-                                           ng-click="toggleTextEditStatus(namespace)">
-                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                                        </a>
-                                        &nbsp;
-                                        <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
-                                           data-toggle="modal" data-target="#commitModal"
-                                           ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                           ng-click="setCommitNamespace(namespace)">
-                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                        </a>
-
-                                        <a data-tooltip="tooltip" data-placement="bottom" title="添加配置"
-                                           ng-show="namespace.viewType == 'table'"
-                                           data-toggle="modal" data-target="#itemModal"
-                                           ng-click="createItem(namespace)">
-                                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button" data-toggle="modal" data-target="#releaseModal"
+                                                class="btn btn-default btn-sm J_tableview_btn"
+                                                ng-disabled="namespace.isTextEditing"
+                                                ng-click="prepareReleaseNamespace(namespace)">发布
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_tableview_btn" disabled>回滚
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_historyview_btn" disabled>查看历史版本
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_tableview_btn" disabled>授权
+                                        </button>
+                                        <a type="button"
+                                           href="config/sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
+                                           class="btn btn-default btn-sm J_tableview_btn">同步
                                         </a>
                                     </div>
                                 </div>
-                            </header>
+                            </div>
 
-                            <!--text view-->
-                            <!--只读模式下的文本内容,不替换换行符-->
+                            <div class="col-md-3">
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_tableview_btn"
+                                                ng-click="switchView(namespace, 'text')">文本
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_tableview_btn"
+                                                ng-click="switchView(namespace, 'table')">表格
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-default btn-sm J_historyview_btn"
+                                                ng-click="switchView(namespace, 'history')" disabled>
+                                            更改历史
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 text-right">
+                                <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
+                                   ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
+                                   ng-click="toggleTextEditStatus(namespace)">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </a>
+                                <a data-tooltip="tooltip" data-placement="bottom" title="修改配置"
+                                   ng-show="!namespace.isTextEditing && namespace.viewType == 'text'"
+                                   ng-click="toggleTextEditStatus(namespace)">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </a>
+                                &nbsp;
+                                <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
+                                   data-toggle="modal" data-target="#commitModal"
+                                   ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
+                                   ng-click="setCommitNamespace(namespace)">
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                </a>
+
+                                <a data-tooltip="tooltip" data-placement="bottom" title="添加配置"
+                                   ng-show="namespace.viewType == 'table'"
+                                   data-toggle="modal" data-target="#itemModal"
+                                   ng-click="createItem(namespace)">
+                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!--text view-->
+                    <!--只读模式下的文本内容,不替换换行符-->
                             <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
                                       ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
                                       ng-disabled="!namespace.isTextEditing" ng-model="namespace.text"
                                       ng-bind="namespace.text">
                                 </textarea>
-                            <!--编辑状态下的文本内容,会过滤掉换行符-->
+                    <!--编辑状态下的文本内容,会过滤掉换行符-->
                             <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
                                       ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
                                       ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText"
                                       ng-bind="namespace.editText">
                                 </textarea>
 
-                            <!--table view-->
-                            <div class="namespace-view-table">
-                                <table class="table table-bordered table-striped text-center table-hover"
-                                       ng-show="namespace.viewType == 'table' && namespace.items.length > 0">
-                                    <thead>
-                                    <tr>
-                                        <th>
-                                            Key
-                                        </th>
-                                        <th>
-                                            value
-                                        </th>
-                                        <th>
-                                            备注
-                                        </th>
-                                        <th>
-                                            最后修改人
-                                        </th>
-                                        <th>
-                                            最后修改时间
-                                        </th>
-                                        <th>
-                                            操作
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                    <!--table view-->
+                    <div class="namespace-view-table">
+                        <table class="table table-bordered table-striped text-center table-hover"
+                               ng-show="namespace.viewType == 'table' && namespace.items.length > 0">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Key
+                                </th>
+                                <th>
+                                    value
+                                </th>
+                                <th>
+                                    备注
+                                </th>
+                                <th>
+                                    最后修改人
+                                </th>
+                                <th>
+                                    最后修改时间
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                                    <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
-                                        ng-if="config.item.key">
-                                        <td width="20%" title="{{config.item.key}}">
-                                            <span ng-bind="config.item.key | limitTo: 250"></span>
-                                            <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
-                                        </td>
-                                        <td width="25%" title="{{config.item.value}}">
-                                            <span ng-bind="config.item.value | limitTo: 250"></span>
-                                            <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
-                                        </td>
-                                        <td width="20%" title="{{config.item.comment}}">
-                                            <span ng-bind="config.item.comment | limitTo: 250"></span>
-                                            <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
-                                        </td>
-                                        <td width="10%" ng-bind="config.item.lastModifiedBy">
-                                        </td>
-                                        <td width="15%"
-                                            ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
-                                        </td>
+                            <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
+                                ng-if="config.item.key && config.item.lastModifiedBy">
+                                <td width="20%" title="{{config.item.key}}">
+                                    <span ng-bind="config.item.key | limitTo: 250"></span>
+                                    <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
+                                </td>
+                                <td width="25%" title="{{config.item.value}}">
+                                    <span ng-bind="config.item.value | limitTo: 250"></span>
+                                    <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
+                                </td>
+                                <td width="20%" title="{{config.item.comment}}">
+                                    <span ng-bind="config.item.comment | limitTo: 250"></span>
+                                    <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
+                                </td>
+                                <td width="10%" ng-bind="config.item.lastModifiedBy">
+                                </td>
+                                <td width="15%"
+                                    ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                                </td>
 
-                                        <td width="10%">
+                                <td width="10%">
                                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"
                                                   data-tooltip="tooltip" data-placement="bottom" title="查看"
                                                   data-toggle="modal" data-target="#itemModal"
                                                   ng-click="retrieveItem(namespace, config.item, config.oldValue)">
                                             </span>
-                                            &nbsp;
+                                    &nbsp;
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"
                                                   data-tooltip="tooltip" data-placement="bottom" title="修改"
                                                   data-toggle="modal" data-target="#itemModal"
                                                   ng-click="editItem(namespace, config.item)">
                                             </span>
-                                            &nbsp;
+                                    &nbsp;
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true"
                                                   data-toggle="modal" data-target="#deleteModal"
                                                   data-tooltip="tooltip" data-placement="bottom" title="删除"
                                                   ng-click="preDeleteItem(config.item.id)">
                                             </span>
-                                        </td>
+                                </td>
 
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            <!--历史修改视图-->
-                            <div class="J_historyview history-view"
-                                 ng-show="namespace.viewType == 'history'">
-                                <div class="row">
-                                    <div class="col-md-11 col-md-offset-1 list" style="">
-                                        <div class="media">
-                                            <img src="img/history.png"/>
+                    <!--历史修改视图-->
+                    <div class="J_historyview history-view"
+                         ng-show="namespace.viewType == 'history'">
+                        <div class="row">
+                            <div class="col-md-11 col-md-offset-1 list" style="">
+                                <div class="media">
+                                    <img src="img/history.png"/>
 
-                                            <div class="row">
-                                                <div class="col-md-10"><h5 class="media-heading">2016-02-23
-                                                    12:23
-                                                    王玉</h5>
+                                    <div class="row">
+                                        <div class="col-md-10"><h5 class="media-heading">2016-02-23
+                                            12:23
+                                            王玉</h5>
 
-                                                    <p>
-                                                        修改comment
-                                                    </p></div>
-                                                <div class="col-md-2 text-right">
-                                                    <button class="btn btn-default" type="submit">查看修改内容
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <hr>
+                                            <p>
+                                                修改comment
+                                            </p></div>
+                                        <div class="col-md-2 text-right">
+                                            <button class="btn btn-default" type="submit">查看修改内容
+                                            </button>
                                         </div>
-                                        <div class="media">
-                                            <img src="img/history.png"/>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="media">
+                                    <img src="img/history.png"/>
 
-                                            <div class="row">
-                                                <div class="col-md-10"><h5 class="media-heading">2016-02-23
-                                                    12:23
-                                                    王玉</h5>
+                                    <div class="row">
+                                        <div class="col-md-10"><h5 class="media-heading">2016-02-23
+                                            12:23
+                                            王玉</h5>
 
-                                                    <p>
-                                                        修改comment
-                                                    </p></div>
-                                                <div class="col-md-2 text-right">
-                                                    <button class="btn btn-default" type="submit">查看修改内容
-                                                    </button>
-                                                </div>
-                                            </div>
+                                            <p>
+                                                修改comment
+                                            </p></div>
+                                        <div class="col-md-2 text-right">
+                                            <button class="btn btn-default" type="submit">查看修改内容
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
 
-                    <!-- commit modify config modal-->
-                    <div class="modal fade" id="commitModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header panel-primary">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Commit changes</h4>
-                                </div>
-                                <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+
+            <!-- commit modify config modal-->
+            <div class="modal fade" id="commitModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Commit changes</h4>
+                        </div>
+                        <div class="modal-body">
                         <textarea rows="4" class="form-control" style="width:570px;"
                                   placeholder="Add an optional extended description..."
                                   ng-model="commitComment"></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                            ng-click="commitChange()">
-                                        提交
-                                    </button>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="commitChange()">
+                                提交
+                            </button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- delete modal-->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header panel-primary">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">删除配置</h4>
-                                </div>
-                                <div class="modal-body">
-                                    确定要删除配置吗?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"
-                                            ng-click="deleteItem()">
-                                        确定
-                                    </button>
-                                </div>
-                            </div>
+            <!-- delete modal-->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">删除配置</h4>
+                        </div>
+                        <div class="modal-body">
+                            确定要删除配置吗?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"
+                                    ng-click="deleteItem()">
+                                确定
+                            </button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!--create release modal-->
-                    <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
-                          ng-submit="release()">
-                        <div class="modal-dialog" role="document" style="width: 960px">
-                            <div class="modal-content">
-                                <div class="modal-header panel-primary">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">发布</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">
-                                            Changes:</label>
-                                        <div class="col-sm-10">
-                                            <table class="table table-bordered table-striped text-center table-hover"
-                                                   ng-show="toReleaseNamespace.itemModifiedCnt">
-                                                <thead>
-                                                <tr>
-                                                    <th>
-                                                        Key
-                                                    </th>
-                                                    <th>
-                                                        Old Value
-                                                    </th>
-                                                    <th>
-                                                        New Value
-                                                    </th>
-                                                    <th>
-                                                        最后修改人
-                                                    </th>
-                                                    <th>
-                                                        最后修改时间
-                                                    </th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
+            <!--create release modal-->
+            <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
+                  ng-submit="release()">
+                <div class="modal-dialog" role="document" style="width: 960px">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">发布</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    Changes:</label>
+                                <div class="col-sm-10">
+                                    <table class="table table-bordered table-striped text-center table-hover"
+                                           ng-show="toReleaseNamespace.itemModifiedCnt">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                Key
+                                            </th>
+                                            <th>
+                                                Old Value
+                                            </th>
+                                            <th>
+                                                New Value
+                                            </th>
+                                            <th>
+                                                最后修改人
+                                            </th>
+                                            <th>
+                                                最后修改时间
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
 
-                                                <tr ng-repeat="config in toReleaseNamespace.items"
-                                                    ng-if="config.item.key && config.isModified">
-                                                    <td width="20%" title="{{config.item.key}}">
-                                                        <span ng-bind="config.item.key | limitTo: 250"></span>
-                                                        <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
-                                                    </td>
-                                                    <td width="25%" title="{{config.oldValue}}">
-                                                        <span ng-bind="config.oldValue | limitTo: 250"></span>
-                                                        <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
-                                                    </td>
-                                                    <td width="25%" title="{{config.item.value}}">
-                                                        <span ng-bind="config.item.value | limitTo: 250"></span>
-                                                        <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
-                                                    </td>
-                                                    <td width="15%" ng-bind="config.item.lastModifiedBy">
-                                                    </td>
-                                                    <td width="15%"
-                                                        ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                        <tr ng-repeat="config in toReleaseNamespace.items"
+                                            ng-if="config.item.key && config.isModified">
+                                            <td width="20%" title="{{config.item.key}}">
+                                                        <span class="label label-danger"
+                                                              ng-show="!config.newValue">deleted</span>
+                                                <span ng-bind="config.item.key | limitTo: 250"></span>
+                                                <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
+                                            </td>
+                                            <td width="25%" title="{{config.oldValue}}">
+                                                <span ng-bind="config.oldValue | limitTo: 250"></span>
+                                                <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
+                                            </td>
+                                            <td width="25%" title="{{config.newValue}}">
+                                                <span ng-bind="config.newValue | limitTo: 250"></span>
+                                                <span ng-bind="config.newValue.length > 250 ? '...': ''"></span>
+                                            </td>
+                                            <td width="15%" ng-bind="config.item.lastModifiedBy">
+                                            </td>
+                                            <td width="15%"
+                                                ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                             <span ng-show="!toReleaseNamespace.itemModifiedCnt">
                                                 配置没有变化
                                             </span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">
-                                            <apollorequiredfiled></apollorequiredfiled>
-                                            Release Name:</label>
-                                        <div class="col-sm-5">
-                                            <input type="text" class="form-control" placeholder="input release title"
-                                                   ng-model="releaseTitle" ng-required="true">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Comment:</label>
-                                        <div class="col-sm-10">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    <apollorequiredfiled></apollorequiredfiled>
+                                    Release Name:</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" placeholder="input release title"
+                                           ng-model="releaseTitle" ng-required="true">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Comment:</label>
+                                <div class="col-sm-10">
                                             <textarea rows="4" class="form-control" style="margin-top: 15px;"
                                                       ng-model="releaseComment"
                                                       placeholder="Add an optional extended description..."></textarea>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                    <button type="submit" class="btn btn-primary">发布
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    </form>
 
-                    <!--table mode item modal-->
-                    <form class="modal fade form-horizontal" id="itemModal" role="dialog" ng-submit="doItem()">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header panel-primary">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">
-                                        <span ng-show="tableViewOperType == 'create'"> 添加配置项</span>
-                                        <span ng-show="tableViewOperType == 'retrieve'"> 查看配置项</span>
-                                        <span ng-show="tableViewOperType == 'update'"> 修改配置项</span>
-                                    </h4>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="submit" class="btn btn-primary">发布
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!--table mode item modal-->
+            <form class="modal fade form-horizontal" id="itemModal" role="dialog" ng-submit="doItem()">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">
+                                <span ng-show="tableViewOperType == 'create'"> 添加配置项</span>
+                                <span ng-show="tableViewOperType == 'retrieve'"> 查看配置项</span>
+                                <span ng-show="tableViewOperType == 'update'"> 修改配置项</span>
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    <apollorequiredfiled
+                                            ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                    Key
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" ng-model="item.key"
+                                           ng-required="true" ng-disabled="tableViewOperType != 'create'">
                                 </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">
-                                            <apollorequiredfiled
-                                                    ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
-                                            Key
-                                        </label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" ng-model="item.key"
-                                                   ng-required="true" ng-disabled="tableViewOperType != 'create'">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">
-                                            <apollorequiredfiled
-                                                    ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
-                                            Value
-                                        </label>
-                                        <div class="col-sm-10">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">
+                                    <apollorequiredfiled
+                                            ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                    Value
+                                </label>
+                                <div class="col-sm-10">
                                             <textarea type="text" class="form-control" rows="6" ng-model="item.value"
                                                       ng-required="true" ng-show="tableViewOperType != 'retrieve'">
                                                 </textarea>
-                                            <p ng-bind="item.value" ng-show="tableViewOperType == 'retrieve'"></p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-show="tableViewOperType == 'retrieve'">
-                                        <label class="col-sm-2 control-label">Released Value</label>
-                                        <div class="col-sm-10">
-                                            <p ng-show="!item.oldValue">这是新增的配置</p>
-                                            <p ng-show="item.oldValue" ng-bind="item.oldValue"></p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Comment</label>
-                                        <div class="col-sm-10">
+                                    <p ng-bind="item.value" ng-show="tableViewOperType == 'retrieve'"></p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="tableViewOperType == 'retrieve'">
+                                <label class="col-sm-2 control-label">Released Value</label>
+                                <div class="col-sm-10">
+                                    <p ng-show="!item.oldValue">这是新增的配置</p>
+                                    <p ng-show="item.oldValue" ng-bind="item.oldValue"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Comment</label>
+                                <div class="col-sm-10">
                                             <textarea class="form-control" ng-model="item.comment" rows="2"
                                                       ng-disabled="tableViewOperType == 'retrieve'">
 
                                             </textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-show="tableViewOperType != 'retrieve'">
-                                        <label class="col-sm-2 control-label">
-                                            <apollorequiredfiled></apollorequiredfiled>
-                                            选择集群</label>
-                                        <div class="col-sm-10">
-                                            <apolloclusterselector apollo-app-id="pageContext.appId"
-                                                                   apollo-default-all-checked="false"
-                                                                   apollo-default-checked-env="pageContext.env"
-                                                                   apollo-default-checked-cluster="pageContext.clusterName"
-                                                                   apollo-select="collectSelectedClusters">
-
-                                            </apolloclusterselector>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" ng-click="switchToEdit()"
-                                            ng-show="tableViewOperType == 'retrieve'">修改
-                                    </button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                                    </button>
-                                    <button type="submit" class="btn btn-primary"
-                                            ng-show="tableViewOperType != 'retrieve'">提交
-                                    </button>
+                            </div>
+                            <div class="form-group" ng-show="tableViewOperType != 'retrieve'">
+                                <label class="col-sm-2 control-label">
+                                    <apollorequiredfiled></apollorequiredfiled>
+                                    选择集群</label>
+                                <div class="col-sm-10">
+                                    <apolloclusterselector apollo-app-id="pageContext.appId"
+                                                           apollo-default-all-checked="false"
+                                                           apollo-default-checked-env="pageContext.env"
+                                                           apollo-default-checked-cluster="pageContext.clusterName"
+                                                           apollo-select="collectSelectedClusters">
+
+                                    </apolloclusterselector>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" ng-click="switchToEdit()"
+                                    ng-show="tableViewOperType == 'retrieve'">修改
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn btn-primary"
+                                    ng-show="tableViewOperType != 'retrieve'">提交
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
-
-
     </div>
+
+
 </div>
 
 
