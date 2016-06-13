@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.biz.eureka;
 
-import com.ctrip.framework.apollo.biz.entity.ServerConfig;
-import com.ctrip.framework.apollo.biz.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.biz.service.ServerConfigService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**
@@ -23,14 +23,14 @@ import static org.mockito.Mockito.when;
 public class ApolloEurekaClientConfigTest {
   private ApolloEurekaClientConfig eurekaClientConfig;
   @Mock
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
   @Mock
   private Environment environment;
 
   @Before
   public void setUp() throws Exception {
     eurekaClientConfig = new ApolloEurekaClientConfig();
-    ReflectionTestUtils.setField(eurekaClientConfig, "serverConfigRepository", serverConfigRepository);
+    ReflectionTestUtils.setField(eurekaClientConfig, "serverConfigService", serverConfigService);
     ReflectionTestUtils.setField(eurekaClientConfig, "environment", environment);
   }
 
@@ -39,8 +39,8 @@ public class ApolloEurekaClientConfigTest {
     String someEurekaUrl = "http://xxx,http://yyy";
     String myZone = "xx";
 
-    when(serverConfigRepository.findByKey(ApolloEurekaClientConfig.EUREKA_URL_CONFIG))
-        .thenReturn(assembleServerConfig(ApolloEurekaClientConfig.EUREKA_URL_CONFIG, someEurekaUrl));
+    when(serverConfigService.getValue(ApolloEurekaClientConfig.EUREKA_URL_CONFIG))
+        .thenReturn(someEurekaUrl);
 
     List<String> eurekaUrls = eurekaClientConfig.getEurekaServerServiceUrls(myZone);
     String[] expected = someEurekaUrl.split(",");
@@ -59,8 +59,8 @@ public class ApolloEurekaClientConfigTest {
 
     when(environment.getProperty(ApolloEurekaClientConfig.EUREKA_URL_CONFIG))
         .thenReturn(someEurekaUrlFromSystemProperty);
-    when(serverConfigRepository.findByKey(ApolloEurekaClientConfig.EUREKA_URL_CONFIG))
-        .thenReturn(assembleServerConfig(ApolloEurekaClientConfig.EUREKA_URL_CONFIG, someEurekaUrl));
+    when(serverConfigService.getValue(ApolloEurekaClientConfig.EUREKA_URL_CONFIG))
+        .thenReturn(someEurekaUrl);
 
     List<String> eurekaUrls = eurekaClientConfig.getEurekaServerServiceUrls(myZone);
 
@@ -69,12 +69,5 @@ public class ApolloEurekaClientConfigTest {
     for (String url : expected) {
       assertTrue(eurekaUrls.contains(url));
     }
-  }
-
-  private ServerConfig assembleServerConfig(String key, String value) {
-    ServerConfig config = new ServerConfig();
-    config.setKey(key);
-    config.setValue(value);
-    return config;
   }
 }

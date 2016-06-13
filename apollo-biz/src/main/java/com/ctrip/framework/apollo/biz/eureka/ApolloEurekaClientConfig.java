@@ -3,8 +3,7 @@ package com.ctrip.framework.apollo.biz.eureka;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
-import com.ctrip.framework.apollo.biz.entity.ServerConfig;
-import com.ctrip.framework.apollo.biz.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.biz.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
@@ -13,7 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Primary
@@ -22,7 +20,7 @@ public class ApolloEurekaClientConfig extends EurekaClientConfigBean {
   private static final Splitter URL_SPLITTER = Splitter.on(",").omitEmptyStrings();
 
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   @Autowired
   private Environment environment;
@@ -37,10 +35,10 @@ public class ApolloEurekaClientConfig extends EurekaClientConfigBean {
     }
 
     //Second check if it is configured in database
-    ServerConfig eurekaUrl = serverConfigRepository.findByKey(EUREKA_URL_CONFIG);
+    String eurekaUrl = serverConfigService.getValue(EUREKA_URL_CONFIG);
 
-    if (!Objects.isNull(eurekaUrl) && !Strings.isNullOrEmpty(eurekaUrl.getValue())) {
-      return URL_SPLITTER.splitToList(eurekaUrl.getValue());
+    if (!Strings.isNullOrEmpty(eurekaUrl)) {
+      return URL_SPLITTER.splitToList(eurekaUrl);
 
     }
 

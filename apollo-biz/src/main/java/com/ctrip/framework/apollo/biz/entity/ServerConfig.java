@@ -20,6 +20,9 @@ public class ServerConfig extends BaseEntity {
   @Column(name = "Key", nullable = false)
   private String key;
 
+  @Column(name = "Cluster", nullable = false)
+  private String cluster;
+
   @Column(name = "Value", nullable = false)
   private String value;
 
@@ -48,6 +51,14 @@ public class ServerConfig extends BaseEntity {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public String getCluster() {
+    return cluster;
+  }
+
+  public void setCluster(String cluster) {
+    this.cluster = cluster;
   }
 
   public String toString() {
