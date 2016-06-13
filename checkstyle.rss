@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 212,
              Errors: 0,
-             Warnings: 982,
+             Warnings: 973,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -2838,7 +2838,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  11
+                  12
                 </td>
                 <td>
                   0
@@ -2922,7 +2922,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  20
+                  10
                 </td>
                 <td>
                   0
