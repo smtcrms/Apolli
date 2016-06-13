@@ -27,12 +27,15 @@ public class ConfigUtil {
   private int connectTimeout = 5000; //5 seconds
   private int readTimeout = 10000; //10 seconds
   private String cluster;
+  private int loadConfigQPS = 2; //2 times per second
+  private int longPollQPS = 2; //2 times per second
 
   public ConfigUtil() {
     initRefreshInterval();
     initConnectTimeout();
     initReadTimeout();
     initCluster();
+    initQPS();
   }
 
   /**
@@ -145,7 +148,35 @@ public class ConfigUtil {
     return refreshInterval;
   }
 
-  public TimeUnit getRefreshTimeUnit() {
+  public TimeUnit getRefreshIntervalTimeUnit() {
     return refreshIntervalTimeUnit;
+  }
+
+  private void initQPS() {
+    String customizedLoadConfigQPS = System.getProperty("apollo.loadConfigQPS");
+    if (!Strings.isNullOrEmpty(customizedLoadConfigQPS)) {
+      try {
+        loadConfigQPS = Integer.parseInt(customizedLoadConfigQPS);
+      } catch (Throwable ex) {
+        logger.error("Config for apollo.loadConfigQPS is invalid: {}", customizedLoadConfigQPS);
+      }
+    }
+
+    String customizedLongPollQPS = System.getProperty("apollo.longPollQPS");
+    if (!Strings.isNullOrEmpty(customizedLongPollQPS)) {
+      try {
+        longPollQPS = Integer.parseInt(customizedLongPollQPS);
+      } catch (Throwable ex) {
+        logger.error("Config for apollo.longPollQPS is invalid: {}", customizedLongPollQPS);
+      }
+    }
+  }
+
+  public int getLoadConfigQPS() {
+    return loadConfigQPS;
+  }
+
+  public int getLongPollQPS() {
+    return longPollQPS;
   }
 }
