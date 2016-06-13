@@ -36,7 +36,7 @@ public class CtripUserInfoHolder implements UserInfoHolder{
       String name = (String) getName.invoke(principal);
 
       UserInfo userInfo = new UserInfo();
-      userInfo.setUsername(name);
+      userInfo.setUserId(name);
 
       return userInfo;
     } catch (Exception e) {

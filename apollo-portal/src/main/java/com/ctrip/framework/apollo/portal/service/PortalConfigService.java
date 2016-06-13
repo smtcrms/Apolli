@@ -67,7 +67,7 @@ public class PortalConfigService {
     }
 
     try {
-      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
+      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
       itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
     } catch (Exception e) {
       logger.error("itemAPI.updateItems error. appId{},env:{},clusterName:{},namespaceName:{}", appId, env, clusterName,
@@ -83,7 +83,7 @@ public class PortalConfigService {
       throw new BadRequestException(
           "namespace:" + namespaceName + " not exist in env:" + env + ", cluster:" + clusterName);
     }
-    String username = userInfoHolder.getUser().getUsername();
+    String username = userInfoHolder.getUser().getUserId();
     if (StringUtils.isEmpty(item.getDataChangeCreatedBy())) {
       item.setDataChangeCreatedBy(username);
     }
@@ -93,7 +93,7 @@ public class PortalConfigService {
   }
 
   public void deleteItem(Env env, long itemId) {
-    itemAPI.deleteItem(env, itemId, userInfoHolder.getUser().getUsername());
+    itemAPI.deleteItem(env, itemId, userInfoHolder.getUser().getUserId());
   }
 
   /**
@@ -102,7 +102,7 @@ public class PortalConfigService {
   public ReleaseDTO createRelease(NamespaceReleaseModel model) {
     return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(),
                               model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment()
-        , userInfoHolder.getUser().getUsername());
+        , userInfoHolder.getUser().getUserId());
   }
 
   public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
@@ -114,7 +114,7 @@ public class PortalConfigService {
     for (ItemDiffs itemDiff : itemDiffs) {
       NamespaceIdentifer namespaceIdentifer = itemDiff.getNamespace();
       ItemChangeSets changeSets = itemDiff.getDiffs();
-      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
+      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
       try {
         itemAPI
             .updateItems(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),

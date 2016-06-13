@@ -54,14 +54,14 @@ public class PortalNamespaceService {
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
     if (StringUtils.isEmpty(namespace.getDataChangeCreatedBy())){
-      namespace.setDataChangeCreatedBy(userInfoHolder.getUser().getUsername());
+      namespace.setDataChangeCreatedBy(userInfoHolder.getUser().getUserId());
     }
-    namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUsername());
+    namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     return namespaceAPI.createNamespace(env, namespace);
   }
 
   public void createAppNamespace(AppNamespaceDTO appNamespace) {
-    String operator = userInfoHolder.getUser().getUsername();
+    String operator = userInfoHolder.getUser().getUserId();
     if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())){
       appNamespace.setDataChangeCreatedBy(operator);
     }
