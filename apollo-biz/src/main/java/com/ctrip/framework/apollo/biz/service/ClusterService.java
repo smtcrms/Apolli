@@ -62,10 +62,17 @@ public class ClusterService {
   }
 
   @Transactional
-  public void delete(long id, String owner) {
-    clusterRepository.delete(id);
+  public void delete(long id, String operator) {
+    Cluster cluster = clusterRepository.findOne(id);
+    if (cluster == null) {
+      return;
+    }
 
-    auditService.audit(Cluster.class.getSimpleName(), id, Audit.OP.DELETE, owner);
+    cluster.setDeleted(true);
+    cluster.setDataChangeLastModifiedBy(operator);
+    clusterRepository.save(cluster);
+
+    auditService.audit(Cluster.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
   @Transactional

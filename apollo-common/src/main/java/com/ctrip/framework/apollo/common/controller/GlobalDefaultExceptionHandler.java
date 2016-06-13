@@ -62,7 +62,7 @@ public class GlobalDefaultExceptionHandler {
     errorAttributes.put("timestamp",
         LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     errorAttributes.put("exception", resolveError(ex).getClass().getName());
-    errorAttributes.put("stackTrace", ex.getStackTrace());
+//    errorAttributes.put("stackTrace", ex.getStackTrace());
     if (ex instanceof AbstractBaseException) {
       errorAttributes.put("errorCode", ((AbstractBaseException) ex).getErrorCode());
     }

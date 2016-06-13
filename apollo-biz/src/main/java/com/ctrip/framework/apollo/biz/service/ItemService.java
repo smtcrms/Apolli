@@ -1,12 +1,5 @@
 package com.ctrip.framework.apollo.biz.service;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
@@ -14,6 +7,13 @@ import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class ItemService {
@@ -28,10 +28,17 @@ public class ItemService {
   private AuditService auditService;
 
   @Transactional
-  public void delete(long id, String owner) {
-    itemRepository.delete(id);
+  public void delete(long id, String operator) {
+    Item item = itemRepository.findOne(id);
+    if (item == null) {
+      return;
+    }
 
-    auditService.audit(Item.class.getSimpleName(), id, Audit.OP.DELETE, owner);
+    item.setDeleted(true);
+    item.setDataChangeLastModifiedBy(operator);
+    itemRepository.save(item);
+
+    auditService.audit(Item.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
   public Item findOne(String appId, String clusterName, String namespaceName, String key) {
