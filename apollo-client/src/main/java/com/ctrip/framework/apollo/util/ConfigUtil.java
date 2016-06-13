@@ -58,7 +58,7 @@ public class ConfigUtil {
 
   private void initCluster() {
     //Load data center from system property
-    cluster = System.getProperty("apollo.cluster");
+    cluster = System.getProperty(ConfigConsts.APOLLO_CLUSTER_KEY);
 
     //Use data center as cluster
     if (Strings.isNullOrEmpty(cluster)) {
