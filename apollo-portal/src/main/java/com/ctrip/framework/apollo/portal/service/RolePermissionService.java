@@ -49,7 +49,7 @@ public class RolePermissionService {
    */
   @Transactional
   public Role createRoleWithPermissions(Role role, Set<Long> permissionIds) {
-    Role current = roleRepository.findTopByRoleName(role.getRoleName());
+    Role current = findRoleByRoleName(role.getRoleName());
     Preconditions.checkState(current == null, "Role %s already exists!", role.getRoleName());
 
     Role createdRole = roleRepository.save(role);
@@ -75,7 +75,7 @@ public class RolePermissionService {
    */
   @Transactional
   public void assignRoleToUsers(String roleName, Set<String> userIds, String operatorUserId) {
-    Role role = roleRepository.findTopByRoleName(roleName);
+    Role role = findRoleByRoleName(roleName);
     Preconditions.checkState(role != null, "Role %s doesn't exist!", roleName);
 
     List<UserRole> existedUserRoles =
@@ -102,7 +102,7 @@ public class RolePermissionService {
    */
   @Transactional
   public void removeRoleFromUsers(String roleName, Set<String> userIds, String operatorUserId) {
-    Role role = roleRepository.findTopByRoleName(roleName);
+    Role role = findRoleByRoleName(roleName);
     Preconditions.checkState(role != null, "Role %s doesn't exist!", roleName);
 
     List<UserRole> existedUserRoles =
@@ -121,7 +121,7 @@ public class RolePermissionService {
    * Query users with role
    */
   public Set<UserInfo> queryUsersWithRole(String roleName) {
-    Role role = roleRepository.findTopByRoleName(roleName);
+    Role role = findRoleByRoleName(roleName);
 
     if (role == null) {
       return Collections.emptySet();
@@ -136,6 +136,13 @@ public class RolePermissionService {
     }).toSet();
 
     return users;
+  }
+
+  /**
+   * Find role by role name, note that roleName should be unique
+   */
+  public Role findRoleByRoleName(String roleName) {
+    return roleRepository.findTopByRoleName(roleName);
   }
 
   /**
