@@ -23,15 +23,15 @@ public class ItemSetService {
 
   @Transactional
   public void updateSet(ItemChangeSets changeSet) {
-    String owner = changeSet.getDataChangeLastModifiedBy();
+    String operator = changeSet.getDataChangeLastModifiedBy();
     if (!CollectionUtils.isEmpty(changeSet.getCreateItems())) {
       for (ItemDTO item : changeSet.getCreateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
-        entity.setDataChangeCreatedBy(owner);
-        entity.setDataChangeLastModifiedBy(owner);
+        entity.setDataChangeCreatedBy(operator);
+        entity.setDataChangeLastModifiedBy(operator);
         itemRepository.save(entity);
       }
-      auditService.audit("ItemSet", null, Audit.OP.INSERT, owner);
+      auditService.audit("ItemSet", null, Audit.OP.INSERT, operator);
     }
 
     if (!CollectionUtils.isEmpty(changeSet.getUpdateItems())) {
@@ -39,20 +39,20 @@ public class ItemSetService {
         Item entity = BeanUtils.transfrom(Item.class, item);
         Item managedItem = itemRepository.findOne(entity.getId());
         BeanUtils.copyEntityProperties(entity, managedItem);
-        managedItem.setDataChangeLastModifiedBy(owner);
+        managedItem.setDataChangeLastModifiedBy(operator);
         itemRepository.save(managedItem);
       }
-      auditService.audit("ItemSet", null, Audit.OP.UPDATE, owner);
+      auditService.audit("ItemSet", null, Audit.OP.UPDATE, operator);
     }
 
     if (!CollectionUtils.isEmpty(changeSet.getDeleteItems())) {
       for (ItemDTO item : changeSet.getDeleteItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
-        entity.setDataChangeLastModifiedBy(owner);
+        entity.setDeleted(true);
+        entity.setDataChangeLastModifiedBy(operator);
         itemRepository.save(entity);
-        itemRepository.delete(item.getId());
       }
-      auditService.audit("ItemSet", null, Audit.OP.DELETE, owner);
+      auditService.audit("ItemSet", null, Audit.OP.DELETE, operator);
     }
   }
 }

@@ -33,10 +33,17 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void delete(long id, String owner) {
-    namespaceRepository.delete(id);
+  public void delete(long id, String operator) {
+    Namespace namespace = namespaceRepository.findOne(id);
+    if (namespace == null) {
+      return;
+    }
 
-    auditService.audit(Namespace.class.getSimpleName(), id, Audit.OP.DELETE, owner);
+    namespace.setDeleted(true);
+    namespace.setDataChangeLastModifiedBy(operator);
+    namespaceRepository.save(namespace);
+
+    auditService.audit(Namespace.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
   public Namespace findOne(Long namespaceId) {

@@ -30,10 +30,17 @@ public class AppService {
   }
   
   @Transactional
-  public void delete(long id, String owner) {
-    appRepository.delete(id);
+  public void delete(long id, String operator) {
+    App app = appRepository.findOne(id);
+    if (app == null) {
+      return;
+    }
 
-    auditService.audit(App.class.getSimpleName(), id, Audit.OP.DELETE, owner);
+    app.setDeleted(true);
+    app.setDataChangeLastModifiedBy(operator);
+    appRepository.save(app);
+
+    auditService.audit(App.class.getSimpleName(), id, Audit.OP.DELETE, operator);
   }
 
   public List<App> findAll(Pageable pageable) {
