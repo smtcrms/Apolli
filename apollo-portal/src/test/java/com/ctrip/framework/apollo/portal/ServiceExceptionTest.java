@@ -45,7 +45,7 @@ public class ServiceExceptionTest extends AbstractPortalTest {
   }
 
   private String getBaseAppUrl() {
-    return "http://localhost:" + port + "/apps/";
+    return "http://localhost:" + port + "/apps/envs/ALL";
   }
 
   @Test

@@ -98,7 +98,7 @@ public class PortalAppService {
   }
 
   private void enrichUserInfo(AppDTO app){
-    String username = userInfoHolder.getUser().getUsername();
+    String username = userInfoHolder.getUser().getUserId();
     app.setDataChangeCreatedBy(username);
     app.setDataChangeLastModifiedBy(username);
   }

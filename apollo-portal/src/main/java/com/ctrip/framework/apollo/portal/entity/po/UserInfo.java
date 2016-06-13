@@ -1,13 +1,13 @@
 package com.ctrip.framework.apollo.portal.entity.po;
 
 public class UserInfo {
-  private String username;
+  private String userId;
 
-  public String getUsername() {
-    return username;
+  public String getUserId() {
+    return userId;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 }

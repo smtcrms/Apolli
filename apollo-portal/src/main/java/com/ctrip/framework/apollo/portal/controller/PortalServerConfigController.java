@@ -32,7 +32,7 @@ public class PortalServerConfigController {
       throw new BadRequestException("request payload contains empty");
     }
 
-    String modifiedBy = userInfoHolder.getUser().getUsername();
+    String modifiedBy = userInfoHolder.getUser().getUserId();
 
     ServerConfig storedConfig = serverConfigRepository.findByKey(serverConfig.getKey());
 

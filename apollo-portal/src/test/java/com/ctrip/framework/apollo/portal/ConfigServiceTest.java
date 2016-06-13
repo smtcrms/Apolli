@@ -70,7 +70,7 @@ public class ConfigServiceTest {
     when(resolver.resolve(0, model.getConfigText(), itemDTOs)).thenReturn(changeSets);
 
     UserInfo userInfo = new UserInfo();
-    userInfo.setUsername("test");
+    userInfo.setUserId("test");
     when(userInfoHolder.getUser()).thenReturn(userInfo);
 
     try {
@@ -105,7 +105,7 @@ public class ConfigServiceTest {
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(null);
 
     UserInfo userInfo = new UserInfo();
-    userInfo.setUsername("test");
+    userInfo.setUserId("test");
     when(userInfoHolder.getUser()).thenReturn(userInfo);
 
     List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
@@ -146,7 +146,7 @@ public class ConfigServiceTest {
     when(itemAPI.findItems(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(targetItems);
 
     UserInfo userInfo = new UserInfo();
-    userInfo.setUsername("test");
+    userInfo.setUserId("test");
     when(userInfoHolder.getUser()).thenReturn(userInfo);
 
     List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
