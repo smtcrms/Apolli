@@ -97,7 +97,7 @@ public class ConfigServiceLocator implements Initializable {
             tryUpdateConfigServices();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
-        m_configUtil.getRefreshTimeUnit());
+        m_configUtil.getRefreshIntervalTimeUnit());
   }
 
   private synchronized void updateConfigServices() {

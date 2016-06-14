@@ -153,7 +153,7 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     }
 
     @Override
-    public TimeUnit getRefreshTimeUnit() {
+    public TimeUnit getRefreshIntervalTimeUnit() {
       return refreshTimeUnit;
     }
 
@@ -165,6 +165,16 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     @Override
     public String getDataCenter() {
       return someDataCenter;
+    }
+
+    @Override
+    public int getLoadConfigQPS() {
+      return 200;
+    }
+
+    @Override
+    public int getLongPollQPS() {
+      return 200;
     }
   }
 

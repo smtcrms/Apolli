@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.google.common.util.concurrent.RateLimiter;
 
 import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -60,9 +61,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final ExecutorService m_longPollingService;
   private final AtomicBoolean m_longPollingStopped;
   private SchedulePolicy m_longPollFailSchedulePolicyInSecond;
-  private SchedulePolicy m_longPollSuccessSchedulePolicyInMS;
   private AtomicReference<ServiceDTO> m_longPollServiceDto;
   private AtomicReference<ApolloConfigNotification> m_longPollResult;
+  private RateLimiter m_longPollRateLimiter;
+  private RateLimiter m_loadConfigRateLimiter;
 
   static {
     m_executorService = Executors.newScheduledThreadPool(1,
@@ -87,12 +89,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       throw new ApolloConfigException("Unable to load component!", ex);
     }
     m_longPollFailSchedulePolicyInSecond = new ExponentialSchedulePolicy(1, 120); //in second
-    m_longPollSuccessSchedulePolicyInMS = new ExponentialSchedulePolicy(100, 1000); //in millisecond
     m_longPollingStopped = new AtomicBoolean(false);
     m_longPollingService = Executors.newSingleThreadExecutor(
         ApolloThreadFactory.create("RemoteConfigRepository-LongPolling", true));
     m_longPollServiceDto = new AtomicReference<>();
     m_longPollResult = new AtomicReference<>();
+    m_longPollRateLimiter = RateLimiter.create(m_configUtil.getLongPollQPS());
+    m_loadConfigRateLimiter = RateLimiter.create(m_configUtil.getLoadConfigQPS());
     this.trySync();
     this.schedulePeriodicRefresh();
     this.scheduleLongPollingRefresh();
@@ -113,7 +116,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
   private void schedulePeriodicRefresh() {
     logger.debug("Schedule periodic refresh with interval: {} {}",
-        m_configUtil.getRefreshInterval(), m_configUtil.getRefreshTimeUnit());
+        m_configUtil.getRefreshInterval(), m_configUtil.getRefreshIntervalTimeUnit());
     this.m_executorService.scheduleAtFixedRate(
         new Runnable() {
           @Override
@@ -124,7 +127,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
             Cat.logEvent("Apollo.Client.Version", Apollo.VERSION);
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
-        m_configUtil.getRefreshTimeUnit());
+        m_configUtil.getRefreshIntervalTimeUnit());
   }
 
   @Override
@@ -158,6 +161,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private ApolloConfig loadApolloConfig() {
+    m_loadConfigRateLimiter.acquire();
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
     String dataCenter = m_configUtil.getDataCenter();
@@ -281,8 +285,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     final Random random = new Random();
     ServiceDTO lastServiceDto = null;
     while (!m_longPollingStopped.get() && !Thread.currentThread().isInterrupted()) {
+      m_longPollRateLimiter.acquire();
       Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "pollNotification");
-      long sleepTime = 50; //default 50 ms
       try {
         if (lastServiceDto == null) {
           List<ServiceDTO> configServices = getConfigServices();
@@ -316,12 +320,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
               trySync();
             }
           });
-          m_longPollSuccessSchedulePolicyInMS.success();
         }
 
-        if (response.getStatusCode() == 304) {
-          sleepTime = m_longPollSuccessSchedulePolicyInMS.fail();
-        }
         m_longPollFailSchedulePolicyInSecond.success();
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);
@@ -333,14 +333,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         logger.warn(
             "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespace: {}, reason: {}",
             sleepTimeInSecond, appId, cluster, m_namespace, ExceptionUtil.getDetailMessage(ex));
-        sleepTime = sleepTimeInSecond * 1000;
-      } finally {
-        transaction.complete();
         try {
-          TimeUnit.MILLISECONDS.sleep(sleepTime);
+          TimeUnit.SECONDS.sleep(sleepTimeInSecond);
         } catch (InterruptedException ie) {
           //ignore
         }
+      } finally {
+        transaction.complete();
       }
     }
   }

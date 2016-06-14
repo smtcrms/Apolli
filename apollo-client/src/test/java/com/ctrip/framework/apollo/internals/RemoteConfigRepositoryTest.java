@@ -192,6 +192,16 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     public String getDataCenter() {
       return null;
     }
+
+    @Override
+    public int getLoadConfigQPS() {
+      return 200;
+    }
+
+    @Override
+    public int getLongPollQPS() {
+      return 200;
+    }
   }
 
   public static class MockConfigServiceLocator extends ConfigServiceLocator {
