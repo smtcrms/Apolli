@@ -44,7 +44,6 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
   /**
    * Constructor.
    *
-   * @param baseDir   the base dir for this local file config repository
    * @param namespace the namespace
    */
   public LocalFileConfigRepository(String namespace) {
