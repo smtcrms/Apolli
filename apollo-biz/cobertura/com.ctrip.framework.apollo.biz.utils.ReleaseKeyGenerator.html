@@ -73,14 +73,14 @@
   <td class="src"><pre class="src">&nbsp;<span class="comment">   */</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;30</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;  <span class="keyword">public</span> <span class="keyword">static</span> String generateReleaseKey(Namespace namespace) {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;31</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    String hexIdString =</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;32</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;        ByteUtil.toHexString(</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;33</td>  <td class="nbHitsCovered">&nbsp;300000</td>  <td class="src"><pre class="src">&nbsp;            toByteArray(Objects.hash(namespace.getAppId(), namespace.getClusterName(),</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;34</td>  <td class="nbHitsCovered">&nbsp;200000</td>  <td class="src"><pre class="src">&nbsp;                namespace.getNamespaceName()), MachineUtil.getMachineIdentifier(),</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;35</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;                        releaseCounter.incrementAndGet()));</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;31</td>  <td class="nbHitsCovered">&nbsp;99999</td>  <td class="src"><pre class="src">&nbsp;    String hexIdString =</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;32</td>  <td class="nbHitsCovered">&nbsp;99990</td>  <td class="src"><pre class="src">&nbsp;        ByteUtil.toHexString(</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;33</td>  <td class="nbHitsCovered">&nbsp;299991</td>  <td class="src"><pre class="src">&nbsp;            toByteArray(Objects.hash(namespace.getAppId(), namespace.getClusterName(),</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;34</td>  <td class="nbHitsCovered">&nbsp;199990</td>  <td class="src"><pre class="src">&nbsp;                namespace.getNamespaceName()), MachineUtil.getMachineIdentifier(),</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;35</td>  <td class="nbHitsCovered">&nbsp;99995</td>  <td class="src"><pre class="src">&nbsp;                        releaseCounter.incrementAndGet()));</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;36</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;37</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">return</span> KEY_JOINER.join(TIMESTAMP_FORMAT.format(<span class="keyword">new</span> Date()), hexIdString);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;37</td>  <td class="nbHitsCovered">&nbsp;99997</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">return</span> KEY_JOINER.join(TIMESTAMP_FORMAT.format(<span class="keyword">new</span> Date()), hexIdString);</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;38</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;  }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;39</td>  <td class="nbHits">&nbsp;</td>
@@ -95,22 +95,22 @@
   <td class="src"><pre class="src">&nbsp;<span class="comment">   */</span></pre></td></tr>
 <tr>  <td class="numLine">&nbsp;44</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] toByteArray(<span class="keyword">int</span> keyHashCode, <span class="keyword">int</span> machineIdentifier, <span class="keyword">int</span> counter) {</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;45</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[8];</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;46</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[0] = ByteUtil.int1(keyHashCode);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;47</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[1] = ByteUtil.int0(keyHashCode);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;48</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[2] = ByteUtil.int2(machineIdentifier);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;49</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[3] = ByteUtil.int1(machineIdentifier);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;50</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[4] = ByteUtil.int0(machineIdentifier);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;51</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[5] = ByteUtil.int2(counter);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;52</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[6] = ByteUtil.int1(counter);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;53</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    bytes[7] = ByteUtil.int0(counter);</pre></td></tr>
-<tr>  <td class="numLineCover">&nbsp;54</td>  <td class="nbHitsCovered">&nbsp;100000</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">return</span> bytes;</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;45</td>  <td class="nbHitsCovered">&nbsp;99998</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[8];</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;46</td>  <td class="nbHitsCovered">&nbsp;99998</td>  <td class="src"><pre class="src">&nbsp;    bytes[0] = ByteUtil.int1(keyHashCode);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;47</td>  <td class="nbHitsCovered">&nbsp;99999</td>  <td class="src"><pre class="src">&nbsp;    bytes[1] = ByteUtil.int0(keyHashCode);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;48</td>  <td class="nbHitsCovered">&nbsp;99998</td>  <td class="src"><pre class="src">&nbsp;    bytes[2] = ByteUtil.int2(machineIdentifier);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;49</td>  <td class="nbHitsCovered">&nbsp;99996</td>  <td class="src"><pre class="src">&nbsp;    bytes[3] = ByteUtil.int1(machineIdentifier);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;50</td>  <td class="nbHitsCovered">&nbsp;99995</td>  <td class="src"><pre class="src">&nbsp;    bytes[4] = ByteUtil.int0(machineIdentifier);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;51</td>  <td class="nbHitsCovered">&nbsp;99991</td>  <td class="src"><pre class="src">&nbsp;    bytes[5] = ByteUtil.int2(counter);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;52</td>  <td class="nbHitsCovered">&nbsp;99991</td>  <td class="src"><pre class="src">&nbsp;    bytes[6] = ByteUtil.int1(counter);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;53</td>  <td class="nbHitsCovered">&nbsp;99992</td>  <td class="src"><pre class="src">&nbsp;    bytes[7] = ByteUtil.int0(counter);</pre></td></tr>
+<tr>  <td class="numLineCover">&nbsp;54</td>  <td class="nbHitsCovered">&nbsp;99985</td>  <td class="src"><pre class="src">&nbsp;    <span class="keyword">return</span> bytes;</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;55</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;  }</pre></td></tr>
 <tr>  <td class="numLine">&nbsp;56</td>  <td class="nbHits">&nbsp;</td>
   <td class="src"><pre class="src">&nbsp;}</pre></td></tr>
 </table>
 
-<div class="footer">Report generated by <a href="http://cobertura.sourceforge.net/" target="_top">Cobertura</a> 2.1.1 on 6/13/16 11:36 AM.</div>
+<div class="footer">Report generated by <a href="http://cobertura.sourceforge.net/" target="_top">Cobertura</a> 2.1.1 on 6/14/16 2:31 AM.</div>
 </body>
 </html>
