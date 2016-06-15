@@ -92,21 +92,26 @@ public class AppService {
     }
   }
 
-  private void enrichUserInfo(App app) {
+  public void enrichUserInfo(App app) {
     String username = userInfoHolder.getUser().getUserId();
     app.setDataChangeCreatedBy(username);
     app.setDataChangeLastModifiedBy(username);
   }
 
+
   @Transactional
-  private App createOrUpdateAppInLocal(App app) {
+  public App createOrUpdateAppInLocal(App app) {
     String appId = app.getAppId();
     App managedApp = appRepository.findByAppId(appId);
+
     if (managedApp != null) {
       BeanUtils.copyEntityProperties(app, managedApp);
       return appRepository.save(managedApp);
     } else {
       App createdApp = appRepository.save(app);
+      if (app.getName().equals("xx")){
+        throw new RuntimeException("xxxx");
+      }
       namespaceService.createDefaultAppNamespace(appId);
       //role
       roleInitializationService.initAppRoles(createdApp);

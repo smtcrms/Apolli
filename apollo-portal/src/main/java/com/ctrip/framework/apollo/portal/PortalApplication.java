@@ -9,10 +9,14 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableAutoConfiguration
+@EnableAspectJAutoProxy
 @Configuration
+@EnableAutoConfiguration
+@EnableTransactionManagement
 @PropertySource(value = {"classpath:portal.properties"})
 @ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
     PortalApplication.class})

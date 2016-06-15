@@ -58,8 +58,8 @@ public class NamespaceService {
   private Gson gson = new Gson();
 
 
-  public List<AppNamespaceDTO> findPublicAppNamespaces() {
-    return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstAliveEnv());
+  public List<AppNamespace> findPublicAppNamespaces() {
+    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {

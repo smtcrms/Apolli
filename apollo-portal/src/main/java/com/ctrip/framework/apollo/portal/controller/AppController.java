@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.portal.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.ctrip.framework.apollo.common.http.RichResponseEntity;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
+import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
 import com.ctrip.framework.apollo.portal.service.AppService;
 
 import java.util.List;
@@ -32,6 +34,9 @@ public class AppController {
 
   @Autowired
   private PortalSettings portalSettings;
+
+  @Autowired
+  private ApplicationEventPublisher publisher;
 
   @RequestMapping("")
   public List<App> findAllApp() {
@@ -60,7 +65,10 @@ public class AppController {
 
     checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName());
 
-    appService.createApp(app);
+    appService.enrichUserInfo(app);
+    App createdApp = appService.createOrUpdateAppInLocal(app);
+
+    publisher.publishEvent(new AppCreationEvent(createdApp));
 
     return ResponseEntity.ok().build();
   }

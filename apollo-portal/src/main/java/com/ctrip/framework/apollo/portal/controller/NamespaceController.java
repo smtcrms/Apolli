@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
@@ -25,7 +26,7 @@ public class NamespaceController {
   private NamespaceService namespaceService;
 
   @RequestMapping("/appnamespaces/public")
-  public List<AppNamespaceDTO> findPublicAppNamespaces() {
+  public List<AppNamespace> findPublicAppNamespaces() {
     return namespaceService.findPublicAppNamespaces();
   }
 
