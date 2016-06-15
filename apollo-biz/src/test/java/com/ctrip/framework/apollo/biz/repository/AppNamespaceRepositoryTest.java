@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.biz.repository;
 
 import com.ctrip.framework.apollo.biz.BizTestConfiguration;
-import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 
 import org.junit.Assert;

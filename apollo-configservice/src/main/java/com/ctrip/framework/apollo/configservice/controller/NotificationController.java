@@ -9,7 +9,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 
-import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageListener;
 import com.ctrip.framework.apollo.biz.message.Topics;

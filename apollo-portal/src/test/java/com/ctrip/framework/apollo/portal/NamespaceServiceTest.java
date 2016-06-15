@@ -6,7 +6,7 @@ import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.ctrip.framework.apollo.portal.service.PortalNamespaceService;
+import com.ctrip.framework.apollo.portal.service.NamespaceService;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class NamespaceServiceTest {
   private PropertyResolver resolver;
 
   @InjectMocks
-  private PortalNamespaceService namespaceService;
+  private NamespaceService namespaceService;
 
   @Before
   public void setup() {

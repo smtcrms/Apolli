@@ -14,10 +14,8 @@
 
 <body ng-controller="IndexController">
 
-<div class="site-notice">当前站点支持
-    &nbsp;<a ng-repeat="env in envs" ng-class="{selected:selectedEnv == env}" ng-click="switchEnv(env)"><em ng-bind="env">
-        </em>&nbsp;</a>
-    环境点击切换
+<div class="site-notice"><label>当前站点支持</label><label ng-repeat="env in envs" ng-bind="env" style="margin-left: 5px;"></label>
+    环境
 </div>
 
 <header class="site-header jumbotron">

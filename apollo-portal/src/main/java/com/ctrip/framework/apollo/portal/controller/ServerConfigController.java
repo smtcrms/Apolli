@@ -2,8 +2,6 @@ package com.ctrip.framework.apollo.portal.controller;
 
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
@@ -14,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkArgument;
+import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkModel;
+
 /**
  * 配置中心本身需要一些配置,这些配置放在数据库里面
  */
 @RestController
-public class PortalServerConfigController {
+public class ServerConfigController {
 
   @Autowired
   private ServerConfigRepository serverConfigRepository;
@@ -28,9 +29,8 @@ public class PortalServerConfigController {
   @RequestMapping(value = "/server/config", method = RequestMethod.POST)
   public ServerConfig createOrUpdate(@RequestBody ServerConfig serverConfig) {
 
-    if (serverConfig == null || StringUtils.isContainEmpty(serverConfig.getKey(), serverConfig.getValue())) {
-      throw new BadRequestException("request payload contains empty");
-    }
+    checkModel(serverConfig != null);
+    checkArgument(serverConfig.getKey(), serverConfig.getValue());
 
     String modifiedBy = userInfoHolder.getUser().getUserId();
 
@@ -45,7 +45,6 @@ public class PortalServerConfigController {
       storedConfig.setDataChangeLastModifiedBy(modifiedBy);
       return serverConfigRepository.save(storedConfig);
     }
-
 
   }
 

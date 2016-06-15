@@ -25,7 +25,7 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         },
         sync_item: {
             method: 'PUT',
-            url: '/namespaces/:namespaceName/items',
+            url: '/apps/:appId/namespaces/:namespaceName/items',
             isArray: false
         },
         create_item: {
@@ -38,7 +38,7 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         },
         delete_item: {
             method: 'DELETE',
-            url: '/envs/:env/items/:itemId'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/items/:itemId'
         }
     });
 
@@ -123,9 +123,10 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
             return d.promise;
         },
 
-        sync_items: function (namespaceName, sourceData) {
+        sync_items: function (appId, namespaceName, sourceData) {
             var d = $q.defer();
             config_source.sync_item({
+                                        appId: appId,
                                         namespaceName: namespaceName
                                     }, sourceData, function (result) {
                 d.resolve(result);
@@ -165,10 +166,13 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
             return d.promise;
         },
 
-        delete_item: function (env, itemId) {
+        delete_item: function (appId, env, clusterName, namespaceName, itemId) {
             var d = $q.defer();
             config_source.delete_item({
+                                          appId: appId,
                                           env: env,
+                                          clusterName: clusterName,
+                                          namespaceName: namespaceName,
                                           itemId: itemId
                                       }, function (result) {
                 d.resolve(result);

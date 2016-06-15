@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
-import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;

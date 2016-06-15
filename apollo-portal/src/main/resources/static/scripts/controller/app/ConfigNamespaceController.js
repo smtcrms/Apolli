@@ -1,6 +1,6 @@
 application_module.controller("ConfigNamespaceController",
-                              ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService',
-                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService) {
+                              ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService', 'PermissionService',
+                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService, PermissionService) {
 
                                    var namespace_view_type = {
                                        TEXT: 'text',
@@ -30,6 +30,21 @@ application_module.controller("ConfigNamespaceController",
                                                        }
 
                                                        namespace.isTextEditing = false;
+                                                       
+                                                       //permission
+                                                       PermissionService.has_modify_namespace_permission($rootScope.pageContext.appId, namespace.namespace.namespaceName)
+                                                           .then(function (result) {
+                                                               namespace.hasModifyPermission = result.hasPermission;     
+                                                           }, function (result) {
+                                                               
+                                                           });
+
+                                                       PermissionService.has_release_namespace_permission($rootScope.pageContext.appId, namespace.namespace.namespaceName)
+                                                           .then(function (result) {
+                                                               namespace.hasReleasePermission = result.hasPermission;
+                                                           }, function (result) {
+
+                                                           });
                                                    });
                                                }
                                                setInterval(function () {
@@ -71,6 +86,10 @@ application_module.controller("ConfigNamespaceController",
                                        var result = "";
                                        var itemCnt = 0;
                                        namespace.items.forEach(function (item) {
+                                           //deleted key
+                                           if (!item.item.lastModifiedBy){
+                                               return;
+                                           }
                                            if (item.item.key) {
                                                //use string \n to display as new line
                                                var itemValue = item.item.value.replace(/\n/g,"\\n");
@@ -136,6 +155,12 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.toReleaseNamespace = {};
 
                                    $scope.prepareReleaseNamespace = function (namespace) {
+                                       if (!namespace.hasReleasePermission){
+                                           $('#releaseNoPermissionDialog').modal('show');
+                                           return;
+                                       }else {
+                                           $('#releaseModal').modal('show');
+                                       }
                                        $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
                                        $scope.toReleaseNamespace = namespace;
                                    };
@@ -175,15 +200,21 @@ application_module.controller("ConfigNamespaceController",
                                        $scope.item = item;
                                        $scope.item.oldValue = oldValue;
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
+                                       $scope.hasModifyPermission = namespace.hasModifyPermission;
                                    };
 
-                                   var toDeleteItemId = 0;
-                                   $scope.preDeleteItem = function (itemId) {
+                                   var toDeleteItemId = 0, toDeleteNamespace = {};
+                                   $scope.preDeleteItem = function (namespace, itemId) {
+                                       toDeleteNamespace = namespace;
                                        toDeleteItemId = itemId;
                                    };
 
                                    $scope.deleteItem = function () {
-                                       ConfigService.delete_item($rootScope.pageContext.env, toDeleteItemId).then(
+                                       ConfigService.delete_item($rootScope.pageContext.appId,
+                                                                 $rootScope.pageContext.env,
+                                                                 $rootScope.pageContext.clusterName,
+                                                                 toDeleteNamespace.namespace.namespaceName,
+                                                                 toDeleteItemId).then(
                                            function (result) {
                                                toastr.success("删除成功!");
                                                $rootScope.refreshNamespaces();
@@ -263,6 +294,14 @@ application_module.controller("ConfigNamespaceController",
                                        }
 
                                    };
+                                   
+                                   //permission
+                                   PermissionService.has_assign_user_permission($rootScope.pageContext.appId)
+                                       .then(function (result) {
+                                           $scope.hasAssignUserPermission = result.hasPermission;
+                                       }, function (result) {
+                                           
+                                       });
 
                                    $('.config-item-container').removeClass('hide');
                                }]);

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-public class PortalUserInfoController {
+public class UserInfoController {
 
   @Autowired
   private UserInfoHolder userInfoHolder;

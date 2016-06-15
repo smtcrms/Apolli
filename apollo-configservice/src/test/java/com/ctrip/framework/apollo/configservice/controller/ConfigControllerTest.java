@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ConfigService;

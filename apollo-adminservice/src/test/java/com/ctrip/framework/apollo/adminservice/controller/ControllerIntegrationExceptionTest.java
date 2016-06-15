@@ -16,7 +16,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.ctrip.framework.apollo.biz.entity.App;
+import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.service.AdminService;
 import com.ctrip.framework.apollo.biz.service.AppService;
 import com.ctrip.framework.apollo.core.dto.AppDTO;

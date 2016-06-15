@@ -17,7 +17,7 @@ import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.framework.apollo.biz.BizTestConfiguration;
-import com.ctrip.framework.apollo.biz.entity.App;
+import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepository;
 import com.ctrip.framework.apollo.biz.repository.AppRepository;
 import com.ctrip.framework.apollo.biz.repository.ClusterRepository;

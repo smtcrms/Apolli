@@ -1,7 +1,8 @@
 application_module.controller("ConfigBaseInfoController",
-                              ['$rootScope', '$scope', '$location', 'toastr', 'AppService', 'AppUtil',
-                               function ($rootScope, $scope, $location, toastr, AppService, AppUtil) {
-
+                              ['$rootScope', '$scope', '$location', 'toastr', 'AppService', 'PermissionService',
+                               'AppUtil',
+                               function ($rootScope, $scope, $location, toastr, AppService, PermissionService,
+                                         AppUtil) {
 
                                    var appId = AppUtil.parseParams($location.$$url).appid;
                                    var pageContext = {
@@ -18,26 +19,44 @@ application_module.controller("ConfigBaseInfoController",
                                        var navTree = [];
                                        var nodes = AppUtil.collectData(result);
 
-                                       nodes.forEach(function (item) {
-                                           if (!item.clusters || item.clusters.length == 0){
-                                                return;
+                                       if (!nodes || nodes.length == 0){
+                                           toastr.error("加载导航信息出错");
+                                           return;
+                                       }
+                                       //默认显示第一个环境的default集群的
+                                       pageContext.env = nodes[0].env;
+                                       $rootScope.refreshNamespaces();
+
+                                       nodes.forEach(function (env, envIdx) {
+                                           if (!env.clusters || env.clusters.length == 0) {
+                                               return;
                                            }
                                            var node = {};
                                            //first nav
-                                           node.text = item.env;
+                                           node.text = env.env;
                                            var clusterNodes = [];
 
                                            //如果env下面只有一个default集群则不显示集群列表
-                                           if (item.clusters && item.clusters.length == 1 && item.clusters[0].name == 'default'){
+                                           if (env.clusters && env.clusters.length == 1 && env.clusters[0].name
+                                                                                             == 'default') {
+                                               if (envIdx == 0){
+                                                   node.state = {};
+                                                   node.state.selected = true;
+                                               }
                                                node.selectable = true;
-                                           }else {
+                                           } else {
                                                node.selectable = false;
                                                //second nav
-                                               item.clusters.forEach(function (item) {
+                                               env.clusters.forEach(function (cluster, clusterIdx) {
                                                    var clusterNode = {},
                                                        parentNode = [];
 
-                                                   clusterNode.text = item.name;
+                                                   if (envIdx == 0 && clusterIdx == 0){
+                                                       clusterNode.state = {};
+                                                       clusterNode.state.selected = true;
+                                                   }
+
+                                                   clusterNode.text = cluster.name;
                                                    parentNode.push(node.text);
                                                    clusterNode.tags = parentNode;
                                                    clusterNodes.push(clusterNode);
@@ -55,12 +74,14 @@ application_module.controller("ConfigBaseInfoController",
                                                                    expandIcon: '',
                                                                    collapseIcon: '',
                                                                    onNodeSelected: function (event, data) {
-                                                                       if (!data.tags){//first nav node
+                                                                       if (!data.tags) {//first nav node
                                                                            $rootScope.pageContext.env = data.text;
-                                                                           $rootScope.pageContext.clusterName = 'default';
-                                                                       }else {//second cluster node
+                                                                           $rootScope.pageContext.clusterName =
+                                                                               'default';
+                                                                       } else {//second cluster node
                                                                            $rootScope.pageContext.env = data.tags[0];
-                                                                           $rootScope.pageContext.clusterName = data.text;
+                                                                           $rootScope.pageContext.clusterName =
+                                                                               data.text;
                                                                        }
                                                                        $rootScope.refreshNamespaces();
                                                                    }
@@ -71,55 +92,51 @@ application_module.controller("ConfigBaseInfoController",
                                    });
 
                                    ////// app info //////
-                                   
+
                                    AppService.load($rootScope.pageContext.appId).then(function (result) {
                                        $scope.appBaseInfo = result;
-                                   },function (result) {
+                                   }, function (result) {
                                        toastr.error(AppUtil.errorMsg(result), "加载App信息出错");
                                    });
-
 
                                    ////// 补缺失的环境 //////
                                    $scope.missEnvs = [];
                                    AppService.find_miss_envs($rootScope.pageContext.appId).then(function (result) {
                                        $scope.missEnvs = AppUtil.collectData(result);
-                                   },function (result) {
+                                   }, function (result) {
                                        console.log(AppUtil.errorMsg(result));
                                    });
 
-                                   $scope.selectedEnvs = [];
-                                   $scope.toggleSelection = function toggleSelection(env) {
-                                       var idx = $scope.selectedEnvs.indexOf(env);
-
-                                       // is currently selected
-                                       if (idx > -1) {
-                                           $scope.selectedEnvs.splice(idx, 1);
-                                       }
-
-                                       // is newly selected
-                                       else {
-                                           $scope.selectedEnvs.push(env);
-                                       }
-                                   };
-
-                                   $scope.createEnvs = function () {
+                                   $scope.createAppInMissEnv = function () {
                                        var count = 0;
-                                       $scope.selectedEnvs.forEach(function (env) {
-                                           AppService.create(env, $scope.appBaseInfo).then(function (result) {
+                                       $scope.missEnvs.forEach(function (env) {
+                                           AppService.create_remote(env, $scope.appBaseInfo).then(function (result) {
                                                toastr.success(env, '创建成功');
-                                               count ++;
-                                               if (count == $scope.selectedEnvs.length){
+                                               count++;
+                                               if (count == $scope.missEnvs.length) {
                                                    location.reload(true);
                                                }
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), '创建失败:' + env);
-                                               count ++;
-                                               if (count == $scope.selectedEnvs){
-                                                   $route.reload();
+                                               count++;
+                                               if (count == $scope.missEnvs.length) {
+                                                   location.reload(true);
                                                }
                                            });
                                        });
                                    };
+
+                                   //permission
+                                   PermissionService.has_create_namespace_permission(appId).then(function (result) {
+                                       $scope.hasCreateNamespacePermission = result.hasPermission;
+                                   }, function (result) {
+                                       
+                                   });
+                                   PermissionService.has_assign_user_permission(appId).then(function (result) {
+                                       $scope.hasAssignUserPermission = result.hasPermission;
+                                   }, function (result) {
+
+                                   });
 
                                }]);
 
