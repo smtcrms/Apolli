@@ -14,20 +14,19 @@ import java.io.InputStreamReader;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class ApolloConfigDemo implements ConfigChangeListener {
+public class ApolloConfigDemo {
   private static final Logger logger = LoggerFactory.getLogger(ApolloConfigDemo.class);
   private Config config;
 
   public ApolloConfigDemo() {
     config = ConfigService.getAppConfig();
-    config.addChangeListener(this);
     config.addChangeListener(new ConfigChangeListener() {
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
-        logger.info("Changes2 for namespace {}", changeEvent.getNamespace());
+        logger.info("Changes for namespace {}", changeEvent.getNamespace());
         for (String key : changeEvent.changedKeys()) {
           ConfigChange change = changeEvent.getChange(key);
-          logger.info("Change2 - key: {}, oldValue: {}, newValue: {}, changeType: {}",
+          logger.info("Change - key: {}, oldValue: {}, newValue: {}, changeType: {}",
               change.getPropertyName(), change.getOldValue(), change.getNewValue(),
               change.getChangeType());
         }
@@ -56,17 +55,6 @@ public class ApolloConfigDemo implements ConfigChangeListener {
         System.exit(0);
       }
       apolloConfigDemo.getConfig(input);
-    }
-  }
-
-  @Override
-  public void onChange(ConfigChangeEvent changeEvent) {
-    logger.info("Changes for namespace {}", changeEvent.getNamespace());
-    for (String key : changeEvent.changedKeys()) {
-      ConfigChange change = changeEvent.getChange(key);
-      logger.info("Change - key: {}, oldValue: {}, newValue: {}, changeType: {}",
-          change.getPropertyName(), change.getOldValue(), change.getNewValue(),
-          change.getChangeType());
     }
   }
 }
