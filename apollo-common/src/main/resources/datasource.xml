@@ -8,7 +8,7 @@
             testOnBorrow="true"
             testOnReturn="false"
             validationQuery="SELECT 1"
-            initSQL="set names utf8mb4"
+            initSql="set names utf8mb4"
             validationInterval="30000"
             timeBetweenEvictionRunsMillis="5000"
             maxActive="100"
