@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import com.ctrip.framework.apollo.biz.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepository;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 

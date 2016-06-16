@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/envs")
-public class PortalEnvController {
+public class EnvController {
 
   @Autowired
   private PortalSettings portalSettings;

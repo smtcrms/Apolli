@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class PortalConfigService {
+public class ConfigService {
 
-  private Logger logger = LoggerFactory.getLogger(PortalConfigService.class);
+  private Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
   @Autowired
   private UserInfoHolder userInfoHolder;

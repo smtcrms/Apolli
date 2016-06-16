@@ -11,7 +11,7 @@ import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.service.PortalConfigService;
+import com.ctrip.framework.apollo.portal.service.ConfigService;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class ConfigServiceTest {
   private UserInfoHolder userInfoHolder;
 
   @InjectMocks
-  private PortalConfigService configService;
+  private ConfigService configService;
 
   @Before
   public void setup() {

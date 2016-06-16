@@ -1,6 +1,5 @@
-package com.ctrip.framework.apollo.biz.entity;
+package com.ctrip.framework.apollo.common.entity;
 
-import com.ctrip.framework.apollo.common.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

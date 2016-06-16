@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PortalClusterService {
+public class ClusterService {
 
   @Autowired
   private AdminServiceAPI.ClusterAPI clusterAPI;

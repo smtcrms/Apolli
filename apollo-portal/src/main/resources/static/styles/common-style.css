@@ -334,3 +334,12 @@ table th {
     background: #c3c3c3;
 }
 
+.user-container {
+    margin-top: 15px;
+    padding: 20px 15px
+}
+
+.user-container .user-info{
+    margin-left: 5px;
+}
+

@@ -10,19 +10,14 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
             scope.sourceApps = [];
             scope.copyedApps = [];
 
-            EnvService.find_all_envs().then(function (result) {
-                //default select first env
-                AppService.find_all_app(result[0]).then(function (result) {
-                    result.forEach(function (app) {
-                        app.selected = false;
-                        scope.sourceApps.push(app);
-                    });
-                    scope.copyedApps = angular.copy(scope.sourceApps);
-                }, function (result) {
-                    toastr.error(AppUtil.errorMsg(result), "load apps error");
+            AppService.find_all_app().then(function (result) {
+                result.forEach(function (app) {
+                    app.selected = false;
+                    scope.sourceApps.push(app);
                 });
+                scope.copyedApps = angular.copy(scope.sourceApps);
             }, function (result) {
-                toastr.error(AppUtil.errorMsg(result), "load env error");
+                toastr.error(AppUtil.errorMsg(result), "load apps error");
             });
 
             scope.searchKey = '';
@@ -112,7 +107,7 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
             }
 
             UserService.load_user().then(function (result) {
-                scope.userName = result.username;
+                scope.userName = result.userId;
             }, function (result) {
 
             });
@@ -209,5 +204,29 @@ directive_module.directive('apollorequiredfiled', function ($compile, $window) {
         transclude: true,
         replace: true
     }
+});
 
+directive_module.directive('apolloconfirmdialog', function ($compile, $window) {
+    return {
+        restrict: 'E',
+        templateUrl: '../views/component/confirm-dialog.html',
+        transclude: true,
+        replace: true,
+        scope: {
+            dialogId: '=apolloDialogId',
+            title: '=apolloTitle',
+            detail: '=apolloDetail',
+            showCancelBtn: '=apolloShowCancelBtn',
+            doConfirm: '=apolloConfirm'
+        },
+        link: function (scope, element, attrs) {
+            
+            scope.confirm = function () {
+                if (scope.doConfirm){
+                    scope.doConfirm();
+                }
+            }
+            
+        }
+    }
 });

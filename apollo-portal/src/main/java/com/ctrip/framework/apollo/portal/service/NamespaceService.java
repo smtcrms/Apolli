@@ -2,24 +2,29 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.gson.Gson;
 
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
+import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
+import com.ctrip.framework.apollo.portal.repository.AppNamespaceRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -28,11 +33,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
-public class PortalNamespaceService {
+public class NamespaceService {
 
-  private Logger logger = LoggerFactory.getLogger(PortalNamespaceService.class);
+  private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -44,25 +50,54 @@ public class PortalNamespaceService {
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
   private PortalSettings portalSettings;
+  @Autowired
+  private AppNamespaceRepository appNamespaceRepository;
+  @Autowired
+  private RoleInitializationService roleInitializationService;
 
   private Gson gson = new Gson();
 
 
-  public List<AppNamespaceDTO> findPublicAppNamespaces() {
-    return namespaceAPI.findPublicAppNamespaces(portalSettings.getFirstAliveEnv());
+  public List<AppNamespace> findPublicAppNamespaces() {
+    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
-    if (StringUtils.isEmpty(namespace.getDataChangeCreatedBy())){
+    if (StringUtils.isEmpty(namespace.getDataChangeCreatedBy())) {
       namespace.setDataChangeCreatedBy(userInfoHolder.getUser().getUserId());
     }
     namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
-    return namespaceAPI.createNamespace(env, namespace);
+    NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
+
+    roleInitializationService.initNamespaceRoles(namespace.getAppId(), namespace.getNamespaceName());
+    return createdNamespace;
   }
 
-  public void createAppNamespace(AppNamespaceDTO appNamespace) {
+  @Transactional
+  public void createDefaultAppNamespace(String appId) {
+    if (!isAppNamespaceNameUnique(appId, appId)) {
+      throw new ServiceException("appnamespace not unique");
+    }
+    AppNamespace appNs = new AppNamespace();
+    appNs.setAppId(appId);
+    appNs.setName(ConfigConsts.NAMESPACE_APPLICATION);
+    appNs.setComment("default app namespace");
+
+    String userId = userInfoHolder.getUser().getUserId();
+    appNs.setDataChangeCreatedBy(userId);
+    appNs.setDataChangeLastModifiedBy(userId);
+    appNamespaceRepository.save(appNs);
+  }
+
+  public boolean isAppNamespaceNameUnique(String appId, String namespaceName) {
+    Objects.requireNonNull(appId, "AppId must not be null");
+    Objects.requireNonNull(namespaceName, "Namespace must not be null");
+    return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
+  }
+
+  public void createRemoteAppNamespace(AppNamespaceDTO appNamespace) {
     String operator = userInfoHolder.getUser().getUserId();
-    if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())){
+    if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {
       appNamespace.setDataChangeCreatedBy(operator);
     }
     appNamespace.setDataChangeLastModifiedBy(operator);
@@ -155,9 +190,9 @@ public class PortalNamespaceService {
     Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
 
     List<NamespaceVO.ItemVO> deletedItems = new LinkedList<>();
-    for (Map.Entry<String, String> entry: releaseItems.entrySet()){
+    for (Map.Entry<String, String> entry : releaseItems.entrySet()) {
       String key = entry.getKey();
-      if (newItemMap.get(key) == null){
+      if (newItemMap.get(key) == null) {
         NamespaceVO.ItemVO deletedItem = new NamespaceVO.ItemVO();
 
         ItemDTO deletedItemDto = new ItemDTO();

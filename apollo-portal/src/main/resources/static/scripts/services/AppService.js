@@ -3,7 +3,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_all_app:{
             method: 'GET',
             isArray: true,
-            url:'/apps/envs/:env'
+            url:'/apps'
         },
         load_navtree:{
             methode: 'GET',
@@ -16,6 +16,10 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         },
         create_app: {
             method: 'POST',
+            url: '/apps'
+        },
+        create_app_remote: {
+            method: 'POST',
             url: '/apps/envs/:env'
         },
         find_miss_envs: {
@@ -24,10 +28,10 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         }
     });
     return {
-        find_all_app: function (env) {
+        find_all_app: function () {
             var d = $q.defer();
             app_resource.find_all_app({
-                                          env: env
+                                      
                                       }, function (result) {
                 d.resolve(result);
             }, function (result) {
@@ -46,9 +50,18 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
             });
             return d.promise;
         },
-        create: function (env, app) {
+        create: function (app) {
             var d = $q.defer();
-            app_resource.create_app({env:env}, app, function (result) {
+            app_resource.create_app({}, app, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+        create_remote: function (env, app) {
+            var d = $q.defer();
+            app_resource.create_app_remote({env:env}, app, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

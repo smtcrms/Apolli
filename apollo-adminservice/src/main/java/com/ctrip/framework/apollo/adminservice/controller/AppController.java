@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ctrip.framework.apollo.biz.entity.App;
+import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.service.AdminService;
 import com.ctrip.framework.apollo.biz.service.AppService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
