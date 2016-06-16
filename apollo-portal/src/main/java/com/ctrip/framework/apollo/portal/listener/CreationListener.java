@@ -37,7 +37,7 @@ public class CreationListener {
       try {
         appAPI.createApp(env, appDTO);
       } catch (HttpStatusCodeException e) {
-        logger.error(ExceptionUtils.toString(e));
+        logger.error("call appAPI.createApp error.[{app}, {env}]", appDTO.getAppId(), env, e);
       }
     }
   }
@@ -50,7 +50,7 @@ public class CreationListener {
       try {
         namespaceAPI.createOrUpdateAppNamespace(env, dto);
       } catch (HttpStatusCodeException e) {
-        logger.error(ExceptionUtils.toString(e));
+        logger.error("call namespaceAPI.createOrUpdateAppNamespace error. [{app}, {env}]", dto.getAppId(), env, e);
       }
     }
   }
