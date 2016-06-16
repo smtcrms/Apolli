@@ -4,7 +4,7 @@ public class PermissionCondition {
 
   private boolean hasPermission;
 
-  public boolean isHasPermission() {
+  public boolean hasPermission() {
     return hasPermission;
   }
 
