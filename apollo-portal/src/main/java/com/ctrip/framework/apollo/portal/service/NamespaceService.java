@@ -95,19 +95,15 @@ public class NamespaceService {
     return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
   }
 
-  public void createRemoteAppNamespace(AppNamespaceDTO appNamespace) {
-    String operator = userInfoHolder.getUser().getUserId();
-    if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {
-      appNamespace.setDataChangeCreatedBy(operator);
-    }
-    appNamespace.setDataChangeLastModifiedBy(operator);
-    for (Env env : portalSettings.getActiveEnvs()) {
-      try {
-        namespaceAPI.createOrUpdate(env, appNamespace);
-      } catch (HttpStatusCodeException e) {
-        logger.error(ExceptionUtils.toString(e));
-        throw e;
-      }
+  @Transactional
+  public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
+    AppNamespace managedAppNamespace = appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName());
+    //update
+    if (managedAppNamespace != null){
+      BeanUtils.copyEntityProperties(appNamespace, managedAppNamespace);
+      return appNamespaceRepository.save(managedAppNamespace);
+    }else {
+      return appNamespaceRepository.save(appNamespace);
     }
   }
 

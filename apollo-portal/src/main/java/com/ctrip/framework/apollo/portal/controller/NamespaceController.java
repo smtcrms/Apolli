@@ -1,13 +1,16 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
+import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +26,10 @@ import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkAr
 public class NamespaceController {
 
   @Autowired
+  private ApplicationEventPublisher publisher;
+  @Autowired
+  private UserInfoHolder userInfoHolder;
+  @Autowired
   private NamespaceService namespaceService;
 
   @RequestMapping("/appnamespaces/public")
@@ -30,7 +37,7 @@ public class NamespaceController {
     return namespaceService.findPublicAppNamespaces();
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#appId)")
+  @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#namespace.appId)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public NamespaceDTO createNamespace(@PathVariable String env, @RequestBody NamespaceDTO namespace) {
 
@@ -40,11 +47,19 @@ public class NamespaceController {
   }
 
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
-  public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespaceDTO appNamespace) {
+  public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
     checkArgument(appNamespace.getAppId(), appNamespace.getName());
 
-    namespaceService.createRemoteAppNamespace(appNamespace);
+    String operator = userInfoHolder.getUser().getUserId();
+    if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {
+      appNamespace.setDataChangeCreatedBy(operator);
+    }
+    appNamespace.setDataChangeLastModifiedBy(operator);
+    AppNamespace createdAppNamespace = namespaceService.createAppNamespaceInLocal(appNamespace);
+
+    publisher.publishEvent(new AppNamespaceCreationEvent(createdAppNamespace));
+
   }
 
   @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces")
