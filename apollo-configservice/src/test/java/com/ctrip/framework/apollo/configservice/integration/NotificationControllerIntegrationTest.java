@@ -47,6 +47,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
   }
 
   @Test(timeout = 5000L)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testPollNotificationWithDefaultNamespace() throws Exception {
     AtomicBoolean stop = new AtomicBoolean();
     perodicSendMessage(assembleKey(someAppId, someCluster, defaultNamespace), stop);
