@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.portal.listener;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
+import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -25,6 +26,8 @@ public class CreationListener {
   private PortalSettings portalSettings;
   @Autowired
   private AdminServiceAPI.AppAPI appAPI;
+  @Autowired
+  private AdminServiceAPI.NamespaceAPI namespaceAPI;
 
   @EventListener
   public void onAppCreationEvent(AppCreationEvent event) {
@@ -33,6 +36,19 @@ public class CreationListener {
     for (Env env : envs) {
       try {
         appAPI.createApp(env, appDTO);
+      } catch (HttpStatusCodeException e) {
+        logger.error(ExceptionUtils.toString(e));
+      }
+    }
+  }
+
+  @EventListener
+  public void onAppNamespaceCreationEvent(AppNamespaceCreationEvent event){
+    AppNamespaceDTO dto = BeanUtils.transfrom(AppNamespaceDTO.class, event.getAppNamespace());
+    List<Env> envs = portalSettings.getActiveEnvs();
+    for (Env env : envs) {
+      try {
+        namespaceAPI.createOrUpdateAppNamespace(env, dto);
       } catch (HttpStatusCodeException e) {
         logger.error(ExceptionUtils.toString(e));
       }

@@ -71,13 +71,6 @@ public class AdminServiceAPI {
       return dto;
     }
 
-    public List<AppNamespaceDTO> findPublicAppNamespaces(Env env) {
-      AppNamespaceDTO[]
-          appNamespaceDTOs =
-          restTemplate.getForObject("{host}/appnamespaces/public", AppNamespaceDTO[].class
-              , getAdminServiceHost(env));
-      return Arrays.asList(appNamespaceDTOs);
-    }
 
     public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
       return restTemplate
@@ -85,7 +78,7 @@ public class AdminServiceAPI {
                          getAdminServiceHost(env), namespace.getAppId(), namespace.getClusterName()).getBody();
     }
 
-    public AppNamespaceDTO createOrUpdate(Env env, AppNamespaceDTO appNamespace) {
+    public AppNamespaceDTO createOrUpdateAppNamespace(Env env, AppNamespaceDTO appNamespace) {
       return restTemplate.postForEntity("{host}/apps/{appId}/appnamespaces", appNamespace, AppNamespaceDTO.class,
                                         getAdminServiceHost(env), appNamespace.getAppId()).getBody();
     }
