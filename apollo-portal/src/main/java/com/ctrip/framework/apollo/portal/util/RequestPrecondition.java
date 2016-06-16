@@ -3,7 +3,6 @@ package com.ctrip.framework.apollo.portal.util;
 
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.sun.istack.internal.Nullable;
 
 public class RequestPrecondition {
 
@@ -19,7 +18,7 @@ public class RequestPrecondition {
     checkArgument(valid, ILLEGAL_MODEL);
   }
 
-  public static void checkArgument(boolean expression, @Nullable Object errorMessage) {
+  public static void checkArgument(boolean expression, Object errorMessage) {
     if (!expression) {
       throw new BadRequestException(String.valueOf(errorMessage));
     }

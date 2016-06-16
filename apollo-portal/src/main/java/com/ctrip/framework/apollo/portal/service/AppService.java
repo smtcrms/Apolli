@@ -68,19 +68,6 @@ public class AppService {
     return appAPI.loadApp(env, appId);
   }
 
-  /**
-   * 创建App流程: 1.先在portal db中创建 2.再保存到各个环境的apollo db中
-   *
-   * 只要第一步成功,就算这次创建app是成功操作,如果某个环境的apollo db创建失败,可通过portal db中的app信息再次创建.
-   */
-  public void createApp(App app) {
-    enrichUserInfo(app);
-
-    App localApp = createOrUpdateAppInLocal(app);
-
-    publisher.publishEvent(new AppCreationEvent(localApp));
-  }
-
   public void createApp(Env env, App app) {
     enrichUserInfo(app);
     try {
@@ -109,9 +96,6 @@ public class AppService {
       return appRepository.save(managedApp);
     } else {
       App createdApp = appRepository.save(app);
-      if (app.getName().equals("xx")){
-        throw new RuntimeException("xxxx");
-      }
       namespaceService.createDefaultAppNamespace(appId);
       //role
       roleInitializationService.initAppRoles(createdApp);

@@ -60,6 +60,11 @@ public class AppController {
     return response;
   }
 
+  /**
+   * 创建App流程: 1.先在portal db中创建 2.再保存到各个环境的apollo db中
+   *
+   * 只要第一步成功,就算这次创建app是成功操作,如果某个环境的apollo db创建失败,可通过portal db中的app信息再次创建.
+   */
   @RequestMapping(value = "", method = RequestMethod.POST)
   public ResponseEntity<Void> create(@RequestBody App app) {
 

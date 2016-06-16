@@ -119,9 +119,10 @@
                                     <div class="btn-group" role="group" aria-label="...">
                                         <button type="button"
                                                 class="btn btn-default btn-sm J_tableview_btn"
+                                                ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
                                                 ng-disabled="namespace.isTextEditing"
                                                 ng-click="prepareReleaseNamespace(namespace)">发布
-                                            <!--ng-show="namespace.hasReleasePermission"-->
+
                                         </button>
                                         <button type="button"
                                                 class="btn btn-default btn-sm J_tableview_btn" disabled
