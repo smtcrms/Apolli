@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 63,
+      <title>File: 64,
              Errors: 0,
-             Warnings: 453,
+             Warnings: 458,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html</link>
@@ -304,7 +304,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  24
                 </td>
                 <td>
                   0
@@ -570,7 +570,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  51
+                  48
                 </td>
                 <td>
                   0
@@ -732,6 +732,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent.java">com/ctrip/framework/apollo/portal/listener/AppNamespaceCreationEvent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-portal/checkstyle.html#com.ctrip.framework.apollo.portal.cumsomize.BizLoggingCustomizer.java">com/ctrip/framework/apollo/portal/cumsomize/BizLoggingCustomizer.java</a>
                 </td>
                 <td>
@@ -878,7 +892,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  9
                 </td>
                 <td>
                   0
