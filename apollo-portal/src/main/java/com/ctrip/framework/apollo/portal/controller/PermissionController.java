@@ -36,7 +36,7 @@ public class PermissionController {
   private RolePermissionService rolePermissionService;
 
   @RequestMapping("/apps/{appId}/permissions/{permissionType}")
-  public ResponseEntity<PermissionCondition> isHasPermission(@PathVariable String appId, @PathVariable String permissionType) {
+  public ResponseEntity<PermissionCondition> hasPermission(@PathVariable String appId, @PathVariable String permissionType) {
     PermissionCondition permissionCondition = new PermissionCondition();
 
     permissionCondition.setHasPermission(
@@ -46,8 +46,8 @@ public class PermissionController {
   }
 
   @RequestMapping("/apps/{appId}/namespaces/{namespaceName}/permissions/{permissionType}")
-  public ResponseEntity<PermissionCondition> isHasPermission(@PathVariable String appId, @PathVariable String namespaceName,
-                                                 @PathVariable String permissionType) {
+  public ResponseEntity<PermissionCondition> hasPermission(@PathVariable String appId, @PathVariable String namespaceName,
+                                                           @PathVariable String permissionType) {
     PermissionCondition permissionCondition = new PermissionCondition();
 
     permissionCondition.setHasPermission(
