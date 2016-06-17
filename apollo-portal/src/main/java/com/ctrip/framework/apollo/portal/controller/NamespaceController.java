@@ -5,13 +5,18 @@ import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.entity.form.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkArgument;
+import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkModel;
 
 @RestController
 public class NamespaceController {
+
+  Logger logger = LoggerFactory.getLogger(NamespaceController.class);
 
   @Autowired
   private ApplicationEventPublisher publisher;
@@ -37,13 +45,24 @@ public class NamespaceController {
     return namespaceService.findPublicAppNamespaces();
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#namespace.appId)")
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
-  public NamespaceDTO createNamespace(@PathVariable String env, @RequestBody NamespaceDTO namespace) {
+  @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#appId)")
+  @RequestMapping(value = "/apps/{appId}/namespaces", method = RequestMethod.POST)
+  public ResponseEntity<Void> createNamespace(@PathVariable String appId, @RequestBody List<NamespaceCreationModel> models) {
 
-    checkArgument(namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
+    checkModel(!CollectionUtils.isEmpty(models));
 
-    return namespaceService.createNamespace(Env.valueOf(env), namespace);
+    for (NamespaceCreationModel model : models) {
+      NamespaceDTO namespace = model.getNamespace();
+
+      checkArgument(model.getEnv(), namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
+
+      try {
+        namespaceService.createNamespace(Env.valueOf(model.getEnv()), namespace);
+      } catch (Exception e) {
+        logger.error("create namespace error.", e);
+      }
+    }
+    return ResponseEntity.ok().build();
   }
 
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)

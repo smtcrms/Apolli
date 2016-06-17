@@ -15,7 +15,7 @@ namespace_module.controller("LinkNamespaceController",
                                            namespace.id = item.name;
                                            namespace.text = item.name;
                                            publicNamespaces.push(namespace);
-                                       }); 
+                                       });
                                        $('#namespaces').select2({
                                                                     width: '250px',
                                                                     data: publicNamespaces
@@ -47,22 +47,23 @@ namespace_module.controller("LinkNamespaceController",
                                            }
 
                                            var hasCreatedClusterCnt = 0;
+                                           var namespaceCreationModels = [];
                                            selectedClusters.forEach(function (cluster) {
-                                               NamespaceService.createNamespace($scope.appId, cluster.env, cluster.clusterName,
-                                                                                $scope.namespaceName).then(function (result) {
-                                                   toastr.success(
-                                                       cluster.env + "_" + result.clusterName + "_" + result.namespaceName
-                                                       + "创建成功");
-                                                   hasCreatedClusterCnt ++;
-                                                   if (hasCreatedClusterCnt == selectedClustersSize){
-                                                       $scope.step = 2;
-                                                   }
-                                               }, function (result) {
-                                                   toastr.error(AppUtil.errorMsg(result),
-                                                                cluster.env + "_" + cluster.clusterName + "_"
-                                                                + $scope.namespaceName + "创建失败");
-                                               });
+                                               namespaceCreationModels.push({
+                                                                                env: cluster.env,
+                                                                                namespace: {
+                                                                                    appId: $scope.appId,
+                                                                                    clusterName: cluster.clusterName,
+                                                                                    namespaceName: $scope.namespaceName
+                                                                                }
+                                                                            });
                                            });
+                                           NamespaceService.createNamespace($scope.appId, namespaceCreationModels)
+                                               .then(function (result) {
+                                                   toastr.success("创建成功");
+                                               }, function (result) {
+                                                   toastr.error(AppUtil.errorMsg(result));
+                                               });
                                        }else {
                                            NamespaceService.createAppNamespace($scope.appId, $scope.appNamespace).then(function (result) {
                                                $scope.step = 2;
@@ -79,7 +80,7 @@ namespace_module.controller("LinkNamespaceController",
                                    };
 
                                    $scope.back = function () {
-                                       $window.location.href = '/config.html?#appid=' + $scope.appId;    
+                                       $window.location.href = '/config.html?#appid=' + $scope.appId;
                                    };
                                }]);
 

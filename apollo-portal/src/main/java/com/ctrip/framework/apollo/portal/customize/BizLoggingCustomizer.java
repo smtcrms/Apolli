@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.cumsomize;
+package com.ctrip.framework.apollo.portal.customize;
 
 import com.ctrip.framework.apollo.common.customize.LoggingCustomizer;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;

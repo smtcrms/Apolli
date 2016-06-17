@@ -11,6 +11,7 @@ import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.PortalSettings;
@@ -97,6 +98,10 @@ public class NamespaceService {
 
   @Transactional
   public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
+    //not unique
+    if (appNamespaceRepository.findByName(appNamespace.getName()) != null){
+      throw new BadRequestException(appNamespace.getName() + "已存在");
+    }
     AppNamespace managedAppNamespace = appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName());
     //update
     if (managedAppNamespace != null){

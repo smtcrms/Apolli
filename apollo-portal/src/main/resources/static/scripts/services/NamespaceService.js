@@ -7,7 +7,7 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
         },
         createNamespace: {
             method: 'POST',
-            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces',
+            url: '/apps/:appId/namespaces',
             isArray: false
         },
         createAppNamespace: {
@@ -27,17 +27,11 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
             });
             return d.promise;
         },
-        createNamespace: function (appId, env, clusterName, namespaceName) {
+        createNamespace: function (appId, namespaceCreationModel) {
             var d = $q.defer();
             namespace_source.createNamespace({
-                                      appId: appId,
-                                      env: env,
-                                      clusterName: clusterName
-                                  }, {
-                                      appId: appId,
-                                      clusterName: clusterName,
-                                      namespaceName: namespaceName
-                                  }, function (result) {
+                                                 appId: appId
+                                             }, namespaceCreationModel, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

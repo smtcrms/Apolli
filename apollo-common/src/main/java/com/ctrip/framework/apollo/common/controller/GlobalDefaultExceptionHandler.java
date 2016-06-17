@@ -44,9 +44,14 @@ public class GlobalDefaultExceptionHandler {
     return handleError(request, INTERNAL_SERVER_ERROR, ex);
   }
 
-  @ExceptionHandler({HttpRequestMethodNotSupportedException.class, HttpMediaTypeException.class, BadRequestException.class})
+  @ExceptionHandler({HttpRequestMethodNotSupportedException.class, HttpMediaTypeException.class})
   public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request,
       ServletException ex) {
+    return handleError(request, BAD_REQUEST, ex);
+  }
+
+  @ExceptionHandler({BadRequestException.class})
+  public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request, BadRequestException ex) {
     return handleError(request, BAD_REQUEST, ex);
   }
 
