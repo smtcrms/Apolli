@@ -57,6 +57,7 @@ public class NamespaceController {
       checkArgument(model.getEnv(), namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
 
       try {
+        // TODO: 16/6/17 某些环境创建失败,统一处理这种场景
         namespaceService.createNamespace(Env.valueOf(model.getEnv()), namespace);
       } catch (Exception e) {
         logger.error("create namespace error.", e);
