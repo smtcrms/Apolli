@@ -40,13 +40,11 @@ namespace_module.controller("LinkNamespaceController",
                                                toastr.warning("请选择集群");
                                                return;
                                            }
-                                           var selectedClustersSize = selectedClusters.length;
 
                                            if ($scope.namespaceType == 1){
                                                $scope.namespaceName = $('#namespaces').select2('data')[0].id;
                                            }
 
-                                           var hasCreatedClusterCnt = 0;
                                            var namespaceCreationModels = [];
                                            selectedClusters.forEach(function (cluster) {
                                                namespaceCreationModels.push({
@@ -61,6 +59,7 @@ namespace_module.controller("LinkNamespaceController",
                                            NamespaceService.createNamespace($scope.appId, namespaceCreationModels)
                                                .then(function (result) {
                                                    toastr.success("创建成功");
+                                                   $scope.step = 2;
                                                }, function (result) {
                                                    toastr.error(AppUtil.errorMsg(result));
                                                });
