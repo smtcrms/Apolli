@@ -79,6 +79,8 @@ public class ServiceExceptionTest extends AbstractPortalTest {
     App app = new App();
     app.setAppId("someAppId");
     app.setName("someName");
+    app.setOrgId("someOrgId");
+    app.setOrgName("someOrgNam");
     app.setOwnerName("someOwner");
     app.setOwnerEmail("someOwner@ctrip.com");
     return app;
