@@ -1,13 +1,11 @@
 package com.ctrip.framework.apollo.common.entity;
 
-import com.ctrip.framework.apollo.common.entity.BaseEntity;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "App")
@@ -21,6 +19,12 @@ public class App extends BaseEntity {
   @Column(name = "AppId", nullable = false)
   private String appId;
 
+  @Column(name = "OrgId", nullable = false)
+  private String orgId;
+
+  @Column(name = "OrgName", nullable = false)
+  private String orgName;
+
   @Column(name = "OwnerName", nullable = false)
   private String ownerName;
 
@@ -33,6 +37,14 @@ public class App extends BaseEntity {
 
   public String getName() {
     return name;
+  }
+
+  public String getOrgId() {
+    return orgId;
+  }
+
+  public String getOrgName() {
+    return orgName;
   }
 
   public String getOwnerEmail() {
@@ -51,6 +63,14 @@ public class App extends BaseEntity {
     this.name = name;
   }
 
+  public void setOrgId(String orgId) {
+    this.orgId = orgId;
+  }
+
+  public void setOrgName(String orgName) {
+    this.orgName = orgName;
+  }
+
   public void setOwnerEmail(String ownerEmail) {
     this.ownerEmail = ownerEmail;
   }
@@ -60,7 +80,10 @@ public class App extends BaseEntity {
   }
 
   public String toString() {
-    return toStringHelper().add("name", name).add("appId", appId).add("ownerName", ownerName)
+    return toStringHelper().add("name", name).add("appId", appId)
+        .add("orgId", orgId)
+        .add("orgName", orgName)
+        .add("ownerName", ownerName)
         .add("ownerEmail", ownerEmail).toString();
   }
 }
