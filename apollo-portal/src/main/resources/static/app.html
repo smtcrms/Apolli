@@ -5,6 +5,7 @@
     <!-- styles -->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="vendor/angular/angular-toastr-1.4.1.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" media='all' href="vendor/angular/loading-bar.min.css">
     <link rel="stylesheet" type="text/css" href="styles/common-style.css">
     <title>新建项目</title>
@@ -25,7 +26,13 @@
                 <div class="panel-body">
                     <form class="form-horizontal" ng-controller="CreateAppController" ng-submit="create()">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用ID</label>
+                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 部门</label>
+                            <div class="col-sm-3">
+                                <select id="organization"><option></option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用AppId</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" name="appAppId" ng-model="app.appId"
                                        required>
@@ -38,13 +45,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>应用Owner</label>
+                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用负责人</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled>邮箱地址</label>
+                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 邮箱地址</label>
                             <div class="col-sm-4">
                                 <input type="email" class="form-control" ng-model="app.ownerEmail" required>
                             </div>
@@ -74,6 +81,7 @@
 
 <!-- jquery.js -->
 <script src="vendor/jquery.min.js" type="text/javascript"></script>
+<script src="vendor/select2/select2.min.js" type="text/javascript"></script>
 
 <!-- bootstrap.js -->
 <script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
@@ -83,6 +91,7 @@
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
+<script type="application/javascript" src="scripts/services/OrganizationService.js"></script>
 <script type="application/javascript" src="scripts/directive.js"></script>
 
 <script type="application/javascript" src="scripts/controller/CreateAppController.js"></script>

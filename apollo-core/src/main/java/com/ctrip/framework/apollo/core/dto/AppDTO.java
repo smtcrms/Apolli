@@ -8,6 +8,10 @@ public class AppDTO extends BaseDTO{
 
   private String appId;
 
+  private String orgId;
+
+  private String orgName;
+
   private String ownerName;
 
   private String ownerEmail;
@@ -28,6 +32,14 @@ public class AppDTO extends BaseDTO{
     return name;
   }
 
+  public String getOrgId() {
+    return orgId;
+  }
+
+  public String getOrgName() {
+    return orgName;
+  }
+
   public String getOwnerEmail() {
     return ownerEmail;
   }
@@ -42,6 +54,14 @@ public class AppDTO extends BaseDTO{
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setOrgId(String orgId) {
+    this.orgId = orgId;
+  }
+
+  public void setOrgName(String orgName) {
+    this.orgName = orgName;
   }
 
   public void setOwnerEmail(String ownerEmail) {

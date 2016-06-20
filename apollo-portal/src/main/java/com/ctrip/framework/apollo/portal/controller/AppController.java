@@ -1,6 +1,15 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
+import com.ctrip.framework.apollo.common.http.RichResponseEntity;
+import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.PortalSettings;
+import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
+import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
+import com.ctrip.framework.apollo.portal.service.AppService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -11,15 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
-
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
-import com.ctrip.framework.apollo.common.http.RichResponseEntity;
-import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.PortalSettings;
-import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
-import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
-import com.ctrip.framework.apollo.portal.service.AppService;
 
 import java.util.List;
 
@@ -53,8 +53,8 @@ public class AppController {
         response.addResponseEntity(RichResponseEntity.ok(appService.createEnvNavNode(env, appId)));
       } catch (Exception e) {
         response.addResponseEntity(RichResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                            "load env:" + env.name() + " cluster error." + e
-                                                                .getMessage()));
+            "load env:" + env.name() + " cluster error." + e
+                .getMessage()));
       }
     }
     return response;
@@ -68,7 +68,8 @@ public class AppController {
   @RequestMapping(value = "", method = RequestMethod.POST)
   public ResponseEntity<Void> create(@RequestBody App app) {
 
-    checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName());
+    checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
+        app.getOrgId(), app.getOrgName());
 
     appService.enrichUserInfo(app);
     App createdApp = appService.createOrUpdateAppInLocal(app);
@@ -78,10 +79,12 @@ public class AppController {
     return ResponseEntity.ok().build();
   }
 
-  @RequestMapping(value = "/envs/{env}", method = RequestMethod.POST, consumes = {"application/json"})
+  @RequestMapping(value = "/envs/{env}", method = RequestMethod.POST, consumes = {
+      "application/json"})
   public ResponseEntity<Void> create(@PathVariable String env, @RequestBody App app) {
 
-    checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName());
+    checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
+        app.getOrgId(), app.getOrgName());
 
     appService.createApp(Env.valueOf(env), app);
 
@@ -107,8 +110,8 @@ public class AppController {
           response.addResponseEntity(RichResponseEntity.ok(env));
         } else {
           response.addResponseEntity(RichResponseEntity.error(HttpStatus.INTERNAL_SERVER_ERROR,
-                                                              String.format("load appId:%s from env %s error.", appId, env)
-                                                              + e.getMessage()));
+              String.format("load appId:%s from env %s error.", appId, env)
+                  + e.getMessage()));
         }
       }
 

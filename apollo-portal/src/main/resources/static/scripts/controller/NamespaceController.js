@@ -17,9 +17,10 @@ namespace_module.controller("LinkNamespaceController",
                                            publicNamespaces.push(namespace);
                                        });
                                        $('#namespaces').select2({
-                                                                    width: '250px',
-                                                                    data: publicNamespaces
-                                                                });
+                                            placeholder: '请选择Namespace',
+                                            width: '100%',
+                                            data: publicNamespaces
+                                       });
                                    }, function (result) {
                                        toastr.error(AppUtil.errorMsg(result), "load public namespace error");
                                    });
@@ -42,7 +43,13 @@ namespace_module.controller("LinkNamespaceController",
                                            }
 
                                            if ($scope.namespaceType == 1){
-                                               $scope.namespaceName = $('#namespaces').select2('data')[0].id;
+                                               var selectedNamespaceName = $('#namespaces').select2('data')[0].id;
+                                               if (!selectedNamespaceName) {
+                                                   toastr.warning("请选择Namespace");
+                                                   return;
+                                               }
+
+                                               $scope.namespaceName = selectedNamespaceName;
                                            }
 
                                            var namespaceCreationModels = [];
