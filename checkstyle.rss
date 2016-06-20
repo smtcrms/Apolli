@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 228,
+      <title>File: 230,
              Errors: 0,
-             Warnings: 1061,
+             Warnings: 1049,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -263,6 +263,20 @@ under the License.
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.vo.Organization.java">com/ctrip/framework/apollo/portal/entity/vo/Organization.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
@@ -872,6 +886,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.controller.OrganizationController.java">com/ctrip/framework/apollo/portal/controller/OrganizationController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.internals.ConfigRepository.java">com/ctrip/framework/apollo/internals/ConfigRepository.java</a>
                 </td>
                 <td>
@@ -1382,7 +1410,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -2152,7 +2180,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  19
+                  8
                 </td>
                 <td>
                   0
