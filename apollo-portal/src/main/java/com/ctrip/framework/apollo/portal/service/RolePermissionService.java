@@ -1,8 +1,11 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -16,6 +19,7 @@ import com.ctrip.framework.apollo.portal.repository.RolePermissionRepository;
 import com.ctrip.framework.apollo.portal.repository.RoleRepository;
 import com.ctrip.framework.apollo.portal.repository.UserRoleRepository;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +35,7 @@ import java.util.Set;
  * @author Jason Song(song_s@ctrip.com)
  */
 @Service
-public class RolePermissionService {
+public class RolePermissionService implements InitializingBean {
   @Autowired
   private RoleRepository roleRepository;
 
@@ -43,6 +47,17 @@ public class RolePermissionService {
 
   @Autowired
   private PermissionRepository permissionRepository;
+
+  @Autowired
+  private ServerConfigService serverConfigService;
+
+  private List<String> superAdminUsers;
+  private Splitter configSplitter;
+
+  public RolePermissionService() {
+    superAdminUsers = Lists.newArrayList();
+    configSplitter = Splitter.on(",").omitEmptyStrings().trimResults();
+  }
 
   /**
    * Create role with permissions, note that role name should be unique
@@ -155,6 +170,10 @@ public class RolePermissionService {
       return false;
     }
 
+    if (isSuperAdmin(userId)) {
+      return true;
+    }
+
     List<UserRole> userRoles = userRoleRepository.findByUserId(userId);
     if (CollectionUtils.isEmpty(userRoles)) {
       return false;
@@ -174,6 +193,10 @@ public class RolePermissionService {
     }
 
     return false;
+  }
+
+  private boolean isSuperAdmin(String userId) {
+    return superAdminUsers.contains(userId);
   }
 
   /**
@@ -212,5 +235,14 @@ public class RolePermissionService {
 
     Iterable<Permission> results = permissionRepository.save(permissions);
     return FluentIterable.from(results).toSet();
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    String superAdminConfig = serverConfigService.getValue("superAdmin");
+    if (Strings.isNullOrEmpty(superAdminConfig)) {
+      return;
+    }
+    superAdminUsers = configSplitter.splitToList(superAdminConfig);
   }
 }

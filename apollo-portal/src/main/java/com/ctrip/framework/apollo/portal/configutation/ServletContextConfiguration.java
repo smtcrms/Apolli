@@ -1,7 +1,8 @@
 package com.ctrip.framework.apollo.portal.configutation;
 
-import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
+import com.google.common.base.Strings;
+
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
@@ -17,21 +18,24 @@ import javax.servlet.ServletException;
 public class ServletContextConfiguration {
 
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   @Bean
-  public ServletContextInitializer initializer(){
+  public ServletContextInitializer initializer() {
 
     return new ServletContextInitializer() {
 
       @Override
       public void onStartup(ServletContext servletContext) throws ServletException {
-        ServerConfig loggingServerIP = serverConfigRepository.findByKey("loggingServerIP");
-        ServerConfig loggingServerPort = serverConfigRepository.findByKey("loggingServerPort");
-        ServerConfig credisServiceUrl = serverConfigRepository.findByKey("credisServiceUrl");
-        servletContext.setInitParameter("loggingServerIP", loggingServerIP == null ? "" :loggingServerIP.getValue());
-        servletContext.setInitParameter("loggingServerPort", loggingServerPort == null ? "" :loggingServerPort.getValue());
-        servletContext.setInitParameter("credisServiceUrl", credisServiceUrl == null ? "" :credisServiceUrl.getValue());
+        String loggingServerIP = serverConfigService.getValue("loggingServerIP");
+        String loggingServerPort = serverConfigService.getValue("loggingServerPort");
+        String credisServiceUrl = serverConfigService.getValue("credisServiceUrl");
+        servletContext.setInitParameter("loggingServerIP",
+            Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
+        servletContext.setInitParameter("loggingServerPort",
+            Strings.isNullOrEmpty(loggingServerPort) ? "" : loggingServerPort);
+        servletContext.setInitParameter("credisServiceUrl",
+            Strings.isNullOrEmpty(credisServiceUrl) ? "" : credisServiceUrl);
       }
     };
   }

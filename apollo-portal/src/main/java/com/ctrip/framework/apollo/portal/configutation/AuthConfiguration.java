@@ -6,7 +6,7 @@ import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,7 +39,7 @@ public class AuthConfiguration {
   static class CtripAuthAutoConfiguration {
 
     @Autowired
-    private ServerConfigRepository serverConfigRepository;
+    private ServerConfigService serverConfigService;
 
     @Bean
     public ServletListenerRegistrationBean redisAppSettingListner(){
@@ -69,8 +69,8 @@ public class AuthConfiguration {
 
       Map<String, String> filterInitParam = new HashMap();
       filterInitParam.put("redisClusterName", "casClientPrincipal");
-      filterInitParam.put("serverName", serverConfigRepository.findByKey("serverName").getValue());
-      filterInitParam.put("casServerLoginUrl", serverConfigRepository.findByKey("casServerLoginUrl").getValue());
+      filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
+      filterInitParam.put("casServerLoginUrl", serverConfigService.getValue("casServerLoginUrl"));
 
       casFilter.setInitParameters(filterInitParam);
       casFilter.setFilter(filter("org.jasig.cas.client.authentication.AuthenticationFilter"));
@@ -83,8 +83,8 @@ public class AuthConfiguration {
     public FilterRegistrationBean casValidationFilter(){
       FilterRegistrationBean casValidationFilter = new FilterRegistrationBean();
       Map<String, String> filterInitParam = new HashMap();
-      filterInitParam.put("casServerUrlPrefix", serverConfigRepository.findByKey("casServerUrlPrefix").getValue());
-      filterInitParam.put("serverName", serverConfigRepository.findByKey("serverName").getValue());
+      filterInitParam.put("casServerUrlPrefix", serverConfigService.getValue("casServerUrlPrefix"));
+      filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
       filterInitParam.put("encoding", "UTF-8");
       filterInitParam.put("useRedis", "true");
       filterInitParam.put("redisClusterName", "casClientPrincipal");

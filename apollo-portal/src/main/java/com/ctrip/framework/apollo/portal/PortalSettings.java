@@ -1,6 +1,20 @@
 package com.ctrip.framework.apollo.portal;
 
 
+import com.google.common.base.Strings;
+
+import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,19 +27,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.health.Health;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-
-import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 
 @Component
 public class PortalSettings {
@@ -41,7 +42,7 @@ public class PortalSettings {
   ApplicationContext applicationContext;
 
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   private List<Env> allEnvs = new ArrayList<Env>();
 
@@ -56,9 +57,9 @@ public class PortalSettings {
   private void postConstruct() {
     //初始化portal支持操作的环境集合,线上的portal可能支持所有的环境操作,而线下环境则支持一部分.
     // 每个环境的portal支持哪些环境配置在数据库里
-    ServerConfig serverConfig = serverConfigRepository.findByKey("apollo.portal.envs");
-    if (serverConfig != null){
-      String[] configedEnvs = serverConfig.getValue().split(",");
+    String serverConfig = serverConfigService.getValue("apollo.portal.envs");
+    if (!Strings.isNullOrEmpty(serverConfig)){
+      String[] configedEnvs = serverConfig.split(",");
       allStrEnvs = Arrays.asList(configedEnvs);
     }
 
