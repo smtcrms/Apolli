@@ -22,7 +22,6 @@ import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
-import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
 import com.ctrip.framework.apollo.portal.repository.AppRepository;
 
 @Service
@@ -45,8 +44,6 @@ public class AppService {
   @Autowired
   private AppRepository appRepository;
 
-  @Autowired
-  private ApplicationEventPublisher publisher;
 
   public List<App> findAll() {
     Iterable<App> apps = appRepository.findAll();
@@ -87,13 +84,12 @@ public class AppService {
 
 
   @Transactional
-  public App createOrUpdateAppInLocal(App app) {
+  public App create(App app) {
     String appId = app.getAppId();
     App managedApp = appRepository.findByAppId(appId);
 
     if (managedApp != null) {
-      BeanUtils.copyEntityProperties(app, managedApp);
-      return appRepository.save(managedApp);
+      throw new BadRequestException(String.format("app id %s has existed!", app.getAppId()));
     } else {
       App createdApp = appRepository.save(app);
       namespaceService.createDefaultAppNamespace(appId);

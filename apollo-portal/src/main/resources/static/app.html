@@ -35,32 +35,31 @@
                             <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用AppId</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" name="appAppId" ng-model="app.appId"
-                                       required>
+                                       required><small>(CMS上申请的App Id)</small>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用名称</label>
                             <div class="col-sm-5">
                                 <input type="text" class="form-control" name="appName" ng-model="app.name" required>
+                                <small>(格式 xx-yy-zz,不能使用'+'字符 例:apollo-server)</small>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用负责人</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 邮箱地址</label>
-                            <div class="col-sm-4">
-                                <input type="email" class="form-control" ng-model="app.ownerEmail" required>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName" required>
+                                    <div class="input-group-addon" ng-bind="emailPostfix"></div>
+                                </div>
+                                <small>(负责人具有项目管理的最高权限,比如分配配置的修改权,发布权等)</small>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
 
-                                <button type="submit" class="btn btn-default">创建</button>
+                                <button type="submit" class="btn btn-primary">提交</button>
                             </div>
                         </div>
                     </form>

@@ -66,6 +66,17 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    };
 
+                                   
+                                   PermissionService.get_app_role_users($rootScope.pageContext.appId)
+                                       .then(function (result) {
+                                           var masterUsers = '';
+                                            result.masterUsers.forEach(function (user) {
+                                                masterUsers += user.userId + ',';     
+                                            }); 
+                                           $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
+                                       }, function (result) {
+                                           
+                                       });
                                    $scope.switchView = function (namespace, viewType) {
                                        if (namespace_view_type.TEXT == viewType) {
                                            namespace.text = parseModel2Text(namespace);

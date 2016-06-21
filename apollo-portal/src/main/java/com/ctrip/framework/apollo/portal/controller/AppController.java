@@ -77,7 +77,7 @@ public class AppController {
     }
 
     appService.enrichUserInfo(app);
-    App createdApp = appService.createOrUpdateAppInLocal(app);
+    App createdApp = appService.create(app);
 
     publisher.publishEvent(new AppCreationEvent(createdApp));
 
