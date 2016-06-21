@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 230,
+      <title>File: 231,
              Errors: 0,
-             Warnings: 1049,
+             Warnings: 1059,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -248,7 +248,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  23
+                  26
                 </td>
                 <td>
                   0
@@ -556,7 +556,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  18
+                  21
                 </td>
                 <td>
                   0
@@ -990,7 +990,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  8
+                  9
                 </td>
                 <td>
                   0
@@ -1760,7 +1760,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  20
                 </td>
                 <td>
                   0
@@ -2180,7 +2180,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  8
+                  9
                 </td>
                 <td>
                   0
@@ -2217,6 +2217,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.entity.po.ServerConfig.java">com/ctrip/framework/apollo/portal/entity/po/ServerConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.common.utils.InputValidator.java">com/ctrip/framework/apollo/common/utils/InputValidator.java</a>
                 </td>
                 <td>
                   0
@@ -2362,7 +2376,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  21
+                  24
                 </td>
                 <td>
                   0
