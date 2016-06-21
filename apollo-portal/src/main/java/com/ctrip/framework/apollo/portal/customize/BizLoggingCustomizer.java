@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.customize;
 
 import com.ctrip.framework.apollo.common.customize.LoggingCustomizer;
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -15,7 +15,7 @@ public class BizLoggingCustomizer extends LoggingCustomizer{
   private static final String CLOGGING_SERVER_PORT_KEY = "clogging.server.port";
 
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   private String cloggingUrl;
   private String cloggingPort;
@@ -23,7 +23,7 @@ public class BizLoggingCustomizer extends LoggingCustomizer{
   @Override
   protected String cloggingUrl() {
     if (cloggingUrl == null){
-      cloggingUrl = serverConfigRepository.findByKey(CLOGGING_SERVER_URL_KEY).getValue();
+      cloggingUrl = serverConfigService.getValue(CLOGGING_SERVER_URL_KEY);
     }
     return cloggingUrl;
   }
@@ -31,7 +31,7 @@ public class BizLoggingCustomizer extends LoggingCustomizer{
   @Override
   protected String cloggingPort() {
     if (cloggingPort == null){
-      cloggingPort = serverConfigRepository.findByKey(CLOGGING_SERVER_PORT_KEY).getValue();
+      cloggingPort = serverConfigService.getValue(CLOGGING_SERVER_PORT_KEY);
     }
     return cloggingPort;
   }

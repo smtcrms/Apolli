@@ -1,17 +1,18 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
 import com.ctrip.framework.apollo.portal.entity.vo.Organization;
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestMapping("/organizations")
 public class OrganizationController {
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   @Autowired
   private Gson gson;
@@ -31,7 +32,11 @@ public class OrganizationController {
 
   @RequestMapping
   public List<Organization> loadOrganization() {
-    ServerConfig config = serverConfigRepository.findByKey("organizations");
-    return gson.fromJson(config.getValue(), responseType);
+    String organizations = serverConfigService.getValue("organizations");
+    if (Strings.isNullOrEmpty(organizations)) {
+      return Collections.emptyList();
+    }
+
+    return gson.fromJson(organizations, responseType);
   }
 }

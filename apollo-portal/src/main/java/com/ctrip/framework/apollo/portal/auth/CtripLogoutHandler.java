@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.auth;
 
-import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class CtripLogoutHandler implements LogoutHandler{
 
   @Autowired
-  private ServerConfigRepository serverConfigRepository;
+  private ServerConfigService serverConfigService;
 
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -27,8 +27,8 @@ public class CtripLogoutHandler implements LogoutHandler{
     response.addCookie(cookie);
 
     //重定向到SSO的logout地址
-    String casServerUrl = serverConfigRepository.findByKey("casServerUrlPrefix").getValue();
-    String serverName = serverConfigRepository.findByKey("serverName").getValue();
+    String casServerUrl = serverConfigService.getValue("casServerUrlPrefix");
+    String serverName = serverConfigService.getValue("serverName");
 
     try {
       response.sendRedirect(casServerUrl + "/logout?service=" + serverName);
