@@ -34,7 +34,7 @@
                     <table class="project-info">
                         <tbody>
                         <tr>
-                            <th>应用ID:</th>
+                            <th>AppId:</th>
                             <td ng-bind="appBaseInfo.appId"></td>
                         </tr>
                         <tr>
@@ -42,11 +42,15 @@
                             <td ng-bind="appBaseInfo.name"></td>
                         </tr>
                         <tr>
-                            <th>Owner:</th>
+                            <th>部门:</th>
+                            <td ng-bind="appBaseInfo.orgInfo"></td>
+                        </tr>
+                        <tr>
+                            <th>负责人:</th>
                             <td ng-bind="appBaseInfo.ownerName"></td>
                         </tr>
                         <tr>
-                            <th>Owner Email:</th>
+                            <th>负责人Email:</th>
                             <td ng-bind="appBaseInfo.ownerEmail"></td>
                         </tr>
                         <tr ng-show="missEnvs.length > 0">

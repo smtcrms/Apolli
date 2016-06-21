@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.framework.apollo.biz.entity.Cluster;
 import com.ctrip.framework.apollo.biz.service.ClusterService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.ClusterDTO;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 
 @RestController
@@ -24,6 +26,9 @@ public class ClusterController {
 
   @RequestMapping(path = "/apps/{appId}/clusters", method = RequestMethod.POST)
   public ClusterDTO createOrUpdate(@PathVariable("appId") String appId, @RequestBody ClusterDTO dto) {
+    if (!InputValidator.isValidClusterNamespace(dto.getName())) {
+      throw new BadRequestException(String.format("Cluster格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
     Cluster entity = BeanUtils.transfrom(Cluster.class, dto);
     Cluster managedEntity = clusterService.findOne(appId, entity.getName());
     if (managedEntity != null) {

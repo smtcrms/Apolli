@@ -95,6 +95,7 @@ application_module.controller("ConfigBaseInfoController",
 
                                    AppService.load($rootScope.pageContext.appId).then(function (result) {
                                        $scope.appBaseInfo = result;
+                                       $scope.appBaseInfo.orgInfo = result.orgName + '(' + result.orgId + ')';
                                    }, function (result) {
                                        toastr.error(AppUtil.errorMsg(result), "加载App信息出错");
                                    });

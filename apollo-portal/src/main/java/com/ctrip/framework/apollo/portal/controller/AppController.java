@@ -4,7 +4,9 @@ package com.ctrip.framework.apollo.portal.controller;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
 import com.ctrip.framework.apollo.common.http.RichResponseEntity;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
@@ -70,6 +72,9 @@ public class AppController {
 
     checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
         app.getOrgId(), app.getOrgName());
+    if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
+      throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
 
     appService.enrichUserInfo(app);
     App createdApp = appService.createOrUpdateAppInLocal(app);
@@ -85,6 +90,9 @@ public class AppController {
 
     checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
         app.getOrgId(), app.getOrgName());
+    if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
+      throw new BadRequestException(InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE);
+    }
 
     appService.createApp(Env.valueOf(env), app);
 

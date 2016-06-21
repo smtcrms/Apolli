@@ -88,6 +88,7 @@ public class ItemService {
   
   @Transactional
   public Item save(Item entity) {
+    entity.setId(0);//protection
     Item item = itemRepository.save(entity);
 
     auditService.audit(Item.class.getSimpleName(), item.getId(), Audit.OP.INSERT,

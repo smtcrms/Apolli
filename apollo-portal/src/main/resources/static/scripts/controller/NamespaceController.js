@@ -25,10 +25,24 @@ namespace_module.controller("LinkNamespaceController",
                                        toastr.error(AppUtil.errorMsg(result), "load public namespace error");
                                    });
 
+                                   AppService.load($scope.appId).then(function (result) {
+                                       $scope.appBaseInfo = result;
+                                       $scope.appBaseInfo.namespacePrefix = result.orgId + '.';
+                                   }, function (result) {
+                                       toastr.error(AppUtil.errorMsg(result), "加载App信息出错");
+                                   });
+
                                    $scope.appNamespace = {
                                        appId:$scope.appId,
                                        name:'',
                                        comment:''
+                                   };
+
+                                   $scope.concatNamespace = function() {
+                                       if (!$scope.appBaseInfo) {
+                                           return '';
+                                       }
+                                       return $scope.appBaseInfo.namespacePrefix + $scope.appNamespace.name;
                                    };
 
                                    var selectedClusters = [];
