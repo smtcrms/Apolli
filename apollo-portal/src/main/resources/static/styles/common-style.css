@@ -3,6 +3,7 @@ html, body {
 }
 
 body {
+    min-width: 960px;
     color: #797979;
     padding: 0px !important;
     margin: 0px !important;
@@ -165,10 +166,6 @@ table th {
     min-height: 500px;
 }
 
-#config-info .nav {
-    background-color: #f5f5f5;
-}
-
 #config-edit {
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -177,6 +174,7 @@ table th {
 #config-edit .panel-heading {
     border-bottom: 1px solid #ddd;
 }
+
 
 .tocify-header {
     font-size: 14px;
@@ -209,12 +207,56 @@ table th {
     border: 0px;
 }
 
+.config-item-container .second-panel-heading .ns_btn{
+    width: 25px;
+    height: 25px;
+}
+
+.config-item-container .second-panel-heading .nav-tabs .node_active{
+    border-bottom: 3px #1b6d85 solid;
+
+}
+
 .config-item-container .config-items {
     height: 500px;
     overflow: scroll;
 }
 
-.namespace-view-table {
+.config-item-container .panel-heading button img{
+    width: 12px;
+    height: 12px;
+}
+
+.config-item-container .panel-heading a img{
+    width: 12px;
+    height: 12px;
+}
+
+.config-item-container .panel-heading li img{
+    width: 12px;
+    height: 12px;
+}
+
+.config-item-container .second-panel-heading{
+    height: 45px;
+}
+
+.config-item-container .second-panel-heading a{
+    height: 35px;
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 2px;
+
+}
+
+.second-panel-heading .nav-tabs{
+    border-bottom: 0px;
+}
+
+.namespace-view-table td img{
+    cursor: pointer;
+    width: 23px;
+    height: 23px;
 
 }
 
