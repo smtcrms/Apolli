@@ -61,7 +61,7 @@ public class ServiceExceptionTest extends AbstractPortalTest {
         new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "admin server error",
             new Gson().toJson(errorAttributes).getBytes(), Charset.defaultCharset());
 
-    when(appService.createOrUpdateAppInLocal(any(App.class))).thenThrow(adminException);
+    when(appService.create(any(App.class))).thenThrow(adminException);
 
     App app = generateSampleApp();
     try {

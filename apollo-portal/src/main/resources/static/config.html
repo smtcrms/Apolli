@@ -96,7 +96,7 @@
                 <div class="row">
                     <div class="col-md-2"><img src="img/user_manage.png" class="i-20"></div>
                     <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">项目管理员</p>
+                        <p class="btn-title">项目负责人</p>
                     </div>
                 </div>
             </a>
@@ -365,7 +365,7 @@
                                  apollo-detail="'确定要删除配置吗?'" apollo-confirm="deleteItem"></apolloconfirmdialog>
 
             <apolloconfirmdialog apollo-dialog-id="'releaseNoPermissionDialog'" apollo-title="'发布'"
-                                 apollo-detail="'您没有发布权限哦~'"
+                                 apollo-detail="'您没有发布权限哦~ 请找 ' + masterUsers + ' 分配权限'"
                                  apollo-show-cancel-btn="false"></apolloconfirmdialog>
 
             <!--create release modal-->

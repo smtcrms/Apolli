@@ -1,5 +1,5 @@
-create_app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService', 'AppUtil', 'OrganizationService',
-    function ($scope, $window, toastr, AppService, AppUtil, OrganizationService) {
+create_app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService', 'UserService', 'AppUtil', 'OrganizationService',
+    function ($scope, $window, toastr, AppService, UserService, AppUtil, OrganizationService) {
 
         OrganizationService.find_organizations().then(function (result) {
             var organizations = [];
@@ -19,6 +19,15 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
             toastr.error(AppUtil.errorMsg(result), "load organizations error");
         });
 
+        $scope.app = {};
+        UserService.load_user().then(function (result) {
+            $scope.app.ownerName = result.userId;
+        }, function (result) {
+
+        });
+
+        $scope.emailPostfix = "@ctrip.com";
+
         $scope.create = function () {
             var selectedOrg = $('#organization').select2('data')[0];
 
@@ -29,6 +38,7 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
 
             $scope.app.orgId = selectedOrg.id;
             $scope.app.orgName = selectedOrg.name;
+            $scope.app.ownerEmail = $scope.app.ownerName + $scope.emailPostfix;
 
             AppService.create($scope.app).then(function (result) {
                 toastr.success('添加成功!');
