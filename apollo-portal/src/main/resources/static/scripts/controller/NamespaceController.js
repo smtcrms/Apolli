@@ -42,7 +42,8 @@ namespace_module.controller("LinkNamespaceController",
                                        if (!$scope.appBaseInfo) {
                                            return '';
                                        }
-                                       return $scope.appBaseInfo.namespacePrefix + $scope.appNamespace.name;
+                                       return $scope.appBaseInfo.namespacePrefix +
+                                           ($scope.appNamespace.name ? $scope.appNamespace.name : '');
                                    };
 
                                    var selectedClusters = [];
