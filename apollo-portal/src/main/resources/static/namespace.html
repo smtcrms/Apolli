@@ -24,14 +24,15 @@
                     <div class="row">
                         <div class="col-md-6">新建Namespace</div>
                         <div class="col-md-6 text-right">
-                            <button type="button" class="btn btn-success" ng-show="step == 2" ng-click="back()">返回</button>
+                            <button type="button" class="btn btn-success" ng-show="step == 2" ng-click="back()">返回
+                            </button>
                         </div>
                     </div>
 
                 </header>
 
                 <div class="panel-body">
-                    <form class="form-horizontal"  ng-show="step == 1" ng-submit="createNamespace()">
+                    <form class="form-horizontal" ng-show="step == 1" ng-submit="createNamespace()">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">应用ID</label>
                             <div class="col-sm-6" ng-bind="appId">
@@ -49,8 +50,13 @@
                         <div class="form-group" ng-show="type == 'create'">
                             <label class="col-sm-3 control-label"><font style="color: red">*</font>名称</label>
                             <div class="col-sm-4">
-                               <input type="text" class="form-control" ng-model="appNamespace.name" ng-required="type == 'create'">
+                                <div class="input-group">
+                                    <span class="input-group-addon" ng-bind="appBaseInfo.namespacePrefix"></span>
+                                    <input type="text" class="form-control" ng-model="appNamespace.name"
+                                           ng-required="type == 'create'">
+                                </div>
                             </div>
+                            <span ng-bind="concatNamespace()" style="line-height: 34px;"></span>
                         </div>
                         <div class="form-group" ng-show="type == 'create'">
                             <label class="col-sm-3 control-label">备注</label>
@@ -61,7 +67,9 @@
                         <div class="form-group" ng-show="type == 'link'">
                             <label class="col-sm-3 control-label"><font style="color: red">*</font>namespace</label>
                             <div class="col-sm-4">
-                                <select id="namespaces"><option></option></select>
+                                <select id="namespaces">
+                                    <option></option>
+                                </select>
                             </div>
                         </div>
 

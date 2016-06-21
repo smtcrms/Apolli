@@ -1,13 +1,17 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
+import com.ctrip.framework.apollo.portal.service.AppService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 
 import org.slf4j.Logger;
@@ -32,6 +36,9 @@ import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkMo
 public class NamespaceController {
 
   Logger logger = LoggerFactory.getLogger(NamespaceController.class);
+
+  @Autowired
+  private AppService appService;
 
   @Autowired
   private ApplicationEventPublisher publisher;
@@ -70,6 +77,13 @@ public class NamespaceController {
   public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
     checkArgument(appNamespace.getAppId(), appNamespace.getName());
+    if (!InputValidator.isValidClusterNamespace(appNamespace.getName())) {
+      throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
+
+    //add app org id as prefix
+    App app = appService.load(appId);
+    appNamespace.setName(String.format("%s.%s", app.getOrgId(), appNamespace.getName()));
 
     String operator = userInfoHolder.getUser().getUserId();
     if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {

@@ -68,6 +68,7 @@ public class NamespaceService {
     if (!isNamespaceUnique(entity.getAppId(), entity.getClusterName(), entity.getNamespaceName())) {
       throw new ServiceException("namespace not unique");
     }
+    entity.setId(0);//protection
     Namespace namespace = namespaceRepository.save(entity);
 
     auditService.audit(Namespace.class.getSimpleName(), namespace.getId(), Audit.OP.INSERT,

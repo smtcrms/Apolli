@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 
 @RestController
@@ -25,6 +27,9 @@ public class NamespaceController {
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public NamespaceDTO createOrUpdate(@PathVariable("appId") String appId,
                                      @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
+    if (!InputValidator.isValidClusterNamespace(dto.getNamespaceName())) {
+      throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
     Namespace managedEntity = namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
     if (managedEntity != null) {

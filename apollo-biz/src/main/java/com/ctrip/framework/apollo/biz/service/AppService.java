@@ -61,6 +61,7 @@ public class AppService {
     if (!isAppIdUnique(entity.getAppId())) {
       throw new ServiceException("appId not unique");
     }
+    entity.setId(0);//protection
     App app = appRepository.save(entity);
     
     auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT,

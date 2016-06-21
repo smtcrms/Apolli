@@ -7,6 +7,7 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
                 var org = {};
                 org.id = item.orgId;
                 org.text = item.orgName + '(' + item.orgId + ')';
+                org.name = item.orgName;
                 organizations.push(org);
             });
             $('#organization').select2({
@@ -27,7 +28,7 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
             }
 
             $scope.app.orgId = selectedOrg.id;
-            $scope.app.orgName = selectedOrg.text;
+            $scope.app.orgName = selectedOrg.name;
 
             AppService.create($scope.app).then(function (result) {
                 toastr.success('添加成功!');

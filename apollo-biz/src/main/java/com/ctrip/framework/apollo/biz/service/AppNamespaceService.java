@@ -44,7 +44,7 @@ public class AppNamespaceService {
 
   @Transactional
   public void createDefaultAppNamespace(String appId, String createBy) {
-    if (!isAppNamespaceNameUnique(appId, appId)) {
+    if (!isAppNamespaceNameUnique(appId, ConfigConsts.NAMESPACE_APPLICATION)) {
       throw new ServiceException("appnamespace not unique");
     }
     AppNamespace appNs = new AppNamespace();
@@ -64,9 +64,10 @@ public class AppNamespaceService {
     if (!isAppNamespaceNameUnique(appNamespace.getAppId(), appNamespace.getName())) {
       throw new ServiceException("appnamespace not unique");
     }
+    appNamespace.setId(0);//protection
     appNamespace.setDataChangeCreatedBy(createBy);
     appNamespace.setDataChangeLastModifiedBy(createBy);
-     appNamespace = appNamespaceRepository.save(appNamespace);
+    appNamespace = appNamespaceRepository.save(appNamespace);
 
     auditService.audit(AppNamespace.class.getSimpleName(), appNamespace.getId(), Audit.OP.INSERT,
                        createBy);

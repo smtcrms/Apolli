@@ -15,7 +15,9 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.service.AdminService;
 import com.ctrip.framework.apollo.biz.service.AppService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
@@ -30,6 +32,9 @@ public class AppController {
 
   @RequestMapping(path = "/apps", method = RequestMethod.POST)
   public AppDTO createOrUpdate(@RequestBody AppDTO dto) {
+    if (!InputValidator.isValidClusterNamespace(dto.getAppId())) {
+      throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
     App entity = BeanUtils.transfrom(App.class, dto);
     App managedEntity = appService.findOne(entity.getAppId());
     if (managedEntity != null) {

@@ -53,6 +53,7 @@ public class ClusterService {
     if (!isClusterNameUnique(entity.getAppId(), entity.getName())) {
       throw new ServiceException("cluster not unique");
     }
+    entity.setId(0);//protection
     Cluster cluster = clusterRepository.save(entity);
 
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT,

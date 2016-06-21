@@ -16,6 +16,7 @@ public class CommitService {
 
   public void save(Commit commit, String user){
 
+    commit.setId(0);//protection
     commit.setDataChangeCreatedBy(user);
     commit.setDataChangeCreatedTime(new Date());
     commitRepository.save(commit);
