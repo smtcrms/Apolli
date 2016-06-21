@@ -89,7 +89,7 @@ public class AppService {
     App managedApp = appRepository.findByAppId(appId);
 
     if (managedApp != null) {
-      throw new BadRequestException(String.format("app id %s has existed!", app.getAppId()));
+      throw new BadRequestException(String.format("app id %s already exists!", app.getAppId()));
     } else {
       App createdApp = appRepository.save(app);
       namespaceService.createDefaultAppNamespace(appId);
