@@ -48,7 +48,7 @@ public class ConfigController {
       }.getType();
   private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
 
-  @RequestMapping(value = "/{appId}/{clusterName}/{namespace}", method = RequestMethod.GET)
+  @RequestMapping(value = "/{appId}/{clusterName}/{namespace:.+}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
                                   @RequestParam(value = "dataCenter", required = false) String dataCenter,
