@@ -27,6 +27,7 @@ role_module.controller('AppRoleController',
                                 PermissionService.assign_master_role($scope.pageContext.appId,
                                                                      $scope.toAssignMasterRoleUser)
                                     .then(function (result) {
+                                        toastr.success("添加成功");
                                         $scope.appRoleUsers.masterUsers.push({userId: $scope.toAssignMasterRoleUser});
                                     }, function (result) {
                                         toastr.error(AppUtil.errorMsg(result), "添加失败");
