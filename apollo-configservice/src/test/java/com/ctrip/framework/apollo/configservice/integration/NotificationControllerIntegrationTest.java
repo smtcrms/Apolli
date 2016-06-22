@@ -50,7 +50,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testPollNotificationWithDefaultNamespace() throws Exception {
     AtomicBoolean stop = new AtomicBoolean();
-    perodicSendMessage(assembleKey(someAppId, someCluster, defaultNamespace), stop);
+    periodicSendMessage(assembleKey(someAppId, someCluster, defaultNamespace), stop);
 
     ResponseEntity<ApolloConfigNotification> result = restTemplate.getForEntity(
         "{baseurl}/notifications?appId={appId}&cluster={clusterName}&namespace={namespace}",
@@ -104,7 +104,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     String publicAppId = "somePublicAppId";
 
     AtomicBoolean stop = new AtomicBoolean();
-    perodicSendMessage(assembleKey(publicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace), stop);
+    periodicSendMessage(assembleKey(publicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace), stop);
 
     ResponseEntity<ApolloConfigNotification> result = restTemplate
         .getForEntity(
@@ -128,7 +128,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     String someDC = "someDC";
 
     AtomicBoolean stop = new AtomicBoolean();
-    perodicSendMessage(assembleKey(publicAppId, someDC, somePublicNamespace), stop);
+    periodicSendMessage(assembleKey(publicAppId, someDC, somePublicNamespace), stop);
 
     ResponseEntity<ApolloConfigNotification> result = restTemplate
         .getForEntity(
@@ -165,13 +165,18 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
     return Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).join(appId, cluster, namespace);
   }
 
-  private void perodicSendMessage(String message, AtomicBoolean stop) {
+  private void periodicSendMessage(String message, AtomicBoolean stop) {
     executorService.submit((Runnable) () -> {
       //wait for the request connected to server
       while (!stop.get() && !Thread.currentThread().isInterrupted()) {
         try {
           TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
+        }
+
+        //double check
+        if (stop.get()) {
+          break;
         }
 
         ReleaseMessage releaseMessage = new ReleaseMessage(message);
