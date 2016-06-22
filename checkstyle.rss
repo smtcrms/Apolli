@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 231,
+      <title>File: 232,
              Errors: 0,
-             Warnings: 1059,
+             Warnings: 1040,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -178,7 +178,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  25
+                  23
                 </td>
                 <td>
                   0
@@ -892,7 +892,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -1158,7 +1158,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  9
+                  2
                 </td>
                 <td>
                   0
@@ -1355,6 +1355,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.service.ServerConfigService.java">com/ctrip/framework/apollo/portal/service/ServerConfigService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -2082,7 +2096,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  18
+                  7
                 </td>
                 <td>
                   0
@@ -2936,7 +2950,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  23
+                  22
                 </td>
                 <td>
                   0
