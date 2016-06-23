@@ -10,6 +10,7 @@ import com.ctrip.framework.apollo.portal.entity.vo.AppRolesAssignedUsers;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceRolesAssignedUsers;
 import com.ctrip.framework.apollo.portal.entity.vo.PermissionCondition;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
+import com.ctrip.framework.apollo.portal.service.UserService;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class PermissionController {
   private UserInfoHolder userInfoHolder;
   @Autowired
   private RolePermissionService rolePermissionService;
+  @Autowired
+  private UserService userService;
 
   @RequestMapping("/apps/{appId}/permissions/{permissionType}")
   public ResponseEntity<PermissionCondition> hasPermission(@PathVariable String appId, @PathVariable String permissionType) {
@@ -80,7 +83,7 @@ public class PermissionController {
   @RequestMapping(value = "/apps/{appId}/namespaces/{namespaceName}/roles/{roleType}", method = RequestMethod.POST)
   public ResponseEntity<Void> assignNamespaceRoleToUser(@PathVariable String appId, @PathVariable String namespaceName,
                                                         @PathVariable String roleType, @RequestBody String user){
-
+    checkUserExists(user);
     checkArgument(user);
 
     if (!RoleType.isValidRoleType(roleType)){
@@ -121,7 +124,7 @@ public class PermissionController {
   @RequestMapping(value = "/apps/{appId}/roles/{roleType}", method = RequestMethod.POST)
   public ResponseEntity<Void> assignAppRoleToUser(@PathVariable String appId, @PathVariable String roleType,
                                                   @RequestBody String user){
-
+    checkUserExists(user);
     checkArgument(user);
 
     if (!RoleType.isValidRoleType(roleType)){
@@ -147,5 +150,10 @@ public class PermissionController {
     return ResponseEntity.ok().build();
   }
 
+  private void checkUserExists(String userId) {
+    if (userService.findByUserId(userId) == null) {
+      throw new BadRequestException(String.format("User %s does not exist!", userId));
+    }
+  }
 
 }
