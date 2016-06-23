@@ -12,7 +12,6 @@ public class NamespaceTextModel implements Verifiable {
   private String namespaceName;
   private int namespaceId;
   private String configText;
-  private String comment;
 
   @Override
   public boolean isInvalid(){
@@ -66,11 +65,4 @@ public class NamespaceTextModel implements Verifiable {
     this.configText = configText;
   }
 
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
 }

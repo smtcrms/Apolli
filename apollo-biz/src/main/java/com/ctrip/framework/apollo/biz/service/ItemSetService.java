@@ -6,11 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.ctrip.framework.apollo.biz.entity.Audit;
+import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.repository.ItemRepository;
+import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
+
 
 @Service
 public class ItemSetService {
@@ -21,16 +24,24 @@ public class ItemSetService {
   @Autowired
   private AuditService auditService;
 
+  @Autowired
+  private CommitService commitService;
+
+
   @Transactional
-  public void updateSet(ItemChangeSets changeSet) {
+  public ItemChangeSets updateSet(String appId, String clusterName,
+                                  String namespaceName, ItemChangeSets changeSet) {
     String operator = changeSet.getDataChangeLastModifiedBy();
+    ConfigChangeContentBuilder configChangeContentBuilder = new ConfigChangeContentBuilder();
+
     if (!CollectionUtils.isEmpty(changeSet.getCreateItems())) {
       for (ItemDTO item : changeSet.getCreateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
         entity.setId(0);//protection
         entity.setDataChangeCreatedBy(operator);
         entity.setDataChangeLastModifiedBy(operator);
-        itemRepository.save(entity);
+        Item createdItem = itemRepository.save(entity);
+        configChangeContentBuilder.createItem(createdItem);
       }
       auditService.audit("ItemSet", null, Audit.OP.INSERT, operator);
     }
@@ -39,9 +50,12 @@ public class ItemSetService {
       for (ItemDTO item : changeSet.getUpdateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
         Item managedItem = itemRepository.findOne(entity.getId());
+        Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedItem);
         BeanUtils.copyEntityProperties(entity, managedItem);
         managedItem.setDataChangeLastModifiedBy(operator);
-        itemRepository.save(managedItem);
+        Item updatedItem = itemRepository.save(managedItem);
+        configChangeContentBuilder.updateItem(beforeUpdateItem, updatedItem);
+
       }
       auditService.audit("ItemSet", null, Audit.OP.UPDATE, operator);
     }
@@ -51,9 +65,27 @@ public class ItemSetService {
         Item entity = BeanUtils.transfrom(Item.class, item);
         entity.setDeleted(true);
         entity.setDataChangeLastModifiedBy(operator);
-        itemRepository.save(entity);
+        Item deletedItem = itemRepository.save(entity);
+        configChangeContentBuilder.deleteItem(deletedItem);
       }
       auditService.audit("ItemSet", null, Audit.OP.DELETE, operator);
     }
+
+    createCommit(appId, clusterName, namespaceName, configChangeContentBuilder.build(), changeSet.getDataChangeLastModifiedBy());
+    return changeSet;
+
   }
+
+  private void createCommit(String appId, String clusterName, String namespaceName, String configChangeContent,  String operator){
+
+    Commit commit = new Commit();
+    commit.setAppId(appId);
+    commit.setClusterName(clusterName);
+    commit.setNamespaceName(namespaceName);
+    commit.setChangeSets(configChangeContent);
+    commit.setDataChangeCreatedBy(operator);
+    commit.setDataChangeLastModifiedBy(operator);
+    commitService.save(commit);
+  }
+
 }

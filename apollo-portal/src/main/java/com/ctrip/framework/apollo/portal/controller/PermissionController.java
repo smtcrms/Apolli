@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
-import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkArgument;
+import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
 
 
 @RestController
