@@ -38,18 +38,6 @@ public class ConfigChangeContentBuilder {
     return this;
   }
 
-  public ConfigChangeContentBuilder changeSet(ItemChangeSets changeSets) {
-    for (ItemDTO itemDTO : changeSets.getCreateItems()) {
-      createItems.add(BeanUtils.transfrom(Item.class, itemDTO));
-    }
-
-    for (ItemDTO itemDTO : changeSets.getDeleteItems()) {
-      deleteItems.add(BeanUtils.transfrom(Item.class, itemDTO));
-    }
-
-    return this;
-  }
-
   public String build() {
     //因为事务第一段提交并没有更新时间,所以build时统一更新
     for (Item item : createItems) {
