@@ -110,7 +110,7 @@ application_module.controller("ConfigNamespaceController",
                                                }
                                                namespace.commitPage += 1;
                                            }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "加载提交历史记录出错");
+                                               toastr.error(AppUtil.errorMsg(result), "加载修改历史记录出错");
                                            });
                                    }
 

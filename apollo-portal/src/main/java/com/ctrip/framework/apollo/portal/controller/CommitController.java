@@ -16,21 +16,19 @@ import java.util.List;
 @RestController
 public class CommitController {
 
-  private final static int COMMIT_HISTORY_PAGE_SIZE = 10;
-
   @Autowired
   private CommitService commitService;
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/commits")
   public List<CommitDTO> find(@PathVariable String appId, @PathVariable String env,
                               @PathVariable String clusterName, @PathVariable String namespaceName,
-                              @RequestParam int page){
+                              @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
 
     if (page < 0){
       page = 0;
     }
 
-    return commitService.find(appId, Env.valueOf(env), clusterName, namespaceName, page, COMMIT_HISTORY_PAGE_SIZE);
+    return commitService.find(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
 
   }
 
