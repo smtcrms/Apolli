@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkModel;
+import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
 @RestController
 @RequestMapping("")
@@ -128,7 +128,7 @@ public class ConfigController {
   }
 
   private boolean isValidItem(ItemDTO item){
-    return item != null && !StringUtils.isContainEmpty(item.getKey(), item.getValue());
+    return item != null && !StringUtils.isContainEmpty(item.getKey());
   }
 
 }

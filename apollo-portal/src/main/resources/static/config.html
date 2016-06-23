@@ -120,7 +120,7 @@
                             </div>
                             <div class="col-md-8 text-right">
                                 <button type="button"
-                                        class="btn btn-default btn-sm J_tableview_btn"
+                                        class="btn btn-success btn-sm J_tableview_btn"
                                         ng-disabled="namespace.isTextEditing"
                                         ng-click="prepareReleaseNamespace(namespace)">
                                     <img src="img/release.png">
@@ -195,11 +195,11 @@
                                 <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
                                    data-toggle="modal" data-target="#commitModal"
                                    ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                   ng-click="setCommitNamespace(namespace)">
+                                   ng-click="commitChange(namespace)">
                                     <img src="img/submit.png" class="ns_btn">
                                 </a>
 
-                                <button type="button" class="btn btn-default btn-sm"
+                                <button type="button" class="btn btn-primary btn-sm"
                                         ng-show="namespace.viewType == 'table' && namespace.hasModifyPermission"
                                         data-toggle="modal" data-target="#itemModal"
                                         ng-click="createItem(namespace)">
@@ -277,7 +277,8 @@
                                          data-toggle="modal" data-target="#itemModal"
                                          ng-click="editItem(namespace, config.item)"
                                          ng-show="namespace.hasModifyPermission">
-                                    <img style="margin-left: 5px;" src="img/cancel.png" data-toggle="modal" data-target="#deleteConfirmDialog"
+                                    <img style="margin-left: 5px;" src="img/cancel.png" data-toggle="modal"
+                                         data-target="#deleteConfirmDialog"
                                          data-tooltip="tooltip" data-placement="bottom" title="删除"
                                          ng-click="preDeleteItem(namespace, config.item.id)"
                                          ng-show="namespace.hasModifyPermission">
@@ -289,72 +290,114 @@
                     </div>
 
                     <!--历史修改视图-->
-                    <div class="J_historyview history-view"
-                         ng-show="namespace.viewType == 'history'">
-                        <div class="row">
-                            <div class="col-md-11 col-md-offset-1 list" style="">
-                                <div class="media">
-                                    <img src="img/history.png"/>
+                    <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
+                        <div class="text-right">
+                            <span class="label label-primary change-type-mark">&nbsp;</span>
+                            <small>新增&nbsp;</small>
+                            <span class="label label-info change-type-mark">&nbsp;</span>
+                            <small>更新&nbsp;</small>
+                            <span class="label label-danger change-type-mark">&nbsp;</span>
+                            <small>删除&nbsp;</small>
+                        </div>
 
-                                    <div class="row">
-                                        <div class="col-md-10"><h5 class="media-heading">2016-02-23
-                                            12:23
-                                            王玉</h5>
-
-                                            <p>
-                                                修改comment
-                                            </p></div>
-                                        <div class="col-md-2 text-right">
-                                            <button class="btn btn-default" type="submit">查看修改内容
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                </div>
-                                <div class="media">
-                                    <img src="img/history.png"/>
-
-                                    <div class="row">
-                                        <div class="col-md-10"><h5 class="media-heading">2016-02-23
-                                            12:23
-                                            王玉</h5>
-
-                                            <p>
-                                                修改comment
-                                            </p></div>
-                                        <div class="col-md-2 text-right">
-                                            <button class="btn btn-default" type="submit">查看修改内容
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="media" ng-repeat="commits in namespace.commits">
+                            <div class="media-left">
+                                <h4 class="media-heading" ng-bind="commits.dataChangeCreatedBy"></h4>
                             </div>
-                        </div>
+                            <div class="media-body">
+                                <h5 class="media-heading"
+                                    ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5>
+                                <table class="table table-bordered table-striped text-center table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            Type
+                                        </th>
+                                        <th>
+                                            Key
+                                        </th>
+                                        <th>
+                                            Old Value
+                                        </th>
+                                        <th>
+                                            New Value
+                                        </th>
+                                        <th>
+                                            Comment
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                    </div>
-                </div>
-            </div>
+                                    <tr ng-repeat="item in commits.changeSets.createItems" ng-show="item.key || item.comment">
+                                        <td width="2%">
+                                            <span class="label label-primary change-type-mark">&nbsp;</span>
+                                        </td>
+                                        <td width="20%" title="{{item.key}}">
 
-            <!-- commit modify config modal-->
-            <div class="modal fade" id="commitModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header panel-primary">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Commit changes</h4>
+                                            <span ng-bind="item.key | limitTo: 250"></span>
+                                            <span ng-bind="item.key.length > 250 ? '...' :''"></span>
+                                        </td>
+                                        <td width="30%">
+                                        </td>
+                                        <td width="30%" title="{{item.value}}">
+                                            <span ng-bind="item.value | limitTo: 250"></span>
+                                            <span ng-bind="item.value.length > 250 ? '...': ''"></span>
+                                        </td>
+                                        <td width="18%" title="{{item.comment}}">
+                                            <span ng-bind="item.comment | limitTo: 250"></span>
+                                            <span ng-bind="item.comment.length > 250 ?'...' : ''"></span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="item in commits.changeSets.updateItems">
+                                        <td width="2%">
+                                            <span class="label label-info change-type-mark">&nbsp;</span>
+                                        </td>
+                                        <td width="20%" title="{{item.newItem.key}}">
+                                            <span ng-bind="item.newItem.key | limitTo: 250"></span>
+                                            <span ng-bind="item.newItem.key.length > 250 ? '...' :''"></span>
+                                        </td>
+                                        <td width="30%" title="{{item.oldItem.value}}">
+                                            <span ng-bind="item.oldItem.value | limitTo: 250"></span>
+                                            <span ng-bind="item.oldItem.value.length > 250 ? '...': ''"></span>
+                                        </td>
+                                        <td width="30%" title="{{item.newItem.value}}">
+                                            <span ng-bind="item.newItem.value | limitTo: 250"></span>
+                                            <span ng-bind="item.newItem.value.length > 250 ? '...': ''"></span>
+                                        </td>
+                                        <td width="18%" title="{{item.newItem.comment}}">
+                                            <span ng-bind="item.newItem.comment | limitTo: 250"></span>
+                                            <span ng-bind="item.newItem.comment.length > 250 ?'...' : ''"></span>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="item in commits.changeSets.deleteItems" ng-show="item.key || item.comment">
+                                        <td width="2%">
+                                            <span class="label label-danger change-type-mark">&nbsp;</span>
+                                        </td>
+                                        <td width="20%" title="{{item.key}}">
+                                            <span ng-bind="item.key | limitTo: 250"></span>
+                                            <span ng-bind="item.key.length > 250 ? '...' :''"></span>
+                                        </td>
+                                        <td width="30%">
+                                        </td>
+                                        <td width="30%" title="{{item.value}}">
+                                            <span ng-bind="item.value | limitTo: 250"></span>
+                                            <span ng-bind="item.value.length > 250 ? '...': ''"></span>
+                                        </td>
+                                        <td width="18%" title="{{item.comment}}">
+                                            <span ng-bind="item.comment | limitTo: 250"></span>
+                                            <span ng-bind="item.comment.length > 250 ?'...' : ''"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <hr>
                         </div>
-                        <div class="modal-body">
-                        <textarea rows="4" class="form-control" style="width:570px;"
-                                  placeholder="Add an optional extended description..."
-                                  ng-model="commitComment"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                    ng-click="commitChange()">
-                                提交
-                            </button>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" ng-show="!namespace.hasLoadAllCommit"
+                                    ng-click="loadCommitHistory(namespace)">加载更多
+                                <span class="glyphicon glyphicon-menu-down"></span></button>
                         </div>
                     </div>
                 </div>
@@ -410,7 +453,7 @@
                                             ng-if="config.item.key && config.isModified">
                                             <td width="20%" title="{{config.item.key}}">
                                                         <span class="label label-danger"
-                                                              ng-show="!config.newValue">deleted</span>
+                                                              ng-show="!config.item.lastModifiedBy">deleted</span>
                                                 <span ng-bind="config.item.key | limitTo: 250"></span>
                                                 <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                                             </td>
@@ -586,6 +629,7 @@
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
 <script type="application/javascript" src="scripts/services/ConfigService.js"></script>
 <script type="application/javascript" src="scripts/services/PermissionService.js"></script>
+<script type="application/javascript" src="scripts/services/CommitService.js"></script>
 
 
 <script type="application/javascript" src="scripts/AppUtils.js"></script>

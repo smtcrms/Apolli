@@ -174,7 +174,6 @@ table th {
     border-bottom: 1px solid #ddd;
 }
 
-
 .tocify-header {
     font-size: 14px;
 }
@@ -206,12 +205,12 @@ table th {
     border: 0px;
 }
 
-.config-item-container .second-panel-heading .ns_btn{
+.config-item-container .second-panel-heading .ns_btn {
     width: 25px;
     height: 25px;
 }
 
-.config-item-container .second-panel-heading .nav-tabs .node_active{
+.config-item-container .second-panel-heading .nav-tabs .node_active {
     border-bottom: 3px #1b6d85 solid;
 
 }
@@ -221,26 +220,26 @@ table th {
     overflow: scroll;
 }
 
-.config-item-container .panel-heading button img{
+.config-item-container .panel-heading button img {
     width: 12px;
     height: 12px;
 }
 
-.config-item-container .panel-heading a img{
+.config-item-container .panel-heading a img {
     width: 12px;
     height: 12px;
 }
 
-.config-item-container .panel-heading li img{
+.config-item-container .panel-heading li img {
     width: 12px;
     height: 12px;
 }
 
-.config-item-container .second-panel-heading{
+.config-item-container .second-panel-heading {
     height: 45px;
 }
 
-.config-item-container .second-panel-heading a{
+.config-item-container .second-panel-heading a {
     height: 35px;
     color: #555;
     font-size: 13px;
@@ -248,11 +247,11 @@ table th {
 
 }
 
-.second-panel-heading .nav-tabs{
+.second-panel-heading .nav-tabs {
     border-bottom: 0px;
 }
 
-.namespace-view-table td img{
+.namespace-view-table td img {
     cursor: pointer;
     width: 23px;
     height: 23px;
@@ -272,27 +271,8 @@ table th {
 }
 
 .history-view {
-    padding: 50px 20px;
+    padding: 10px 20px;
 
-}
-
-.history-view .commit {
-    padding: 5px 15px;
-    border: 1px solid #ddd;
-}
-
-.history-view img {
-    position: absolute;
-    left: -28px;
-}
-
-.history-view .media .row {
-    padding-left: 35px;
-}
-
-.history-view .list {
-    position: relative;
-    border-left: 3px solid #ddd;
 }
 
 .line {
@@ -380,7 +360,12 @@ table th {
     padding: 20px 15px
 }
 
-.user-container .user-info{
+.user-container .user-info {
     margin-left: 5px;
+}
+
+.change-type-mark {
+    width: 5px;
+    height: 5px;
 }
 

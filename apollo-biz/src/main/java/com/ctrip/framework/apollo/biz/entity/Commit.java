@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Where(clause = "isDeleted = 0")
 public class Commit extends BaseEntity {
 
-  @Column(name = "ChangeSets", nullable = false)
+  @Column(name = "ChangeSets", length = 4048, nullable = false)
   private String changeSets;
 
   @Column(name = "AppId", nullable = false)

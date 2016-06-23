@@ -1,6 +1,7 @@
 application_module.controller("ConfigNamespaceController",
                               ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService', 'PermissionService',
-                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService, PermissionService) {
+                               'CommitService',
+                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService, PermissionService, CommitService) {
 
                                    var namespace_view_type = {
                                        TEXT: 'text',
@@ -78,13 +79,40 @@ application_module.controller("ConfigNamespaceController",
                                            
                                        });
                                    $scope.switchView = function (namespace, viewType) {
+                                       namespace.viewType = viewType;
                                        if (namespace_view_type.TEXT == viewType) {
                                            namespace.text = parseModel2Text(namespace);
                                        } else if (namespace_view_type.TABLE == viewType) {
 
+                                       } else {
+                                           $scope.loadCommitHistory(namespace);
                                        }
-                                       namespace.viewType = viewType;
                                    };
+
+                                   $scope.loadCommitHistory = function(namespace) {
+                                       if (!namespace.commits){
+                                           namespace.commits = [];
+                                           namespace.commitPage = 0;
+                                       }
+                                       CommitService.find_commits($rootScope.pageContext.appId,
+                                                                  $rootScope.pageContext.env,
+                                                                  $rootScope.pageContext.clusterName,
+                                                                  namespace.namespace.namespaceName,
+                                                                  namespace.commitPage)
+                                           .then(function (result) {
+                                               if (result.length == 0){
+                                                   namespace.hasLoadAllCommit = true;
+                                               }
+                                               for (var i = 0; i < result.length; i++) {
+                                                   //to json
+                                                   result[i].changeSets = JSON.parse(result[i].changeSets);
+                                                   namespace.commits.push(result[i]);
+                                               }
+                                               namespace.commitPage += 1;
+                                           }, function (result) {
+                                               toastr.error(AppUtil.errorMsg(result), "加载提交历史记录出错");
+                                           });
+                                   }
 
                                    var MAX_ROW_SIZE = 30;
                                    var APPEND_ROW_SIZE = 8;
@@ -118,28 +146,20 @@ application_module.controller("ConfigNamespaceController",
                                        return result;
                                    }
 
-                                   $scope.toCommitNamespace = {};
-
-                                   $scope.setCommitNamespace = function (namespace) {
-                                       $scope.toCommitNamespace = namespace;
-                                   };
-
-                                   $scope.commitComment = '';
                                    //更新配置
-                                   $scope.commitChange = function () {
+                                   $scope.commitChange = function (namespace) {
                                        ConfigService.modify_items($scope.pageContext.appId, $scope.pageContext.env,
                                                                   $scope.pageContext.clusterName,
-                                                                  $scope.toCommitNamespace.namespace.namespaceName,
-                                                                  $scope.toCommitNamespace.editText,
-                                                                  $scope.toCommitNamespace.namespace.id,
-                                                                  $scope.commitComment).then(
+                                                                  namespace.namespace.namespaceName,
+                                                                  namespace.editText,
+                                                                  namespace.namespace.id).then(
                                            function (result) {
                                                toastr.success("更新成功");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
 
-                                               $scope.toCommitNamespace.commited = true;
-                                               $scope.toggleTextEditStatus($scope.toCommitNamespace);
+                                               namespace.commited = true;
+                                               $scope.toggleTextEditStatus(namespace);
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
@@ -151,12 +171,12 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.toggleTextEditStatus = function (namespace) {
                                        namespace.isTextEditing = !namespace.isTextEditing;
                                        if (namespace.isTextEditing) {//切换为编辑状态
-                                           $scope.toCommitNamespace.commited = false;
+                                           namespace.commited = false;
                                            namespace.backupText = namespace.text;
                                            namespace.editText = parseModel2Text(namespace, 'edit');
 
                                        } else {
-                                           if (!$scope.toCommitNamespace.commited) {//取消编辑,则复原
+                                           if (!namespace.commited) {//取消编辑,则复原
                                                namespace.text = namespace.backupText;
                                            }
                                        }
@@ -286,15 +306,19 @@ application_module.controller("ConfigNamespaceController",
                                                        });
 
                                                } else if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.UPDATE) {
-
+                                                   if (!$scope.item.value){
+                                                       $scope.item.value = "";
+                                                   }
+                                                   if (!$scope.item.comment){
+                                                       $scope.item.comment = "";
+                                                   }
                                                    ConfigService.update_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
                                                                              toOperationNamespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
-                                                           toastr.success("[" + cluster.env + "," + cluster.name + "]",
-                                                                          "更新成功");
+                                                           toastr.success("更新成功, 如需生效请发布");
                                                            itemModal.modal('hide');
                                                            $rootScope.refreshNamespaces(namespace_view_type.TABLE);
                                                        }, function (result) {
