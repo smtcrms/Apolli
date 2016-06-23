@@ -161,7 +161,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   }
 
   private ApolloConfig loadApolloConfig() {
-    m_loadConfigRateLimiter.tryAcquire(5, TimeUnit.SECONDS);//wait at most 5 seconds
+    if (!m_loadConfigRateLimiter.tryAcquire(5, TimeUnit.SECONDS)) {
+      //wait at most 5 seconds
+      try {
+        TimeUnit.SECONDS.sleep(5);
+      } catch (InterruptedException e) {
+      }
+    }
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
     String dataCenter = m_configUtil.getDataCenter();
@@ -285,7 +291,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     final Random random = new Random();
     ServiceDTO lastServiceDto = null;
     while (!m_longPollingStopped.get() && !Thread.currentThread().isInterrupted()) {
-      m_longPollRateLimiter.tryAcquire(5, TimeUnit.SECONDS);//wait at most 5 seconds
+      if (!m_longPollRateLimiter.tryAcquire(5, TimeUnit.SECONDS)) {
+        //wait at most 5 seconds
+        try {
+          TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+        }
+      }
       Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "pollNotification");
       try {
         if (lastServiceDto == null) {

@@ -2,11 +2,14 @@ package com.ctrip.framework.apollo.portal.configutation;
 
 import com.ctrip.framework.apollo.portal.auth.CtripLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.CtripUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.CtripUserService;
 import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.DefaultUserService;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+import com.ctrip.framework.apollo.portal.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,7 +31,6 @@ import javax.servlet.Filter;
  */
 @Configuration
 public class AuthConfiguration {
-
 
   /**
    * 在ctrip内部运行时,会指定 spring.profiles.active = ctrip.
@@ -141,6 +143,11 @@ public class AuthConfiguration {
         throw new RuntimeException("instance listener fail", e);
       }
     }
+
+    @Bean
+    public UserService ctripUserService(ServerConfigService serverConfigService) {
+      return new CtripUserService(serverConfigService);
+    }
   }
 
   /**
@@ -159,6 +166,12 @@ public class AuthConfiguration {
     @ConditionalOnMissingBean(LogoutHandler.class)
     public DefaultLogoutHandler logoutHandler(){
       return new DefaultLogoutHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UserService.class)
+    public UserService defaultUserService() {
+      return new DefaultUserService();
     }
   }
 
