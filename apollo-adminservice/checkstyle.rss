@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 13,
+      <title>File: 14,
              Errors: 0,
-             Warnings: 113,
+             Warnings: 122,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html</link>
@@ -94,7 +94,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-adminservice/checkstyle.html#com.ctrip.framework.apollo.adminservice.controller.CommitController.java">com/ctrip/framework/apollo/adminservice/controller/CommitController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
@@ -108,7 +122,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  22
+                  27
                 </td>
                 <td>
                   0
