@@ -22,7 +22,7 @@ public class ClusterService {
 
   public ClusterDTO createCluster(Env env, ClusterDTO cluster){
     if (!clusterAPI.isClusterUnique(cluster.getAppId(), env, cluster.getName())){
-      throw new BadRequestException(String.format("cluster %s already exist.", cluster.getName()));
+      throw new BadRequestException(String.format("cluster %s already exists.", cluster.getName()));
     }
     return clusterAPI.createOrUpdate(env, cluster);
   }
