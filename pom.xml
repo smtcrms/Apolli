@@ -177,9 +177,9 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.jasig.cas.client</groupId>
-				<artifactId>cas-client-core-infosec-credis</artifactId>
-				<version>3.1.12</version>
+				<groupId>com.ctrip.framework.apollo-sso</groupId>
+				<artifactId>apollo-sso-ctrip</artifactId>
+				<version>1.0.0</version>
 			</dependency>
 			<!--third party -->
 			<dependency>

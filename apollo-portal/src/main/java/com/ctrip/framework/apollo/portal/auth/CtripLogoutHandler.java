@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class CtripLogoutHandler implements LogoutHandler{
 
@@ -18,7 +19,10 @@ public class CtripLogoutHandler implements LogoutHandler{
   @Override
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     //将session销毁
-    request.getSession().invalidate();
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
 
     Cookie cookie = new Cookie("memCacheAssertionID", null);
     //将cookie的有效期设置为0，命令浏览器删除该cookie
