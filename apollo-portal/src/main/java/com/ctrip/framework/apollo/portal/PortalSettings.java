@@ -35,7 +35,6 @@ public class PortalSettings {
 
   private static final int HEALTH_CHECK_INTERVAL = 5000;
 
-  @Value("#{'${apollo.portal.envs}'.split(',')}")
   private List<String> allStrEnvs;
 
   @Autowired

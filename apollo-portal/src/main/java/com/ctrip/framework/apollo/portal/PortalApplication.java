@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@PropertySource(value = {"classpath:portal.properties"})
 @ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
     PortalApplication.class})
 public class PortalApplication {

@@ -48,17 +48,6 @@ public class ApolloApplication {
               .sources(RefreshScope.class).run(args);
       logger.info(adminContext.getId() + " isActive: " + adminContext.isActive());
     }
-
-    /**
-     * Portal
-     * 
-     * WARNING: Do not start portal at the same pool as configservice, they will conflict on 8080
-     */
-    if (commonContext.getEnvironment().containsProperty("portal")) {
-      ConfigurableApplicationContext portalContext =
-          new SpringApplicationBuilder(PortalApplication.class).parent(commonContext).run(args);
-      logger.info(portalContext.getId() + " isActive: " + portalContext.isActive());
-    }
   }
 
 }
