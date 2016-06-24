@@ -1,7 +1,9 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.ClusterDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 
@@ -31,6 +33,10 @@ public class ClusterController {
 
     checkModel(cluster != null);
     checkArgument(cluster.getAppId(), cluster.getName());
+
+    if (!InputValidator.isValidClusterNamespace(cluster.getName())) {
+      throw new BadRequestException(String.format("Cluster格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    }
 
     String operator = userInfoHolder.getUser().getUserId();
     cluster.setDataChangeLastModifiedBy(operator);
