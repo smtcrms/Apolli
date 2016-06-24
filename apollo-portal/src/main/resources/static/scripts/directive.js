@@ -131,14 +131,13 @@ directive_module.directive('apolloclusterselector', function ($compile, $window,
             defaultCheckedCluster: '=apolloDefaultCheckedCluster'
         },
         link: function (scope, element, attrs) {
-            ////// load env //////
-
-            scope.$watch("defaultCheckedEnv", function (newValue, oldValue) {
-                refreshClusterList();
-            });
+            
+            scope.$watch("defaultCheckedEnv", refreshClusterList);
+            scope.$watch("defaultCheckedCluster", refreshClusterList);
 
             refreshClusterList();
 
+            ////// load env //////
             function refreshClusterList() {
                 AppService.load_nav_tree(scope.appId).then(function (result) {
                     scope.clusters = [];
@@ -246,7 +245,6 @@ directive_module.directive('apolloentrance', function ($compile, $window) {
             href: '=apolloHref'
         },
         link: function (scope, element, attrs) {
-          console.log(scope.title);
         }
     }
 });
