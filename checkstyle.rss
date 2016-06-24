@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 240,
+      <title>File: 241,
              Errors: 0,
-             Warnings: 1091,
+             Warnings: 1101,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -528,7 +528,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  54
+                  56
                 </td>
                 <td>
                   0
@@ -571,6 +571,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.controller.ClusterController.java">com/ctrip/framework/apollo/portal/controller/ClusterController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
                 </td>
                 <td>
                   0
@@ -2334,7 +2348,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  16
+                  17
                 </td>
                 <td>
                   0
@@ -2362,7 +2376,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
@@ -3132,7 +3146,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  4
                 </td>
                 <td>
                   0
