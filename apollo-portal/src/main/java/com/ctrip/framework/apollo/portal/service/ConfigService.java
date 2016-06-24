@@ -196,16 +196,6 @@ public class ConfigService {
           changeSets.addUpdateItem(targetItem);
         }
       }
-
-      //parse deleted items
-      List<ItemDTO> deletedItems = new LinkedList<>();
-      Map<String, ItemDTO> sourceItemMap = BeanUtils.mapByKey("key", sourceItems);
-      for (ItemDTO item : targetItems) {
-        if (sourceItemMap.get(item.getKey()) == null) {
-          deletedItems.add(item);
-        }
-      }
-      changeSets.setDeleteItems(deletedItems);
     }
 
     return changeSets;
