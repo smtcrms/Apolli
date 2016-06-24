@@ -24,18 +24,25 @@ cluster_module.controller('ClusterController',
                                };
 
                                $scope.create = function () {
+                                   var noEnvChecked = true;
                                    $scope.envs.forEach(function (env) {
-                                       ClusterService.create_cluster($scope.appId, env.name,
-                                                                     {
-                                                                         name: $scope.clusterName,
-                                                                         appId: $scope.appId
-                                                                     }).then(function (result) {
-                                           toastr.success(env.name, "集群创建成功");
-                                       }, function (result) {
-                                           toastr.error(AppUtil.errorMsg(result), "集群创建失败");
-                                       })
-
+                                       if (env.checked) {
+                                           noEnvChecked = false;
+                                           ClusterService.create_cluster($scope.appId, env.name,
+                                                                         {
+                                                                             name: $scope.clusterName,
+                                                                             appId: $scope.appId
+                                                                         }).then(function (result) {
+                                               toastr.success(env.name, "集群创建成功");
+                                           }, function (result) {
+                                               toastr.error(AppUtil.errorMsg(result), "集群创建失败");
+                                           })
+                                       }
                                    })
+
+                                   if (noEnvChecked){
+                                       toastr.warning("请选择环境");
+                                   }
 
                                };
 

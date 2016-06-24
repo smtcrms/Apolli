@@ -127,9 +127,21 @@ public class AdminServiceAPI {
       return Arrays.asList(clusterDTOs);
     }
 
-    public ClusterDTO createOrUpdate(Env env, ClusterDTO cluster){
+    public ClusterDTO loadCluster(String appId, Env env, String clusterName) {
+      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}", ClusterDTO.class,
+                                       getAdminServiceHost(env), appId, clusterName);
+    }
+
+    public boolean isClusterUnique(String appId, Env env, String clusterName) {
+      return restTemplate
+          .getForObject("{host}/apps/{appId}/cluster/{clusterName}/unique", Boolean.class, getAdminServiceHost(env),
+                        appId, clusterName);
+
+    }
+
+    public ClusterDTO createOrUpdate(Env env, ClusterDTO cluster) {
       return restTemplate.postForObject("{host}/apps/{appId}/clusters", cluster, ClusterDTO.class,
-                                                         getAdminServiceHost(env), cluster.getAppId());
+                                        getAdminServiceHost(env), cluster.getAppId());
     }
   }
 
@@ -172,9 +184,10 @@ public class AdminServiceAPI {
 
       CommitDTO[]
           commitDTOs =
-          restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
-                                    CommitDTO[].class,
-                                    getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
+          restTemplate.getForObject(
+              "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
+              CommitDTO[].class,
+              getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
 
       return Arrays.asList(commitDTOs);
     }
