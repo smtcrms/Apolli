@@ -91,14 +91,14 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void createDefaultNamespace(String appId, String createBy) {
-    if (!isNamespaceUnique(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, appId)) {
+  public void createDefaultNamespace(String appId, String clusterName, String createBy) {
+    if (!isNamespaceUnique(appId, clusterName, appId)) {
       throw new ServiceException("namespace not unique");
     }
 
     Namespace ns = new Namespace();
     ns.setAppId(appId);
-    ns.setClusterName(ConfigConsts.CLUSTER_NAME_DEFAULT);
+    ns.setClusterName(clusterName);
     ns.setNamespaceName(ConfigConsts.NAMESPACE_APPLICATION);
     ns.setDataChangeCreatedBy(createBy);
     ns.setDataChangeLastModifiedBy(createBy);

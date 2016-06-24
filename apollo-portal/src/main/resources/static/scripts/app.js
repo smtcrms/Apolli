@@ -22,6 +22,8 @@ var namespace_module = angular.module('namespace', ['app.service', 'apollo.direc
 var server_config_module = angular.module('server_config', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
 //role
 var role_module = angular.module('role', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
+//cluster
+var cluster_module = angular.module('cluster', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
 
 
 

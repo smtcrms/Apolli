@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.core.ConfigConsts;
 
 @Service
 public class AdminService {
@@ -32,7 +33,7 @@ public class AdminService {
 
     clusterService.createDefaultCluster(appId, createBy);
 
-    namespaceService.createDefaultNamespace(appId, createBy);
+    namespaceService.createDefaultNamespace(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, createBy);
 
     return app;
   }

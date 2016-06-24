@@ -65,41 +65,19 @@
 
                 </div>
             </section>
-            <a class="list-group-item" ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()">
-                <div class="row">
-                    <div class="col-md-2"><img src="img/plus-orange.png" class="i-20"></div>
-                    <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">补缺环境</p>
-                    </div>
-                </div>
-            </a>
-            <a class="list-group-item" href="#" disabled="disabled" ng-show="false">
-                <div class="row">
-                    <div class="col-md-2"><img src="../img/plus-orange.png" class="i-20"></div>
-                    <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">添加集群</p>
-                    </div>
+            <apolloentrance apollo-title="'补缺环境'" apollo-img-src="'img/plus-orange.png'"
+                            ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()"></apolloentrance>
 
-                </div>
-            </a>
-            <a class="list-group-item" href="namespace.html?#/appid={{pageContext.appId}}&type=link"
-               ng-show="hasCreateNamespacePermission">
-                <div class="row">
-                    <div class="col-md-2"><img src="img/plus-orange.png" class="i-20"></div>
-                    <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">添加Namespace</p>
-                    </div>
-                </div>
-            </a>
-            <a class="list-group-item" href="/app/role.html?#/appid={{pageContext.appId}}"
-               ng-show="hasAssignUserPermission">
-                <div class="row">
-                    <div class="col-md-2"><img src="img/user_manage.png" class="i-20"></div>
-                    <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">项目负责人</p>
-                    </div>
-                </div>
-            </a>
+            <apolloentrance apollo-title="'添加集群'" apollo-img-src="'img/plus-orange.png'"
+                            apollo-href="'cluster.html?#/appid=' + pageContext.appId"></apolloentrance>
+
+            <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'img/plus-orange.png'"
+                            apollo-href="'namespace.html?#/appid=' + pageContext.appId + '&type=link'"
+                            ng-show="hasCreateNamespacePermission"></apolloentrance>
+
+            <apolloentrance apollo-title="'项目负责人'" apollo-img-src="'img/user_manage.png'"
+                            apollo-href="'/app/role.html?#/appid=' + pageContext.appId"
+                            ng-show="hasAssignUserPermission"></apolloentrance>
             </section>
 
             <!--create env modal-->
@@ -301,13 +279,15 @@
                         </div>
 
                         <div class="media" ng-repeat="commits in namespace.commits">
-                            <div class="media-left">
-                                <h4 class="media-heading" ng-bind="commits.dataChangeCreatedBy"></h4>
-                            </div>
                             <div class="media-body">
-                                <h5 class="media-heading"
-                                    ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5>
-                                <table class="table table-bordered table-striped text-center table-hover">
+                                <div class="row">
+                                    <div class="col-md-6"><h3 class="media-heading" ng-bind="commits.dataChangeCreatedBy"></h3></div>
+                                    <div class="col-md-6 text-right"><h5 class="media-heading"
+                                                              ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5></div>
+                                </div>
+
+
+                                <table class="table table-bordered table-striped text-center table-hover" style="margin-top: 5px;">
                                     <thead>
                                     <tr>
                                         <th>
@@ -329,7 +309,8 @@
                                     </thead>
                                     <tbody>
 
-                                    <tr ng-repeat="item in commits.changeSets.createItems" ng-show="item.key || item.comment">
+                                    <tr ng-repeat="item in commits.changeSets.createItems"
+                                        ng-show="item.key || item.comment">
                                         <td width="2%" title="新增的配置">
                                             <span class="label label-primary change-type-mark">&nbsp;</span>
                                         </td>
@@ -370,7 +351,8 @@
                                             <span ng-bind="item.newItem.comment.length > 250 ?'...' : ''"></span>
                                         </td>
                                     </tr>
-                                    <tr ng-repeat="item in commits.changeSets.deleteItems" ng-show="item.key || item.comment">
+                                    <tr ng-repeat="item in commits.changeSets.deleteItems"
+                                        ng-show="item.key || item.comment">
                                         <td width="2%" title="删除的配置">
                                             <span class="label label-danger change-type-mark">&nbsp;</span>
                                         </td>
@@ -378,11 +360,11 @@
                                             <span ng-bind="item.key | limitTo: 250"></span>
                                             <span ng-bind="item.key.length > 250 ? '...' :''"></span>
                                         </td>
-                                        <td width="30%">
-                                        </td>
                                         <td width="30%" title="{{item.value}}">
                                             <span ng-bind="item.value | limitTo: 250"></span>
                                             <span ng-bind="item.value.length > 250 ? '...': ''"></span>
+                                        </td>
+                                        <td width="30%">
                                         </td>
                                         <td width="18%" title="{{item.comment}}">
                                             <span ng-bind="item.comment | limitTo: 250"></span>
@@ -540,7 +522,7 @@
                                 </label>
                                 <div class="col-sm-10">
                                             <textarea type="text" class="form-control" rows="6" ng-model="item.value"
-                                                       ng-show="tableViewOperType != 'retrieve'">
+                                                      ng-show="tableViewOperType != 'retrieve'">
                                                 </textarea>
                                     <p ng-bind="item.value" ng-show="tableViewOperType == 'retrieve'"></p>
                                 </div>
