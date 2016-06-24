@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="create_app">
+<html ng-app="cluster">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- styles -->
@@ -8,54 +8,64 @@
     <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
     <link rel="stylesheet" type="text/css" media='all' href="vendor/angular/loading-bar.min.css">
     <link rel="stylesheet" type="text/css" href="styles/common-style.css">
-    <title>新建项目</title>
+    <title>新建集群</title>
 </head>
 
 <body>
 
 <apollonav></apollonav>
-<div class="container-fluid apollo-container">
+<div class="container-fluid apollo-container" ng-controller="ClusterController">
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel">
                 <header class="panel-heading">
-                    创建项目
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>创建集群</h4>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <a type="button" class="btn btn-primary" href="/config.html?#/appid={{appId}}">返回
+                            </a>
+                        </div>
+                    </div>
+
                 </header>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" ng-controller="CreateAppController" ng-submit="create()">
+                    <form class="form-horizontal" ng-submit="create()">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 部门</label>
-                            <div class="col-sm-3">
-                                <select id="organization"><option></option></select>
+                            <label class="col-sm-2 control-label">
+                                <apollorequiredfiled></apollorequiredfiled>
+                                应用AppId</label>
+                            <div class="col-sm-6" ng-bind="appId">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用AppId</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" name="appAppId" ng-model="app.appId"
-                                       required><small>(CMS上申请的App Id)</small>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用名称</label>
-                            <div class="col-sm-5">
-                                <input type="text" class="form-control" name="appName" ng-model="app.name" required>
-                                <small>(建议格式 xx-yy-zz 例:apollo-server)</small>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用负责人</label>
+                            <label class="col-sm-2 control-label">
+                                <apollorequiredfiled></apollorequiredfiled>
+                                集群名称</label>
                             <div class="col-sm-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName" required>
-                                    <div class="input-group-addon" ng-bind="emailPostfix"></div>
-                                </div>
-                                <small>(负责人具有项目管理的最高权限,比如分配配置的修改权,发布权等)</small>
+                                <input type="text" class="form-control" name="appName" ng-model="clusterName" required>
+                                <small>(部署集群如:SHAJQ,SHAOY 或自定义集群如:SHAJQ-xx,SHAJQ-yy)</small>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                <apollorequiredfiled></apollorequiredfiled>
+                                选择环境</label>
+                            <div class="col-sm-5">
+                                <table class="table table-hover" style="width: 100px">
+                                    <tbody>
+                                    <tr style="cursor: pointer" ng-repeat="env in envs">
+                                        <td width="10%"><input type="checkbox" ng-click="switchChecked(env)"></td>
+                                        <td width="30%" ng-bind="env.name"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
 
+                            </div>
+                        </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
 
@@ -89,10 +99,10 @@
 <script type="application/javascript" src="scripts/services/AppService.js"></script>
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
+<script type="application/javascript" src="scripts/services/ClusterService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
-<script type="application/javascript" src="scripts/services/OrganizationService.js"></script>
 <script type="application/javascript" src="scripts/directive.js"></script>
 
-<script type="application/javascript" src="scripts/controller/AppController.js"></script>
+<script type="application/javascript" src="scripts/controller/ClusterController.js"></script>
 </body>
 </html>

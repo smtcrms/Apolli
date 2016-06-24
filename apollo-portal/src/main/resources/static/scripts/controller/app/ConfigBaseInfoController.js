@@ -133,6 +133,13 @@ application_module.controller("ConfigBaseInfoController",
                                    }, function (result) {
                                        
                                    });
+                                   
+                                   PermissionService.has_create_cluster_permission(appId).then(function (result) {
+                                       $scope.hasCreateClusterPermission = result.hasPermission;
+                                   }, function (result) {
+
+                                   });
+                                   
                                    PermissionService.has_assign_user_permission(appId).then(function (result) {
                                        $scope.hasAssignUserPermission = result.hasPermission;
                                    }, function (result) {

@@ -126,6 +126,11 @@ public class AdminServiceAPI {
                                                            getAdminServiceHost(env), appId);
       return Arrays.asList(clusterDTOs);
     }
+
+    public ClusterDTO createOrUpdate(Env env, ClusterDTO cluster){
+      return restTemplate.postForObject("{host}/apps/{appId}/clusters", cluster, ClusterDTO.class,
+                                                         getAdminServiceHost(env), cluster.getAppId());
+    }
   }
 
   @Service

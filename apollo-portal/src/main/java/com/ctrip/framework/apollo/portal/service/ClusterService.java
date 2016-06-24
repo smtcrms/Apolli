@@ -19,4 +19,8 @@ public class ClusterService {
     return clusterAPI.findClustersByApp(appId, env);
   }
 
+  public ClusterDTO createCluster(Env env, ClusterDTO cluster){
+    return clusterAPI.createOrUpdate(env, cluster);
+  }
+
 }

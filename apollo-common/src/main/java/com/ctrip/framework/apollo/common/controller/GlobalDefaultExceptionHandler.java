@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.common.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
+  private static final Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
   private Gson gson = new Gson();
 
@@ -41,6 +44,7 @@ public class GlobalDefaultExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, Object>> exception(HttpServletRequest request, Exception ex) {
+    logger.error("internal server error", ex);
     return handleError(request, INTERNAL_SERVER_ERROR, ex);
   }
 
@@ -64,6 +68,7 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler(HttpStatusCodeException.class)
   public ResponseEntity<Map<String, Object>> restTemplateException(HttpServletRequest request,
       HttpStatusCodeException ex) {
+    logger.error("rest template exception", ex);
     Map<String, Object> errorAttributes = gson.fromJson(ex.getResponseBodyAsString(), mapType);
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
