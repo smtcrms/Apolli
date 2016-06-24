@@ -66,8 +66,8 @@
 			</properties>
 			<dependencies>
 				<dependency>
-					<groupId>org.jasig.cas.client</groupId>
-					<artifactId>cas-client-core-infosec-credis</artifactId>
+					<groupId>com.ctrip.framework.apollo-sso</groupId>
+					<artifactId>apollo-sso-ctrip</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
