@@ -33,7 +33,7 @@
                 </header>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" ng-submit="create()">
+                    <form class="form-horizontal" ng-show="step == 1" ng-submit="create()">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">
                                 <apollorequiredfiled></apollorequiredfiled>
@@ -57,8 +57,9 @@
                             <div class="col-sm-5">
                                 <table class="table table-hover" style="width: 100px">
                                     <tbody>
-                                    <tr style="cursor: pointer" ng-repeat="env in envs">
-                                        <td width="10%"><input type="checkbox" ng-click="switchChecked(env)"></td>
+                                    <tr style="cursor: pointer" ng-repeat="env in envs" ng-click="toggleEnvCheckedStatus(env)">
+                                        <td width="10%"><input type="checkbox" ng-checked="env.checked"
+                                                               ng-click="switchChecked(env, $event)"></td>
                                         <td width="30%" ng-bind="env.name"></td>
                                     </tr>
                                     </tbody>
@@ -73,6 +74,10 @@
                             </div>
                         </div>
                     </form>
+                    <div class="row text-center" ng-show="step == 2">
+                        <img src="img/sync-succ.png" style="height: 100px; width: 100px">
+                        <h3>创建成功!</h3>
+                    </div>
                 </div>
             </div>
         </div>

@@ -269,14 +269,6 @@
 
                     <!--历史修改视图-->
                     <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
-                        <div class="text-right">
-                            <span class="label label-primary change-type-mark">&nbsp;</span>
-                            <small>新增&nbsp;</small>
-                            <span class="label label-info change-type-mark">&nbsp;</span>
-                            <small>更新&nbsp;</small>
-                            <span class="label label-danger change-type-mark">&nbsp;</span>
-                            <small>删除&nbsp;</small>
-                        </div>
 
                         <div class="media" ng-repeat="commits in namespace.commits">
                             <div class="media-body">
@@ -311,8 +303,8 @@
 
                                     <tr ng-repeat="item in commits.changeSets.createItems"
                                         ng-show="item.key || item.comment">
-                                        <td width="2%" title="新增的配置">
-                                            <span class="label label-primary change-type-mark">&nbsp;</span>
+                                        <td width="2%">
+                                            新增
                                         </td>
                                         <td width="20%" title="{{item.key}}">
 
@@ -331,8 +323,8 @@
                                         </td>
                                     </tr>
                                     <tr ng-repeat="item in commits.changeSets.updateItems">
-                                        <td width="2%" title="更新的配置">
-                                            <span class="label label-info change-type-mark">&nbsp;</span>
+                                        <td width="2%">
+                                            更新
                                         </td>
                                         <td width="20%" title="{{item.newItem.key}}">
                                             <span ng-bind="item.newItem.key | limitTo: 250"></span>
@@ -353,8 +345,8 @@
                                     </tr>
                                     <tr ng-repeat="item in commits.changeSets.deleteItems"
                                         ng-show="item.key || item.comment">
-                                        <td width="2%" title="删除的配置">
-                                            <span class="label label-danger change-type-mark">&nbsp;</span>
+                                        <td width="2%">
+                                            删除
                                         </td>
                                         <td width="20%" title="{{item.key}}">
                                             <span ng-bind="item.key | limitTo: 250"></span>
