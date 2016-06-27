@@ -1,12 +1,15 @@
 package com.ctrip.framework.apollo.portal.configutation;
 
 import com.ctrip.framework.apollo.portal.auth.CtripLogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.CtripSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.CtripUserInfoHolder;
 import com.ctrip.framework.apollo.portal.auth.CtripUserService;
 import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.DefaultSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.auth.DefaultUserService;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.service.UserService;
@@ -152,6 +155,11 @@ public class AuthConfiguration {
     public UserService ctripUserService(ServerConfigService serverConfigService) {
       return new CtripUserService(serverConfigService);
     }
+
+    @Bean
+    public SsoHeartbeatHandler ctripSsoHeartbeatHandler() {
+      return new CtripSsoHeartbeatHandler();
+    }
   }
 
   /**
@@ -159,6 +167,12 @@ public class AuthConfiguration {
    */
   @Configuration
   static class DefaultAuthAutoConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean(SsoHeartbeatHandler.class)
+    public SsoHeartbeatHandler defaultSsoHeartbeatHandler() {
+      return new DefaultSsoHeartbeatHandler();
+    }
 
     @Bean
     @ConditionalOnMissingBean(UserInfoHolder.class)
