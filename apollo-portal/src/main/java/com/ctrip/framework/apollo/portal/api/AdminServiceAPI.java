@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.portal.api;
 
 
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
+import com.ctrip.framework.apollo.core.dto.CommitDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
 import com.ctrip.framework.apollo.core.dto.ClusterDTO;
@@ -66,8 +67,10 @@ public class AdminServiceAPI {
 
     public NamespaceDTO loadNamespace(String appId, Env env, String clusterName,
                                       String namespaceName) {
-      NamespaceDTO dto = restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/" + namespaceName,
-                                       NamespaceDTO.class, getAdminServiceHost(env), appId, clusterName);
+      NamespaceDTO
+          dto =
+          restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/" + namespaceName,
+                                    NamespaceDTO.class, getAdminServiceHost(env), appId, clusterName);
       return dto;
     }
 
@@ -123,6 +126,23 @@ public class AdminServiceAPI {
                                                            getAdminServiceHost(env), appId);
       return Arrays.asList(clusterDTOs);
     }
+
+    public ClusterDTO loadCluster(String appId, Env env, String clusterName) {
+      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}", ClusterDTO.class,
+                                       getAdminServiceHost(env), appId, clusterName);
+    }
+
+    public boolean isClusterUnique(String appId, Env env, String clusterName) {
+      return restTemplate
+          .getForObject("{host}/apps/{appId}/cluster/{clusterName}/unique", Boolean.class, getAdminServiceHost(env),
+                        appId, clusterName);
+
+    }
+
+    public ClusterDTO createOrUpdate(Env env, ClusterDTO cluster) {
+      return restTemplate.postForObject("{host}/apps/{appId}/clusters", cluster, ClusterDTO.class,
+                                        getAdminServiceHost(env), cluster.getAppId());
+    }
   }
 
   @Service
@@ -154,6 +174,22 @@ public class AdminServiceAPI {
                              ReleaseDTO.class,
                              getAdminServiceHost(env), appId, clusterName, namespace);
       return response.getBody();
+    }
+  }
+
+  @Service
+  public static class CommitAPI extends API {
+
+    public List<CommitDTO> find(String appId, Env env, String clusterName, String namespaceName, int page, int size) {
+
+      CommitDTO[]
+          commitDTOs =
+          restTemplate.getForObject(
+              "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
+              CommitDTO[].class,
+              getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
+
+      return Arrays.asList(commitDTOs);
     }
   }
 

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkArgument;
-import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkModel;
+import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
+import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
 /**
  * 配置中心本身需要一些配置,这些配置放在数据库里面

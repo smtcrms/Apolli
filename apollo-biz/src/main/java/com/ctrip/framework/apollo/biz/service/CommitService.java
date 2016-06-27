@@ -4,9 +4,11 @@ import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.repository.CommitRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.List;
 
 @Service
 public class CommitService {
@@ -14,12 +16,14 @@ public class CommitService {
   @Autowired
   private CommitRepository commitRepository;
 
-  public void save(Commit commit, String user){
-
+  @Transactional
+  public Commit save(Commit commit){
     commit.setId(0);//protection
-    commit.setDataChangeCreatedBy(user);
-    commit.setDataChangeCreatedTime(new Date());
-    commitRepository.save(commit);
+    return commitRepository.save(commit);
+  }
+
+  public List<Commit> find(String appId, String clusterName, String namespaceName, Pageable page){
+    return commitRepository.findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(appId, clusterName, namespaceName, page);
   }
 
 }

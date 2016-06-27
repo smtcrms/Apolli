@@ -131,14 +131,13 @@ directive_module.directive('apolloclusterselector', function ($compile, $window,
             defaultCheckedCluster: '=apolloDefaultCheckedCluster'
         },
         link: function (scope, element, attrs) {
-            ////// load env //////
-
-            scope.$watch("defaultCheckedEnv", function (newValue, oldValue) {
-                refreshClusterList();
-            });
+            
+            scope.$watch("defaultCheckedEnv", refreshClusterList);
+            scope.$watch("defaultCheckedCluster", refreshClusterList);
 
             refreshClusterList();
 
+            ////// load env //////
             function refreshClusterList() {
                 AppService.load_nav_tree(scope.appId).then(function (result) {
                     scope.clusters = [];
@@ -197,6 +196,7 @@ directive_module.directive('apolloclusterselector', function ($compile, $window,
 
 });
 
+/** 必填项*/
 directive_module.directive('apollorequiredfiled', function ($compile, $window) {
     return {
         restrict: 'E',
@@ -206,6 +206,7 @@ directive_module.directive('apollorequiredfiled', function ($compile, $window) {
     }
 });
 
+/**  确认框 */
 directive_module.directive('apolloconfirmdialog', function ($compile, $window) {
     return {
         restrict: 'E',
@@ -230,3 +231,22 @@ directive_module.directive('apolloconfirmdialog', function ($compile, $window) {
         }
     }
 });
+
+/** entrance */
+directive_module.directive('apolloentrance', function ($compile, $window) {
+    return {
+        restrict: 'E',
+        templateUrl: '../views/component/entrance.html',
+        transclude: true,
+        replace: true,
+        scope: {
+            imgSrc: '=apolloImgSrc',
+            title: '=apolloTitle',
+            href: '=apolloHref'
+        },
+        link: function (scope, element, attrs) {
+        }
+    }
+});
+
+

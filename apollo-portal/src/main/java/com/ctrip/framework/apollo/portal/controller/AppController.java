@@ -25,7 +25,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static com.ctrip.framework.apollo.portal.util.RequestPrecondition.checkArgument;
+import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
 
 @RestController
 @RequestMapping("/apps")
@@ -39,6 +39,7 @@ public class AppController {
 
   @Autowired
   private ApplicationEventPublisher publisher;
+
 
   @RequestMapping("")
   public List<App> findAllApp() {

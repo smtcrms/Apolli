@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -66,8 +66,8 @@
 			</properties>
 			<dependencies>
 				<dependency>
-					<groupId>org.jasig.cas.client</groupId>
-					<artifactId>cas-client-core-infosec-credis</artifactId>
+					<groupId>com.ctrip.framework.apollo-sso</groupId>
+					<artifactId>apollo-sso-ctrip</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>

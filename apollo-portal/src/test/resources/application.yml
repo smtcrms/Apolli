@@ -15,7 +15,7 @@ ctrip:
 
 apollo:
   portal:
-    env: local
+    envs: local
 
     
 endpoints:

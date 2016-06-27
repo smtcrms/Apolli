@@ -2,11 +2,14 @@ package com.ctrip.framework.apollo.portal.configutation;
 
 import com.ctrip.framework.apollo.portal.auth.CtripLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.CtripUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.CtripUserService;
 import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.DefaultUserService;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+import com.ctrip.framework.apollo.portal.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,7 +31,6 @@ import javax.servlet.Filter;
  */
 @Configuration
 public class AuthConfiguration {
-
 
   /**
    * 在ctrip内部运行时,会指定 spring.profiles.active = ctrip.
@@ -71,9 +73,11 @@ public class AuthConfiguration {
       filterInitParam.put("redisClusterName", "casClientPrincipal");
       filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
       filterInitParam.put("casServerLoginUrl", serverConfigService.getValue("casServerLoginUrl"));
+      //we don't want to use session to store login information, since we will be deployed to a cluster, not a single instance
+      filterInitParam.put("useSession", "false");
 
       casFilter.setInitParameters(filterInitParam);
-      casFilter.setFilter(filter("org.jasig.cas.client.authentication.AuthenticationFilter"));
+      casFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAuthenticationFilter"));
       casFilter.addUrlPatterns("/*");
 
       return casFilter;
@@ -86,6 +90,8 @@ public class AuthConfiguration {
       filterInitParam.put("casServerUrlPrefix", serverConfigService.getValue("casServerUrlPrefix"));
       filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
       filterInitParam.put("encoding", "UTF-8");
+      //we don't want to use session to store login information, since we will be deployed to a cluster, not a single instance
+      filterInitParam.put("useSession", "false");
       filterInitParam.put("useRedis", "true");
       filterInitParam.put("redisClusterName", "casClientPrincipal");
 
@@ -103,7 +109,7 @@ public class AuthConfiguration {
     public FilterRegistrationBean assertionHolder(){
       FilterRegistrationBean assertionHolderFilter = new FilterRegistrationBean();
 
-      assertionHolderFilter.setFilter(filter("org.jasig.cas.client.util.AssertionThreadLocalFilter"));
+      assertionHolderFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAssertionThreadLocalFilter"));
       assertionHolderFilter.addUrlPatterns("/*");
 
       return assertionHolderFilter;
@@ -141,6 +147,11 @@ public class AuthConfiguration {
         throw new RuntimeException("instance listener fail", e);
       }
     }
+
+    @Bean
+    public UserService ctripUserService(ServerConfigService serverConfigService) {
+      return new CtripUserService(serverConfigService);
+    }
   }
 
   /**
@@ -159,6 +170,12 @@ public class AuthConfiguration {
     @ConditionalOnMissingBean(LogoutHandler.class)
     public DefaultLogoutHandler logoutHandler(){
       return new DefaultLogoutHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UserService.class)
+    public UserService defaultUserService() {
+      return new DefaultUserService();
     }
   }
 
