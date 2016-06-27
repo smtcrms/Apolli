@@ -258,3 +258,55 @@ directive_module.directive('apolloentrance', function ($compile, $window) {
 });
 
 
+/** entrance */
+directive_module.directive('apollouserselector', function ($compile, $window) {
+    return {
+        restrict: 'E',
+        templateUrl: '../views/component/user-selector.html',
+        transclude: true,
+        replace: true,
+        scope: {
+            id: '=apolloId'
+        },
+        link: function (scope, element, attrs) {
+
+            scope.$watch("id", initSelect2);
+
+            var searchUsersAjax = {
+                ajax: {
+                    url: '/users',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            keyword: params.term ? params.term: '',
+                            limit: 100
+                        }
+                    },
+                    processResults: function (data, params) {
+                        var users = [];
+                        data.forEach(function (user) {
+                            users.push({
+                                           id: user.userId,
+                                           text: user.userId + " | " + user.name + " | " + user.email
+                                       })
+                        });
+                        return {
+                            results: users
+                        }
+
+                    },
+                    cache: true,
+                    minimumInputLength: 5
+                }
+            };
+
+            function initSelect2(){
+                $('.' + scope.id).select2(searchUsersAjax);
+            }
+
+        }
+    }
+});
+
+

@@ -7,6 +7,8 @@ role_module.controller('AppRoleController',
                                 appId: params.appid
                             };
 
+                            $scope.userSelectWidgetId = 'toAssignMasterRoleUser';
+
                             PermissionService.has_assign_user_permission($scope.pageContext.appId)
                                 .then(function (result) {
                                     $scope.hasAssignUserPermission = result.hasPermission;
@@ -21,14 +23,19 @@ role_module.controller('AppRoleController',
 
                                 });
 
-                            $scope.toAssignMasterRoleUser = '';
 
                             $scope.assignMasterRoleToUser = function () {
+                                var user = $('.' + $scope.userSelectWidgetId).select2('data')[0];
+                                if (!user){
+                                    toastr.warning("请选择用户");
+                                    return;
+                                }
+                                var toAssignMasterRoleUser = user.id;
                                 PermissionService.assign_master_role($scope.pageContext.appId,
-                                                                     $scope.toAssignMasterRoleUser)
+                                                                     toAssignMasterRoleUser)
                                     .then(function (result) {
                                         toastr.success("添加成功");
-                                        $scope.appRoleUsers.masterUsers.push({userId: $scope.toAssignMasterRoleUser});
+                                        $scope.appRoleUsers.masterUsers.push({userId: toAssignMasterRoleUser});
                                     }, function (result) {
                                         toastr.error(AppUtil.errorMsg(result), "添加失败");
                                     });
