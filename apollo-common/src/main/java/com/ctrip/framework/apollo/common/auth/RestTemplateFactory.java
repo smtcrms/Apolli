@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.common.auth;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.google.common.io.BaseEncoding;
 
 import org.apache.http.Header;
 import org.apache.http.auth.AuthScope;
@@ -19,7 +17,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.common.io.BaseEncoding;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Component
 public class RestTemplateFactory implements FactoryBean<RestTemplate>, InitializingBean {
@@ -54,7 +54,11 @@ public class RestTemplateFactory implements FactoryBean<RestTemplate>, Initializ
             .setDefaultHeaders(defaultHeaders).build();
 
     restTemplate = new RestTemplate(httpMessageConverters.getConverters());
-    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+    HttpComponentsClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
+    requestFactory.setConnectTimeout(3000);
+    requestFactory.setReadTimeout(10000);
+    restTemplate.setRequestFactory(requestFactory);
   }
 
 }

@@ -12,6 +12,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,11 +33,18 @@ public class CtripUserService implements UserService {
 
   public CtripUserService(ServerConfigService serverConfigService) {
     this.serverConfigService = serverConfigService;
-    this.restTemplate = new RestTemplate();
+    this.restTemplate = new RestTemplate(clientHttpRequestFactory());
     this.searchUserMatchFields =
         Lists.newArrayList("empcode", "empaccount", "displayname", "c_name", "pinyin");
     this.responseType = new ParameterizedTypeReference<Map<String, List<UserServiceResponse>>>() {
     };
+  }
+
+  private ClientHttpRequestFactory clientHttpRequestFactory() {
+    SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+    factory.setReadTimeout(3000);
+    factory.setConnectTimeout(5000);
+    return factory;
   }
 
   @Override
