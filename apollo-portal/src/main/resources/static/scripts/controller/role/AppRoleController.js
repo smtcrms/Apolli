@@ -25,7 +25,12 @@ role_module.controller('AppRoleController',
 
 
                             $scope.assignMasterRoleToUser = function () {
-                                var toAssignMasterRoleUser = $('.' + $scope.userSelectWidgetId).select2('data')[0].id;
+                                var user = $('.' + $scope.userSelectWidgetId).select2('data')[0];
+                                if (!user){
+                                    toastr.warning("请选择用户");
+                                    return;
+                                }
+                                var toAssignMasterRoleUser = user.id;
                                 PermissionService.assign_master_role($scope.pageContext.appId,
                                                                      toAssignMasterRoleUser)
                                     .then(function (result) {

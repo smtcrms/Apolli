@@ -32,7 +32,12 @@ role_module.controller('NamespaceRoleController',
 
                             $scope.assignRoleToUser = function (roleType) {
                                 if ('ReleaseNamespace' == roleType) {
-                                    var toAssignReleaseNamespaceRoleUser = $('.' + $scope.releaseRoleWidgetId).select2('data')[0].id;
+                                    var user = $('.' + $scope.releaseRoleWidgetId).select2('data')[0];
+                                    if (!user){
+                                        toastr.warning("请选择用户");
+                                        return;
+                                    }
+                                    var toAssignReleaseNamespaceRoleUser = user.id;
                                     PermissionService.assign_release_namespace_role($scope.pageContext.appId,
                                                                                     $scope.pageContext.namespaceName,
                                                                                     toAssignReleaseNamespaceRoleUser)
@@ -44,7 +49,12 @@ role_module.controller('NamespaceRoleController',
                                             toastr.error(AppUtil.errorMsg(result), "添加失败");
                                         });
                                 } else {
-                                    var toAssignModifyNamespaceRoleUser = $('.' + $scope.modifyRoleWidgetId).select2('data')[0].id;
+                                    var user = $('.' + $scope.modifyRoleWidgetId).select2('data')[0];
+                                    if (!user){
+                                        toastr.warning("请选择用户");
+                                        return;
+                                    }
+                                    var toAssignModifyNamespaceRoleUser = user.id;
                                     PermissionService.assign_modify_namespace_role($scope.pageContext.appId,
                                                                                    $scope.pageContext.namespaceName,
                                                                                    toAssignModifyNamespaceRoleUser)
@@ -93,7 +103,4 @@ role_module.controller('NamespaceRoleController',
                                 list.splice(index, 1);
                             }
                             
-                            $scope.modifyRoleUsersId = 'J_modify_role_users';
-                            $scope.releaseRoleUsersId = 'J_release_role_users';
-
                         }]);
