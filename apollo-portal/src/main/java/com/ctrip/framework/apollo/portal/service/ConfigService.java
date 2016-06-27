@@ -140,7 +140,7 @@ public class ConfigService {
         itemDiffs.setDiffs(parseChangeSets(namespace, sourceItems));
       } catch (BadRequestException e) {
         itemDiffs.setDiffs(new ItemChangeSets());
-        itemDiffs.setExtInfo("该集群下没有名为#" + namespace.getNamespaceName() + "#的namespace");
+        itemDiffs.setExtInfo("该集群下没有名为 " + namespace.getNamespaceName() + " 的namespace");
       }
       result.add(itemDiffs);
     }

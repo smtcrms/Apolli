@@ -106,14 +106,16 @@
 
             <!--step 2-->
             <div class="row" ng-show="syncItemStep == 2" ng-repeat="diff in diffs">
-                <h4 class="text-center">
+                <h5 class="text-center">
                     环境:<span ng-bind="diff.namespace.env"></span>
                     集群:<span ng-bind="diff.namespace.clusterName"></span>
                     <span ng-show="!diff.extInfo">Namespace:{{pageContext.namespaceName}}</span>
-                    <label ng-show="diff.diffs.createItems.length + diff.diffs.updateItems.length == 0">没有更新的配置</label>
-                    <label ng-show="diff.extInfo" ng-bind="diff.extInfo"></label>
-                </h4>
-                <hr>
+                </h5>
+                <div class="text-center" ng-show="diff.diffs.createItems.length + diff.diffs.updateItems.length == 0 || diff.extInfo">
+                    <font ng-show="diff.diffs.createItems.length + diff.diffs.updateItems.length == 0 && !diff.extInfo">没有更新的配置</font>
+                    <font ng-show="diff.extInfo" ng-bind="diff.extInfo"></font>
+                    ,忽略同步
+                </div>
 
                 <div class="row" style="margin-top: 10px;" ng-show="diff.diffs.createItems.length > 0">
                     <div class="form-horizontal">
@@ -163,6 +165,7 @@
                         </div>
                     </div>
                 </div>
+                <hr>
             </div>
 
 
