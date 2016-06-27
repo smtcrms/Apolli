@@ -179,4 +179,9 @@ public class ConfigUtil {
   public int getLongPollQPS() {
     return longPollQPS;
   }
+
+  public String getDefaultLocalCacheDir() {
+    //TODO call Framework Foundation to get the default local cache dir
+    return String.format("/opt/data/%s", getAppId());
+  }
 }
