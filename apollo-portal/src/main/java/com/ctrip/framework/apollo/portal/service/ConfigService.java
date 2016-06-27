@@ -4,6 +4,7 @@ package com.ctrip.framework.apollo.portal.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
@@ -135,7 +136,12 @@ public class ConfigService {
     for (NamespaceIdentifer namespace : comparedNamespaces) {
 
       ItemDiffs itemDiffs = new ItemDiffs(namespace);
-      itemDiffs.setDiffs(parseChangeSets(namespace, sourceItems));
+      try {
+        itemDiffs.setDiffs(parseChangeSets(namespace, sourceItems));
+      } catch (BadRequestException e) {
+        itemDiffs.setDiffs(new ItemChangeSets());
+        itemDiffs.setExtInfo("该集群下没有名为 " + namespace.getNamespaceName() + " 的namespace");
+      }
       result.add(itemDiffs);
     }
 
@@ -150,12 +156,12 @@ public class ConfigService {
     NamespaceDTO namespaceDTO = null;
     try {
       namespaceDTO = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
-    } catch (NotFoundException e) {
-      logger.warn("namespace not exist. appId:{}, env:{}, clusterName:{}, namespaceName:{}", appId, env, clusterName,
-                  namespaceName);
-      throw new BadRequestException(String.format(
-          "namespace not exist. appId:%s, env:%s, clusterName:%s, namespaceName:%s", appId, env, clusterName,
-          namespaceName));
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        throw new BadRequestException(String.format(
+            "namespace not exist. appId:%s, env:%s, clusterName:%s, namespaceName:%s", appId, env, clusterName,
+            namespaceName));
+      }
     }
     return namespaceDTO.getId();
   }
