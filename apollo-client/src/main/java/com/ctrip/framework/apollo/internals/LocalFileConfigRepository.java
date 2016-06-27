@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -55,13 +57,27 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       Cat.logError(ex);
       throw new ApolloConfigException("Unable to load component!", ex);
     }
-    this.initialize(new File(ClassLoaderUtil.getClassPath() + CONFIG_DIR));
+    this.setLocalCacheDir(findLocalCacheDir());
   }
 
-  void initialize(File baseDir) {
+  void setLocalCacheDir(File baseDir) {
     m_baseDir = baseDir;
     this.checkLocalConfigCacheDir(m_baseDir);
     this.trySync();
+  }
+
+  private File findLocalCacheDir() {
+    try {
+      String defaultCacheDir = m_configUtil.getDefaultLocalCacheDir();
+      Path path = Paths.get(defaultCacheDir);
+      if (Files.exists(path) && Files.isWritable(path)) {
+        return new File(defaultCacheDir, CONFIG_DIR);
+      }
+    } catch (Throwable ex) {
+      //ignore
+    }
+
+    return new File(ClassLoaderUtil.getClassPath(), CONFIG_DIR);
   }
 
   @Override
@@ -98,6 +114,13 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   @Override
   protected void sync() {
+    //sync with upstream immediately
+   boolean syncFromUpstreamResultSuccess = trySyncFromUpstream();
+
+    if (syncFromUpstreamResultSuccess) {
+      return;
+    }
+
     Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "syncLocalConfig");
     Throwable exception = null;
     try {
@@ -113,28 +136,27 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       transaction.complete();
     }
 
-    //sync with fallback immediately
-    trySyncFromUpstream();
-
     if (m_fileProperties == null) {
       throw new ApolloConfigException(
           "Load config from local config failed!", exception);
     }
   }
 
-  private void trySyncFromUpstream() {
+  private boolean trySyncFromUpstream() {
     if (m_upstream == null) {
-      return;
+      return false;
     }
     try {
       Properties properties = m_upstream.getConfig();
       updateFileProperties(properties);
+      return true;
     } catch (Throwable ex) {
       Cat.logError(ex);
       logger
           .warn("Sync config from upstream repository {} failed, reason: {}", m_upstream.getClass(),
               ExceptionUtil.getDetailMessage(ex));
     }
+    return false;
   }
 
   private synchronized void updateFileProperties(Properties newProperties) {

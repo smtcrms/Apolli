@@ -93,7 +93,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     createLocalCachePropertyFile(someProperties);
 
     LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someNamespace);
-    localRepo.initialize(someBaseDir);
+    localRepo.setLocalCacheDir(someBaseDir);
     Properties properties = localRepo.getConfig();
 
     assertEquals(someValue, properties.getProperty(someKey));
@@ -109,7 +109,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     Files.write(defaultKey + "=" + someValue, file, Charsets.UTF_8);
 
     LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someNamespace);
-    localRepo.initialize(someBaseDir);
+    localRepo.setLocalCacheDir(someBaseDir);
 
     //when fallback is set, it will try to sync from it
     localRepo.setUpstreamRepository(fallbackRepo);
@@ -124,7 +124,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     LocalFileConfigRepository
         localFileConfigRepository =
         new LocalFileConfigRepository(someNamespace);
-    localFileConfigRepository.initialize(someBaseDir);
+    localFileConfigRepository.setLocalCacheDir(someBaseDir);
 
     localFileConfigRepository.setUpstreamRepository(fallbackRepo);
 
@@ -139,7 +139,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   public void testLoadConfigWithNoLocalFileMultipleTimes() throws Exception {
     LocalFileConfigRepository localRepo =
         new LocalFileConfigRepository(someNamespace);
-    localRepo.initialize(someBaseDir);
+    localRepo.setLocalCacheDir(someBaseDir);
 
     localRepo.setUpstreamRepository(fallbackRepo);
 
@@ -148,7 +148,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     LocalFileConfigRepository
         anotherLocalRepoWithNoFallback =
         new LocalFileConfigRepository(someNamespace);
-    anotherLocalRepoWithNoFallback.initialize(someBaseDir);
+    anotherLocalRepoWithNoFallback.setLocalCacheDir(someBaseDir);
 
     Properties anotherProperties = anotherLocalRepoWithNoFallback.getConfig();
 
@@ -164,7 +164,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
     LocalFileConfigRepository localFileConfigRepository =
         new LocalFileConfigRepository(someNamespace);
-    localFileConfigRepository.initialize(someBaseDir);
+    localFileConfigRepository.setLocalCacheDir(someBaseDir);
     localFileConfigRepository.setUpstreamRepository(fallbackRepo);
     localFileConfigRepository.addChangeListener(someListener);
 
