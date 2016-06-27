@@ -28,4 +28,9 @@ public class ServerConfigService {
     return serverConfig == null ? null : serverConfig.getValue();
   }
 
+  public String getValue(String key, String defaultValue) {
+    String value = getValue(key);
+    return value == null ? defaultValue : value;
+  }
+
 }

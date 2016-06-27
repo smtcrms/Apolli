@@ -42,9 +42,21 @@ public class CtripUserService implements UserService {
 
   private ClientHttpRequestFactory clientHttpRequestFactory() {
     SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-    factory.setReadTimeout(3000);
-    factory.setConnectTimeout(5000);
+    factory.setConnectTimeout(getConnectTimeout());
+    factory.setReadTimeout(getReadTimeout());
     return factory;
+  }
+
+  private int getConnectTimeout() {
+    String connectTimeout = serverConfigService.getValue("api.connectTimeout", "3000");
+
+    return Integer.parseInt(connectTimeout);
+  }
+
+  private int getReadTimeout() {
+    String readTimeout = serverConfigService.getValue("api.readTimeout", "3000");
+
+    return Integer.parseInt(readTimeout);
   }
 
   @Override

@@ -1,6 +1,8 @@
-package com.ctrip.framework.apollo.common.auth;
+package com.ctrip.framework.apollo.portal.api;
 
 import com.google.common.io.BaseEncoding;
+
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.apache.http.Header;
 import org.apache.http.auth.AuthScope;
@@ -25,6 +27,9 @@ import java.util.Collection;
 public class RestTemplateFactory implements FactoryBean<RestTemplate>, InitializingBean {
   @Autowired
   private HttpMessageConverters httpMessageConverters;
+
+  @Autowired
+  private ServerConfigService serverConfigService;
 
   private RestTemplate restTemplate;
 
@@ -56,9 +61,22 @@ public class RestTemplateFactory implements FactoryBean<RestTemplate>, Initializ
     restTemplate = new RestTemplate(httpMessageConverters.getConverters());
     HttpComponentsClientHttpRequestFactory requestFactory =
         new HttpComponentsClientHttpRequestFactory(httpClient);
-    requestFactory.setConnectTimeout(3000);
-    requestFactory.setReadTimeout(10000);
+    requestFactory.setConnectTimeout(getConnectTimeout());
+    requestFactory.setReadTimeout(getReadTimeout());
     restTemplate.setRequestFactory(requestFactory);
   }
+
+  private int getConnectTimeout() {
+    String connectTimeout = serverConfigService.getValue("api.connectTimeout", "3000");
+
+    return Integer.parseInt(connectTimeout);
+  }
+
+  private int getReadTimeout() {
+    String readTimeout = serverConfigService.getValue("api.readTimeout", "10000");
+
+    return Integer.parseInt(readTimeout);
+  }
+
 
 }

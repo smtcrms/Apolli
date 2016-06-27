@@ -5,7 +5,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.framework.apollo.common.auth.RestTemplateFactory;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.service.ServiceLocator;
 
