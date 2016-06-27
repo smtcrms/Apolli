@@ -87,9 +87,12 @@ public class RolePermissionService implements InitializingBean {
 
   /**
    * Assign role to users
+   *
+   * @return the users assigned roles
    */
   @Transactional
-  public void assignRoleToUsers(String roleName, Set<String> userIds, String operatorUserId) {
+  public Set<String> assignRoleToUsers(String roleName, Set<String> userIds,
+                                       String operatorUserId) {
     Role role = findRoleByRoleName(roleName);
     Preconditions.checkState(role != null, "Role %s doesn't exist!", roleName);
 
@@ -110,6 +113,7 @@ public class RolePermissionService implements InitializingBean {
     });
 
     userRoleRepository.save(toCreate);
+    return toAssignUserIds;
   }
 
   /**

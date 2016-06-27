@@ -12,6 +12,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,11 +33,30 @@ public class CtripUserService implements UserService {
 
   public CtripUserService(ServerConfigService serverConfigService) {
     this.serverConfigService = serverConfigService;
-    this.restTemplate = new RestTemplate();
+    this.restTemplate = new RestTemplate(clientHttpRequestFactory());
     this.searchUserMatchFields =
         Lists.newArrayList("empcode", "empaccount", "displayname", "c_name", "pinyin");
     this.responseType = new ParameterizedTypeReference<Map<String, List<UserServiceResponse>>>() {
     };
+  }
+
+  private ClientHttpRequestFactory clientHttpRequestFactory() {
+    SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+    factory.setConnectTimeout(getConnectTimeout());
+    factory.setReadTimeout(getReadTimeout());
+    return factory;
+  }
+
+  private int getConnectTimeout() {
+    String connectTimeout = serverConfigService.getValue("api.connectTimeout", "3000");
+
+    return Integer.parseInt(connectTimeout);
+  }
+
+  private int getReadTimeout() {
+    String readTimeout = serverConfigService.getValue("api.readTimeout", "3000");
+
+    return Integer.parseInt(readTimeout);
   }
 
   @Override
