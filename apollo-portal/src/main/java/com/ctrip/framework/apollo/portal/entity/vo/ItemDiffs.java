@@ -5,6 +5,7 @@ import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 public class ItemDiffs {
   private NamespaceIdentifer namespace;
   private ItemChangeSets diffs;
+  private String extInfo;
 
   public ItemDiffs(NamespaceIdentifer namespace){
     this.namespace = namespace;
@@ -23,5 +24,13 @@ public class ItemDiffs {
 
   public void setDiffs(ItemChangeSets diffs) {
     this.diffs = diffs;
+  }
+
+  public String getExtInfo() {
+    return extInfo;
+  }
+
+  public void setExtInfo(String extInfo) {
+    this.extInfo = extInfo;
   }
 }
