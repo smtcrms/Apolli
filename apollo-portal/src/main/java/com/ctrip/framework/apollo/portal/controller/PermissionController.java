@@ -16,6 +16,7 @@ import com.ctrip.framework.apollo.portal.util.RoleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,8 +90,11 @@ public class PermissionController {
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");
     }
-    rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType),
+    Set<String> assignedUser = rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType),
                                             Sets.newHashSet(user), userInfoHolder.getUser().getUserId());
+    if (CollectionUtils.isEmpty(assignedUser)){
+      throw new BadRequestException(user + "已授权");
+    }
 
     return ResponseEntity.ok().build();
   }
@@ -130,8 +134,11 @@ public class PermissionController {
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");
     }
-    rolePermissionService.assignRoleToUsers(RoleUtils.buildAppRoleName(appId, roleType),
+    Set<String> assignedUsers = rolePermissionService.assignRoleToUsers(RoleUtils.buildAppRoleName(appId, roleType),
                                             Sets.newHashSet(user), userInfoHolder.getUser().getUserId());
+    if (CollectionUtils.isEmpty(assignedUsers)){
+      throw new BadRequestException(user + "已授权");
+    }
 
     return ResponseEntity.ok().build();
   }

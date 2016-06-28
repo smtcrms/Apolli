@@ -73,8 +73,8 @@
                                 <button type="submit" class="btn btn-default" style="margin-left: 20px;">添加</button>
                             </form>
                             <!-- Split button -->
-                            <div style="margin-top: 15px;">
-                                <div class="btn-group" ng-repeat="user in rolesAssignedUsers.releaseRoleUsers">
+                            <div class="user-container">
+                                <div class="btn-group user-info" ng-repeat="user in rolesAssignedUsers.releaseRoleUsers">
                                     <button type="button" class="btn btn-default" ng-bind="user.userId"></button>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                             aria-haspopup="true" aria-expanded="false" ng-click="removeUserRole('ReleaseNamespace', user.userId)">

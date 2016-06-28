@@ -26,7 +26,7 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
 
         });
 
-        $scope.emailPostfix = "@ctrip.com";
+        $scope.userSelectWidgetId = "userSelectWidgetId";
 
         $scope.create = function () {
             var selectedOrg = $('#organization').select2('data')[0];
@@ -38,7 +38,14 @@ create_app_module.controller('CreateAppController', ['$scope', '$window', 'toast
 
             $scope.app.orgId = selectedOrg.id;
             $scope.app.orgName = selectedOrg.name;
-            $scope.app.ownerEmail = $scope.app.ownerName + $scope.emailPostfix;
+
+            // ownerName
+            var user = $('.' + $scope.userSelectWidgetId).select2('data')[0];
+            if (!user){
+                toastr.warning("请输入应用负责人");
+                return;
+            }
+            $scope.app.ownerName = user.id;
 
             AppService.create($scope.app).then(function (result) {
                 toastr.success('添加成功!');

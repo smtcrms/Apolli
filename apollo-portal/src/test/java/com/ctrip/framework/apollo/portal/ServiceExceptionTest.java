@@ -26,7 +26,7 @@ import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.controller.AppController;
-import com.ctrip.framework.apollo.portal.service.AppService;
+import com.ctrip.framework.apollo.portal.service.UserService;
 
 import com.google.gson.Gson;
 
@@ -35,12 +35,12 @@ public class ServiceExceptionTest extends AbstractPortalTest {
   @Autowired
   private AppController appController;
   @Mock
-  private AppService appService;
+  private UserService userService;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    ReflectionTestUtils.setField(appController, "appService", appService);
+    ReflectionTestUtils.setField(appController, "userService", userService);
   }
 
   private String getBaseAppUrl() {
@@ -61,7 +61,7 @@ public class ServiceExceptionTest extends AbstractPortalTest {
         new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "admin server error",
             new Gson().toJson(errorAttributes).getBytes(), Charset.defaultCharset());
 
-    when(appService.create(any(App.class))).thenThrow(adminException);
+    when(userService.findByUserId(any(String.class))).thenThrow(adminException);
 
     App app = generateSampleApp();
     try {
