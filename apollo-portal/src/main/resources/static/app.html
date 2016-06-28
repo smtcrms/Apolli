@@ -48,10 +48,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label"><apollorequiredfiled></apollorequiredfiled> 应用负责人</label>
                             <div class="col-sm-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="appOwner" ng-model="app.ownerName" required>
-                                    <div class="input-group-addon" ng-bind="emailPostfix"></div>
-                                </div>
+                                <apollouserselector apollo-id="userSelectWidgetId"></apollouserselector>
                                 <small>(负责人具有项目管理的最高权限,比如分配配置的修改权,发布权等)</small>
                             </div>
                         </div>

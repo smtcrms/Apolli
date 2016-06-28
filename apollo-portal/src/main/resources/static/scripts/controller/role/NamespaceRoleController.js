@@ -9,7 +9,7 @@ role_module.controller('NamespaceRoleController',
                                 appId: params.appid,
                                 namespaceName: params.namespaceName
                             };
-                            
+
                             $scope.releaseRoleWidgetId = 'releaseRoleWidgetId';
                             $scope.modifyRoleWidgetId = 'modifyRoleWidgetId';
 
@@ -24,16 +24,14 @@ role_module.controller('NamespaceRoleController',
                                                                        $scope.pageContext.namespaceName)
                                 .then(function (result) {
                                     $scope.rolesAssignedUsers = result;
-                                    console.log(result);
                                 }, function (result) {
                                     toastr.error(AppUtil.errorMsg(result), "加载授权用户出错");
                                 });
 
-
                             $scope.assignRoleToUser = function (roleType) {
                                 if ('ReleaseNamespace' == roleType) {
                                     var user = $('.' + $scope.releaseRoleWidgetId).select2('data')[0];
-                                    if (!user){
+                                    if (!user) {
                                         toastr.warning("请选择用户");
                                         return;
                                     }
@@ -45,12 +43,13 @@ role_module.controller('NamespaceRoleController',
                                             toastr.success("添加成功");
                                             $scope.rolesAssignedUsers.releaseRoleUsers.push(
                                                 {userId: toAssignReleaseNamespaceRoleUser});
+                                            $('.' + $scope.releaseRoleWidgetId).select2("val", "");
                                         }, function (result) {
                                             toastr.error(AppUtil.errorMsg(result), "添加失败");
                                         });
                                 } else {
                                     var user = $('.' + $scope.modifyRoleWidgetId).select2('data')[0];
-                                    if (!user){
+                                    if (!user) {
                                         toastr.warning("请选择用户");
                                         return;
                                     }
@@ -62,6 +61,7 @@ role_module.controller('NamespaceRoleController',
                                             toastr.success("添加成功");
                                             $scope.rolesAssignedUsers.modifyRoleUsers.push(
                                                 {userId: toAssignModifyNamespaceRoleUser});
+                                            $('.' + $scope.modifyRoleWidgetId).select2("val", "");
                                         }, function (result) {
                                             toastr.error(AppUtil.errorMsg(result), "添加失败");
                                         });
@@ -102,5 +102,5 @@ role_module.controller('NamespaceRoleController',
                                 }
                                 list.splice(index, 1);
                             }
-                            
+
                         }]);

@@ -36,6 +36,7 @@ role_module.controller('AppRoleController',
                                     .then(function (result) {
                                         toastr.success("添加成功");
                                         $scope.appRoleUsers.masterUsers.push({userId: toAssignMasterRoleUser});
+                                        $('.' + $scope.userSelectWidgetId).select2("val", "");
                                     }, function (result) {
                                         toastr.error(AppUtil.errorMsg(result), "添加失败");
                                     });

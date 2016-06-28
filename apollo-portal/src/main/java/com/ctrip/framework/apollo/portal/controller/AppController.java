@@ -8,9 +8,11 @@ import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.PortalSettings;
+import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
 import com.ctrip.framework.apollo.portal.service.AppService;
+import com.ctrip.framework.apollo.portal.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -40,6 +42,8 @@ public class AppController {
   @Autowired
   private ApplicationEventPublisher publisher;
 
+  @Autowired
+  private UserService userService;
 
   @RequestMapping("")
   public List<App> findAllApp() {
@@ -71,12 +75,17 @@ public class AppController {
   @RequestMapping(value = "", method = RequestMethod.POST)
   public ResponseEntity<Void> create(@RequestBody App app) {
 
-    checkArgument(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
+    checkArgument(app.getName(), app.getAppId(), app.getOwnerName(),
         app.getOrgId(), app.getOrgName());
     if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
       throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
 
+    UserInfo userInfo = userService.findByUserId(app.getOwnerName());
+    if (userInfo == null){
+      throw new BadRequestException("应用负责人不存在");
+    }
+    app.setOwnerEmail(userInfo.getEmail());
     appService.enrichUserInfo(app);
     App createdApp = appService.create(app);
 
