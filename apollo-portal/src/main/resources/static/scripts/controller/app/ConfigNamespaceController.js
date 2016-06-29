@@ -1,7 +1,10 @@
 application_module.controller("ConfigNamespaceController",
-                              ['$rootScope', '$scope', '$location', 'toastr', 'AppUtil', 'ConfigService', 'PermissionService',
-                               'CommitService',
-                               function ($rootScope, $scope, $location, toastr, AppUtil, ConfigService, PermissionService, CommitService) {
+                              ['$rootScope', '$scope', '$window', '$location', 'toastr', 'AppUtil', 'ConfigService',
+                               'PermissionService',
+                               'CommitService', 'NamespaceLockService', 'UserService',
+                               function ($rootScope, $scope, $window,  $location, toastr, AppUtil, ConfigService,
+                                         PermissionService,
+                                         CommitService, NamespaceLockService, UserService) {
 
                                    var namespace_view_type = {
                                        TEXT: 'text',
@@ -31,21 +34,39 @@ application_module.controller("ConfigNamespaceController",
                                                        }
 
                                                        namespace.isTextEditing = false;
-                                                       
+
                                                        //permission
-                                                       PermissionService.has_modify_namespace_permission($rootScope.pageContext.appId, namespace.namespace.namespaceName)
+                                                       PermissionService.has_modify_namespace_permission(
+                                                           $rootScope.pageContext.appId,
+                                                           namespace.namespace.namespaceName)
                                                            .then(function (result) {
-                                                               namespace.hasModifyPermission = result.hasPermission;     
+                                                               namespace.hasModifyPermission = result.hasPermission;
                                                            }, function (result) {
-                                                               
+
                                                            });
 
-                                                       PermissionService.has_release_namespace_permission($rootScope.pageContext.appId, namespace.namespace.namespaceName)
+                                                       PermissionService.has_release_namespace_permission(
+                                                           $rootScope.pageContext.appId,
+                                                           namespace.namespace.namespaceName)
                                                            .then(function (result) {
                                                                namespace.hasReleasePermission = result.hasPermission;
                                                            }, function (result) {
 
                                                            });
+
+                                                       //lock
+                                                       NamespaceLockService.get_namespace_lock(
+                                                           $rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                                           $rootScope.pageContext.clusterName,
+                                                           namespace.namespace.namespaceName)
+                                                           .then(function (result) {
+                                                               if (result.dataChangeCreatedBy){
+                                                                   namespace.lockOwner = result.dataChangeCreatedBy;
+                                                               } else {
+                                                                   namespace.lockOwner = "";
+                                                               }
+                                                           });
+
                                                    });
                                                }
                                                setInterval(function () {
@@ -67,17 +88,30 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    };
 
-                                   
+                                   UserService.load_user().then(function (result) {
+                                       $scope.currentUser = result.userId;
+                                   });
+
+                                   function lockCheck(namespace) {
+                                       if (namespace.lockOwner && $scope.currentUser != namespace.lockOwner) {
+                                           $scope.lockOwner = namespace.lockOwner;
+                                           $('#namespaceLockedDialog').modal('show');
+                                           return false;
+                                       }
+                                       return true;
+                                   }
+
                                    PermissionService.get_app_role_users($rootScope.pageContext.appId)
                                        .then(function (result) {
                                            var masterUsers = '';
-                                            result.masterUsers.forEach(function (user) {
-                                                masterUsers += user.userId + ',';     
-                                            }); 
+                                           result.masterUsers.forEach(function (user) {
+                                               masterUsers += user.userId + ',';
+                                           });
                                            $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
                                        }, function (result) {
-                                           
+
                                        });
+                                   
                                    $scope.switchView = function (namespace, viewType) {
                                        namespace.viewType = viewType;
                                        if (namespace_view_type.TEXT == viewType) {
@@ -89,8 +123,8 @@ application_module.controller("ConfigNamespaceController",
                                        }
                                    };
 
-                                   $scope.loadCommitHistory = function(namespace) {
-                                       if (!namespace.commits){
+                                   $scope.loadCommitHistory = function (namespace) {
+                                       if (!namespace.commits) {
                                            namespace.commits = [];
                                            namespace.commitPage = 0;
                                        }
@@ -100,7 +134,7 @@ application_module.controller("ConfigNamespaceController",
                                                                   namespace.namespace.namespaceName,
                                                                   namespace.commitPage)
                                            .then(function (result) {
-                                               if (result.length == 0){
+                                               if (result.length == 0) {
                                                    namespace.hasLoadAllCommit = true;
                                                }
                                                for (var i = 0; i < result.length; i++) {
@@ -126,12 +160,12 @@ application_module.controller("ConfigNamespaceController",
                                        var itemCnt = 0;
                                        namespace.items.forEach(function (item) {
                                            //deleted key
-                                           if (!item.item.lastModifiedBy){
+                                           if (!item.item.lastModifiedBy) {
                                                return;
                                            }
                                            if (item.item.key) {
                                                //use string \n to display as new line
-                                               var itemValue = item.item.value.replace(/\n/g,"\\n");
+                                               var itemValue = item.item.value.replace(/\n/g, "\\n");
 
                                                result +=
                                                    item.item.key + " = " + itemValue + "\n";
@@ -169,6 +203,9 @@ application_module.controller("ConfigNamespaceController",
 
                                    //文本编辑框状态切换
                                    $scope.toggleTextEditStatus = function (namespace) {
+                                       if (!lockCheck(namespace)){
+                                           return;
+                                       }
                                        namespace.isTextEditing = !namespace.isTextEditing;
                                        if (namespace.isTextEditing) {//切换为编辑状态
                                            namespace.commited = false;
@@ -186,10 +223,13 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.toReleaseNamespace = {};
 
                                    $scope.prepareReleaseNamespace = function (namespace) {
-                                       if (!namespace.hasReleasePermission){
+                                       if (!namespace.hasReleasePermission) {
                                            $('#releaseNoPermissionDialog').modal('show');
                                            return;
-                                       }else {
+                                       } else if (namespace.lockOwner && $scope.currentUser == namespace.lockOwner){
+                                           //自己修改不能自己发布
+                                           $('#releaseDenyDialog').modal('show');
+                                       } else {
                                            $('#releaseModal').modal('show');
                                        }
                                        $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
@@ -236,8 +276,14 @@ application_module.controller("ConfigNamespaceController",
 
                                    var toDeleteItemId = 0, toDeleteNamespace = {};
                                    $scope.preDeleteItem = function (namespace, itemId) {
+                                       if (!lockCheck(namespace)){
+                                           return;
+                                       }
+
                                        toDeleteNamespace = namespace;
                                        toDeleteItemId = itemId;
+
+                                       $("#deleteConfirmDialog").modal("show");
                                    };
 
                                    $scope.deleteItem = function () {
@@ -257,16 +303,26 @@ application_module.controller("ConfigNamespaceController",
                                    var toOperationNamespaceName = '';
                                    //修改配置
                                    $scope.editItem = function (namespace, item) {
+                                       if (!lockCheck(namespace)){
+                                           return;
+                                       }
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
                                        $scope.item = item;
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
+
+                                       $("#itemModal").modal("show");
                                    };
 
                                    //新增配置
                                    $scope.createItem = function (namespace) {
+                                       if (!lockCheck(namespace)){
+                                           return;
+                                       }
+
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.CREATE);
                                        $scope.item = {};
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
+                                       $('#itemModal').modal('show');
                                    };
 
                                    $scope.switchToEdit = function () {
@@ -306,10 +362,10 @@ application_module.controller("ConfigNamespaceController",
                                                        });
 
                                                } else if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.UPDATE) {
-                                                   if (!$scope.item.value){
+                                                   if (!$scope.item.value) {
                                                        $scope.item.value = "";
                                                    }
-                                                   if (!$scope.item.comment){
+                                                   if (!$scope.item.comment) {
                                                        $scope.item.comment = "";
                                                    }
                                                    ConfigService.update_item($rootScope.pageContext.appId,
@@ -329,14 +385,24 @@ application_module.controller("ConfigNamespaceController",
                                        }
 
                                    };
-                                   
+
                                    //permission
                                    PermissionService.has_assign_user_permission($rootScope.pageContext.appId)
                                        .then(function (result) {
                                            $scope.hasAssignUserPermission = result.hasPermission;
                                        }, function (result) {
-                                           
+
                                        });
+
+                                   $scope.goToSyncPage = function (namespace) {
+                                       if (!lockCheck(namespace)){
+                                           return false;
+                                       }
+                                       $window.location.href = "config/sync.html?#/appid=" + $rootScope.pageContext.appId + "&env="
+                                                               + $rootScope.pageContext.env + "&clusterName=" + $rootScope.pageContext.clusterName
+                                                               + "&namespaceName=" +namespace.namespace.namespaceName;
+
+                                   };
 
                                    $('.config-item-container').removeClass('hide');
                                }]);
