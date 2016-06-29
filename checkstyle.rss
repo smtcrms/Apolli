@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 243,
+      <title>File: 252,
              Errors: 0,
-             Warnings: 1101,
+             Warnings: 1138,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/checkstyle.html</link>
@@ -312,6 +312,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.repository.NamespaceLockRepository.java">com/ctrip/framework/apollo/biz/repository/NamespaceLockRepository.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.service.CommitService.java">com/ctrip/framework/apollo/biz/service/CommitService.java</a>
                 </td>
                 <td>
@@ -355,6 +369,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler.java">com/ctrip/framework/apollo/portal/auth/DefaultLogoutHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.core.dto.NamespaceLockDTO.java">com/ctrip/framework/apollo/core/dto/NamespaceLockDTO.java</a>
                 </td>
                 <td>
                   0
@@ -486,7 +514,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  27
+                  28
                 </td>
                 <td>
                   0
@@ -542,7 +570,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  56
+                  60
                 </td>
                 <td>
                   0
@@ -599,6 +627,20 @@ under the License.
                 </td>
                 <td>
                   5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.service.NamespaceLockService.java">com/ctrip/framework/apollo/portal/service/NamespaceLockService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
                 </td>
                 <td>
                   0
@@ -1131,6 +1173,20 @@ under the License.
                 </td>
                 <td>
                   8
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.service.NamespaceLockService.java">com/ctrip/framework/apollo/biz/service/NamespaceLockService.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
                 </td>
                 <td>
                   0
@@ -1894,6 +1950,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.adminservice.aop.NamespaceLockAspect.java">com/ctrip/framework/apollo/adminservice/aop/NamespaceLockAspect.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.service.RolePermissionService.java">com/ctrip/framework/apollo/portal/service/RolePermissionService.java</a>
                 </td>
                 <td>
@@ -1901,6 +1971,20 @@ under the License.
                 </td>
                 <td>
                   8
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.biz.entity.NamespaceLock.java">com/ctrip/framework/apollo/biz/entity/NamespaceLock.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -2138,7 +2222,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  6
                 </td>
                 <td>
                   0
@@ -2279,6 +2363,20 @@ under the License.
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock.java">com/ctrip/framework/apollo/adminservice/aop/PreAcquireNamespaceLock.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -2468,6 +2566,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.adminservice.controller.NamespaceLockController.java">com/ctrip/framework/apollo/adminservice/controller/NamespaceLockController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.adminservice.controller.AppController.java">com/ctrip/framework/apollo/adminservice/controller/AppController.java</a>
                 </td>
                 <td>
@@ -2488,7 +2600,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  44
+                  41
                 </td>
                 <td>
                   0
@@ -2643,6 +2755,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/checkstyle.html#com.ctrip.framework.apollo.portal.controller.NamespaceLockController.java">com/ctrip/framework/apollo/portal/controller/NamespaceLockController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
                 </td>
                 <td>
                   0
