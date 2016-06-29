@@ -43,18 +43,18 @@ public class NamespaceLockAspect {
 
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
-  public void createOrUpdateItemRequireLock(String appId, String clusterName, String namespaceName, ItemDTO item) {
+  public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemDTO item) {
     acquireLock(appId, clusterName, namespaceName, item.getDataChangeLastModifiedBy());
   }
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
-  public void createOrUpdateItemRequireLock(String appId, String clusterName, String namespaceName,
+  public void requireLockAdvice(String appId, String clusterName, String namespaceName,
                                             ItemChangeSets changeSet) {
     acquireLock(appId, clusterName, namespaceName, changeSet.getDataChangeLastModifiedBy());
   }
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(itemId, operator, ..)")
-  public void deleteItemRequireLock(long itemId, String operator) {
+  public void requireLockAdvice(long itemId, String operator) {
     Item item = itemService.findOne(itemId);
 
     acquireLock(item.getNamespaceId(), operator);
