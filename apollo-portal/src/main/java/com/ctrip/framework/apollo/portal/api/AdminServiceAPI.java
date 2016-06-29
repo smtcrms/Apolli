@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.portal.api;
 
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.CommitDTO;
+import com.ctrip.framework.apollo.core.dto.NamespaceLockDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
 import com.ctrip.framework.apollo.core.dto.ClusterDTO;
@@ -190,6 +191,17 @@ public class AdminServiceAPI {
               getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
 
       return Arrays.asList(commitDTOs);
+    }
+  }
+
+  @Service
+  public static class NamespaceLockAPI extends API {
+
+    public NamespaceLockDTO getNamespaceLockOwner(String appId, Env env, String clusterName, String namespaceName) {
+      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/lock",
+                                       NamespaceLockDTO.class,
+                                       getAdminServiceHost(env), appId, clusterName, namespaceName);
+
     }
   }
 

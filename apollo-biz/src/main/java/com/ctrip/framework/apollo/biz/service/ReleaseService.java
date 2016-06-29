@@ -26,6 +26,7 @@ import java.util.Map;
  */
 @Service
 public class ReleaseService {
+  private Gson gson = new Gson();
 
   @Autowired
   private ReleaseRepository releaseRepository;
@@ -36,7 +37,9 @@ public class ReleaseService {
   @Autowired
   private AuditService auditService;
 
-  private Gson gson = new Gson();
+  @Autowired
+  private NamespaceLockService namespaceLockService;
+
 
   public Release findOne(long releaseId) {
     Release release = releaseRepository.findOne(releaseId);
@@ -54,6 +57,7 @@ public class ReleaseService {
 
   @Transactional
   public Release buildRelease(String name, String comment, Namespace namespace, String owner) {
+
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
     Map<String, String> configurations = new HashMap<String, String>();
     for (Item item : items) {
@@ -76,6 +80,7 @@ public class ReleaseService {
     release.setConfigurations(gson.toJson(configurations));
     release = releaseRepository.save(release);
 
+    namespaceLockService.unlock(namespace.getId());
     auditService.audit(Release.class.getSimpleName(), release.getId(), Audit.OP.INSERT,
         release.getDataChangeCreatedBy());
 

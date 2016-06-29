@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock;
 import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
@@ -32,6 +33,7 @@ public class ItemController {
   @Autowired
   private CommitService commitService;
 
+  @PreAcquireNamespaceLock
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
   public ItemDTO createOrUpdate(@PathVariable("appId") String appId,
                                 @PathVariable("clusterName") String clusterName,
@@ -70,6 +72,7 @@ public class ItemController {
     return dto;
   }
 
+  @PreAcquireNamespaceLock
   @RequestMapping(path = "/items/{itemId}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("itemId") long itemId, @RequestParam String operator) {
     Item entity = itemService.findOne(itemId);

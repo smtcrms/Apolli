@@ -90,13 +90,13 @@
                 <div class="panel">
                     <header class="panel-heading">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <b ng-bind="namespace.namespace.namespaceName" style="font-size: 20px;"></b>
                                 <span class="label label-primary" ng-show="namespace.itemModifiedCnt > 0">有修改
                                 <span class="badge label" ng-bind="namespace.itemModifiedCnt"></span></span>
-
+                                <span class="label label-warning" ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
                             </div>
-                            <div class="col-md-8 text-right">
+                            <div class="col-md-7 text-right">
                                 <button type="button"
                                         class="btn btn-success btn-sm J_tableview_btn"
                                         ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
@@ -124,7 +124,7 @@
                                     授权
                                 </a>
                                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                                   href="config/sync.html?#/appid={{pageContext.appId}}&env={{pageContext.env}}&clusterName={{pageContext.clusterName}}&namespaceName={{namespace.namespace.namespaceName}}"
+                                   ng-click="goToSyncPage(namespace)"
                                    ng-show="namespace.hasModifyPermission">
                                     <img src="img/sync.png">
                                     同步配置
@@ -179,7 +179,6 @@
 
                                 <button type="button" class="btn btn-primary btn-sm"
                                         ng-show="namespace.viewType == 'table' && namespace.hasModifyPermission"
-                                        data-toggle="modal" data-target="#itemModal"
                                         ng-click="createItem(namespace)">
                                     <img src="img/plus.png">
                                     新增配置
@@ -252,11 +251,9 @@
 
                                 <td width="10%">
                                     <img src="img/edit.png" data-tooltip="tooltip" data-placement="bottom" title="修改"
-                                         data-toggle="modal" data-target="#itemModal"
                                          ng-click="editItem(namespace, config.item)"
                                          ng-show="namespace.hasModifyPermission">
-                                    <img style="margin-left: 5px;" src="img/cancel.png" data-toggle="modal"
-                                         data-target="#deleteConfirmDialog"
+                                    <img style="margin-left: 5px;" src="img/cancel.png"
                                          data-tooltip="tooltip" data-placement="bottom" title="删除"
                                          ng-click="preDeleteItem(namespace, config.item.id)"
                                          ng-show="namespace.hasModifyPermission">
@@ -385,6 +382,13 @@
                                  apollo-detail="'您没有发布权限哦~ 请找 ' + masterUsers + ' 分配权限'"
                                  apollo-show-cancel-btn="false"></apolloconfirmdialog>
 
+            <apolloconfirmdialog apollo-dialog-id="'namespaceLockedDialog'" apollo-title="'编辑受限'"
+                                 apollo-detail="'当前namespace正在被 ' + lockOwner + ' 编辑, 一次发布只能被一个人修改.'"
+                                 apollo-show-cancel-btn="false"></apolloconfirmdialog>
+
+            <apolloconfirmdialog apollo-dialog-id="'releaseDenyDialog'" apollo-title="'发布受限'"
+                                 apollo-detail="'您不能发布哟~ 编辑和发布不能为同一个人'"
+                                 apollo-show-cancel-btn="false"></apolloconfirmdialog>
             <!--create release modal-->
             <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
                   ng-submit="release()">
@@ -604,6 +608,7 @@
 <script type="application/javascript" src="scripts/services/ConfigService.js"></script>
 <script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 <script type="application/javascript" src="scripts/services/CommitService.js"></script>
+<script type="application/javascript" src="scripts/services/NamespaceLockService.js"></script>
 
 
 <script type="application/javascript" src="scripts/AppUtils.js"></script>

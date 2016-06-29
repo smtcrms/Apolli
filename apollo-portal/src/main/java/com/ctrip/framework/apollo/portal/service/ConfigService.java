@@ -16,7 +16,6 @@ import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -67,14 +66,8 @@ public class ConfigService {
       return;
     }
 
-    try {
-      changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
-      itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
-    } catch (Exception e) {
-      logger.error("itemAPI.updateItems error. appId{},env:{},clusterName:{},namespaceName:{}", appId, env, clusterName,
-                   namespaceName);
-      throw new ServiceException(e.getMessage());
-    }
+    changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
+    itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
   }
 
 
