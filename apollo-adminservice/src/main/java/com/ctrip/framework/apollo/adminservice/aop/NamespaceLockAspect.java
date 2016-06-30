@@ -7,7 +7,7 @@ import com.ctrip.framework.apollo.biz.entity.NamespaceLock;
 import com.ctrip.framework.apollo.biz.service.ItemService;
 import com.ctrip.framework.apollo.biz.service.NamespaceLockService;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
-import com.ctrip.framework.apollo.biz.service.ServerConfigService;
+import com.ctrip.framework.apollo.biz.utils.ApolloSwitcher;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
@@ -30,16 +30,15 @@ import org.springframework.stereotype.Component;
 public class NamespaceLockAspect {
   private static final Logger logger = LoggerFactory.getLogger(NamespaceLockAspect.class);
 
-  private static final String NAMESPACE_LOCK_SWITCH_CONFIG_KEY = "namespace.lock.switch";
 
-  @Autowired
-  private ServerConfigService serverConfigService;
   @Autowired
   private NamespaceLockService namespaceLockService;
   @Autowired
   private NamespaceService namespaceService;
   @Autowired
   private ItemService itemService;
+  @Autowired
+  private ApolloSwitcher apolloSwitcher;
 
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
@@ -61,7 +60,7 @@ public class NamespaceLockAspect {
   }
 
   private void acquireLock(String appId, String clusterName, String namespaceName, String currentUser) {
-    if (isNamespaceLockSwitchOff()) {
+    if (apolloSwitcher.isNamespaceLockSwitchOff()) {
       return;
     }
 
@@ -122,8 +121,6 @@ public class NamespaceLockAspect {
     throw new BadRequestException("namespace:" + namespace.getNamespaceName() + " is modifying by " + lockOwner);
   }
 
-  private boolean isNamespaceLockSwitchOff() {
-    return !"true".equals(serverConfigService.getValue(NAMESPACE_LOCK_SWITCH_CONFIG_KEY, "false"));
-  }
+
 
 }
