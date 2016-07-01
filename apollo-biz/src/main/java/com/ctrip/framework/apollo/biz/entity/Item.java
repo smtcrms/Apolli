@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.common.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.SQLDelete;
@@ -22,6 +23,7 @@ public class Item extends BaseEntity {
   private String key;
 
   @Column(name = "value")
+  @Lob
   private String value;
 
   @Column(name = "comment")
