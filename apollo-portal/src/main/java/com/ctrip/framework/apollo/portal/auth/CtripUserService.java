@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,6 +45,7 @@ public class CtripUserService implements UserService {
     SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
     factory.setConnectTimeout(getConnectTimeout());
     factory.setReadTimeout(getReadTimeout());
+
     return factory;
   }
 
@@ -140,10 +142,10 @@ public class CtripUserService implements UserService {
                                                         int limit) {
     UserServiceRequest request = new UserServiceRequest();
     request.setAccess_token(getUserServiceAccessToken());
-    request.setType("emloyee");
 
     UserServiceRequestBody requestBody = new UserServiceRequestBody();
     requestBody.setIndexAlias("itdb_emloyee");
+    requestBody.setType("emloyee");
     request.setRequest_body(requestBody);
 
     Map<String, Object> queryJson = Maps.newHashMap();
@@ -168,7 +170,6 @@ public class CtripUserService implements UserService {
 
   static class UserServiceRequest {
     private String access_token;
-    private String type;
     private UserServiceRequestBody request_body;
 
     public String getAccess_token() {
@@ -177,14 +178,6 @@ public class CtripUserService implements UserService {
 
     public void setAccess_token(String access_token) {
       this.access_token = access_token;
-    }
-
-    public String getType() {
-      return type;
-    }
-
-    public void setType(String type) {
-      this.type = type;
     }
 
     public UserServiceRequestBody getRequest_body() {
@@ -199,7 +192,16 @@ public class CtripUserService implements UserService {
 
   static class UserServiceRequestBody {
     private String indexAlias;
+    private String type;
     private Map<String, Object> queryJson;
+
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
 
     public String getIndexAlias() {
       return indexAlias;

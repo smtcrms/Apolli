@@ -70,7 +70,6 @@ public class CtripUserServiceTest {
         ctripUserService.assembleSearchUserRequest(someKeyword, someOffset, someLimit);
 
     assertEquals(someUserServiceToken, request.getAccess_token());
-    assertEquals("emloyee", request.getType());
 
     CtripUserService.UserServiceRequestBody requestBody = request.getRequest_body();
 
@@ -94,7 +93,6 @@ public class CtripUserServiceTest {
     CtripUserService.UserServiceRequest request = ctripUserService.assembleFindUserRequest(userIds);
 
     assertEquals(someUserServiceToken, request.getAccess_token());
-    assertEquals("emloyee", request.getType());
 
     CtripUserService.UserServiceRequestBody requestBody = request.getRequest_body();
 
