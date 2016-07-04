@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.model;
 
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 import com.ctrip.framework.apollo.enums.PropertyChangeType;
 
@@ -67,13 +67,13 @@ public class ConfigChange {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("namespace", namespace)
-        .add("propertyName", propertyName)
-        .add("oldValue", oldValue)
-        .add("newValue", newValue)
-        .add("changeType", changeType)
-        .toString();
+    final StringBuilder sb = new StringBuilder("ConfigChange{");
+    sb.append("namespace='").append(namespace).append('\'');
+    sb.append(", propertyName='").append(propertyName).append('\'');
+    sb.append(", oldValue='").append(oldValue).append('\'');
+    sb.append(", newValue='").append(newValue).append('\'');
+    sb.append(", changeType=").append(changeType);
+    sb.append('}');
+    return sb.toString();
   }
 }
