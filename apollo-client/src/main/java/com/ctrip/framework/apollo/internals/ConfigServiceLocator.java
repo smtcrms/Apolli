@@ -45,6 +45,7 @@ public class ConfigServiceLocator implements Initializable {
   private Type m_responseType;
   private ScheduledExecutorService m_executorService;
   private static final Joiner.MapJoiner MAP_JOINER = Joiner.on("&").withKeyValueSeparator("=");
+  private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
 
   /**
    * Create a config service locator.
@@ -145,11 +146,10 @@ public class ConfigServiceLocator implements Initializable {
     String appId = m_configUtil.getAppId();
     String localIp = m_configUtil.getLocalIp();
 
-    Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
-    queryParams.put("appId", escaper.escape(appId));
+    queryParams.put("appId", queryParamEscaper.escape(appId));
     if (!Strings.isNullOrEmpty(localIp)) {
-      queryParams.put("ip", escaper.escape(localIp));
+      queryParams.put("ip", queryParamEscaper.escape(localIp));
     }
 
     return domainName + "/services/config?" + MAP_JOINER.join(queryParams);

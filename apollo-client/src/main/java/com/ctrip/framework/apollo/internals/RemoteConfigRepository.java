@@ -65,6 +65,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private AtomicReference<ApolloConfigNotification> m_longPollResult;
   private RateLimiter m_longPollRateLimiter;
   private RateLimiter m_loadConfigRateLimiter;
+  private static final Escaper pathEscaper = UrlEscapers.urlPathSegmentEscaper();
+  private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
 
   static {
     m_executorService = Executors.newScheduledThreadPool(1,
@@ -235,26 +237,26 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     throw new ApolloConfigException(message, exception);
   }
 
-  private String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
+  String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
                                         String dataCenter, ApolloConfig previousConfig) {
-    Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
+
     String path = "configs/%s/%s/%s";
     List<String> pathParams =
-        Lists.newArrayList(escaper.escape(appId), escaper.escape(cluster),
-            escaper.escape(namespace));
+        Lists.newArrayList(pathEscaper.escape(appId), pathEscaper.escape(cluster),
+            pathEscaper.escape(namespace));
     Map<String, String> queryParams = Maps.newHashMap();
 
     if (previousConfig != null) {
-      queryParams.put("releaseKey", escaper.escape(String.valueOf(previousConfig.getReleaseKey())));
+      queryParams.put("releaseKey", queryParamEscaper.escape(previousConfig.getReleaseKey()));
     }
 
     if (!Strings.isNullOrEmpty(dataCenter)) {
-      queryParams.put("dataCenter", escaper.escape(dataCenter));
+      queryParams.put("dataCenter", queryParamEscaper.escape(dataCenter));
     }
 
     String localIp = m_configUtil.getLocalIp();
     if (!Strings.isNullOrEmpty(localIp)) {
-      queryParams.put("ip", escaper.escape(localIp));
+      queryParams.put("ip", queryParamEscaper.escape(localIp));
     }
 
     String pathExpanded = String.format(path, pathParams.toArray());
@@ -356,23 +358,22 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     }
   }
 
-  private String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
+  String assembleLongPollRefreshUrl(String uri, String appId, String cluster,
                                             String namespace, String dataCenter,
                                             ApolloConfigNotification previousResult) {
-    Escaper escaper = UrlEscapers.urlPathSegmentEscaper();
     Map<String, String> queryParams = Maps.newHashMap();
-    queryParams.put("appId", escaper.escape(appId));
-    queryParams.put("cluster", escaper.escape(cluster));
+    queryParams.put("appId", queryParamEscaper.escape(appId));
+    queryParams.put("cluster", queryParamEscaper.escape(cluster));
 
     if (!Strings.isNullOrEmpty(namespace)) {
-      queryParams.put("namespace", escaper.escape(namespace));
+      queryParams.put("namespace", queryParamEscaper.escape(namespace));
     }
     if (!Strings.isNullOrEmpty(dataCenter)) {
-      queryParams.put("dataCenter", escaper.escape(dataCenter));
+      queryParams.put("dataCenter", queryParamEscaper.escape(dataCenter));
     }
     String localIp = m_configUtil.getLocalIp();
     if (!Strings.isNullOrEmpty(localIp)) {
-      queryParams.put("ip", escaper.escape(localIp));
+      queryParams.put("ip", queryParamEscaper.escape(localIp));
     }
 
     if (previousResult != null) {

@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -163,6 +164,46 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
 
     verify(someListener, times(1)).onRepositoryChange(eq(someNamespace), captor.capture());
     assertEquals(newConfigurations, captor.getValue());
+  }
+
+  @Test
+  public void testAssembleLongPollRefreshUrl() throws Exception {
+    String someUri = "http://someServer";
+    String someAppId = "someAppId";
+    String someCluster = "someCluster+ &.-_someSign";
+
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
+
+    String longPollRefreshUrl =
+        remoteConfigRepository
+            .assembleLongPollRefreshUrl(someUri, someAppId, someCluster, someNamespace, null, null);
+
+    assertTrue(longPollRefreshUrl.contains("http://someServer/notifications?"));
+    assertTrue(longPollRefreshUrl.contains("appId=someAppId"));
+    assertTrue(longPollRefreshUrl.contains("cluster=someCluster%2B+%26.-_someSign"));
+    assertTrue(longPollRefreshUrl.contains("namespace=" + someNamespace));
+  }
+
+  @Test
+  public void testAssembleQueryConfigUrl() throws Exception {
+    String someUri = "http://someServer";
+    String someAppId = "someAppId";
+    String someCluster = "someCluster+ &.-_someSign";
+    String someReleaseKey = "20160705193346-583078ef5716c055+20160705193308-31c471ddf9087c3f";
+
+    RemoteConfigRepository remoteConfigRepository = new RemoteConfigRepository(someNamespace);
+    ApolloConfig someApolloConfig = mock(ApolloConfig.class);
+    when(someApolloConfig.getReleaseKey()).thenReturn(someReleaseKey);
+
+    String queryConfigUrl = remoteConfigRepository
+            .assembleQueryConfigUrl(someUri, someAppId, someCluster, someNamespace, null,
+                someApolloConfig);
+
+    assertTrue(queryConfigUrl
+        .contains("http://someServer/configs/someAppId/someCluster+%20&.-_someSign/" + someNamespace));
+    assertTrue(queryConfigUrl
+        .contains("releaseKey=20160705193346-583078ef5716c055%2B20160705193308-31c471ddf9087c3f"));
+
   }
 
   private ApolloConfig assembleApolloConfig(Map<String, String> configurations) {
