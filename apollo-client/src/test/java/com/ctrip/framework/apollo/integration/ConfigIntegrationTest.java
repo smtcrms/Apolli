@@ -264,7 +264,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    longPollFinished.get(pollTimeoutInMS * 10, TimeUnit.MILLISECONDS);
+    longPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
 
