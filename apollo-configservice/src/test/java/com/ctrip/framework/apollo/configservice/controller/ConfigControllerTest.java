@@ -131,16 +131,16 @@ public class ConfigControllerTest {
   public void testQueryConfigFileWithPrivateNamespace() throws Exception {
     String someClientSideReleaseKey = "1";
     String someServerSideNewReleaseKey = "2";
-    String somePrivateNamespacePrefix = "datasource";
+    String somePrivateNamespace = "datasource";
     HttpServletResponse someResponse = mock(HttpServletResponse.class);
-    String somePrivateNamespaceName = String.format("%s.%s", somePrivateNamespacePrefix, "xml");
+    String somePrivateNamespaceName = String.format("%s.%s", somePrivateNamespace, "xml");
     AppNamespace appNamespace = mock(AppNamespace.class);
 
-    when(configService.findRelease(someAppId, someClusterName, somePrivateNamespacePrefix))
+    when(configService.findRelease(someAppId, someClusterName, somePrivateNamespace))
         .thenReturn(someRelease);
     when(someRelease.getReleaseKey()).thenReturn(someServerSideNewReleaseKey);
-    when(namespaceUtil.filterNamespaceName(somePrivateNamespaceName)).thenReturn(somePrivateNamespacePrefix);
-    when(appNamespaceService.findOne(someAppId, somePrivateNamespacePrefix))
+    when(namespaceUtil.filterNamespaceName(somePrivateNamespaceName)).thenReturn(somePrivateNamespace);
+    when(appNamespaceService.findOne(someAppId, somePrivateNamespace))
         .thenReturn(appNamespace);
 
     ApolloConfig result = configController.queryConfig(someAppId, someClusterName,

@@ -65,16 +65,16 @@ public class ConfigServiceTest extends ComponentTestCase {
 
   @Test
   public void testMockConfigFactoryForConfigFile() throws Exception {
-    String someNamespacePrefix = "mock";
+    String someNamespace = "mock";
     ConfigFileFormat someConfigFileFormat = ConfigFileFormat.Properties;
-    String someNamespace =
-        String.format("%s.%s", someNamespacePrefix, someConfigFileFormat.getValue());
-    defineComponent(ConfigFactory.class, someNamespace, MockConfigFactory.class);
+    String someNamespaceFileName =
+        String.format("%s.%s", someNamespace, someConfigFileFormat.getValue());
+    defineComponent(ConfigFactory.class, someNamespaceFileName, MockConfigFactory.class);
 
-    ConfigFile configFile = ConfigService.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+    ConfigFile configFile = ConfigService.getConfigFile(someNamespace, someConfigFileFormat);
 
-    assertEquals(someNamespace, configFile.getNamespace());
-    assertEquals(someNamespace + ":" + someConfigFileFormat.getValue(), configFile.getContent());
+    assertEquals(someNamespaceFileName, configFile.getNamespace());
+    assertEquals(someNamespaceFileName + ":" + someConfigFileFormat.getValue(), configFile.getContent());
   }
 
   private static class MockConfig extends AbstractConfig {

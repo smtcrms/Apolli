@@ -56,11 +56,11 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
 
   @Test
   public void testGetConfigFile() throws Exception {
-    String someNamespacePrefix = "someName";
+    String someNamespace = "someName";
     ConfigFileFormat someConfigFileFormat = ConfigFileFormat.Properties;
 
     ConfigFile configFile =
-        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+        defaultConfigManager.getConfigFile(someNamespace, someConfigFileFormat);
 
     assertEquals(someConfigFileFormat, configFile.getConfigFileFormat());
     assertEquals(someConfigContent, configFile.getContent());
@@ -68,13 +68,13 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
 
   @Test
   public void testGetConfigFileMultipleTimesWithSameNamespace() throws Exception {
-    String someNamespacePrefix = "someName";
+    String someNamespace = "someName";
     ConfigFileFormat someConfigFileFormat = ConfigFileFormat.Properties;
 
     ConfigFile someConfigFile =
-        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+        defaultConfigManager.getConfigFile(someNamespace, someConfigFileFormat);
     ConfigFile anotherConfigFile =
-        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+        defaultConfigManager.getConfigFile(someNamespace, someConfigFileFormat);
 
     assertThat(
         "Get config file multiple times with the same namespace should return the same config file instance",

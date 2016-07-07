@@ -17,9 +17,9 @@ public interface ConfigManager {
 
   /**
    * Get the config file instance for the namespace specified.
-   * @param namespacePrefix the namespace
+   * @param namespace the namespace
    * @param configFileFormat the config file format
    * @return the config file instance for the namespace
    */
-  public ConfigFile getConfigFile(String namespacePrefix, ConfigFileFormat configFileFormat);
+  public ConfigFile getConfigFile(String namespace, ConfigFileFormat configFileFormat);
 }

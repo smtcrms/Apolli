@@ -45,19 +45,19 @@ public class DefaultConfigManager implements ConfigManager {
   }
 
   @Override
-  public ConfigFile getConfigFile(String namespacePrefix, ConfigFileFormat configFileFormat) {
-    String namespace = String.format("%s.%s", namespacePrefix, configFileFormat.getValue());
-    ConfigFile configFile = m_configFiles.get(namespace);
+  public ConfigFile getConfigFile(String namespace, ConfigFileFormat configFileFormat) {
+    String namespaceFileName = String.format("%s.%s", namespace, configFileFormat.getValue());
+    ConfigFile configFile = m_configFiles.get(namespaceFileName);
 
     if (configFile == null) {
       synchronized (this) {
-        configFile = m_configFiles.get(namespace);
+        configFile = m_configFiles.get(namespaceFileName);
 
         if (configFile == null) {
-          ConfigFactory factory = m_factoryManager.getFactory(namespace);
+          ConfigFactory factory = m_factoryManager.getFactory(namespaceFileName);
 
-          configFile = factory.createConfigFile(namespace, configFileFormat);
-          m_configFiles.put(namespace, configFile);
+          configFile = factory.createConfigFile(namespaceFileName, configFileFormat);
+          m_configFiles.put(namespaceFileName, configFile);
         }
       }
     }

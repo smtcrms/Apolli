@@ -42,8 +42,8 @@ public class ConfigService {
     return getManager().getConfig(namespace);
   }
 
-  public static ConfigFile getConfigFile(String namespacePrefix, ConfigFileFormat configFileFormat) {
-    return getManager().getConfigFile(namespacePrefix, configFileFormat);
+  public static ConfigFile getConfigFile(String namespace, ConfigFileFormat configFileFormat) {
+    return getManager().getConfigFile(namespace, configFileFormat);
   }
 
   private static ConfigManager getManager() {

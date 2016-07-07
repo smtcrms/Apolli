@@ -15,18 +15,18 @@ import java.io.InputStreamReader;
 public class ApolloConfigFileDemo {
   private static final Logger logger = LoggerFactory.getLogger(ApolloConfigDemo.class);
   private ConfigFile configFile;
-  private String namespacePrefix = "application";
+  private String namespace = "application";
 
   public ApolloConfigFileDemo() {
-    configFile = ConfigService.getConfigFile(namespacePrefix, ConfigFileFormat.XML);
+    configFile = ConfigService.getConfigFile(namespace, ConfigFileFormat.XML);
   }
 
   private void print() {
     if (!configFile.hasContent()) {
-      System.out.println("No config file content found for " + namespacePrefix);
+      System.out.println("No config file content found for " + namespace);
       return;
     }
-    System.out.println("=== Config File Content for " + namespacePrefix + " is as follows: ");
+    System.out.println("=== Config File Content for " + namespace + " is as follows: ");
     System.out.println(configFile.getContent());
   }
 
