@@ -12,6 +12,7 @@ import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ConfigService;
+import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.dianping.cat.Cat;
@@ -41,6 +42,8 @@ public class ConfigController {
   private ConfigService configService;
   @Autowired
   private AppNamespaceService appNamespaceService;
+  @Autowired
+  private NamespaceUtil namespaceUtil;
 
   private static final Gson gson = new Gson();
   private static final Type configurationTypeReference =
@@ -55,6 +58,11 @@ public class ConfigController {
                                   @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
                                   @RequestParam(value = "ip", required = false) String clientIp,
                                   HttpServletResponse response) throws IOException {
+    String originalNamespace = namespace;
+
+    //strip out .properties suffix
+    namespace = namespaceUtil.filterNamespaceName(namespace);
+
     List<Release> releases = Lists.newLinkedList();
 
     Release currentAppRelease = loadConfig(appId, clusterName, namespace, dataCenter);
@@ -66,8 +74,8 @@ public class ConfigController {
       appClusterNameLoaded = currentAppRelease.getClusterName();
     }
 
-    //if namespace is not 'application', should check if it's a public configuration
-    if (!Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespace)) {
+    //if namespace does not belong to this appId, should check if there is a public configuration
+    if (!namespaceBelongsToAppId(appId, namespace)) {
       Release publicRelease = this.findPublicConfig(appId, clusterName, namespace, dataCenter);
       if (!Objects.isNull(publicRelease)) {
         releases.add(publicRelease);
@@ -78,9 +86,9 @@ public class ConfigController {
       response.sendError(HttpServletResponse.SC_NOT_FOUND,
           String.format(
               "Could not load configurations with appId: %s, clusterName: %s, namespace: %s",
-              appId, clusterName, namespace));
+              appId, clusterName, originalNamespace));
       Cat.logEvent("Apollo.Config.NotFound",
-          assembleKey(appId, clusterName, namespace, dataCenter));
+          assembleKey(appId, clusterName, originalNamespace, dataCenter));
       return null;
     }
 
@@ -91,15 +99,26 @@ public class ConfigController {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       Cat.logEvent("Apollo.Config.NotModified",
-          assembleKey(appId, appClusterNameLoaded, namespace, dataCenter));
+          assembleKey(appId, appClusterNameLoaded, originalNamespace, dataCenter));
       return null;
     }
 
-    ApolloConfig apolloConfig = new ApolloConfig(appId, appClusterNameLoaded, namespace, mergedReleaseKey);
+    ApolloConfig apolloConfig = new ApolloConfig(appId, appClusterNameLoaded, originalNamespace, mergedReleaseKey);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
-    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded, namespace, dataCenter));
+    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded, originalNamespace, dataCenter));
     return apolloConfig;
+  }
+
+  private boolean namespaceBelongsToAppId(String appId, String namespaceName) {
+    //Every app has an 'application' namespace
+    if (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) {
+      return true;
+    }
+
+    AppNamespace appNamespace = appNamespaceService.findOne(appId, namespaceName);
+
+    return appNamespace != null;
   }
 
   /**
@@ -108,7 +127,7 @@ public class ConfigController {
    * @param dataCenter    the datacenter
    */
   private Release findPublicConfig(String applicationId, String clusterName, String namespace, String dataCenter) {
-    AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
+    AppNamespace appNamespace = appNamespaceService.findPublicByNamespaceName(namespace);
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {

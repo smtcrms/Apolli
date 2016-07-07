@@ -12,7 +12,50 @@ application_module.controller("ConfigNamespaceController",
                                        LOG: 'log'
                                    };
 
-                                   $rootScope.refreshNamespaces = function (viewType) {
+                                   var TABLE_VIEW_OPER_TYPE = {
+                                       RETRIEVE: 'retrieve',
+                                       CREATE: 'create',
+                                       UPDATE: 'update'
+                                   };
+
+
+                                   $rootScope.refreshNamespaces = refreshNamespaces;
+                                   
+                                   $scope.commitChange = commitChange;
+                                   
+                                   $scope.prepareReleaseNamespace = prepareReleaseNamespace;
+                                   
+                                   $scope.release = release;
+                                   
+                                   $scope.retrieveItem = retrieveItem;
+                                   
+                                   $scope.preDeleteItem = preDeleteItem;
+                                   
+                                   $scope.deleteItem = deleteItem;
+                                   
+                                   $scope.editItem = editItem;
+                                   
+                                   $scope.createItem = createItem;
+                                   
+                                   $scope.doItem = doItem;
+                                   
+
+                                   PermissionService.get_app_role_users($rootScope.pageContext.appId)
+                                       .then(function (result) {
+                                           var masterUsers = '';
+                                           result.masterUsers.forEach(function (user) {
+                                               masterUsers += user.userId + ',';
+                                           });
+                                           $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
+                                       }, function (result) {
+
+                                       });
+                                   
+                                   UserService.load_user().then(function (result) {
+                                       $scope.currentUser = result.userId;
+                                   });
+
+                                   function refreshNamespaces(viewType) {
                                        if ($rootScope.pageContext.env == '') {
                                            return;
                                        }
@@ -23,52 +66,6 @@ application_module.controller("ConfigNamespaceController",
                                            function (result) {
                                                $scope.namespaces = result;
 
-                                               //初始化视图
-                                               if ($scope.namespaces) {
-
-                                                   $scope.namespaces.forEach(function (namespace) {
-                                                       if (!viewType) {//default text view
-                                                           $scope.switchView(namespace, namespace_view_type.TABLE);
-                                                       } else if (viewType == namespace_view_type.TABLE) {
-                                                           namespace.viewType = namespace_view_type.TABLE;
-                                                       }
-
-                                                       namespace.isTextEditing = false;
-
-                                                       //permission
-                                                       PermissionService.has_modify_namespace_permission(
-                                                           $rootScope.pageContext.appId,
-                                                           namespace.namespace.namespaceName)
-                                                           .then(function (result) {
-                                                               namespace.hasModifyPermission = result.hasPermission;
-                                                           }, function (result) {
-
-                                                           });
-
-                                                       PermissionService.has_release_namespace_permission(
-                                                           $rootScope.pageContext.appId,
-                                                           namespace.namespace.namespaceName)
-                                                           .then(function (result) {
-                                                               namespace.hasReleasePermission = result.hasPermission;
-                                                           }, function (result) {
-
-                                                           });
-
-                                                       //lock
-                                                       NamespaceLockService.get_namespace_lock(
-                                                           $rootScope.pageContext.appId, $rootScope.pageContext.env,
-                                                           $rootScope.pageContext.clusterName,
-                                                           namespace.namespace.namespaceName)
-                                                           .then(function (result) {
-                                                               if (result.dataChangeCreatedBy){
-                                                                   namespace.lockOwner = result.dataChangeCreatedBy;
-                                                               } else {
-                                                                   namespace.lockOwner = "";
-                                                               }
-                                                           });
-
-                                                   });
-                                               }
                                                setInterval(function () {
                                                    $('[data-tooltip="tooltip"]').tooltip();
                                                    $('.namespace-view-table').bind('mousewheel DOMMouseScroll',
@@ -88,141 +85,29 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    };
 
-                                   UserService.load_user().then(function (result) {
-                                       $scope.currentUser = result.userId;
-                                   });
-
-                                   function lockCheck(namespace) {
-                                       if (namespace.lockOwner && $scope.currentUser != namespace.lockOwner) {
-                                           $scope.lockOwner = namespace.lockOwner;
-                                           $('#namespaceLockedDialog').modal('show');
-                                           return false;
-                                       }
-                                       return true;
-                                   }
-
-                                   PermissionService.get_app_role_users($rootScope.pageContext.appId)
-                                       .then(function (result) {
-                                           var masterUsers = '';
-                                           result.masterUsers.forEach(function (user) {
-                                               masterUsers += user.userId + ',';
-                                           });
-                                           $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
-                                       }, function (result) {
-
-                                       });
-                                   
-                                   $scope.switchView = function (namespace, viewType) {
-                                       namespace.viewType = viewType;
-                                       if (namespace_view_type.TEXT == viewType) {
-                                           namespace.text = parseModel2Text(namespace);
-                                       } else if (namespace_view_type.TABLE == viewType) {
-
-                                       } else {
-                                           $scope.loadCommitHistory(namespace);
-                                       }
-                                   };
-
-                                   $scope.loadCommitHistory = function (namespace) {
-                                       if (!namespace.commits) {
-                                           namespace.commits = [];
-                                           namespace.commitPage = 0;
-                                       }
-                                       CommitService.find_commits($rootScope.pageContext.appId,
-                                                                  $rootScope.pageContext.env,
+                                   function commitChange(namespace) {
+                                       var model = {
+                                           configText: namespace.editText,
+                                           namespaceId: namespace.namespace.id,
+                                           format: namespace.format
+                                       };
+                                       ConfigService.modify_items($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                                   $rootScope.pageContext.clusterName,
                                                                   namespace.namespace.namespaceName,
-                                                                  namespace.commitPage)
-                                           .then(function (result) {
-                                               if (result.length == 0) {
-                                                   namespace.hasLoadAllCommit = true;
-                                               }
-                                               for (var i = 0; i < result.length; i++) {
-                                                   //to json
-                                                   result[i].changeSets = JSON.parse(result[i].changeSets);
-                                                   namespace.commits.push(result[i]);
-                                               }
-                                               namespace.commitPage += 1;
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "加载修改历史记录出错");
-                                           });
-                                   }
-
-                                   var MAX_ROW_SIZE = 30;
-                                   var APPEND_ROW_SIZE = 8;
-                                   //把表格内容解析成文本
-                                   function parseModel2Text(namespace, modeType) {
-
-                                       if (!namespace.items) {
-                                           return "无配置信息";
-                                       }
-                                       var result = "";
-                                       var itemCnt = 0;
-                                       namespace.items.forEach(function (item) {
-                                           //deleted key
-                                           if (!item.item.lastModifiedBy) {
-                                               return;
-                                           }
-                                           if (item.item.key) {
-                                               //use string \n to display as new line
-                                               var itemValue = item.item.value.replace(/\n/g, "\\n");
-
-                                               result +=
-                                                   item.item.key + " = " + itemValue + "\n";
-                                           } else {
-                                               result += item.item.comment + "\n";
-                                           }
-                                           itemCnt++;
-                                       });
-
-                                       namespace.itemCnt =
-                                           itemCnt > MAX_ROW_SIZE ? MAX_ROW_SIZE : itemCnt + APPEND_ROW_SIZE;
-                                       return result;
-                                   }
-
-                                   //更新配置
-                                   $scope.commitChange = function (namespace) {
-                                       ConfigService.modify_items($scope.pageContext.appId, $scope.pageContext.env,
-                                                                  $scope.pageContext.clusterName,
-                                                                  namespace.namespace.namespaceName,
-                                                                  namespace.editText,
-                                                                  namespace.namespace.id).then(
+                                                                  model).then(
                                            function (result) {
-                                               toastr.success("更新成功");
+                                               toastr.success("更新成功, 如需生效请发布");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
-
-                                               namespace.commited = true;
-                                               $scope.toggleTextEditStatus(namespace);
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
                                            }
                                        );
-                                   };
-
-                                   //文本编辑框状态切换
-                                   $scope.toggleTextEditStatus = function (namespace) {
-                                       if (!lockCheck(namespace)){
-                                           return;
-                                       }
-                                       namespace.isTextEditing = !namespace.isTextEditing;
-                                       if (namespace.isTextEditing) {//切换为编辑状态
-                                           namespace.commited = false;
-                                           namespace.backupText = namespace.text;
-                                           namespace.editText = parseModel2Text(namespace, 'edit');
-
-                                       } else {
-                                           if (!namespace.commited) {//取消编辑,则复原
-                                               namespace.text = namespace.backupText;
-                                           }
-                                       }
-                                   };
-
+                                   }
                                    var releaseModal = $('#releaseModal');
                                    $scope.toReleaseNamespace = {};
-
-                                   $scope.prepareReleaseNamespace = function (namespace) {
+                                   function prepareReleaseNamespace(namespace) {
                                        if (!namespace.hasReleasePermission) {
                                            $('#releaseNoPermissionDialog').modal('show');
                                            return;
@@ -234,11 +119,10 @@ application_module.controller("ConfigNamespaceController",
                                        }
                                        $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
                                        $scope.toReleaseNamespace = namespace;
-                                   };
+                                   }
 
                                    $scope.releaseComment = '';
-
-                                   $scope.release = function () {
+                                   function release() {
                                        ConfigService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                              $rootScope.pageContext.clusterName,
                                                              $scope.toReleaseNamespace.namespace.namespaceName,
@@ -255,27 +139,23 @@ application_module.controller("ConfigNamespaceController",
 
                                            }
                                        );
-                                   };
+                                   }
 
-                                   var TABLE_VIEW_OPER_TYPE = {
-                                       RETRIEVE: 'retrieve',
-                                       CREATE: 'create',
-                                       UPDATE: 'update'
-                                   };
+
 
                                    $scope.tableViewOperType = '', $scope.item = {};
 
                                    //查看配置
-                                   $scope.retrieveItem = function (namespace, item, oldValue) {
+                                   function retrieveItem(namespace, item, oldValue) {
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.RETRIEVE);
                                        $scope.item = item;
                                        $scope.item.oldValue = oldValue;
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
                                        $scope.hasModifyPermission = namespace.hasModifyPermission;
-                                   };
+                                   }
 
                                    var toDeleteItemId = 0, toDeleteNamespace = {};
-                                   $scope.preDeleteItem = function (namespace, itemId) {
+                                   function preDeleteItem(namespace, itemId) {
                                        if (!lockCheck(namespace)){
                                            return;
                                        }
@@ -284,9 +164,9 @@ application_module.controller("ConfigNamespaceController",
                                        toDeleteItemId = itemId;
 
                                        $("#deleteConfirmDialog").modal("show");
-                                   };
+                                   }
 
-                                   $scope.deleteItem = function () {
+                                   function deleteItem() {
                                        ConfigService.delete_item($rootScope.pageContext.appId,
                                                                  $rootScope.pageContext.env,
                                                                  $rootScope.pageContext.clusterName,
@@ -298,11 +178,11 @@ application_module.controller("ConfigNamespaceController",
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "删除失败");
                                            });
-                                   };
+                                   }
 
                                    var toOperationNamespaceName = '';
                                    //修改配置
-                                   $scope.editItem = function (namespace, item) {
+                                   function editItem(namespace, item) {
                                        if (!lockCheck(namespace)){
                                            return;
                                        }
@@ -311,10 +191,10 @@ application_module.controller("ConfigNamespaceController",
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
 
                                        $("#itemModal").modal("show");
-                                   };
+                                   }
 
                                    //新增配置
-                                   $scope.createItem = function (namespace) {
+                                   function createItem(namespace) {
                                        if (!lockCheck(namespace)){
                                            return;
                                        }
@@ -323,11 +203,7 @@ application_module.controller("ConfigNamespaceController",
                                        $scope.item = {};
                                        toOperationNamespaceName = namespace.namespace.namespaceName;
                                        $('#itemModal').modal('show');
-                                   };
-
-                                   $scope.switchToEdit = function () {
-                                       switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
-                                   };
+                                   }
 
                                    var selectedClusters = [];
                                    $scope.collectSelectedClusters = function (data) {
@@ -339,7 +215,7 @@ application_module.controller("ConfigNamespaceController",
                                    }
 
                                    var itemModal = $("#itemModal");
-                                   $scope.doItem = function () {
+                                   function doItem() {
 
                                        if (selectedClusters.length == 0) {
                                            toastr.error("请选择集群");
@@ -384,25 +260,16 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                        }
 
-                                   };
+                                   }
 
-                                   //permission
-                                   PermissionService.has_assign_user_permission($rootScope.pageContext.appId)
-                                       .then(function (result) {
-                                           $scope.hasAssignUserPermission = result.hasPermission;
-                                       }, function (result) {
-
-                                       });
-
-                                   $scope.goToSyncPage = function (namespace) {
-                                       if (!lockCheck(namespace)){
+                                   function lockCheck(namespace) {
+                                       if (namespace.lockOwner && scope.currentUser != namespace.lockOwner) {
+                                           scope.lockOwner = namespace.lockOwner;
+                                           $('#namespaceLockedDialog').modal('show');
                                            return false;
                                        }
-                                       $window.location.href = "config/sync.html?#/appid=" + $rootScope.pageContext.appId + "&env="
-                                                               + $rootScope.pageContext.env + "&clusterName=" + $rootScope.pageContext.clusterName
-                                                               + "&namespaceName=" +namespace.namespace.namespaceName;
-
-                                   };
+                                       return true;
+                                   }
 
                                    $('.config-item-container').removeClass('hide');
                                }]);

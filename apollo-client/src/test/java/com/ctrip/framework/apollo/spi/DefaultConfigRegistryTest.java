@@ -1,6 +1,8 @@
 package com.ctrip.framework.apollo.spi;
 
 import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigFile;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +46,11 @@ public class DefaultConfigRegistryTest extends ComponentTestCase {
 
     @Override
     public Config create(String namespace) {
+      return null;
+    }
+
+    @Override
+    public ConfigFile createConfigFile(String namespace, ConfigFileFormat configFileFormat) {
       return null;
     }
   }

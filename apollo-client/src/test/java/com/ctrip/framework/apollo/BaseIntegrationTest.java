@@ -176,6 +176,11 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     public int getLongPollQPS() {
       return 200;
     }
+
+    @Override
+    public String getDefaultLocalCacheDir() {
+      return ClassLoaderUtil.getClassPath();
+    }
   }
 
   /**

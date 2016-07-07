@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ctrip.framework.apollo.biz.entity.Cluster;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepository;
@@ -22,7 +24,10 @@ public class AppNamespaceService {
 
   @Autowired
   private AppNamespaceRepository appNamespaceRepository;
-  
+  @Autowired
+  private NamespaceService namespaceService;
+  @Autowired
+  private ClusterService clusterService;
   @Autowired
   private AuditService auditService;
   
@@ -32,9 +37,13 @@ public class AppNamespaceService {
     return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
   }
 
-  public AppNamespace findByNamespaceName(String namespaceName) {
+  public AppNamespace findPublicByNamespaceName(String namespaceName) {
     Preconditions.checkArgument(namespaceName != null, "Namespace must not be null");
-    return appNamespaceRepository.findByName(namespaceName);
+    return appNamespaceRepository.findByNameAndIsPublicTrue(namespaceName);
+  }
+
+  public List<AppNamespace> findPrivateAppNamespace(String appId){
+    return appNamespaceRepository.findByAppIdAndIsPublic(appId, false);
   }
 
   public AppNamespace findOne(String appId, String namespaceName){
@@ -68,14 +77,26 @@ public class AppNamespaceService {
     appNamespace.setDataChangeCreatedBy(createBy);
     appNamespace.setDataChangeLastModifiedBy(createBy);
     appNamespace = appNamespaceRepository.save(appNamespace);
+    //所有的cluster下面link新建的appnamespace
+    if (!appNamespace.isPublic()){
+      String appId = appNamespace.getAppId();
+      String namespaceName = appNamespace.getName();
 
+      List<Cluster> clusters = clusterService.findClusters(appId);
+      for (Cluster cluster: clusters){
+        Namespace namespace = new Namespace();
+        namespace.setClusterName(cluster.getName());
+        namespace.setAppId(appId);
+        namespace.setNamespaceName(namespaceName);
+        namespace.setDataChangeCreatedBy(createBy);
+        namespace.setDataChangeLastModifiedBy(createBy);
+        namespaceService.save(namespace);
+      }
+
+    }
     auditService.audit(AppNamespace.class.getSimpleName(), appNamespace.getId(), Audit.OP.INSERT,
                        createBy);
     return appNamespace;
-  }
-
-  public List<AppNamespace> findPublicAppNamespaces(){
-    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
   }
 
   public AppNamespace update(AppNamespace appNamespace){

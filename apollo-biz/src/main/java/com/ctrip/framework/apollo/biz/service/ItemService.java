@@ -7,6 +7,7 @@ import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,22 @@ public class ItemService {
   @Autowired
   private AuditService auditService;
 
+  @Autowired
+  private ServerConfigService serverConfigService;
+
   @Transactional
-  public void delete(long id, String operator) {
+  public Item delete(long id, String operator) {
     Item item = itemRepository.findOne(id);
     if (item == null) {
-      return;
+      throw new IllegalArgumentException("item not exist. ID:" + id);
     }
 
     item.setDeleted(true);
     item.setDataChangeLastModifiedBy(operator);
-    itemRepository.save(item);
+    Item deletedItem = itemRepository.save(item);
 
     auditService.audit(Item.class.getSimpleName(), id, Audit.OP.DELETE, operator);
+    return deletedItem;
   }
 
   public Item findOne(String appId, String clusterName, String namespaceName, String key) {
@@ -88,6 +93,8 @@ public class ItemService {
   
   @Transactional
   public Item save(Item entity) {
+    checkItemValueLength(entity.getValue());
+
     entity.setId(0);//protection
     Item item = itemRepository.save(entity);
 
@@ -99,6 +106,7 @@ public class ItemService {
 
   @Transactional
   public Item update(Item item) {
+    checkItemValueLength(item.getValue());
     Item managedItem = itemRepository.findOne(item.getId());
     BeanUtils.copyEntityProperties(item, managedItem);
     managedItem = itemRepository.save(managedItem);
@@ -107,6 +115,14 @@ public class ItemService {
         managedItem.getDataChangeLastModifiedBy());
 
     return managedItem;
+  }
+
+  private boolean checkItemValueLength(String value){
+    int lengthLimit = Integer.valueOf(serverConfigService.getValue("item.value.length.limit", "20000"));
+    if (!StringUtils.isEmpty(value) && value.length() > lengthLimit){
+      throw new IllegalArgumentException("value too long. length limit:" + lengthLimit);
+    }
+    return true;
   }
 
 }

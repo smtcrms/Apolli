@@ -12,6 +12,10 @@ public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNa
 
   AppNamespace findByName(String namespaceName);
 
+  AppNamespace findByNameAndIsPublic(String namespaceName, boolean isPublic);
+
   List<AppNamespace> findByNameNot(String namespaceName);
+
+  List<AppNamespace> findByNameNotAndIsPublic(String namespaceName, boolean isPublic);
 
 }

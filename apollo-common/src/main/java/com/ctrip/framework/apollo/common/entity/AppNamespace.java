@@ -1,12 +1,15 @@
 package com.ctrip.framework.apollo.common.entity;
 
 
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+
+import org.bouncycastle.util.Strings;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "AppNamespace")
@@ -19,6 +22,12 @@ public class AppNamespace extends BaseEntity {
 
   @Column(name = "AppId", nullable = false)
   private String appId;
+
+  @Column(name = "Format", nullable = false)
+  private String format;
+
+  @Column(name = "IsPublic", columnDefinition = "Bit default '0'")
+  private boolean isPublic = false;
 
   @Column(name = "Comment")
   private String comment;
@@ -47,8 +56,28 @@ public class AppNamespace extends BaseEntity {
     this.name = name;
   }
 
+  public boolean isPublic() {
+    return isPublic;
+  }
+
+  public void setPublic(boolean aPublic) {
+    isPublic = aPublic;
+  }
+
+  public ConfigFileFormat getFormatAsEnum() {
+    return ConfigFileFormat.fromString(this.format);
+  }
+
+  public String getFormat() {
+    return format;
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
   public String toString() {
     return toStringHelper().add("name", name).add("appId", appId).add("comment", comment)
-        .toString();
+        .add("format", format).add("isPublic", isPublic).toString();
   }
 }

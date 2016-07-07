@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -34,7 +33,7 @@ public class AppService {
   @Autowired
   private ClusterService clusterService;
   @Autowired
-  private NamespaceService namespaceService;
+  private AppNamespaceService appNamespaceService;
   @Autowired
   private RoleInitializationService roleInitializationService;
 
@@ -92,7 +91,7 @@ public class AppService {
       throw new BadRequestException(String.format("app id %s already exists!", app.getAppId()));
     } else {
       App createdApp = appRepository.save(app);
-      namespaceService.createDefaultAppNamespace(appId);
+      appNamespaceService.createDefaultAppNamespace(appId);
       //role
       roleInitializationService.initAppRoles(createdApp);
       return createdApp;

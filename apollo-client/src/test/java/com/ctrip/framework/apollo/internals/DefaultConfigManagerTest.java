@@ -1,8 +1,11 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigFile;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
+import com.ctrip.framework.apollo.spi.ConfigRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,18 +14,21 @@ import org.unidal.lookup.ComponentTestCase;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public class DefaultConfigManagerTest extends ComponentTestCase {
   private DefaultConfigManager defaultConfigManager;
+  private static String someConfigContent;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
     defineComponent(ConfigFactoryManager.class, MockConfigManager.class);
     defaultConfigManager = (DefaultConfigManager) lookup(ConfigManager.class);
+    someConfigContent = "someContent";
   }
 
   @Test
@@ -48,6 +54,34 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
         config, equalTo(anotherConfig));
   }
 
+  @Test
+  public void testGetConfigFile() throws Exception {
+    String someNamespacePrefix = "someName";
+    ConfigFileFormat someConfigFileFormat = ConfigFileFormat.Properties;
+
+    ConfigFile configFile =
+        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+
+    assertEquals(someConfigFileFormat, configFile.getConfigFileFormat());
+    assertEquals(someConfigContent, configFile.getContent());
+  }
+
+  @Test
+  public void testGetConfigFileMultipleTimesWithSameNamespace() throws Exception {
+    String someNamespacePrefix = "someName";
+    ConfigFileFormat someConfigFileFormat = ConfigFileFormat.Properties;
+
+    ConfigFile someConfigFile =
+        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+    ConfigFile anotherConfigFile =
+        defaultConfigManager.getConfigFile(someNamespacePrefix, someConfigFileFormat);
+
+    assertThat(
+        "Get config file multiple times with the same namespace should return the same config file instance",
+        someConfigFile, equalTo(anotherConfigFile));
+
+  }
+
   public static class MockConfigManager implements ConfigFactoryManager {
 
     @Override
@@ -59,6 +93,28 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
             @Override
             public String getProperty(String key, String defaultValue) {
               return namespace + ":" + key;
+            }
+          };
+        }
+
+        @Override
+        public ConfigFile createConfigFile(String namespace, final ConfigFileFormat configFileFormat) {
+          ConfigRepository someConfigRepository = mock(ConfigRepository.class);
+          return new AbstractConfigFile(namespace, someConfigRepository) {
+
+            @Override
+            public String getContent() {
+              return someConfigContent;
+            }
+
+            @Override
+            public boolean hasContent() {
+              return true;
+            }
+
+            @Override
+            public ConfigFileFormat getConfigFileFormat() {
+              return configFileFormat;
             }
           };
         }

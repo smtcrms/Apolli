@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
@@ -38,8 +39,11 @@ public class ConfigService {
    * @return config instance
    */
   public static Config getConfig(String namespace) {
-
     return getManager().getConfig(namespace);
+  }
+
+  public static ConfigFile getConfigFile(String namespacePrefix, ConfigFileFormat configFileFormat) {
+    return getManager().getConfigFile(namespacePrefix, configFileFormat);
   }
 
   private static ConfigManager getManager() {
@@ -77,6 +81,12 @@ public class ConfigService {
       public Config create(String namespace) {
         return config;
       }
+
+      @Override
+      public ConfigFile createConfigFile(String namespace, ConfigFileFormat configFileFormat) {
+        return null;
+      }
+
     });
   }
 

@@ -1,12 +1,12 @@
 package com.ctrip.framework.apollo.portal.listener;
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.AppDTO;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +28,8 @@ public class CreationListener {
   private AdminServiceAPI.AppAPI appAPI;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
+  @Autowired
+  private RoleInitializationService roleInitializationService;
 
   @EventListener
   public void onAppCreationEvent(AppCreationEvent event) {
@@ -52,6 +54,11 @@ public class CreationListener {
       } catch (HttpStatusCodeException e) {
         logger.error("call namespaceAPI.createOrUpdateAppNamespace error. [{app}, {env}]", dto.getAppId(), env, e);
       }
+    }
+
+    //如果是私有的app namespace 要默认初始化权限
+    if (!dto.isPublic()) {
+      roleInitializationService.initNamespaceRoles(dto.getAppId(), dto.getName());
     }
   }
 

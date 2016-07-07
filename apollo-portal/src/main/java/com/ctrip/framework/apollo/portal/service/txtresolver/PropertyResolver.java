@@ -18,7 +18,7 @@ import java.util.Set;
  * update comment and blank item implement by create new item and delete old item.
  * update normal key/value item implement by update.
  */
-@Component
+@Component("propertyResolver")
 public class PropertyResolver implements ConfigTextResolver {
 
   private static final String KV_SEPARATOR = "=";

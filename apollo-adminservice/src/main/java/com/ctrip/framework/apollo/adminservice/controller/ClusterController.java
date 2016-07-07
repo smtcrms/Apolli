@@ -32,8 +32,7 @@ public class ClusterController {
     Cluster entity = BeanUtils.transfrom(Cluster.class, dto);
     Cluster managedEntity = clusterService.findOne(appId, entity.getName());
     if (managedEntity != null) {
-      BeanUtils.copyEntityProperties(entity, managedEntity);
-      entity = clusterService.update(managedEntity);
+      throw new BadRequestException("cluster already exist.");
     } else {
       entity = clusterService.save(entity);
     }

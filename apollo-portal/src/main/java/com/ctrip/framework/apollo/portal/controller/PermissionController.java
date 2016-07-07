@@ -61,6 +61,15 @@ public class PermissionController {
     return ResponseEntity.ok().body(permissionCondition);
   }
 
+  @RequestMapping("/permissions/root")
+  public ResponseEntity<PermissionCondition> hasRootPermission(){
+    PermissionCondition permissionCondition = new PermissionCondition();
+
+    permissionCondition.setHasPermission(rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId()));
+
+    return ResponseEntity.ok().body(permissionCondition);
+  }
+
 
   @RequestMapping("/apps/{appId}/namespaces/{namespaceName}/role_users")
   public NamespaceRolesAssignedUsers getNamespaceRoles(@PathVariable String appId, @PathVariable String namespaceName){

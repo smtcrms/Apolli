@@ -199,7 +199,7 @@ public class RolePermissionService implements InitializingBean {
     return false;
   }
 
-  private boolean isSuperAdmin(String userId) {
+  public boolean isSuperAdmin(String userId) {
     return superAdminUsers.contains(userId);
   }
 

@@ -4,12 +4,14 @@ package com.ctrip.framework.apollo.portal.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
@@ -43,8 +45,14 @@ public class ConfigService {
   private AdminServiceAPI.ItemAPI itemAPI;
   @Autowired
   private AdminServiceAPI.ReleaseAPI releaseAPI;
+
   @Autowired
-  private ConfigTextResolver resolver;
+  @Qualifier("fileTextResolver")
+  private ConfigTextResolver fileTextResolver;
+
+  @Autowired
+  @Qualifier("propertyResolver")
+  private ConfigTextResolver propertyResolver;
 
 
   /**
@@ -60,6 +68,7 @@ public class ConfigService {
     long namespaceId = model.getNamespaceId();
     String configText = model.getConfigText();
 
+    ConfigTextResolver resolver = model.getFormat() == ConfigFileFormat.Properties ? propertyResolver : fileTextResolver;
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
                                                  itemAPI.findItems(appId, env, clusterName, namespaceName));
     if (changeSets.isEmpty()) {

@@ -11,6 +11,7 @@ import com.ctrip.framework.apollo.biz.utils.ApolloSwitcher;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.core.exception.ServiceException;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -42,13 +43,14 @@ public class NamespaceLockAspect {
 
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
-  public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemDTO item) {
+  public void requireLockAdvice(String appId, String clusterName, String namespaceName,
+                                ItemDTO item) {
     acquireLock(appId, clusterName, namespaceName, item.getDataChangeLastModifiedBy());
   }
 
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
   public void requireLockAdvice(String appId, String clusterName, String namespaceName,
-                                            ItemChangeSets changeSet) {
+                                ItemChangeSets changeSet) {
     acquireLock(appId, clusterName, namespaceName, changeSet.getDataChangeLastModifiedBy());
   }
 
@@ -59,7 +61,8 @@ public class NamespaceLockAspect {
     acquireLock(item.getNamespaceId(), operator);
   }
 
-  private void acquireLock(String appId, String clusterName, String namespaceName, String currentUser) {
+  private void acquireLock(String appId, String clusterName, String namespaceName,
+                           String currentUser) {
     if (apolloSwitcher.isNamespaceLockSwitchOff()) {
       return;
     }
@@ -90,17 +93,15 @@ public class NamespaceLockAspect {
         //lock success
       } catch (DataIntegrityViolationException e) {
         //lock fail
-        acquireLockFail(namespace, currentUser);
-      } catch (Exception e){
+        namespaceLock = namespaceLockService.findLock(namespaceId);
+        checkLock(namespace, namespaceLock, currentUser);
+      } catch (Exception e) {
         logger.error("try lock error", e);
         throw e;
       }
     } else {
       //check lock owner is current user
-      String lockOwner = namespaceLock.getDataChangeCreatedBy();
-      if (!lockOwner.equals(currentUser)) {
-        acquireLockFail(namespace, currentUser);
-      }
+      checkLock(namespace, namespaceLock, currentUser);
     }
   }
 
@@ -112,15 +113,19 @@ public class NamespaceLockAspect {
     namespaceLockService.tryLock(lock);
   }
 
-  private void acquireLockFail(Namespace namespace, String currentUser){
-    NamespaceLock namespaceLock = namespaceLockService.findLock(namespace.getId());
-    if (namespaceLock == null){
-      acquireLock(namespace, currentUser);
+  private void checkLock(Namespace namespace, NamespaceLock namespaceLock,
+                         String currentUser) {
+    if (namespaceLock == null) {
+      throw new ServiceException(
+          String.format("Check lock for %s failed, please retry.", namespace.getNamespaceName()));
     }
-    String lockOwner = namespaceLock.getDataChangeCreatedBy();
-    throw new BadRequestException("namespace:" + namespace.getNamespaceName() + " is modifying by " + lockOwner);
-  }
 
+    String lockOwner = namespaceLock.getDataChangeCreatedBy();
+    if (!lockOwner.equals(currentUser)) {
+      throw new BadRequestException(
+          "namespace:" + namespace.getNamespaceName() + " is modified by " + lockOwner);
+    }
+  }
 
 
 }

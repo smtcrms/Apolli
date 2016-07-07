@@ -33,8 +33,7 @@ public class NamespaceController {
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
     Namespace managedEntity = namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
     if (managedEntity != null) {
-      BeanUtils.copyEntityProperties(entity, managedEntity);
-      entity = namespaceService.update(managedEntity);
+      throw new BadRequestException("namespace already exist.");
     } else {
       entity = namespaceService.save(entity);
     }

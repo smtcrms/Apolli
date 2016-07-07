@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +49,7 @@ public class ConfigServiceTest {
 
   @Before
   public void setup() {
+    ReflectionTestUtils.setField(configService, "propertyResolver", resolver);
   }
 
   @Test
@@ -61,7 +64,7 @@ public class ConfigServiceTest {
     model.setClusterName(clusterName);
     model.setAppId(appId);
     model.setConfigText("a=b\nb=c\nc=d\nd=e");
-
+    model.setFormat(ConfigFileFormat.Properties.getValue());
     List<ItemDTO> itemDTOs = mockBaseItemHas3Key();
     ItemChangeSets changeSets = new ItemChangeSets();
     changeSets.addCreateItem(new ItemDTO("d", "c", "", 4));

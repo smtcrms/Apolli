@@ -16,6 +16,7 @@ import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
+import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 import com.dianping.cat.Cat;
@@ -60,6 +61,9 @@ public class NotificationController implements ReleaseMessageListener {
   @Autowired
   private EntityManagerUtil entityManagerUtil;
 
+  @Autowired
+  private NamespaceUtil namespaceUtil;
+
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
       @RequestParam(value = "appId") String appId,
@@ -68,10 +72,13 @@ public class NotificationController implements ReleaseMessageListener {
       @RequestParam(value = "dataCenter", required = false) String dataCenter,
       @RequestParam(value = "notificationId", defaultValue = "-1") long notificationId,
       @RequestParam(value = "ip", required = false) String clientIp) {
+    //strip out .properties suffix
+    namespace = namespaceUtil.filterNamespaceName(namespace);
+
     Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
 
-    //Listen on more namespaces, since it's not the default namespace
-    if (!Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespace)) {
+    //Listen on more namespaces if it's a public namespace
+    if (!namespaceBelongsToAppId(appId, namespace)) {
       watchedKeys.addAll(this.findPublicConfigWatchKey(appId, cluster, namespace, dataCenter));
     }
 
@@ -124,7 +131,7 @@ public class NotificationController implements ReleaseMessageListener {
   private Set<String> findPublicConfigWatchKey(String applicationId, String clusterName,
                                                String namespace,
                                                String dataCenter) {
-    AppNamespace appNamespace = appNamespaceService.findByNamespaceName(namespace);
+    AppNamespace appNamespace = appNamespaceService.findPublicByNamespaceName(namespace);
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
@@ -185,6 +192,17 @@ public class NotificationController implements ReleaseMessageListener {
       result.setResult(notification);
     }
     logger.info("Notification completed");
+  }
+
+  private boolean namespaceBelongsToAppId(String appId, String namespaceName) {
+    //Every app has an 'application' namespace
+    if (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) {
+      return true;
+    }
+
+    AppNamespace appNamespace = appNamespaceService.findOne(appId, namespaceName);
+
+    return appNamespace != null;
   }
 
   private void logWatchedKeysToCat(Set<String> watchedKeys, String eventName) {
