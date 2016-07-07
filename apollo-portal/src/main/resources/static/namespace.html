@@ -24,7 +24,7 @@
                     <div class="row">
                         <div class="col-md-6">新建Namespace</div>
                         <div class="col-md-6 text-right">
-                            <button type="button" class="btn btn-success" ng-show="step == 2" ng-click="back()">返回
+                            <button type="button" class="btn btn-info" ng-click="back()">返回到项目首页
                             </button>
                         </div>
                     </div>
@@ -69,7 +69,27 @@
                                            ng-required="type == 'create'">
                                 </div>
                             </div>
+                            <div class="col-sm-2" ng-if="hasRootPermission">
+                                <select class="form-control" ng-model="appNamespace.format">
+                                    <option value="properties">properties</option>
+                                    <option value="xml">xml</option>
+                                </select>
+                            </div>
+
                             <span ng-bind="concatNamespace()" style="line-height: 34px;"></span>
+                        </div>
+                        <div class="form-group" ng-show="type == 'create' && hasRootPermission">
+                            <label class="col-sm-3 control-label">
+                                <apollorequiredfiled></apollorequiredfiled>
+                                类型</label>
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="namespaceType" value="true" ng-value="true" ng-model="appNamespace.isPublic"> public
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="namespaceType" value="false" ng-value="false" ng-model="appNamespace.isPublic"> private
+                                </label>
+                            </div>
                         </div>
                         <div class="form-group" ng-show="type == 'create'">
                             <label class="col-sm-3 control-label">备注</label>
@@ -128,10 +148,11 @@
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
 <script type="application/javascript" src="scripts/services/NamespaceService.js"></script>
+<script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
 
 <!--directive-->
-<script type="application/javascript" src="scripts/directive.js"></script>
+<script type="application/javascript" src="scripts/directive/directive.js"></script>
 
 <script type="application/javascript" src="scripts/controller/NamespaceController.js"></script>
 

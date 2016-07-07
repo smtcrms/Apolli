@@ -4,12 +4,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 
@@ -51,6 +52,9 @@ public class NotificationControllerTest {
   private ReleaseMessageService releaseMessageService;
   @Mock
   private EntityManagerUtil entityManagerUtil;
+  @Mock
+  private NamespaceUtil namespaceUtil;
+
   private Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>
       deferredResults;
 
@@ -60,6 +64,7 @@ public class NotificationControllerTest {
     ReflectionTestUtils.setField(controller, "appNamespaceService", appNamespaceService);
     ReflectionTestUtils.setField(controller, "releaseMessageService", releaseMessageService);
     ReflectionTestUtils.setField(controller, "entityManagerUtil", entityManagerUtil);
+    ReflectionTestUtils.setField(controller, "namespaceUtil", namespaceUtil);
 
     someAppId = "someAppId";
     someCluster = "someCluster";
@@ -69,6 +74,9 @@ public class NotificationControllerTest {
     someDataCenter = "someDC";
     someNotificationId = 1;
     someClientIp = "someClientIp";
+
+    when(namespaceUtil.filterNamespaceName(defaultNamespace)).thenReturn(defaultNamespace);
+    when(namespaceUtil.filterNamespaceName(somePublicNamespace)).thenReturn(somePublicNamespace);
 
     deferredResults =
         (Multimap<String, DeferredResult<ResponseEntity<ApolloConfigNotification>>>) ReflectionTestUtils
@@ -91,6 +99,55 @@ public class NotificationControllerTest {
       String key =
           Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
               .join(someAppId, cluster, defaultNamespace);
+      assertTrue(deferredResults.get(key).contains(deferredResult));
+    }
+  }
+
+  @Test
+  public void testPollNotificationWithDefaultNamespaceAsFile() throws Exception {
+    String namespace = String.format("%s.%s", defaultNamespace, "properties");
+    when(namespaceUtil.filterNamespaceName(namespace)).thenReturn(defaultNamespace);
+
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, someCluster, namespace, someDataCenter,
+            someNotificationId, someClientIp);
+
+    List<String> clusters =
+        Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
+
+    assertEquals(clusters.size(), deferredResults.size());
+
+    for (String cluster : clusters) {
+      String key =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, defaultNamespace);
+      assertTrue(deferredResults.get(key).contains(deferredResult));
+    }
+  }
+
+  @Test
+  public void testPollNotificationWithPrivateNamespaceAsFile() throws Exception {
+    String namespace = String.format("someNamespace.xml");
+    AppNamespace appNamespace = mock(AppNamespace.class);
+
+    when(namespaceUtil.filterNamespaceName(namespace)).thenReturn(namespace);
+    when(appNamespaceService.findOne(someAppId, namespace)).thenReturn(appNamespace);
+
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, someCluster, namespace, someDataCenter,
+            someNotificationId, someClientIp);
+
+    List<String> clusters =
+        Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
+
+    assertEquals(clusters.size(), deferredResults.size());
+
+    for (String cluster : clusters) {
+      String key =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, namespace);
       assertTrue(deferredResults.get(key).contains(deferredResult));
     }
   }
@@ -156,7 +213,6 @@ public class NotificationControllerTest {
               .join(someAppId, cluster, defaultNamespace);
       assertTrue(deferredResults.get(key).contains(deferredResult));
     }
-
   }
 
   @Test
@@ -165,7 +221,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
@@ -194,6 +250,46 @@ public class NotificationControllerTest {
   }
 
   @Test
+  public void testPollNotificationWithPublicNamespaceAsFile() throws Exception {
+    String somePublicNamespaceAsFile = String.format("%s.%s", somePublicNamespace, "xml");
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assmbleAppNamespace(somePublicAppId, somePublicNamespace);
+
+    when(namespaceUtil.filterNamespaceName(somePublicNamespaceAsFile))
+        .thenReturn(somePublicNamespace);
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
+        .thenReturn(somePublicAppNamespace);
+    when(appNamespaceService.findOne(someAppId, somePublicNamespace)).thenReturn(null);
+
+    DeferredResult<ResponseEntity<ApolloConfigNotification>>
+        deferredResult = controller
+        .pollNotification(someAppId, someCluster, somePublicNamespaceAsFile, someDataCenter,
+            someNotificationId, someClientIp);
+
+    List<String> clusters =
+        Lists.newArrayList(someCluster, someDataCenter, ConfigConsts.CLUSTER_NAME_DEFAULT);
+
+    assertEquals(clusters.size() * 2, deferredResults.size());
+
+    for (String cluster : clusters) {
+      String publicKey =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(someAppId, cluster, somePublicNamespace);
+      assertTrue(deferredResults.get(publicKey).contains(deferredResult));
+    }
+
+    for (String cluster : clusters) {
+      String publicKey =
+          Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR)
+              .join(somePublicAppId, cluster, somePublicNamespace);
+      assertTrue(deferredResults.get(publicKey).contains(deferredResult));
+    }
+
+
+  }
+
+  @Test
   public void testPollNotificationWithPublicNamespaceWithNotificationIdOutDated() throws Exception {
     long notificationId = someNotificationId + 1;
     ReleaseMessage someReleaseMessage = mock(ReleaseMessage.class);
@@ -206,7 +302,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
@@ -253,7 +349,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>

@@ -13,7 +13,6 @@ public class NamespaceLockService {
   @Autowired
   private AdminServiceAPI.NamespaceLockAPI namespaceLockAPI;
 
-
   public NamespaceLockDTO getNamespaceLock(String appId, Env env, String clusterName, String namespaceName){
     return namespaceLockAPI.getNamespaceLockOwner(appId, env, clusterName, namespaceName);
 

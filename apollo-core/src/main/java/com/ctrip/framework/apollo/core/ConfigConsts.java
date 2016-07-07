@@ -5,4 +5,5 @@ public interface ConfigConsts {
   String CLUSTER_NAME_DEFAULT = "default";
   String CLUSTER_NAMESPACE_SEPARATOR = "+";
   String APOLLO_CLUSTER_KEY = "apollo.cluster";
+  String CONFIG_FILE_CONTENT_KEY = "content";
 }

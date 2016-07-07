@@ -21,6 +21,7 @@ import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 
 @RestController
@@ -70,6 +71,40 @@ public class ItemController {
     commitService.save(commit);
 
     return dto;
+  }
+
+  @PreAcquireNamespaceLock
+  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT)
+  public ItemDTO update(@PathVariable("appId") String appId,
+                        @PathVariable("clusterName") String clusterName,
+                        @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO itemDTO) {
+
+    Item entity = BeanUtils.transfrom(Item.class, itemDTO);
+
+    ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
+
+    Item managedEntity = itemService.findOne(appId, clusterName, namespaceName, entity.getKey());
+    if (managedEntity == null) {
+      throw new BadRequestException("item not exist");
+    }
+
+    Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedEntity);
+
+    BeanUtils.copyEntityProperties(entity, managedEntity);
+    entity = itemService.update(managedEntity);
+    builder.updateItem(beforeUpdateItem, entity);
+    itemDTO = BeanUtils.transfrom(ItemDTO.class, entity);
+
+    Commit commit = new Commit();
+    commit.setAppId(appId);
+    commit.setClusterName(clusterName);
+    commit.setNamespaceName(namespaceName);
+    commit.setChangeSets(builder.build());
+    commit.setDataChangeCreatedBy(itemDTO.getDataChangeLastModifiedBy());
+    commit.setDataChangeLastModifiedBy(itemDTO.getDataChangeLastModifiedBy());
+    commitService.save(commit);
+
+    return itemDTO;
   }
 
   @PreAcquireNamespaceLock

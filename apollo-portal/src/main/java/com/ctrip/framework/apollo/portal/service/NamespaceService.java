@@ -5,41 +5,33 @@ import com.google.gson.Gson;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
-import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.ctrip.framework.apollo.portal.repository.AppNamespaceRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class NamespaceService {
 
   private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
+  private Gson gson = new Gson();
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -49,19 +41,13 @@ public class NamespaceService {
   private AdminServiceAPI.ReleaseAPI releaseAPI;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
-  @Autowired
-  private PortalSettings portalSettings;
-  @Autowired
-  private AppNamespaceRepository appNamespaceRepository;
+
   @Autowired
   private RoleInitializationService roleInitializationService;
+  @Autowired
+  private AppNamespaceService appNamespaceService;
 
-  private Gson gson = new Gson();
 
-
-  public List<AppNamespace> findPublicAppNamespaces() {
-    return appNamespaceRepository.findByNameNot(ConfigConsts.NAMESPACE_APPLICATION);
-  }
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
     if (StringUtils.isEmpty(namespace.getDataChangeCreatedBy())) {
@@ -74,48 +60,11 @@ public class NamespaceService {
     return createdNamespace;
   }
 
-  @Transactional
-  public void createDefaultAppNamespace(String appId) {
-    if (!isAppNamespaceNameUnique(appId, appId)) {
-      throw new ServiceException("appnamespace not unique");
-    }
-    AppNamespace appNs = new AppNamespace();
-    appNs.setAppId(appId);
-    appNs.setName(ConfigConsts.NAMESPACE_APPLICATION);
-    appNs.setComment("default app namespace");
-
-    String userId = userInfoHolder.getUser().getUserId();
-    appNs.setDataChangeCreatedBy(userId);
-    appNs.setDataChangeLastModifiedBy(userId);
-    appNamespaceRepository.save(appNs);
-  }
-
-  public boolean isAppNamespaceNameUnique(String appId, String namespaceName) {
-    Objects.requireNonNull(appId, "AppId must not be null");
-    Objects.requireNonNull(namespaceName, "Namespace must not be null");
-    return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
-  }
-
-  @Transactional
-  public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
-    //not unique
-    if (appNamespaceRepository.findByName(appNamespace.getName()) != null){
-      throw new BadRequestException(appNamespace.getName() + "已存在");
-    }
-    AppNamespace managedAppNamespace = appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName());
-    //update
-    if (managedAppNamespace != null){
-      BeanUtils.copyEntityProperties(appNamespace, managedAppNamespace);
-      return appNamespaceRepository.save(managedAppNamespace);
-    }else {
-      return appNamespaceRepository.save(appNamespace);
-    }
-  }
 
   /**
    * load cluster all namespace info with items
    */
-  public List<NamespaceVO> findNampspaces(String appId, Env env, String clusterName) {
+  public List<NamespaceVO> findNamespaces(String appId, Env env, String clusterName) {
 
     List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
@@ -143,6 +92,15 @@ public class NamespaceService {
   private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
+
+    //先从当前appId下面找,包含私有的和公共的
+    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(appId, namespace.getNamespaceName());
+    //再从公共的app namespace里面找
+    if (appNamespace == null) {
+      appNamespace = appNamespaceService.findPublicAppNamespace(namespace.getNamespaceName());
+    }
+
+    namespaceVO.setFormat(appNamespace.getFormat());
 
     List<NamespaceVO.ItemVO> itemVos = new LinkedList<>();
     namespaceVO.setItems(itemVos);

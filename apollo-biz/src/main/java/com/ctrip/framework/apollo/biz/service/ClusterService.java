@@ -22,12 +22,13 @@ public class ClusterService {
 
   @Autowired
   private ClusterRepository clusterRepository;
-
   @Autowired
   private AuditService auditService;
-
   @Autowired
   private NamespaceService namespaceService;
+  @Autowired
+  private AppNamespaceService appNamespaceService;
+
 
   public boolean isClusterNameUnique(String appId, String clusterName) {
     Objects.requireNonNull(appId, "AppId must not be null");
@@ -59,7 +60,7 @@ public class ClusterService {
     entity.setId(0);//protection
     Cluster cluster = clusterRepository.save(entity);
 
-    namespaceService.createDefaultNamespace(cluster.getAppId(), cluster.getName(), cluster.getDataChangeCreatedBy());
+    namespaceService.createPrivateNamespace(cluster.getAppId(), cluster.getName(), cluster.getDataChangeCreatedBy());
 
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT,
                        cluster.getDataChangeCreatedBy());

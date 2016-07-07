@@ -34,6 +34,7 @@ application_module.controller("ConfigBaseInfoController",
                                            var node = {};
                                            //first nav
                                            node.text = env.env;
+                                           // node.icon = 'glyphicon glyphicon-console';
                                            var clusterNodes = [];
 
                                            //如果env下面只有一个default集群则不显示集群列表
@@ -57,8 +58,10 @@ application_module.controller("ConfigBaseInfoController",
                                                    }
 
                                                    clusterNode.text = cluster.name;
+                                                   // clusterNode.icon = 'glyphicon glyphicon-object-align-vertical';
                                                    parentNode.push(node.text);
-                                                   clusterNode.tags = parentNode;
+                                                   clusterNode.tags = ['集群'];
+                                                   clusterNode.parentNode = parentNode;
                                                    clusterNodes.push(clusterNode);
                                                });
                                            }
@@ -73,13 +76,14 @@ application_module.controller("ConfigBaseInfoController",
                                                                    levels: 99,
                                                                    expandIcon: '',
                                                                    collapseIcon: '',
+                                                                   showTags: true,
                                                                    onNodeSelected: function (event, data) {
-                                                                       if (!data.tags) {//first nav node
+                                                                       if (!data.parentNode) {//first nav node
                                                                            $rootScope.pageContext.env = data.text;
                                                                            $rootScope.pageContext.clusterName =
                                                                                'default';
                                                                        } else {//second cluster node
-                                                                           $rootScope.pageContext.env = data.tags[0];
+                                                                           $rootScope.pageContext.env = data.parentNode[0];
                                                                            $rootScope.pageContext.clusterName =
                                                                                data.text;
                                                                        }

@@ -87,291 +87,11 @@
         <!--namespaces-->
         <div class="col-md-9 config-item-container hide" ng-controller="ConfigNamespaceController">
             <div ng-repeat="namespace in namespaces">
-                <div class="panel">
-                    <header class="panel-heading">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <b ng-bind="namespace.namespace.namespaceName" style="font-size: 20px;"></b>
-                                <span class="label label-primary" ng-show="namespace.itemModifiedCnt > 0">有修改
-                                <span class="badge label" ng-bind="namespace.itemModifiedCnt"></span></span>
-                                <span class="label label-warning" ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
-                            </div>
-                            <div class="col-md-7 text-right">
-                                <button type="button"
-                                        class="btn btn-success btn-sm J_tableview_btn"
-                                        ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
-                                        ng-disabled="namespace.isTextEditing"
-                                        ng-click="prepareReleaseNamespace(namespace)">
-                                    <img src="img/release.png">
-                                    发布
-
-                                </button>
-                                <button type="button"
-                                        class="btn btn-default btn-sm J_tableview_btn" disabled
-                                        ng-show="namespace.hasReleasePermission">
-                                    <img src="img/rollback.png">
-                                    回滚
-                                </button>
-                                <button type="button" class="btn btn-default btn-sm J_tableview_btn"
-                                        href="/namespace/role.html?#/appid={{pageContext.appId}}&namespaceName={{namespace.namespace.namespaceName}}">
-                                    <img src="img/release-history.png">
-                                    发布历史
-                                </button>
-                                <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                                   href="/namespace/role.html?#/appid={{pageContext.appId}}&namespaceName={{namespace.namespace.namespaceName}}"
-                                   ng-show="hasAssignUserPermission">
-                                    <img src="img/assign.png">
-                                    授权
-                                </a>
-                                <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                                   ng-click="goToSyncPage(namespace)"
-                                   ng-show="namespace.hasModifyPermission">
-                                    <img src="img/sync.png">
-                                    同步配置
-                                </a>
-                            </div>
-                        </div>
-                    </header>
-
-                    <header class="panel-heading second-panel-heading" style="border-bottom: 0px">
-                        <div class="row">
-                            <div class="col-md-5 pull-left">
-                                <ul class="nav nav-tabs">
-                                    <li role="presentation" ng-click="switchView(namespace, 'table')">
-                                        <a ng-class="{node_active:namespace.viewType == 'table'}">
-                                            <img src="img/table.png">
-                                            表格
-                                        </a>
-                                    </li>
-                                    <li role="presentation" ng-click="switchView(namespace, 'text')">
-                                        <a ng-class="{node_active:namespace.viewType == 'text'}">
-                                            <img src="img/text.png">
-                                            文本
-                                        </a>
-                                    </li>
-                                    <li role="presentation" ng-click="switchView(namespace, 'history')">
-                                        <a ng-class="{node_active:namespace.viewType == 'history'}">
-                                            <img src="img/change.png">
-                                            更改历史
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-7 text-right">
-                                <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
-                                   ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                   ng-click="toggleTextEditStatus(namespace)">
-                                    <img src="img/cancel.png" class="ns_btn">
-                                </a>
-                                <a data-tooltip="tooltip" data-placement="bottom" title="修改配置"
-                                   ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission"
-                                   ng-click="toggleTextEditStatus(namespace)">
-                                    <img src="img/edit.png" class="ns_btn">
-                                </a>
-
-                                &nbsp;
-                                <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
-                                   data-toggle="modal" data-target="#commitModal"
-                                   ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                                   ng-click="commitChange(namespace)">
-                                    <img src="img/submit.png" class="ns_btn">
-                                </a>
-
-                                <button type="button" class="btn btn-primary btn-sm"
-                                        ng-show="namespace.viewType == 'table' && namespace.hasModifyPermission"
-                                        ng-click="createItem(namespace)">
-                                    <img src="img/plus.png">
-                                    新增配置
-                                </button>
-
-                            </div>
-                        </div>
-                    </header>
-                    <!--text view-->
-                    <!--只读模式下的文本内容,不替换换行符-->
-                            <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
-                                      ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
-                                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.text"
-                                      ng-bind="namespace.text">
-                                </textarea>
-                    <!--编辑状态下的文本内容,会过滤掉换行符-->
-                            <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
-                                      ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
-                                      ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText"
-                                      ng-bind="namespace.editText">
-                                </textarea>
-
-                    <!--table view-->
-                    <div class="namespace-view-table">
-                        <table class="table table-bordered table-striped text-center table-hover"
-                               ng-show="namespace.viewType == 'table' && namespace.items.length > 0">
-                            <thead>
-                            <tr>
-                                <th>
-                                    Key
-                                </th>
-                                <th>
-                                    Value
-                                </th>
-                                <th>
-                                    备注
-                                </th>
-                                <th>
-                                    最后修改人
-                                </th>
-                                <th>
-                                    最后修改时间
-                                </th>
-                                <th>
-                                    操作
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
-                                ng-if="config.item.key && config.item.lastModifiedBy">
-                                <td width="20%" title="{{config.item.key}}">
-                                    <span ng-bind="config.item.key | limitTo: 250"></span>
-                                    <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
-                                </td>
-                                <td width="25%" title="{{config.item.value}}">
-                                    <span ng-bind="config.item.value | limitTo: 250"></span>
-                                    <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
-                                </td>
-                                <td width="20%" title="{{config.item.comment}}">
-                                    <span ng-bind="config.item.comment | limitTo: 250"></span>
-                                    <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
-                                </td>
-                                <td width="10%" ng-bind="config.item.lastModifiedBy">
-                                </td>
-                                <td width="15%"
-                                    ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
-                                </td>
-
-                                <td width="10%">
-                                    <img src="img/edit.png" data-tooltip="tooltip" data-placement="bottom" title="修改"
-                                         ng-click="editItem(namespace, config.item)"
-                                         ng-show="namespace.hasModifyPermission">
-                                    <img style="margin-left: 5px;" src="img/cancel.png"
-                                         data-tooltip="tooltip" data-placement="bottom" title="删除"
-                                         ng-click="preDeleteItem(namespace, config.item.id)"
-                                         ng-show="namespace.hasModifyPermission">
-                                </td>
-
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!--历史修改视图-->
-                    <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
-
-                        <div class="media" ng-repeat="commits in namespace.commits">
-                            <div class="media-body">
-                                <div class="row">
-                                    <div class="col-md-6"><h3 class="media-heading" ng-bind="commits.dataChangeCreatedBy"></h3></div>
-                                    <div class="col-md-6 text-right"><h5 class="media-heading"
-                                                              ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5></div>
-                                </div>
-
-
-                                <table class="table table-bordered table-striped text-center table-hover" style="margin-top: 5px;">
-                                    <thead>
-                                    <tr>
-                                        <th>
-                                            Type
-                                        </th>
-                                        <th>
-                                            Key
-                                        </th>
-                                        <th>
-                                            Old Value
-                                        </th>
-                                        <th>
-                                            New Value
-                                        </th>
-                                        <th>
-                                            Comment
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    <tr ng-repeat="item in commits.changeSets.createItems"
-                                        ng-show="item.key || item.comment">
-                                        <td width="2%">
-                                            新增
-                                        </td>
-                                        <td width="20%" title="{{item.key}}">
-
-                                            <span ng-bind="item.key | limitTo: 250"></span>
-                                            <span ng-bind="item.key.length > 250 ? '...' :''"></span>
-                                        </td>
-                                        <td width="30%">
-                                        </td>
-                                        <td width="30%" title="{{item.value}}">
-                                            <span ng-bind="item.value | limitTo: 250"></span>
-                                            <span ng-bind="item.value.length > 250 ? '...': ''"></span>
-                                        </td>
-                                        <td width="18%" title="{{item.comment}}">
-                                            <span ng-bind="item.comment | limitTo: 250"></span>
-                                            <span ng-bind="item.comment.length > 250 ?'...' : ''"></span>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat="item in commits.changeSets.updateItems">
-                                        <td width="2%">
-                                            更新
-                                        </td>
-                                        <td width="20%" title="{{item.newItem.key}}">
-                                            <span ng-bind="item.newItem.key | limitTo: 250"></span>
-                                            <span ng-bind="item.newItem.key.length > 250 ? '...' :''"></span>
-                                        </td>
-                                        <td width="30%" title="{{item.oldItem.value}}">
-                                            <span ng-bind="item.oldItem.value | limitTo: 250"></span>
-                                            <span ng-bind="item.oldItem.value.length > 250 ? '...': ''"></span>
-                                        </td>
-                                        <td width="30%" title="{{item.newItem.value}}">
-                                            <span ng-bind="item.newItem.value | limitTo: 250"></span>
-                                            <span ng-bind="item.newItem.value.length > 250 ? '...': ''"></span>
-                                        </td>
-                                        <td width="18%" title="{{item.newItem.comment}}">
-                                            <span ng-bind="item.newItem.comment | limitTo: 250"></span>
-                                            <span ng-bind="item.newItem.comment.length > 250 ?'...' : ''"></span>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat="item in commits.changeSets.deleteItems"
-                                        ng-show="item.key || item.comment">
-                                        <td width="2%">
-                                            删除
-                                        </td>
-                                        <td width="20%" title="{{item.key}}">
-                                            <span ng-bind="item.key | limitTo: 250"></span>
-                                            <span ng-bind="item.key.length > 250 ? '...' :''"></span>
-                                        </td>
-                                        <td width="30%" title="{{item.value}}">
-                                            <span ng-bind="item.value | limitTo: 250"></span>
-                                            <span ng-bind="item.value.length > 250 ? '...': ''"></span>
-                                        </td>
-                                        <td width="30%">
-                                        </td>
-                                        <td width="18%" title="{{item.comment}}">
-                                            <span ng-bind="item.comment | limitTo: 250"></span>
-                                            <span ng-bind="item.comment.length > 250 ?'...' : ''"></span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <hr>
-                        </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-default" ng-show="!namespace.hasLoadAllCommit"
-                                    ng-click="loadCommitHistory(namespace)">加载更多
-                                <span class="glyphicon glyphicon-menu-down"></span></button>
-                        </div>
-                    </div>
-                </div>
+                <apollonspanel namespace="namespace" app-id="pageContext.appId"
+                               env="pageContext.env" cluster="pageContext.clusterName"
+                               pre-release-ns="prepareReleaseNamespace"
+                               create-item="createItem" edit-item="editItem"
+                               pre-delete-item="preDeleteItem" commit-change="commitChange"></apollonspanel>
             </div>
 
             <!-- delete modal-->
@@ -403,9 +123,12 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
                                     Changes:</label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-10" ng-if="toReleaseNamespace.itemModifiedCnt">
+
+                                    <!--properites format-->
                                     <table class="table table-bordered table-striped text-center table-hover"
-                                           ng-show="toReleaseNamespace.itemModifiedCnt">
+                                           ng-show="toReleaseNamespace.itemModifiedCnt"
+                                           ng-if="toReleaseNamespace.isPropertiesFormat">
                                         <thead>
                                         <tr>
                                             <th>
@@ -451,10 +174,26 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                            <span ng-show="!toReleaseNamespace.itemModifiedCnt">
-                                                配置没有变化
-                                            </span>
+
+                                    <!--file format -->
+                                    <div ng-repeat="item in toReleaseNamespace.items"
+                                         ng-if="!toReleaseNamespace.isPropertiesFormat">
+                                        <h3>new value</h3>
+                                        <textarea class="form-control" rows="20" style="border-radius: 0px"
+                                                  ng-disabled="true" ng-show="item.newValue" ng-bind="item.newValue">
+                                            </textarea>
+                                        <hr>
+                                        <h3>old value</h3>
+                                        <textarea class="form-control" rows="20" style="border-radius: 0px"
+                                                  ng-disabled="true" ng-show="item.oldValue" ng-bind="item.oldValue">
+                                            </textarea>
+                                        <h4 ng-show="!item.oldValue">无</h4>
+                                    </div>
+
                                 </div>
+                                <span ng-show="!toReleaseNamespace.itemModifiedCnt">
+                                        配置没有变化
+                                    </span>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
@@ -614,7 +353,8 @@
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
 
 <!--directive-->
-<script type="application/javascript" src="scripts/directive.js"></script>
+<script type="application/javascript" src="scripts/directive/directive.js"></script>
+<script type="application/javascript" src="scripts/directive/namespace-panel-directive.js"></script>
 
 <!--controller-->
 <script type="application/javascript" src="scripts/controller/config/ConfigNamespaceController.js"></script>

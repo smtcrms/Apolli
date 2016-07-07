@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.entity.form;
 
 
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
@@ -11,7 +12,9 @@ public class NamespaceTextModel implements Verifiable {
   private String clusterName;
   private String namespaceName;
   private int namespaceId;
+  private String format;
   private String configText;
+
 
   @Override
   public boolean isInvalid(){
@@ -65,4 +68,11 @@ public class NamespaceTextModel implements Verifiable {
     this.configText = configText;
   }
 
+  public ConfigFileFormat getFormat() {
+    return ConfigFileFormat.fromString(this.format);
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
 }

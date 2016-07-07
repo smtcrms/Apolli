@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -11,6 +12,7 @@ import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
+import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.AppService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 
@@ -46,15 +48,18 @@ public class NamespaceController {
   private UserInfoHolder userInfoHolder;
   @Autowired
   private NamespaceService namespaceService;
+  @Autowired
+  private AppNamespaceService appNamespaceService;
 
   @RequestMapping("/appnamespaces/public")
   public List<AppNamespace> findPublicAppNamespaces() {
-    return namespaceService.findPublicAppNamespaces();
+    return appNamespaceService.findPublicAppNamespaces();
   }
 
   @PreAuthorize(value = "@permissionValidator.hasCreateNamespacePermission(#appId)")
   @RequestMapping(value = "/apps/{appId}/namespaces", method = RequestMethod.POST)
-  public ResponseEntity<Void> createNamespace(@PathVariable String appId, @RequestBody List<NamespaceCreationModel> models) {
+  public ResponseEntity<Void> createNamespace(@PathVariable String appId,
+                                              @RequestBody List<NamespaceCreationModel> models) {
 
     checkModel(!CollectionUtils.isEmpty(models));
 
@@ -73,24 +78,31 @@ public class NamespaceController {
     return ResponseEntity.ok().build();
   }
 
+  @PreAuthorize(value = "@permissionValidator.hasCreateAppNamespacePermission(#appId, #appNamespace)")
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
   public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
     checkArgument(appNamespace.getAppId(), appNamespace.getName());
-    if (!InputValidator.isValidClusterNamespace(appNamespace.getName())) {
-      throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
+    if (!InputValidator.isValidAppNamespace(appNamespace.getName())) {
+      throw new BadRequestException(String.format("Namespace格式错误: %s",
+                                                  InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE + " & "
+                                                  + InputValidator.INVALID_NAMESPACE_NAMESPACE_MESSAGE));
     }
 
     //add app org id as prefix
     App app = appService.load(appId);
-    appNamespace.setName(String.format("%s.%s", app.getOrgId(), appNamespace.getName()));
+    if (appNamespace.formatAsEnum() == ConfigFileFormat.Properties) {
+      appNamespace.setName(String.format("%s.%s", app.getOrgId(), appNamespace.getName()));
+    } else {
+      appNamespace.setName(String.format("%s.%s.%s", app.getOrgId(), appNamespace.getName(), appNamespace.getFormat()));
+    }
 
     String operator = userInfoHolder.getUser().getUserId();
     if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {
       appNamespace.setDataChangeCreatedBy(operator);
     }
     appNamespace.setDataChangeLastModifiedBy(operator);
-    AppNamespace createdAppNamespace = namespaceService.createAppNamespaceInLocal(appNamespace);
+    AppNamespace createdAppNamespace = appNamespaceService.createAppNamespaceInLocal(appNamespace);
 
     publisher.publishEvent(new AppNamespaceCreationEvent(createdAppNamespace));
 
@@ -100,7 +112,7 @@ public class NamespaceController {
   public List<NamespaceVO> findNamespaces(@PathVariable String appId, @PathVariable String env,
                                           @PathVariable String clusterName) {
 
-    return namespaceService.findNampspaces(appId, Env.valueOf(env), clusterName);
+    return namespaceService.findNamespaces(appId, Env.valueOf(env), clusterName);
   }
 
 }

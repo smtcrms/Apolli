@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ public class NamespaceVO {
   private NamespaceDTO namespace;
   private int itemModifiedCnt;
   private List<ItemVO> items;
+  private String format;
 
 
   public NamespaceDTO getNamespace() {
@@ -32,6 +34,14 @@ public class NamespaceVO {
 
   public void setItems(List<ItemVO> items) {
     this.items = items;
+  }
+
+  public String getFormat() {
+    return format;
+  }
+
+  public void setFormat(String format) {
+    this.format = format;
   }
 
   public static class ItemVO{
