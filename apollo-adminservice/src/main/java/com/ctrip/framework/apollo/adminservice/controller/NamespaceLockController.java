@@ -35,13 +35,13 @@ public class NamespaceLockController {
     }
 
     if (apolloSwitcher.isNamespaceLockSwitchOff()) {
-      throw new NotFoundException(namespaceName + " is not locked");
+      return null;
     }
 
     NamespaceLock lock = namespaceLockService.findLock(namespace.getId());
 
     if (lock == null) {
-      throw new NotFoundException(namespaceName + " is not locked");
+      return null;
     }
 
     return BeanUtils.transfrom(NamespaceLockDTO.class, lock);
