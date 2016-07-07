@@ -131,7 +131,7 @@ public class NotificationController implements ReleaseMessageListener {
   private Set<String> findPublicConfigWatchKey(String applicationId, String clusterName,
                                                String namespace,
                                                String dataCenter) {
-    AppNamespace appNamespace = appNamespaceService.findPublicByNamespaceName(namespace);
+    AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespace);
 
     //check whether the namespace's appId equals to current one
     if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {

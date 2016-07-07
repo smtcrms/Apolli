@@ -24,6 +24,7 @@ public class AppNamespaceControllerTest extends AbstractControllerTest{
     dto.setAppId(appId);
     dto.setName(name);
     dto.setComment(comment);
+    dto.setDataChangeCreatedBy("apollo");
 
     AppNamespaceDTO resultDto = restTemplate.postForEntity(
         String.format("http://localhost:%d/apps/%s/appnamespaces", port, appId),dto, AppNamespaceDTO.class).getBody();

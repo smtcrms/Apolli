@@ -3,7 +3,6 @@ package com.ctrip.framework.apollo.common.entity;
 
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 
-import org.bouncycastle.util.Strings;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -64,7 +63,7 @@ public class AppNamespace extends BaseEntity {
     isPublic = aPublic;
   }
 
-  public ConfigFileFormat getFormatAsEnum() {
+  public ConfigFileFormat formatAsEnum() {
     return ConfigFileFormat.fromString(this.format);
   }
 

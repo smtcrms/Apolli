@@ -221,7 +221,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
@@ -258,7 +258,7 @@ public class NotificationControllerTest {
 
     when(namespaceUtil.filterNamespaceName(somePublicNamespaceAsFile))
         .thenReturn(somePublicNamespace);
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
     when(appNamespaceService.findOne(someAppId, somePublicNamespace)).thenReturn(null);
 
@@ -302,7 +302,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>
@@ -349,7 +349,7 @@ public class NotificationControllerTest {
     AppNamespace somePublicAppNamespace =
         assmbleAppNamespace(somePublicAppId, somePublicNamespace);
 
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespace))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespace))
         .thenReturn(somePublicAppNamespace);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>>

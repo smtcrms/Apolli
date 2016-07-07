@@ -37,7 +37,7 @@ public class AppNamespaceService {
     return Objects.isNull(appNamespaceRepository.findByAppIdAndName(appId, namespaceName));
   }
 
-  public AppNamespace findPublicByNamespaceName(String namespaceName) {
+  public AppNamespace findPublicNamespaceByName(String namespaceName) {
     Preconditions.checkArgument(namespaceName != null, "Namespace must not be null");
     return appNamespaceRepository.findByNameAndIsPublicTrue(namespaceName);
   }

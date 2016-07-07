@@ -24,6 +24,7 @@ public class AppControllerTest extends AbstractControllerTest {
   }
 
   @Test
+  @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
   public void testCheckIfAppIdUnique() {
     AppDTO dto = generateSampleDTOData();
     ResponseEntity<AppDTO> response =
@@ -72,16 +73,12 @@ public class AppControllerTest extends AbstractControllerTest {
     Assert.assertEquals(dto.getAppId(), savedApp.getAppId());
     Assert.assertNotNull(savedApp.getDataChangeCreatedTime());
 
-    response = restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
-    AppDTO second = response.getBody();
-    Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-    Assert.assertEquals(dto.getAppId(), second.getAppId());
-    Assert.assertEquals(first.getId(), second.getId());
+    try {
+      restTemplate.postForEntity(getBaseAppUrl(), dto, AppDTO.class);
+    }catch (HttpClientErrorException e){
+      Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+    }
 
-    savedApp = appRepository.findOne(second.getId());
-    Assert.assertEquals(dto.getAppId(), savedApp.getAppId());
-    Assert.assertNotNull(savedApp.getDataChangeCreatedTime());
-    Assert.assertNotNull(savedApp.getDataChangeLastModifiedTime());
   }
 
   @Test
@@ -115,27 +112,14 @@ public class AppControllerTest extends AbstractControllerTest {
     Assert.assertNull(deletedApp);
   }
 
-  @Test
-  @Sql(scripts = "/controller/cleanup.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
-  public void testUpdate() {
-    AppDTO dto = generateSampleDTOData();
-    App app = BeanUtils.transfrom(App.class, dto);
-    app = appRepository.save(app);
-
-    dto.setName("newName");
-    restTemplate.postForObject(getBaseAppUrl(), dto, AppDTO.class);
-
-    App updatedApp = appRepository.findOne(app.getId());
-    Assert.assertEquals(dto.getName(), updatedApp.getName());
-    Assert.assertNotNull(updatedApp.getDataChangeLastModifiedTime());
-  }
-
   private AppDTO generateSampleDTOData() {
     AppDTO dto = new AppDTO();
     dto.setAppId("someAppId");
     dto.setName("someName");
     dto.setOwnerName("someOwner");
     dto.setOwnerEmail("someOwner@ctrip.com");
+    dto.setDataChangeCreatedBy("apollo");
+    dto.setDataChangeLastModifiedBy("apollo");
     return dto;
   }
 }

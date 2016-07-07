@@ -36,7 +36,7 @@ public class FileTextResolver implements ConfigTextResolver {
     ItemDTO item = new ItemDTO();
     item.setNamespaceId(namespaceId);
     item.setValue(value);
-    item.setKey(ConfigConsts.FILE_NAMESPACE_KEY_NAME);
+    item.setKey(ConfigConsts.CONFIG_FILE_CONTENT_KEY);
     return item;
   }
 }

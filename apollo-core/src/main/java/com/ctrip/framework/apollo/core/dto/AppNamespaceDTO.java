@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.core.dto;
 
 
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-
 public class AppNamespaceDTO extends BaseDTO{
   private long id;
 
@@ -38,10 +36,6 @@ public class AppNamespaceDTO extends BaseDTO{
 
   public void setAppId(String appId) {
     this.appId = appId;
-  }
-
-  public ConfigFileFormat getFormatAsEnum() {
-    return ConfigFileFormat.fromString(this.format);
   }
 
   public String getFormat() {

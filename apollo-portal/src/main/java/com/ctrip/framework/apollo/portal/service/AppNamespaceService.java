@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
@@ -26,17 +25,16 @@ public class AppNamespaceService {
 
   /**
    * 公共的app ns,能被其它项目关联到的app ns
-   * @return
    */
   public List<AppNamespace> findPublicAppNamespaces() {
-    return appNamespaceRepository.findByNameNotAndIsPublic(ConfigConsts.NAMESPACE_APPLICATION, true);
+    return appNamespaceRepository.findByIsPublicTrue();
   }
 
-  public AppNamespace findPublicAppNamespace(String namespaceName){
+  public AppNamespace findPublicAppNamespace(String namespaceName) {
     return appNamespaceRepository.findByNameAndIsPublic(namespaceName, true);
   }
 
-  public AppNamespace findByAppIdAndName(String appId, String namespaceName){
+  public AppNamespace findByAppIdAndName(String appId, String namespaceName) {
     return appNamespaceRepository.findByAppIdAndName(appId, namespaceName);
   }
 
@@ -64,18 +62,18 @@ public class AppNamespaceService {
 
   @Transactional
   public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
-    //not unique
-    if (appNamespaceRepository.findByName(appNamespace.getName()) != null){
+    // unique check
+    if (appNamespace.isPublic() &&
+        appNamespaceRepository.findByNameAndIsPublic(appNamespace.getName(), true) != null) {
       throw new BadRequestException(appNamespace.getName() + "已存在");
     }
-    AppNamespace managedAppNamespace = appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName());
-    //update
-    if (managedAppNamespace != null){
-      BeanUtils.copyEntityProperties(appNamespace, managedAppNamespace);
-      return appNamespaceRepository.save(managedAppNamespace);
-    }else {
-      return appNamespaceRepository.save(appNamespace);
+
+    if (!appNamespace.isPublic() &&
+        appNamespaceRepository.findByAppIdAndName(appNamespace.getAppId(), appNamespace.getName()) != null) {
+      throw new BadRequestException(appNamespace.getName() + "已存在");
     }
+
+    return appNamespaceRepository.save(appNamespace);
   }
 
 }

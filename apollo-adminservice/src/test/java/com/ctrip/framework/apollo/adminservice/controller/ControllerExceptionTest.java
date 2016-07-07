@@ -82,7 +82,7 @@ public class ControllerExceptionTest {
     when(adminService.createNewApp(any(App.class)))
         .thenThrow(new ServiceException("create app failed"));
 
-    appController.createOrUpdate(dto);
+    appController.create(dto);
   }
 
   private AppDTO generateSampleDTOData() {

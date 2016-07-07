@@ -247,7 +247,7 @@ public class ConfigControllerTest {
 
     when(configService.findRelease(someAppId, someClusterName, someAppOwnNamespaceName))
         .thenReturn(someRelease);
-    when(appNamespaceService.findPublicByNamespaceName(someAppOwnNamespaceName))
+    when(appNamespaceService.findPublicNamespaceByName(someAppOwnNamespaceName))
         .thenReturn(someAppOwnNamespace);
     when(someRelease.getReleaseKey()).thenReturn(someServerSideReleaseKey);
     when(namespaceUtil.filterNamespaceName(someAppOwnNamespaceName))
@@ -276,7 +276,7 @@ public class ConfigControllerTest {
 
     when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
         .thenReturn(null);
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespaceName))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespaceName))
         .thenReturn(somePublicAppNamespace);
     when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
         .thenReturn(somePublicRelease);
@@ -305,7 +305,7 @@ public class ConfigControllerTest {
 
     when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
         .thenReturn(null);
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespaceName))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespaceName))
         .thenReturn(somePublicAppNamespace);
     when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
         .thenReturn(somePublicRelease);
@@ -335,7 +335,7 @@ public class ConfigControllerTest {
 
     when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
         .thenReturn(null);
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespaceName))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespaceName))
         .thenReturn(somePublicAppNamespace);
     when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
         .thenReturn(null);
@@ -373,7 +373,7 @@ public class ConfigControllerTest {
     when(configService.findRelease(someAppId, someClusterName, somePublicNamespaceName))
         .thenReturn(someRelease);
     when(someRelease.getReleaseKey()).thenReturn(someAppSideReleaseKey);
-    when(appNamespaceService.findPublicByNamespaceName(somePublicNamespaceName))
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespaceName))
         .thenReturn(somePublicAppNamespace);
     when(configService.findRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
         .thenReturn(somePublicRelease);

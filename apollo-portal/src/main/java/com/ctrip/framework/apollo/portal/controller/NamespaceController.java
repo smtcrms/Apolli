@@ -91,7 +91,7 @@ public class NamespaceController {
 
     //add app org id as prefix
     App app = appService.load(appId);
-    if (appNamespace.getFormatAsEnum() == ConfigFileFormat.Properties) {
+    if (appNamespace.formatAsEnum() == ConfigFileFormat.Properties) {
       appNamespace.setName(String.format("%s.%s", app.getOrgId(), appNamespace.getName()));
     } else {
       appNamespace.setName(String.format("%s.%s.%s", app.getOrgId(), appNamespace.getName(), appNamespace.getFormat()));
