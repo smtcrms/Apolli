@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.entity.Item;
-import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
@@ -18,9 +17,6 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 @Service
 public class ItemSetService {
-
-  @Autowired
-  private ItemRepository itemRepository;
 
   @Autowired
   private AuditService auditService;
@@ -53,7 +49,7 @@ public class ItemSetService {
       for (ItemDTO item : changeSet.getUpdateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
 
-        Item beforeUpdateItem = itemRepository.findOne(entity.getId());
+        Item beforeUpdateItem = itemService.findOne(entity.getId());
 
         entity.setDataChangeLastModifiedBy(operator);
         Item updatedItem = itemService.update(entity);
