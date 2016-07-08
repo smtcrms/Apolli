@@ -41,15 +41,35 @@ public class PropertiesConfigFile extends AbstractConfigFile {
     StringWriter writer = new StringWriter();
     try {
       m_configProperties.get().store(writer, null);
-      return writer.getBuffer().toString();
+      StringBuffer stringBuffer = writer.getBuffer();
+      filterPropertiesComment(stringBuffer);
+      return stringBuffer.toString();
     } catch (IOException ex) {
       ApolloConfigException exception =
           new ApolloConfigException(String
-              .format("Parse properties file content failed for namespace: %s, cause: %s", m_namespace,
-                  ExceptionUtil.getDetailMessage(ex)));
+              .format("Parse properties file content failed for namespace: %s, cause: %s",
+                  m_namespace, ExceptionUtil.getDetailMessage(ex)));
       Cat.logError(exception);
       throw exception;
     }
+  }
+
+  /**
+   * filter out the first comment line
+   * @param stringBuffer the string buffer
+   * @return true if filtered successfully, false otherwise
+   */
+  boolean filterPropertiesComment(StringBuffer stringBuffer) {
+    //check whether has comment in the first line
+    if (stringBuffer.charAt(0) != '#') {
+      return false;
+    }
+    int commentLineIndex = stringBuffer.indexOf("\n");
+    if (commentLineIndex == -1) {
+      return false;
+    }
+    stringBuffer.delete(0, commentLineIndex + 1);
+    return true;
   }
 
 
