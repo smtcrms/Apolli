@@ -80,7 +80,7 @@ public class NamespaceController {
 
   @PreAuthorize(value = "@permissionValidator.hasCreateAppNamespacePermission(#appId, #appNamespace)")
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
-  public void createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
+  public AppNamespace createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
     checkArgument(appNamespace.getAppId(), appNamespace.getName());
     if (!InputValidator.isValidAppNamespace(appNamespace.getName())) {
@@ -106,6 +106,7 @@ public class NamespaceController {
 
     publisher.publishEvent(new AppNamespaceCreationEvent(createdAppNamespace));
 
+    return createdAppNamespace;
   }
 
   @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces")
