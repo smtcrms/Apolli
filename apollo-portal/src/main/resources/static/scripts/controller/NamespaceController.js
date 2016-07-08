@@ -42,8 +42,8 @@ namespace_module.controller("LinkNamespaceController",
                                      appId: $scope.appId,
                                      name: '',
                                      comment: '',
-                                     isPublic: false,
-                                     format: 'xml'
+                                     isPublic: true,
+                                     format: 'properties'
                                  };
 
                                  $scope.switchNSType = function (type) {

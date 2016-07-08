@@ -16,6 +16,7 @@ import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
@@ -60,6 +61,7 @@ public class AppNamespaceService {
     appNs.setAppId(appId);
     appNs.setName(ConfigConsts.NAMESPACE_APPLICATION);
     appNs.setComment("default app namespace");
+    appNs.setFormat(ConfigFileFormat.Properties.getValue());
     appNs.setDataChangeCreatedBy(createBy);
     appNs.setDataChangeLastModifiedBy(createBy);
     appNamespaceRepository.save(appNs);
