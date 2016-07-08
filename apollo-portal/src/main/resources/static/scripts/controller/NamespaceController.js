@@ -112,7 +112,7 @@ namespace_module.controller("LinkNamespaceController",
                                                      } else {//private的直接link并且跳转到授权页面
                                                          $window.location.href =
                                                              "/namespace/role.html?#/appid=" + $scope.appId
-                                                             + "&namespaceName=" + $scope.appNamespace.name;
+                                                             + "&namespaceName=" + result.name;
                                                      }
                                                  }, 1000);
                                              }, function (result) {
