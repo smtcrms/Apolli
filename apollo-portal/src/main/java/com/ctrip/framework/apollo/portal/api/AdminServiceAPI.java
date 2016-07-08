@@ -101,13 +101,19 @@ public class AdminServiceAPI {
       return Arrays.asList(itemDTOs);
     }
 
-    public void updateItems(String appId, Env env, String clusterName, String namespace,
-                            ItemChangeSets changeSets) {
+    public void updateItemsByChangeSet(String appId, Env env, String clusterName, String namespace,
+                                       ItemChangeSets changeSets) {
       restTemplate.postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset",
                                  changeSets, Void.class, getAdminServiceHost(env), appId, clusterName, namespace);
     }
 
-    public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
+    public void updateItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
+      restTemplate.put("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
+                                        item, getAdminServiceHost(env), appId, clusterName, namespace);
+
+    }
+
+    public ItemDTO createItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
       return restTemplate.postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
                                         item, ItemDTO.class, getAdminServiceHost(env), appId, clusterName, namespace)
           .getBody();

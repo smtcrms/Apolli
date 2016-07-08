@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * normal property file resolver.
- * update comment and blank item implement by create new item and delete old item.
+ * update comment and blank item implement by createItem new item and delete old item.
  * update normal key/value item implement by update.
  */
 @Component("propertyResolver")
@@ -105,7 +105,7 @@ public class PropertyResolver implements ConfigTextResolver {
 
   private void handleCommentLine(Long namespaceId, ItemDTO oldItemByLine, String newItem, int lineCounter, ItemChangeSets changeSets) {
     String oldComment = oldItemByLine == null ? "" : oldItemByLine.getComment();
-    //create comment. implement update comment by delete old comment and create new comment
+    //createItem comment. implement update comment by delete old comment and createItem new comment
     if (!(isCommentItem(oldItemByLine) && newItem.equals(oldComment))) {
       changeSets.addCreateItem(buildCommentItem(0l, namespaceId, newItem, lineCounter));
     }

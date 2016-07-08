@@ -37,7 +37,7 @@ public class RoleInitializationService {
       return;
     }
     String operaterUserId = userInfoHolder.getUser().getUserId();
-    //create app permissions
+    //createItem app permissions
     createAppMasterRole(appId);
 
     //assign master role to user
@@ -75,7 +75,7 @@ public class RoleInitializationService {
         appPermissionIds =
         FluentIterable.from(createdAppPermissions).transform(permission -> permission.getId()).toSet();
 
-    //create app master role
+    //createItem app master role
     Role appMasterRole = createRole(RoleUtils.buildAppMasterRoleName(appId));
 
     rolePermissionService.createRoleWithPermissions(appMasterRole, appPermissionIds);
