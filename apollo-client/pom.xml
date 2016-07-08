@@ -65,5 +65,13 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- end of test -->
+		<!-- dal-jdbc -->
+		<dependency>
+			<groupId>org.unidal.framework</groupId>
+			<artifactId>dal-jdbc</artifactId>
+			<version>2.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- end of dal-jdbc -->
 	</dependencies>
 </project>
