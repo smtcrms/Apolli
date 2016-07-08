@@ -11,7 +11,9 @@ import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import java.util.List;
 
@@ -31,7 +33,11 @@ public class AppNamespaceController {
       throw new BadRequestException("app namespaces already exist.");
     }
 
-    entity = appNamespaceService.createAppNamespace(entity, entity.getDataChangeCreatedBy());
+    if (StringUtils.isEmpty(appNamespace.getFormat())){
+      appNamespace.setFormat(ConfigFileFormat.Properties.getValue());
+    }
+
+    entity = appNamespaceService.createAppNamespace(entity);
 
     return BeanUtils.transfrom(AppNamespaceDTO.class, entity);
 
