@@ -51,7 +51,6 @@ public class ConfigController {
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
 
-
     configService.updateConfigItemByText(model);
   }
 

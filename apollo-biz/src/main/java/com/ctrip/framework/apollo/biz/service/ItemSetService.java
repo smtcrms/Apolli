@@ -50,6 +50,9 @@ public class ItemSetService {
         Item entity = BeanUtils.transfrom(Item.class, item);
 
         Item beforeUpdateItem = itemService.findOne(entity.getId());
+        if (beforeUpdateItem != null){
+          beforeUpdateItem = BeanUtils.transfrom(Item.class, beforeUpdateItem);
+        }
 
         entity.setDataChangeLastModifiedBy(operator);
         Item updatedItem = itemService.update(entity);

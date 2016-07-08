@@ -26,7 +26,7 @@ directive_module.directive('apollonspanel',
                                            LOG: 'log'
                                        };
 
-                                       var MIN_ROW_SIZE = 30;
+                                       var MIN_ROW_SIZE = 10;
 
                                        scope.switchView = switchView;
 
