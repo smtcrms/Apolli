@@ -33,8 +33,8 @@ public class AppNamespaceController {
       throw new BadRequestException("app namespaces already exist.");
     }
 
-    if (StringUtils.isEmpty(appNamespace.getFormat())){
-      appNamespace.setFormat(ConfigFileFormat.Properties.getValue());
+    if (StringUtils.isEmpty(entity.getFormat())){
+      entity.setFormat(ConfigFileFormat.Properties.getValue());
     }
 
     entity = appNamespaceService.createAppNamespace(entity);
