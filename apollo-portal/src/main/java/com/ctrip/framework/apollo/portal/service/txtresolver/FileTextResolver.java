@@ -21,19 +21,20 @@ public class FileTextResolver implements ConfigTextResolver {
       return changeSets;
     }
     if (CollectionUtils.isEmpty(baseItems)) {
-      changeSets.addCreateItem(createItem(namespaceId, configText));
+      changeSets.addCreateItem(createItem(namespaceId, 0, configText));
     } else {
       ItemDTO beforeItem = baseItems.get(0);
       if (!configText.equals(beforeItem.getValue())) {//update
-        changeSets.addUpdateItem(createItem(namespaceId, configText));
+        changeSets.addUpdateItem(createItem(namespaceId, beforeItem.getId(), configText));
       }
     }
 
     return changeSets;
   }
 
-  private ItemDTO createItem(long namespaceId, String value) {
+  private ItemDTO createItem(long namespaceId, long itemId, String value) {
     ItemDTO item = new ItemDTO();
+    item.setId(itemId);
     item.setNamespaceId(namespaceId);
     item.setValue(value);
     item.setKey(ConfigConsts.CONFIG_FILE_CONTENT_KEY);
