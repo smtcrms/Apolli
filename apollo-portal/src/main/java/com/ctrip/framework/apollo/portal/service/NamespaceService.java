@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -93,14 +94,7 @@ public class NamespaceService {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
 
-    //先从当前appId下面找,包含私有的和公共的
-    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(appId, namespace.getNamespaceName());
-    //再从公共的app namespace里面找
-    if (appNamespace == null) {
-      appNamespace = appNamespaceService.findPublicAppNamespace(namespace.getNamespaceName());
-    }
-
-    namespaceVO.setFormat(appNamespace.getFormat());
+    namespaceVO.setFormat(getNamespaceFormat(namespace));
 
     List<NamespaceVO.ItemVO> itemVos = new LinkedList<>();
     namespaceVO.setItems(itemVos);
@@ -145,6 +139,21 @@ public class NamespaceService {
     return namespaceVO;
   }
 
+  private String getNamespaceFormat(NamespaceDTO namespace){
+
+    //先从当前appId下面找,包含私有的和公共的
+    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(namespace.getAppId(), namespace.getNamespaceName());
+    //再从公共的app namespace里面找
+    if (appNamespace == null) {
+      appNamespace = appNamespaceService.findPublicAppNamespace(namespace.getNamespaceName());
+    }
+    if (appNamespace == null){
+      return ConfigFileFormat.Properties.getValue();
+    }else {
+      return appNamespace.getFormat();
+    }
+
+  }
   private List<NamespaceVO.ItemVO> countDeletedItemNum(List<ItemDTO> newItems, Map<String, String> releaseItems) {
     Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
 

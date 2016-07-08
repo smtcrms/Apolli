@@ -220,6 +220,9 @@ application_module.controller("ConfigNamespaceController",
                                        if (selectedClusters.length == 0) {
                                            toastr.error("请选择集群");
                                        } else {
+                                           if (!$scope.item.value) {
+                                               $scope.item.value = "";
+                                           }
                                            selectedClusters.forEach(function (cluster) {
                                                if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.CREATE) {
 
@@ -238,9 +241,7 @@ application_module.controller("ConfigNamespaceController",
                                                        });
 
                                                } else if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.UPDATE) {
-                                                   if (!$scope.item.value) {
-                                                       $scope.item.value = "";
-                                                   }
+
                                                    if (!$scope.item.comment) {
                                                        $scope.item.comment = "";
                                                    }
