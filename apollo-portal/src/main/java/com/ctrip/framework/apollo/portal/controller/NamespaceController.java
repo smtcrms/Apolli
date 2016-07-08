@@ -72,7 +72,7 @@ public class NamespaceController {
         // TODO: 16/6/17 某些环境创建失败,统一处理这种场景
         namespaceService.createNamespace(Env.valueOf(model.getEnv()), namespace);
       } catch (Exception e) {
-        logger.error("createItem namespace error.", e);
+        logger.error("create namespace error.", e);
       }
     }
     return ResponseEntity.ok().build();

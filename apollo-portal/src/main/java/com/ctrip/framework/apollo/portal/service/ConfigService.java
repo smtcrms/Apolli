@@ -68,9 +68,9 @@ public class ConfigService {
     long namespaceId = model.getNamespaceId();
     String configText = model.getConfigText();
 
-    ConfigTextResolver
-        resolver =
+    ConfigTextResolver resolver =
         model.getFormat() == ConfigFileFormat.Properties ? propertyResolver : fileTextResolver;
+
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
                                                  itemAPI.findItems(appId, env, clusterName, namespaceName));
     if (changeSets.isEmpty()) {

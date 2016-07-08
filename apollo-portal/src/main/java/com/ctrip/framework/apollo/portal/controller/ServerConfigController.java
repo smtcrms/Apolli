@@ -36,7 +36,7 @@ public class ServerConfigController {
 
     ServerConfig storedConfig = serverConfigRepository.findByKey(serverConfig.getKey());
 
-    if (storedConfig == null) {//createItem
+    if (storedConfig == null) {//create
       serverConfig.setDataChangeCreatedBy(modifiedBy);
       serverConfig.setDataChangeLastModifiedBy(modifiedBy);
       return serverConfigRepository.save(serverConfig);
