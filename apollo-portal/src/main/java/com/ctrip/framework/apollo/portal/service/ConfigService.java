@@ -68,7 +68,9 @@ public class ConfigService {
     long namespaceId = model.getNamespaceId();
     String configText = model.getConfigText();
 
-    ConfigTextResolver resolver = model.getFormat() == ConfigFileFormat.Properties ? propertyResolver : fileTextResolver;
+    ConfigTextResolver resolver =
+        model.getFormat() == ConfigFileFormat.Properties ? propertyResolver : fileTextResolver;
+
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
                                                  itemAPI.findItems(appId, env, clusterName, namespaceName));
     if (changeSets.isEmpty()) {
@@ -76,23 +78,29 @@ public class ConfigService {
     }
 
     changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
-    itemAPI.updateItems(appId, env, clusterName, namespaceName, changeSets);
+    itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
   }
 
 
-  public ItemDTO createOrUpdateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
+  public ItemDTO createItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
     if (namespace == null) {
       throw new BadRequestException(
           "namespace:" + namespaceName + " not exist in env:" + env + ", cluster:" + clusterName);
     }
-    String username = userInfoHolder.getUser().getUserId();
-    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())) {
-      item.setDataChangeCreatedBy(username);
-    }
-    item.setDataChangeLastModifiedBy(username);
     item.setNamespaceId(namespace.getId());
-    return itemAPI.createOrUpdateItem(appId, env, clusterName, namespaceName, item);
+
+    String username = userInfoHolder.getUser().getUserId();
+    item.setDataChangeCreatedBy(username);
+    item.setDataChangeLastModifiedBy(username);
+
+    return itemAPI.createItem(appId, env, clusterName, namespaceName, item);
+  }
+
+  public void updateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
+    String username = userInfoHolder.getUser().getUserId();
+    item.setDataChangeLastModifiedBy(username);
+    itemAPI.updateItem(appId, env, clusterName, namespaceName, item.getId(), item);
   }
 
   public void deleteItem(Env env, long itemId) {
@@ -120,9 +128,9 @@ public class ConfigService {
       changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
       try {
         itemAPI
-            .updateItems(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),
-                         namespaceIdentifer.getClusterName(),
-                         namespaceIdentifer.getNamespaceName(), changeSets);
+            .updateItemsByChangeSet(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),
+                                    namespaceIdentifer.getClusterName(),
+                                    namespaceIdentifer.getNamespaceName(), changeSets);
       } catch (HttpClientErrorException e) {
         logger.error("sync items error. namespace:{}", namespaceIdentifer);
         throw new ServiceException(String.format("sync item error. env:%s, clusterName:%s", namespaceIdentifer.getEnv(),

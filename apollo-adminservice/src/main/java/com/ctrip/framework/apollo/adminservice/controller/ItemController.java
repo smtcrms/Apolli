@@ -74,16 +74,18 @@ public class ItemController {
   }
 
   @PreAcquireNamespaceLock
-  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT)
+  @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}", method = RequestMethod.PUT)
   public ItemDTO update(@PathVariable("appId") String appId,
                         @PathVariable("clusterName") String clusterName,
-                        @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO itemDTO) {
+                        @PathVariable("namespaceName") String namespaceName,
+                        @PathVariable("itemId") long itemId,
+                        @RequestBody ItemDTO itemDTO) {
 
     Item entity = BeanUtils.transfrom(Item.class, itemDTO);
 
     ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
 
-    Item managedEntity = itemService.findOne(appId, clusterName, namespaceName, entity.getKey());
+    Item managedEntity = itemService.findOne(itemId);
     if (managedEntity == null) {
       throw new BadRequestException("item not exist");
     }

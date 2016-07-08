@@ -61,17 +61,17 @@ public class ConfigController {
                             @RequestBody ItemDTO item){
     checkModel(isValidItem(item));
 
-    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+    return configService.createItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item", method = RequestMethod.PUT)
-  public ItemDTO updateItem(@PathVariable String appId, @PathVariable String env,
+  public void updateItem(@PathVariable String appId, @PathVariable String env,
                             @PathVariable String clusterName, @PathVariable String namespaceName,
                             @RequestBody ItemDTO item){
     checkModel(isValidItem(item));
 
-    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+    configService.updateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
 

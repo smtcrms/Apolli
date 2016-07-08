@@ -71,7 +71,8 @@ public class AppNamespaceService {
   }
 
   @Transactional
-  public AppNamespace createAppNamespace(AppNamespace appNamespace, String createBy){
+  public AppNamespace createAppNamespace(AppNamespace appNamespace){
+    String createBy = appNamespace.getDataChangeCreatedBy();
     if (!isAppNamespaceNameUnique(appNamespace.getAppId(), appNamespace.getName())) {
       throw new ServiceException("appnamespace not unique");
     }
