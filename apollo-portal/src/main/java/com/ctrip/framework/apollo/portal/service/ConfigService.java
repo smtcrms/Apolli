@@ -100,7 +100,7 @@ public class ConfigService {
   public void updateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
     String username = userInfoHolder.getUser().getUserId();
     item.setDataChangeLastModifiedBy(username);
-    itemAPI.updateItem(appId, env, clusterName, namespaceName, item);
+    itemAPI.updateItem(appId, env, clusterName, namespaceName, item.getId(), item);
   }
 
   public void deleteItem(Env env, long itemId) {

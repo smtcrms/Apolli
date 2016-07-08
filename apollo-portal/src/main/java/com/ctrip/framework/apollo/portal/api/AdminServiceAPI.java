@@ -107,9 +107,9 @@ public class AdminServiceAPI {
                                  changeSets, Void.class, getAdminServiceHost(env), appId, clusterName, namespace);
     }
 
-    public void updateItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
-      restTemplate.put("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
-                                        item, getAdminServiceHost(env), appId, clusterName, namespace);
+    public void updateItem(String appId, Env env, String clusterName, String namespace, long itemId, ItemDTO item) {
+      restTemplate.put("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}",
+                                        item, getAdminServiceHost(env), appId, clusterName, namespace, itemId);
 
     }
 
