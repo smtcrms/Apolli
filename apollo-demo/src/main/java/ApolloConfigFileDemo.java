@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 public class ApolloConfigFileDemo {
   private static final Logger logger = LoggerFactory.getLogger(ApolloConfigDemo.class);
   private ConfigFile configFile;
-  private String namespace = "application";
+  private String namespace = "SCC.datasource";
 
   public ApolloConfigFileDemo() {
     configFile = ConfigService.getConfigFile(namespace, ConfigFileFormat.XML);

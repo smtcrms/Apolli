@@ -49,7 +49,7 @@ public class NamespaceLockAspect {
     acquireLock(appId, clusterName, namespaceName, item.getDataChangeLastModifiedBy());
   }
 
-  //create item
+  //update item
   @Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, itemId, item, ..)")
   public void requireLockAdvice(String appId, String clusterName, String namespaceName, long itemId,
                                 ItemDTO item) {
