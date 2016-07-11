@@ -21,7 +21,7 @@ public class ApolloConfigDemo {
   private Config config;
 
   public ApolloConfigDemo() {
-    config = ConfigService.getAppConfig();
+    config = ConfigService.getConfig("testYYMMDD");
     config.addChangeListener(new ConfigChangeListener() {
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
