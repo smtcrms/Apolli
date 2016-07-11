@@ -63,8 +63,12 @@
                                 <apollorequiredfiled></apollorequiredfiled>
                                 名称</label>
                             <div class="col-sm-4">
-                                <div class="input-group">
+                                <div class="input-group" ng-show="appNamespace.isPublic">
                                     <span class="input-group-addon" ng-bind="appBaseInfo.namespacePrefix"></span>
+                                    <input type="text" class="form-control" ng-model="appNamespace.name"
+                                           ng-required="type == 'create'">
+                                </div>
+                                <div ng-show="!appNamespace.isPublic">
                                     <input type="text" class="form-control" ng-model="appNamespace.name"
                                            ng-required="type == 'create'">
                                 </div>
@@ -76,7 +80,7 @@
                                 </select>
                             </div>
 
-                            <span ng-bind="concatNamespace()" style="line-height: 34px;"></span>
+                            <span ng-show="appNamespace.isPublic" ng-bind="concatNamespace()" style="line-height: 34px;"></span>
                         </div>
                         <div class="form-group" ng-show="type == 'create' && hasRootPermission">
                             <label class="col-sm-3 control-label">

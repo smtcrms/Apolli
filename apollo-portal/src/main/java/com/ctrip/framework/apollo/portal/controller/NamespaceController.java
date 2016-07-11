@@ -95,11 +95,13 @@ public class NamespaceController {
 
     //add app org id as prefix
     App app = appService.load(appId);
-    if (appNamespace.formatAsEnum() == ConfigFileFormat.Properties) {
-      appNamespace.setName(String.format("%s.%s", app.getOrgId(), appNamespace.getName()));
-    } else {
-      appNamespace.setName(String.format("%s.%s.%s", app.getOrgId(), appNamespace.getName(), appNamespace.getFormat()));
-    }
+    StringBuilder appNamespaceName = new StringBuilder();
+    //add prefix postfix
+    appNamespaceName
+        .append(appNamespace.isPublic() ? app.getOrgId() + "." : "")
+        .append(appNamespace.getName())
+        .append(appNamespace.formatAsEnum() == ConfigFileFormat.Properties ? "" : "." + appNamespace.getFormat());
+    appNamespace.setName(appNamespaceName.toString());
 
     String operator = userInfoHolder.getUser().getUserId();
     if (StringUtils.isEmpty(appNamespace.getDataChangeCreatedBy())) {
