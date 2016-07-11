@@ -144,23 +144,24 @@ application_module.controller("ConfigNamespaceController",
 
 
                                    $scope.tableViewOperType = '', $scope.item = {};
+                                   var toOperationNamespace;
 
                                    //查看配置
                                    function retrieveItem(namespace, item, oldValue) {
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.RETRIEVE);
                                        $scope.item = item;
                                        $scope.item.oldValue = oldValue;
-                                       toOperationNamespaceName = namespace.namespace.namespaceName;
+                                       toOperationNamespace = namespace;
                                        $scope.hasModifyPermission = namespace.hasModifyPermission;
                                    }
 
-                                   var toDeleteItemId = 0, toDeleteNamespace = {};
+                                   var toDeleteItemId = 0;
                                    function preDeleteItem(namespace, itemId) {
                                        if (!lockCheck(namespace)){
                                            return;
                                        }
 
-                                       toDeleteNamespace = namespace;
+                                       toOperationNamespace = namespace;
                                        toDeleteItemId = itemId;
 
                                        $("#deleteConfirmDialog").modal("show");
@@ -170,7 +171,7 @@ application_module.controller("ConfigNamespaceController",
                                        ConfigService.delete_item($rootScope.pageContext.appId,
                                                                  $rootScope.pageContext.env,
                                                                  $rootScope.pageContext.clusterName,
-                                                                 toDeleteNamespace.namespace.namespaceName,
+                                                                 toOperationNamespace.namespace.namespaceName,
                                                                  toDeleteItemId).then(
                                            function (result) {
                                                toastr.success("删除成功!");
@@ -180,7 +181,6 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    }
 
-                                   var toOperationNamespaceName = '';
                                    //修改配置
                                    function editItem(namespace, item) {
                                        if (!lockCheck(namespace)){
@@ -188,7 +188,7 @@ application_module.controller("ConfigNamespaceController",
                                        }
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
                                        $scope.item = item;
-                                       toOperationNamespaceName = namespace.namespace.namespaceName;
+                                       toOperationNamespace = namespace;
 
                                        $("#itemModal").modal("show");
                                    }
@@ -201,7 +201,7 @@ application_module.controller("ConfigNamespaceController",
 
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.CREATE);
                                        $scope.item = {};
-                                       toOperationNamespaceName = namespace.namespace.namespaceName;
+                                       toOperationNamespace = namespace;
                                        $('#itemModal').modal('show');
                                    }
 
@@ -225,11 +225,23 @@ application_module.controller("ConfigNamespaceController",
                                            }
                                            selectedClusters.forEach(function (cluster) {
                                                if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.CREATE) {
+                                                   //check key unique
+                                                   var hasRepeatKey = false;
+                                                   toOperationNamespace.items.forEach(function (item) {
+                                                      if ($scope.item.key == item.item.key){
+                                                          toastr.error("key=" + $scope.item.key + " 已存在");
+                                                          hasRepeatKey = true;
+                                                          return;
+                                                          }
+                                                   });
+                                                   if (hasRepeatKey){
+                                                       return;
+                                                   }
 
                                                    ConfigService.create_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
-                                                                             toOperationNamespaceName,
+                                                                             toOperationNamespace.namespace.namespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
                                                            toastr.success(cluster.env + " , " + $scope.item.key,
@@ -248,7 +260,7 @@ application_module.controller("ConfigNamespaceController",
                                                    ConfigService.update_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
-                                                                             toOperationNamespaceName,
+                                                                             toOperationNamespace.namespace.namespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
                                                            toastr.success("更新成功, 如需生效请发布");

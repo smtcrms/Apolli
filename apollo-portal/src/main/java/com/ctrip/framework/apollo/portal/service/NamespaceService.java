@@ -43,8 +43,7 @@ public class NamespaceService {
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
 
-  @Autowired
-  private RoleInitializationService roleInitializationService;
+
   @Autowired
   private AppNamespaceService appNamespaceService;
 
@@ -57,7 +56,6 @@ public class NamespaceService {
     namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
-    roleInitializationService.initNamespaceRoles(namespace.getAppId(), namespace.getNamespaceName());
     return createdNamespace;
   }
 

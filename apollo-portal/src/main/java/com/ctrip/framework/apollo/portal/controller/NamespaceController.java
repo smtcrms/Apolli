@@ -15,6 +15,7 @@ import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
 import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.AppService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
+import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,8 @@ public class NamespaceController {
   private NamespaceService namespaceService;
   @Autowired
   private AppNamespaceService appNamespaceService;
+  @Autowired
+  private RoleInitializationService roleInitializationService;
 
   @RequestMapping("/appnamespaces/public")
   public List<AppNamespace> findPublicAppNamespaces() {
@@ -62,6 +65,7 @@ public class NamespaceController {
                                               @RequestBody List<NamespaceCreationModel> models) {
 
     checkModel(!CollectionUtils.isEmpty(models));
+    roleInitializationService.initNamespaceRoles(appId, models.get(0).getNamespace().getNamespaceName());
 
     for (NamespaceCreationModel model : models) {
       NamespaceDTO namespace = model.getNamespace();
