@@ -31,6 +31,8 @@ public class AppNamespaceService {
   private ClusterService clusterService;
   @Autowired
   private AuditService auditService;
+  @Autowired
+  private ServerConfigService serverConfigService;
   
   public boolean isAppNamespaceNameUnique(String appId, String namespaceName) {
     Objects.requireNonNull(appId, "AppId must not be null");
@@ -80,23 +82,12 @@ public class AppNamespaceService {
     appNamespace.setDataChangeCreatedBy(createBy);
     appNamespace.setDataChangeLastModifiedBy(createBy);
     appNamespace = appNamespaceRepository.save(appNamespace);
-    //所有的cluster下面link新建的appnamespace
-    if (!appNamespace.isPublic()){
-      String appId = appNamespace.getAppId();
-      String namespaceName = appNamespace.getName();
 
-      List<Cluster> clusters = clusterService.findClusters(appId);
-      for (Cluster cluster: clusters){
-        Namespace namespace = new Namespace();
-        namespace.setClusterName(cluster.getName());
-        namespace.setAppId(appId);
-        namespace.setNamespaceName(namespaceName);
-        namespace.setDataChangeCreatedBy(createBy);
-        namespace.setDataChangeLastModifiedBy(createBy);
-        namespaceService.save(namespace);
-      }
-
+    //// TODO: 16/7/11 上线完删除开关逻辑
+    if ("true".equals(serverConfigService.getValue("appnamespace.private.enable", "false")) && !appNamespace.isPublic()) {
+      linkPrivateAppNamespaceInAllCluster(appNamespace.getAppId(), appNamespace.getName(), createBy);
     }
+
     auditService.audit(AppNamespace.class.getSimpleName(), appNamespace.getId(), Audit.OP.INSERT,
                        createBy);
     return appNamespace;
@@ -110,5 +101,18 @@ public class AppNamespaceService {
     auditService.audit(AppNamespace.class.getSimpleName(), managedNs.getId(), Audit.OP.UPDATE, managedNs.getDataChangeLastModifiedBy());
 
     return managedNs;
+  }
+
+  private void linkPrivateAppNamespaceInAllCluster(String appId, String namespaceName, String createBy) {
+    List<Cluster> clusters = clusterService.findClusters(appId);
+    for (Cluster cluster : clusters) {
+      Namespace namespace = new Namespace();
+      namespace.setClusterName(cluster.getName());
+      namespace.setAppId(appId);
+      namespace.setNamespaceName(namespaceName);
+      namespace.setDataChangeCreatedBy(createBy);
+      namespace.setDataChangeLastModifiedBy(createBy);
+      namespaceService.save(namespace);
+    }
   }
 }
