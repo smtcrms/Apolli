@@ -21,7 +21,7 @@ public class ApolloConfigDemo {
   private Config config;
 
   public ApolloConfigDemo() {
-    config = ConfigService.getConfig("BUS.test0711");
+    config = ConfigService.getAppConfig();
     config.addChangeListener(new ConfigChangeListener() {
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
