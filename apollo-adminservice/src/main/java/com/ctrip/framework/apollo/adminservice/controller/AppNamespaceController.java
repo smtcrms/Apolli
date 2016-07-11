@@ -11,6 +11,9 @@ import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import java.util.List;
 
@@ -20,30 +23,21 @@ public class AppNamespaceController {
   @Autowired
   private AppNamespaceService appNamespaceService;
 
-  @RequestMapping("/apps/{appId}/appnamespace/{appnamespace}/unique")
-  public boolean isAppNamespaceUnique(@PathVariable("appId") String appId,
-      @PathVariable("appnamespace") String appnamespace) {
-    return appNamespaceService.isAppNamespaceNameUnique(appId, appnamespace);
-  }
-
-  @RequestMapping("/appnamespaces/public")
-  public List<AppNamespaceDTO> findPublicAppNamespaces(){
-    List<AppNamespace> appNamespaces = appNamespaceService.findPublicAppNamespaces();
-    return BeanUtils.batchTransform(AppNamespaceDTO.class, appNamespaces);
-  }
-
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
-  public AppNamespaceDTO createOrUpdate( @RequestBody AppNamespaceDTO appNamespace){
+  public AppNamespaceDTO create(@RequestBody AppNamespaceDTO appNamespace) {
 
     AppNamespace entity = BeanUtils.transfrom(AppNamespace.class, appNamespace);
     AppNamespace managedEntity = appNamespaceService.findOne(entity.getAppId(), entity.getName());
 
-    if (managedEntity != null){
-      BeanUtils.copyEntityProperties(entity, managedEntity);
-      entity = appNamespaceService.update(managedEntity);
-    }else {
-      entity = appNamespaceService.createAppNamespace(entity, entity.getDataChangeCreatedBy());
+    if (managedEntity != null) {
+      throw new BadRequestException("app namespaces already exist.");
     }
+
+    if (StringUtils.isEmpty(entity.getFormat())){
+      entity.setFormat(ConfigFileFormat.Properties.getValue());
+    }
+
+    entity = appNamespaceService.createAppNamespace(entity);
 
     return BeanUtils.transfrom(AppNamespaceDTO.class, entity);
 

@@ -57,6 +57,9 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     defaultNamespace = ConfigConsts.NAMESPACE_APPLICATION;
     someReleaseKey = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
+    if (configDir.exists()) {
+      configDir.delete();
+    }
     configDir.mkdirs();
   }
 
@@ -261,7 +264,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    longPollFinished.get(pollTimeoutInMS * 10, TimeUnit.MILLISECONDS);
+    longPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
 

@@ -70,6 +70,9 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     try {
       String defaultCacheDir = m_configUtil.getDefaultLocalCacheDir();
       Path path = Paths.get(defaultCacheDir);
+      if (!Files.exists(path)) {
+        Files.createDirectories(path);
+      }
       if (Files.exists(path) && Files.isWritable(path)) {
         return new File(defaultCacheDir, CONFIG_DIR);
       }

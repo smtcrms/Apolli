@@ -1,12 +1,18 @@
 namespace_module.controller("LinkNamespaceController",
                             ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil', 'NamespaceService',
-                             function ($scope, $location, $window, toastr, AppService, AppUtil, NamespaceService) {
+                             'PermissionService',
+                             function ($scope, $location, $window, toastr, AppService, AppUtil, NamespaceService,
+                                       PermissionService) {
 
                                  var params = AppUtil.parseParams($location.$$url);
                                  $scope.appId = params.appid;
                                  $scope.type = params.type;
 
                                  $scope.step = 1;
+
+                                 PermissionService.has_root_permission().then(function (result) {
+                                     $scope.hasRootPermission = result.hasPermission;
+                                 });
 
                                  NamespaceService.find_public_namespaces().then(function (result) {
                                      var publicNamespaces = [];
@@ -35,7 +41,13 @@ namespace_module.controller("LinkNamespaceController",
                                  $scope.appNamespace = {
                                      appId: $scope.appId,
                                      name: '',
-                                     comment: ''
+                                     comment: '',
+                                     isPublic: true,
+                                     format: 'properties'
+                                 };
+
+                                 $scope.switchNSType = function (type) {
+                                     $scope.appNamespace.isPublic = type;
                                  };
 
                                  $scope.concatNamespace = function () {
@@ -95,7 +107,13 @@ namespace_module.controller("LinkNamespaceController",
                                              function (result) {
                                                  $scope.step = 2;
                                                  setInterval(function () {
-                                                     $window.location.reload();
+                                                     if ($scope.appNamespace.isPublic) {
+                                                         $window.location.reload();
+                                                     } else {//private的直接link并且跳转到授权页面
+                                                         $window.location.href =
+                                                             "/namespace/role.html?#/appid=" + $scope.appId
+                                                             + "&namespaceName=" + result.name;
+                                                     }
                                                  }, 1000);
                                              }, function (result) {
                                                  toastr.error(AppUtil.errorMsg(result), "创建失败");

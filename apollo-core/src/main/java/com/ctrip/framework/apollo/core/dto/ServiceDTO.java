@@ -1,7 +1,5 @@
 package com.ctrip.framework.apollo.core.dto;
 
-import com.google.common.base.MoreObjects;
-
 public class ServiceDTO {
 
   private String appName;
@@ -36,11 +34,11 @@ public class ServiceDTO {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("appName", appName)
-        .add("instanceId", instanceId)
-        .add("homepageUrl", homepageUrl)
-        .toString();
+    final StringBuilder sb = new StringBuilder("ServiceDTO{");
+    sb.append("appName='").append(appName).append('\'');
+    sb.append(", instanceId='").append(instanceId).append('\'');
+    sb.append(", homepageUrl='").append(homepageUrl).append('\'');
+    sb.append('}');
+    return sb.toString();
   }
 }

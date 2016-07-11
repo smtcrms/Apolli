@@ -50,6 +50,20 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
   @Test
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryConfigFileWithDefaultClusterAndDefaultNamespaceOK() throws Exception {
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}", ApolloConfig.class,
+            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, ConfigConsts.NAMESPACE_APPLICATION + ".properties");
+    ApolloConfig result = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("TEST-RELEASE-KEY1", result.getReleaseKey());
+    assertEquals("v1", result.getConfigurations().get("k1"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryConfigWithNamespaceOK() throws Exception {
     ResponseEntity<ApolloConfig> response = restTemplate
         .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}", ApolloConfig.class,
@@ -59,6 +73,21 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("TEST-RELEASE-KEY2", result.getReleaseKey());
     assertEquals("v2", result.getConfigurations().get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryConfigFileWithNamespaceOK() throws Exception {
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}", ApolloConfig.class,
+            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, someNamespace + ".xml");
+    ApolloConfig result = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("TEST-RELEASE-KEY5", result.getReleaseKey());
+    assertEquals("v1-file", result.getConfigurations().get("k1"));
+    assertEquals("v2-file", result.getConfigurations().get("k2"));
   }
 
   @Test
@@ -168,6 +197,24 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("override-v1", result.getConfigurations().get("k1"));
     assertEquals("default-v2", result.getConfigurations().get("k2"));
+  }
 
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPrivateConfigFileWithPublicNamespaceExists() throws Exception {
+    String namespaceName = "anotherNamespace";
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}",
+            ApolloConfig.class,
+            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespaceName);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("TEST-RELEASE-KEY6", result.getReleaseKey());
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(ConfigConsts.CLUSTER_NAME_DEFAULT, result.getCluster());
+    assertEquals(namespaceName, result.getNamespaceName());
+    assertEquals("v1-file", result.getConfigurations().get("k1"));
+    assertEquals(null, result.getConfigurations().get("k2"));
   }
 }

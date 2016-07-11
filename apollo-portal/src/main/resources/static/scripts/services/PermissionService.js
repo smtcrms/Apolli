@@ -8,6 +8,10 @@ appService.service('PermissionService', ['$resource', '$q', function ($resource,
             method: 'GET',
             url: '/apps/:appId/namespaces/:namespaceName/permissions/:permissionType'
         },
+        has_root_permission:{
+            method: 'GET',
+            url: '/permissions/root'
+        },
         get_namespace_role_users: {
             method: 'GET',
             url: '/apps/:appId/namespaces/:namespaceName/role_users'
@@ -109,6 +113,17 @@ appService.service('PermissionService', ['$resource', '$q', function ($resource,
         },
         has_release_namespace_permission: function (appId, namespaceName) {
             return hasNamespacePermission(appId, namespaceName, 'ReleaseNamespace');
+        },
+        has_root_permission: function () {
+            var d = $q.defer();
+            permission_resource.has_root_permission({ },
+                                                         function (result) {
+                                                             d.resolve(result);
+                                                         }, function (result) {
+                    d.reject(result);
+                });
+            return d.promise;    
+            
         },
         assign_modify_namespace_role: function (appId, namespaceName, user) {
             return assignNamespaceRoleToUser(appId, namespaceName, 'ModifyNamespace', user);

@@ -5,6 +5,7 @@ appService.service('NamespaceLockService', ['$resource', '$q', function ($resour
             url: 'apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/lock'
         }
     });
+
     return {
         get_namespace_lock: function (appId, env, clusterName, namespaceName) {
             var d = $q.defer();

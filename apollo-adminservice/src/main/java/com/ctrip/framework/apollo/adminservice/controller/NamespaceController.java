@@ -25,7 +25,7 @@ public class NamespaceController {
   private NamespaceService namespaceService;
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
-  public NamespaceDTO createOrUpdate(@PathVariable("appId") String appId,
+  public NamespaceDTO create(@PathVariable("appId") String appId,
                                      @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
     if (!InputValidator.isValidClusterNamespace(dto.getNamespaceName())) {
       throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
@@ -33,11 +33,10 @@ public class NamespaceController {
     Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
     Namespace managedEntity = namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
     if (managedEntity != null) {
-      BeanUtils.copyEntityProperties(entity, managedEntity);
-      entity = namespaceService.update(managedEntity);
-    } else {
-      entity = namespaceService.save(entity);
+      throw new BadRequestException("namespace already exist.");
     }
+
+    entity = namespaceService.save(entity);
 
     dto = BeanUtils.transfrom(NamespaceDTO.class, entity);
     return dto;

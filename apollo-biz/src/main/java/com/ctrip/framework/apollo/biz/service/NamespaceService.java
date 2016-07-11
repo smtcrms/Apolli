@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 
 @Service
@@ -20,9 +20,10 @@ public class NamespaceService {
 
   @Autowired
   private NamespaceRepository namespaceRepository;
-
   @Autowired
   private AuditService auditService;
+  @Autowired
+  private AppNamespaceService appNamespaceService;
 
   public boolean isNamespaceUnique(String appId, String cluster, String namespace) {
     Objects.requireNonNull(appId, "AppId must not be null");
@@ -91,19 +92,21 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void createDefaultNamespace(String appId, String clusterName, String createBy) {
-    if (!isNamespaceUnique(appId, clusterName, appId)) {
-      throw new ServiceException("namespace not unique");
+  public void createPrivateNamespace(String appId, String clusterName, String createBy) {
+
+    //load all private app namespace
+    List<AppNamespace> privateAppNamespaces = appNamespaceService.findPrivateAppNamespace(appId);
+    //create all private namespace
+    for (AppNamespace appNamespace: privateAppNamespaces){
+      Namespace ns = new Namespace();
+      ns.setAppId(appId);
+      ns.setClusterName(clusterName);
+      ns.setNamespaceName(appNamespace.getName());
+      ns.setDataChangeCreatedBy(createBy);
+      ns.setDataChangeLastModifiedBy(createBy);
+      namespaceRepository.save(ns);
+      auditService.audit(Namespace.class.getSimpleName(), ns.getId(), Audit.OP.INSERT, createBy);
     }
 
-    Namespace ns = new Namespace();
-    ns.setAppId(appId);
-    ns.setClusterName(clusterName);
-    ns.setNamespaceName(ConfigConsts.NAMESPACE_APPLICATION);
-    ns.setDataChangeCreatedBy(createBy);
-    ns.setDataChangeLastModifiedBy(createBy);
-    namespaceRepository.save(ns);
-
-    auditService.audit(Namespace.class.getSimpleName(), ns.getId(), Audit.OP.INSERT, createBy);
   }
 }

@@ -2,7 +2,7 @@
 directive_module.directive('apollonav', function ($compile, $window, toastr, AppUtil, AppService, EnvService, UserService) {
     return {
         restrict: 'E',
-        templateUrl: '../views/common/nav.html',
+        templateUrl: '../../views/common/nav.html',
         transclude: true,
         replace: true,
         link: function (scope, element, attrs) {
@@ -120,7 +120,7 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
 directive_module.directive('apolloclusterselector', function ($compile, $window, AppService, AppUtil, toastr) {
     return {
         restrict: 'E',
-        templateUrl: '../views/component/env-selector.html',
+        templateUrl: '../../views/component/env-selector.html',
         transclude: true,
         replace: true,
         scope: {
@@ -218,7 +218,7 @@ directive_module.directive('apollorequiredfiled', function ($compile, $window) {
 directive_module.directive('apolloconfirmdialog', function ($compile, $window) {
     return {
         restrict: 'E',
-        templateUrl: '../views/component/confirm-dialog.html',
+        templateUrl: '../../views/component/confirm-dialog.html',
         transclude: true,
         replace: true,
         scope: {
@@ -244,7 +244,7 @@ directive_module.directive('apolloconfirmdialog', function ($compile, $window) {
 directive_module.directive('apolloentrance', function ($compile, $window) {
     return {
         restrict: 'E',
-        templateUrl: '../views/component/entrance.html',
+        templateUrl: '../../views/component/entrance.html',
         transclude: true,
         replace: true,
         scope: {
@@ -262,7 +262,7 @@ directive_module.directive('apolloentrance', function ($compile, $window) {
 directive_module.directive('apollouserselector', function ($compile, $window) {
     return {
         restrict: 'E',
-        templateUrl: '../views/component/user-selector.html',
+        templateUrl: '../../views/component/user-selector.html',
         transclude: true,
         replace: true,
         scope: {

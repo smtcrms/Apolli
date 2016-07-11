@@ -12,6 +12,7 @@ import com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.service.ConfigService;
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,11 +34,13 @@ public class ConfigController {
 
   @Autowired
   private ConfigService configService;
+  @Autowired
+  private ServerConfigService serverConfigService;
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
       "application/json"})
-  public void modifyItems(@PathVariable String appId, @PathVariable String env,
+  public void modifyItemsByText(@PathVariable String appId, @PathVariable String env,
       @PathVariable String clusterName, @PathVariable String namespaceName,
       @RequestBody NamespaceTextModel model) {
 
@@ -47,7 +50,6 @@ public class ConfigController {
     model.setClusterName(clusterName);
     model.setEnv(env);
     model.setNamespaceName(namespaceName);
-
 
     configService.updateConfigItemByText(model);
   }
@@ -59,17 +61,17 @@ public class ConfigController {
                             @RequestBody ItemDTO item){
     checkModel(isValidItem(item));
 
-    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+    return configService.createItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/item", method = RequestMethod.PUT)
-  public ItemDTO updateItem(@PathVariable String appId, @PathVariable String env,
+  public void updateItem(@PathVariable String appId, @PathVariable String env,
                             @PathVariable String clusterName, @PathVariable String namespaceName,
                             @RequestBody ItemDTO item){
     checkModel(isValidItem(item));
 
-    return configService.createOrUpdateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
+    configService.updateItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
 
@@ -130,5 +132,6 @@ public class ConfigController {
   private boolean isValidItem(ItemDTO item){
     return item != null && !StringUtils.isContainEmpty(item.getKey());
   }
+
 
 }

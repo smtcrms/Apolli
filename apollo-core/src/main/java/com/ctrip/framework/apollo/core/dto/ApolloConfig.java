@@ -1,7 +1,5 @@
 package com.ctrip.framework.apollo.core.dto;
 
-import com.google.common.base.MoreObjects;
-
 import java.util.Map;
 
 /**
@@ -74,13 +72,13 @@ public class ApolloConfig {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .omitNullValues()
-        .add("appId", appId)
-        .add("cluster", cluster)
-        .add("namespaceName", namespaceName)
-        .add("releaseKey", releaseKey)
-        .add("configurations", configurations)
-        .toString();
+    final StringBuilder sb = new StringBuilder("ApolloConfig{");
+    sb.append("appId='").append(appId).append('\'');
+    sb.append(", cluster='").append(cluster).append('\'');
+    sb.append(", namespaceName='").append(namespaceName).append('\'');
+    sb.append(", configurations=").append(configurations);
+    sb.append(", releaseKey='").append(releaseKey).append('\'');
+    sb.append('}');
+    return sb.toString();
   }
 }
