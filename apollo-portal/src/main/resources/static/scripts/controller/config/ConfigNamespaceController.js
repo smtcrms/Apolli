@@ -276,8 +276,8 @@ application_module.controller("ConfigNamespaceController",
                                    }
 
                                    function lockCheck(namespace) {
-                                       if (namespace.lockOwner && scope.currentUser != namespace.lockOwner) {
-                                           scope.lockOwner = namespace.lockOwner;
+                                       if (namespace.lockOwner && $scope.currentUser != namespace.lockOwner) {
+                                           $scope.lockOwner = namespace.lockOwner;
                                            $('#namespaceLockedDialog').modal('show');
                                            return false;
                                        }
