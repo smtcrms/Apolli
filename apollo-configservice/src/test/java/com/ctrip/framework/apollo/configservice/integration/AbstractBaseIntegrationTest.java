@@ -1,8 +1,17 @@
 package com.ctrip.framework.apollo.configservice.integration;
 
+import com.google.gson.Gson;
+
 import com.ctrip.framework.apollo.ConfigServiceTestConfiguration;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.ctrip.framework.apollo.biz.entity.Release;
+import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
+import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
+import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator;
 
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
@@ -13,6 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 /**
@@ -22,6 +34,12 @@ import javax.annotation.PostConstruct;
 @SpringApplicationConfiguration(classes = AbstractBaseIntegrationTest.TestConfiguration.class)
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractBaseIntegrationTest {
+  @Autowired
+  private ReleaseMessageRepository releaseMessageRepository;
+  @Autowired
+  private ReleaseRepository releaseRepository;
+
+  private Gson gson = new Gson();
 
   RestTemplate restTemplate = new TestRestTemplate("user", "");
 
@@ -40,8 +58,29 @@ public abstract class AbstractBaseIntegrationTest {
   @Configuration
   @Import(ConfigServiceTestConfiguration.class)
   protected static class TestConfiguration {
+  }
 
+  protected void sendReleaseMessage(String message) {
+    ReleaseMessage releaseMessage = new ReleaseMessage(message);
+    releaseMessageRepository.save(releaseMessage);
+  }
 
+  public Release buildRelease(String name, String comment, Namespace namespace,
+                              Map<String, String> configurations, String owner) {
+    Release release = new Release();
+    release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
+    release.setDataChangeCreatedTime(new Date());
+    release.setDataChangeCreatedBy(owner);
+    release.setDataChangeLastModifiedBy(owner);
+    release.setName(name);
+    release.setComment(comment);
+    release.setAppId(namespace.getAppId());
+    release.setClusterName(namespace.getClusterName());
+    release.setNamespaceName(namespace.getNamespaceName());
+    release.setConfigurations(gson.toJson(configurations));
+    release = releaseRepository.save(release);
+
+    return release;
   }
 
 }

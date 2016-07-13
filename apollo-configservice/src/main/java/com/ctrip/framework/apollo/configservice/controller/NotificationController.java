@@ -1,22 +1,19 @@
 package com.ctrip.framework.apollo.configservice.controller;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageListener;
 import com.ctrip.framework.apollo.biz.message.Topics;
-import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
+import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 import com.dianping.cat.Cat;
@@ -33,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -48,12 +44,11 @@ public class NotificationController implements ReleaseMessageListener {
       deferredResults = Multimaps.synchronizedSetMultimap(HashMultimap.create());
   private static final ResponseEntity<ApolloConfigNotification>
       NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-  private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
   private static final Splitter STRING_SPLITTER =
       Splitter.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).omitEmptyStrings();
 
   @Autowired
-  private AppNamespaceService appNamespaceService;
+  private WatchKeysUtil watchKeysUtil;
 
   @Autowired
   private ReleaseMessageService releaseMessageService;
@@ -75,12 +70,7 @@ public class NotificationController implements ReleaseMessageListener {
     //strip out .properties suffix
     namespace = namespaceUtil.filterNamespaceName(namespace);
 
-    Set<String> watchedKeys = assembleWatchKeys(appId, cluster, namespace, dataCenter);
-
-    //Listen on more namespaces if it's a public namespace
-    if (!namespaceBelongsToAppId(appId, namespace)) {
-      watchedKeys.addAll(this.findPublicConfigWatchKey(appId, cluster, namespace, dataCenter));
-    }
+    Set<String> watchedKeys = watchKeysUtil.assembleAllWatchKeys(appId, cluster, namespace, dataCenter);
 
     DeferredResult<ResponseEntity<ApolloConfigNotification>> deferredResult =
         new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);
@@ -117,50 +107,11 @@ public class NotificationController implements ReleaseMessageListener {
       });
 
       logWatchedKeysToCat(watchedKeys, "Apollo.LongPoll.RegisteredKeys");
-      logger.info("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
+      logger.debug("Listening {} from appId: {}, cluster: {}, namespace: {}, datacenter: {}",
           watchedKeys, appId, cluster, namespace, dataCenter);
     }
 
     return deferredResult;
-  }
-
-  private String assembleKey(String appId, String cluster, String namespace) {
-    return STRING_JOINER.join(appId, cluster, namespace);
-  }
-
-  private Set<String> findPublicConfigWatchKey(String applicationId, String clusterName,
-                                               String namespace,
-                                               String dataCenter) {
-    AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespace);
-
-    //check whether the namespace's appId equals to current one
-    if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
-      return Sets.newHashSet();
-    }
-
-    String publicConfigAppId = appNamespace.getAppId();
-
-    return assembleWatchKeys(publicConfigAppId, clusterName, namespace, dataCenter);
-  }
-
-  private Set<String> assembleWatchKeys(String appId, String clusterName, String namespace,
-                                        String dataCenter) {
-    Set<String> watchedKeys = Sets.newHashSet();
-
-    //watch specified cluster config change
-    if (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusterName)) {
-      watchedKeys.add(assembleKey(appId, clusterName, namespace));
-    }
-
-    //watch data center config change
-    if (!Strings.isNullOrEmpty(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
-      watchedKeys.add(assembleKey(appId, dataCenter, namespace));
-    }
-
-    //watch default cluster config change
-    watchedKeys.add(assembleKey(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace));
-
-    return watchedKeys;
   }
 
   @Override
@@ -183,26 +134,18 @@ public class NotificationController implements ReleaseMessageListener {
         new ResponseEntity<>(
             new ApolloConfigNotification(keys.get(2), message.getId()), HttpStatus.OK);
 
+    if (!deferredResults.containsKey(content)) {
+      return;
+    }
     //create a new list to avoid ConcurrentModificationException
     List<DeferredResult<ResponseEntity<ApolloConfigNotification>>> results =
         Lists.newArrayList(deferredResults.get(content));
-    logger.info("Notify {} clients for key {}", results.size(), content);
+    logger.debug("Notify {} clients for key {}", results.size(), content);
 
     for (DeferredResult<ResponseEntity<ApolloConfigNotification>> result : results) {
       result.setResult(notification);
     }
-    logger.info("Notification completed");
-  }
-
-  private boolean namespaceBelongsToAppId(String appId, String namespaceName) {
-    //Every app has an 'application' namespace
-    if (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) {
-      return true;
-    }
-
-    AppNamespace appNamespace = appNamespaceService.findOne(appId, namespaceName);
-
-    return appNamespace != null;
+    logger.debug("Notification completed");
   }
 
   private void logWatchedKeysToCat(Set<String> watchedKeys, String eventName) {
