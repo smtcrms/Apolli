@@ -16,6 +16,7 @@ import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.AppService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,9 @@ public class NamespaceController {
         // TODO: 16/6/17 某些环境创建失败,统一处理这种场景
         namespaceService.createNamespace(Env.valueOf(model.getEnv()), namespace);
       } catch (Exception e) {
-        logger.error("create namespace error.", e);
+        logger.error("create namespace fail.", e);
+        Cat.logError(
+            String.format("create namespace fail. (env=%s namespace=%s)", model.getEnv(), namespace.getNamespaceName()), e);
       }
     }
     return ResponseEntity.ok().build();

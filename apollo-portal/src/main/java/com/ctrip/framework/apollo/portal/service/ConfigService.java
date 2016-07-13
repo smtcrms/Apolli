@@ -16,7 +16,6 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -25,7 +24,6 @@ import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
 
 import java.util.LinkedList;
@@ -105,15 +103,6 @@ public class ConfigService {
 
   public void deleteItem(Env env, long itemId) {
     itemAPI.deleteItem(env, itemId, userInfoHolder.getUser().getUserId());
-  }
-
-  /**
-   * createRelease config items
-   */
-  public ReleaseDTO createRelease(NamespaceReleaseModel model) {
-    return releaseAPI.release(model.getAppId(), model.getEnv(), model.getClusterName(),
-                              model.getNamespaceName(), model.getReleaseBy(), model.getReleaseComment()
-        , userInfoHolder.getUser().getUserId());
   }
 
   public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {

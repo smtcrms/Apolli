@@ -22,9 +22,11 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
 
             scope.searchKey = '';
             scope.shouldShowAppList = false;
+
             var selectedApp = {};
             scope.selectApp = function (app) {
                 select(app);
+                scope.jumpToConfigPage();
             };
 
             scope.changeSearchKey = function () {

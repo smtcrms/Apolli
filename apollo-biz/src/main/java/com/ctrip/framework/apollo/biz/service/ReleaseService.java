@@ -12,6 +12,7 @@ import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +47,9 @@ public class ReleaseService {
     return release;
   }
 
-  public List<Release> findReleases(String appId, String clusterName, String namespaceName) {
-    List<Release> releases = releaseRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
-        clusterName, namespaceName);
+  public List<Release> findReleases(String appId, String clusterName, String namespaceName, Pageable page) {
+    List<Release> releases = releaseRepository.findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(appId,
+                                                                                                      clusterName, namespaceName, page);
     if (releases == null) {
       return Collections.emptyList();
     }

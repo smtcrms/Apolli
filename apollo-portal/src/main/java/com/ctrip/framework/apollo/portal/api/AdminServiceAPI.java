@@ -109,7 +109,7 @@ public class AdminServiceAPI {
 
     public void updateItem(String appId, Env env, String clusterName, String namespace, long itemId, ItemDTO item) {
       restTemplate.put("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}",
-                                        item, getAdminServiceHost(env), appId, clusterName, namespace, itemId);
+                       item, getAdminServiceHost(env), appId, clusterName, namespace, itemId);
 
     }
 
@@ -155,21 +155,27 @@ public class AdminServiceAPI {
   @Service
   public static class ReleaseAPI extends API {
 
+    public List<ReleaseDTO> findReleases(String appId, Env env, String clusterName, String namespaceName, int page, int size){
+      ReleaseDTO[] releaseDTOs = restTemplate.getForObject(
+          "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases?page={page}&size={size}",
+          ReleaseDTO[].class,
+          getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
+      return Arrays.asList(releaseDTOs);
+    }
+
     public ReleaseDTO loadLatestRelease(String appId, Env env, String clusterName,
                                         String namespace) {
-      ReleaseDTO
-          releaseDTO =
-          restTemplate
-              .getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest",
-                            ReleaseDTO.class, getAdminServiceHost(env), appId, clusterName, namespace);
+      ReleaseDTO releaseDTO = restTemplate
+          .getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest",
+                        ReleaseDTO.class, getAdminServiceHost(env), appId, clusterName, namespace);
       return releaseDTO;
     }
 
     public ReleaseDTO release(String appId, Env env, String clusterName, String namespace,
                               String releaseBy, String comment, String operator) {
       HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-      MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+      headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"));
+      MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
       parameters.add("name", releaseBy);
       parameters.add("comment", comment);
       parameters.add("operator", operator);
@@ -189,9 +195,7 @@ public class AdminServiceAPI {
 
     public List<CommitDTO> find(String appId, Env env, String clusterName, String namespaceName, int page, int size) {
 
-      CommitDTO[]
-          commitDTOs =
-          restTemplate.getForObject(
+      CommitDTO[] commitDTOs = restTemplate.getForObject(
               "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
               CommitDTO[].class,
               getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
