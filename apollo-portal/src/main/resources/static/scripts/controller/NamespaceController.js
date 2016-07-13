@@ -6,7 +6,7 @@ namespace_module.controller("LinkNamespaceController",
 
                                  var params = AppUtil.parseParams($location.$$url);
                                  $scope.appId = params.appid;
-                                 $scope.type = params.type;
+                                 $scope.type = 'link';
 
                                  $scope.step = 1;
 

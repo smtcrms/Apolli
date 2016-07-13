@@ -36,6 +36,14 @@ public class RequestPrecondition {
     }
   }
 
+  public static void checkNumberNotNegative(int... args){
+    for (int num: args){
+      if (num < 0){
+        throw new BadRequestException(ILLEGAL_NUMBER);
+      }
+    }
+  }
+
 
 
 }

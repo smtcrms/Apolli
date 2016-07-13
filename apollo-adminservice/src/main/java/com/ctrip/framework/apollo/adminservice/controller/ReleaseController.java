@@ -15,6 +15,7 @@ import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,8 +53,9 @@ public class ReleaseController {
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases")
   public List<ReleaseDTO> find(@PathVariable("appId") String appId,
                                @PathVariable("clusterName") String clusterName,
-                               @PathVariable("namespaceName") String namespaceName) {
-    List<Release> releases = releaseService.findReleases(appId, clusterName, namespaceName);
+                               @PathVariable("namespaceName") String namespaceName,
+                               Pageable page) {
+    List<Release> releases = releaseService.findReleases(appId, clusterName, namespaceName, page);
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 

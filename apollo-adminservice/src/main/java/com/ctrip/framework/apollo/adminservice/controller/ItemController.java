@@ -36,18 +36,15 @@ public class ItemController {
 
   @PreAcquireNamespaceLock
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
-  public ItemDTO createOrUpdate(@PathVariable("appId") String appId,
-                                @PathVariable("clusterName") String clusterName,
-                                @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto) {
+  public ItemDTO create(@PathVariable("appId") String appId,
+                        @PathVariable("clusterName") String clusterName,
+                        @PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto) {
     Item entity = BeanUtils.transfrom(Item.class, dto);
 
     ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
     Item managedEntity = itemService.findOne(appId, clusterName, namespaceName, entity.getKey());
     if (managedEntity != null) {
-      Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedEntity);
-      BeanUtils.copyEntityProperties(entity, managedEntity);
-      entity = itemService.update(managedEntity);
-      builder.updateItem(beforeUpdateItem, entity);
+      throw new BadRequestException("item already exist");
     } else {
       Item lastItem = itemService.findLastOne(appId, clusterName, namespaceName);
       int lineNum = 1;

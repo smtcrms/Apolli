@@ -6,6 +6,7 @@ import com.ctrip.framework.apollo.common.entity.AppNamespace;
 
 import java.util.List;
 
+
 public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long>{
 
   AppNamespace findByAppIdAndName(String appId, String namespaceName);

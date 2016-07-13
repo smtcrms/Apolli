@@ -10,12 +10,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="http://conf.ctripcorp.com/display/FRAM/Apollo" target="_blank">
-                    Help</span>
-                </a></li>
+                <li>
+                    <a href="http://conf.ctripcorp.com/display/FRAM/Apollo" target="_blank">
+                    <span class="glyphicon glyphicon-question-sign"></span> Help
+                </a>
+                </li>
+
                 <li class="dropdown">
+
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">{{userName}} <span class="caret"></span></a>
+                       aria-expanded="false"><span class="glyphicon glyphicon-user"></span>{{userName}} <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/user/logout">退出</a></li>
                     </ul>
@@ -25,8 +29,7 @@
             <form class="navbar-form navbar-right form-inline" role="search">
                 <div class="form-group">
                     <input type="text" class="form-control search-input" placeholder="应用ID/应用名" style="width: 350px"
-                           ng-model="searchKey" ng-change="changeSearchKey()" ng-focus="changeSearchKey()"
-                           ng-click="xx()">
+                           ng-model="searchKey" ng-change="changeSearchKey()" ng-focus="changeSearchKey()">
 
                     <div class="row app-list" ng-show="shouldShowAppList">
                         <div ng-repeat="app in copyedApps" class="app-item" ng-class="{'app-selected':app.selected}"

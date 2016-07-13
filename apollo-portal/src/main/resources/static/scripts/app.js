@@ -24,7 +24,8 @@ var server_config_module = angular.module('server_config', ['app.service', 'apol
 var role_module = angular.module('role', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
 //cluster
 var cluster_module = angular.module('cluster', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
-
+//release history
+var release_history_module = angular.module('release_history', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar']);
 
 
 

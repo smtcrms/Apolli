@@ -83,8 +83,7 @@ public class AppNamespaceService {
     appNamespace.setDataChangeLastModifiedBy(createBy);
     appNamespace = appNamespaceRepository.save(appNamespace);
 
-    //// TODO: 16/7/11 上线完删除开关逻辑
-    if ("true".equals(serverConfigService.getValue("appnamespace.private.enable", "false")) && !appNamespace.isPublic()) {
+    if (!appNamespace.isPublic()) {
       linkPrivateAppNamespaceInAllCluster(appNamespace.getAppId(), appNamespace.getName(), createBy);
     }
 

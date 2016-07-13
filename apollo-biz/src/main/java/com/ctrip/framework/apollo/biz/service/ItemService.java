@@ -6,6 +6,7 @@ import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
@@ -93,6 +94,7 @@ public class ItemService {
   
   @Transactional
   public Item save(Item entity) {
+    checkItemKeyLength(entity.getKey());
     checkItemValueLength(entity.getValue());
 
     entity.setId(0);//protection
@@ -120,7 +122,15 @@ public class ItemService {
   private boolean checkItemValueLength(String value){
     int lengthLimit = Integer.valueOf(serverConfigService.getValue("item.value.length.limit", "20000"));
     if (!StringUtils.isEmpty(value) && value.length() > lengthLimit){
-      throw new IllegalArgumentException("value too long. length limit:" + lengthLimit);
+      throw new BadRequestException("value too long. length limit:" + lengthLimit);
+    }
+    return true;
+  }
+
+  private boolean checkItemKeyLength(String key){
+    int lengthLimit = Integer.valueOf(serverConfigService.getValue("item.key.length.limit", "128"));
+    if (!StringUtils.isEmpty(key) && key.length() > lengthLimit){
+      throw new BadRequestException("key too long. length limit:" + lengthLimit);
     }
     return true;
   }

@@ -10,6 +10,8 @@ public class NamespaceVO {
   private int itemModifiedCnt;
   private List<ItemVO> items;
   private String format;
+  private boolean isPublic;
+  private String parentAppId;
 
 
   public NamespaceDTO getNamespace() {
@@ -42,6 +44,22 @@ public class NamespaceVO {
 
   public void setFormat(String format) {
     this.format = format;
+  }
+
+  public boolean isPublic() {
+    return isPublic;
+  }
+
+  public void setPublic(boolean aPublic) {
+    isPublic = aPublic;
+  }
+
+  public String getParentAppId() {
+    return parentAppId;
+  }
+
+  public void setParentAppId(String parentAppId) {
+    this.parentAppId = parentAppId;
   }
 
   public static class ItemVO{
@@ -81,6 +99,7 @@ public class NamespaceVO {
     public void setNewValue(String newValue) {
       this.newValue = newValue;
     }
+
 
   }
 

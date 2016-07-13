@@ -1,10 +1,10 @@
 application_module.controller("ConfigNamespaceController",
                               ['$rootScope', '$scope', '$window', '$location', 'toastr', 'AppUtil', 'ConfigService',
                                'PermissionService',
-                               'CommitService', 'NamespaceLockService', 'UserService',
+                               'CommitService', 'NamespaceLockService', 'UserService', 'ReleaseService',
                                function ($rootScope, $scope, $window,  $location, toastr, AppUtil, ConfigService,
                                          PermissionService,
-                                         CommitService, NamespaceLockService, UserService) {
+                                         CommitService, NamespaceLockService, UserService, ReleaseService) {
 
                                    var namespace_view_type = {
                                        TEXT: 'text',
@@ -117,13 +117,13 @@ application_module.controller("ConfigNamespaceController",
                                        } else {
                                            $('#releaseModal').modal('show');
                                        }
-                                       $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                                       $scope.releaseTitle = new Date().Format("yyyyMMddhhmmss") + "-release";
                                        $scope.toReleaseNamespace = namespace;
                                    }
 
                                    $scope.releaseComment = '';
                                    function release() {
-                                       ConfigService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                       ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                              $rootScope.pageContext.clusterName,
                                                              $scope.toReleaseNamespace.namespace.namespaceName,
                                                              $scope.releaseTitle,
