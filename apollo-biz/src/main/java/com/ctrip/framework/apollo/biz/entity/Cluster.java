@@ -46,16 +46,14 @@ public class Cluster extends BaseEntity implements Comparable<Cluster> {
 
   @Override
   public int compareTo(Cluster o) {
-    if (o == null) {
+    if (o == null || getId() > o.getId()) {
       return 1;
     }
 
-    if (getId() > o.getId()) {
-      return 1;
-    }
     if (getId() == o.getId()) {
       return 0;
     }
+
     return -1;
   }
 }
