@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.utils.PropertiesUtil;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
 import com.dianping.cat.Cat;
@@ -8,8 +9,6 @@ import com.dianping.cat.Cat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,13 +37,10 @@ public class PropertiesConfigFile extends AbstractConfigFile {
     if (m_configProperties.get() == null) {
       return null;
     }
-    StringWriter writer = new StringWriter();
+
     try {
-      m_configProperties.get().store(writer, null);
-      StringBuffer stringBuffer = writer.getBuffer();
-      filterPropertiesComment(stringBuffer);
-      return stringBuffer.toString();
-    } catch (IOException ex) {
+      return PropertiesUtil.toString(m_configProperties.get());
+    } catch (Throwable ex) {
       ApolloConfigException exception =
           new ApolloConfigException(String
               .format("Parse properties file content failed for namespace: %s, cause: %s",
@@ -53,25 +49,6 @@ public class PropertiesConfigFile extends AbstractConfigFile {
       throw exception;
     }
   }
-
-  /**
-   * filter out the first comment line
-   * @param stringBuffer the string buffer
-   * @return true if filtered successfully, false otherwise
-   */
-  boolean filterPropertiesComment(StringBuffer stringBuffer) {
-    //check whether has comment in the first line
-    if (stringBuffer.charAt(0) != '#') {
-      return false;
-    }
-    int commentLineIndex = stringBuffer.indexOf("\n");
-    if (commentLineIndex == -1) {
-      return false;
-    }
-    stringBuffer.delete(0, commentLineIndex + 1);
-    return true;
-  }
-
 
   @Override
   public boolean hasContent() {

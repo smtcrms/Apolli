@@ -29,8 +29,7 @@ import static org.junit.Assert.assertNotEquals;
 public class NotificationControllerIntegrationTest extends AbstractBaseIntegrationTest {
   @Autowired
   private NotificationController notificationController;
-  @Autowired
-  private ReleaseMessageRepository releaseMessageRepository;
+
   private String someAppId;
   private String someCluster;
   private String defaultNamespace;
@@ -244,8 +243,7 @@ public class NotificationControllerIntegrationTest extends AbstractBaseIntegrati
           break;
         }
 
-        ReleaseMessage releaseMessage = new ReleaseMessage(message);
-        releaseMessageRepository.save(releaseMessage);
+        sendReleaseMessage(message);
       }
     });
   }

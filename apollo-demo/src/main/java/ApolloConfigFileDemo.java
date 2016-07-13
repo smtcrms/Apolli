@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.Properties;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -18,7 +20,7 @@ public class ApolloConfigFileDemo {
   private String namespace = "application";
 
   public ApolloConfigFileDemo() {
-    configFile = ConfigService.getConfigFile(namespace, ConfigFileFormat.XML);
+    configFile = ConfigService.getConfigFile(namespace, ConfigFileFormat.Properties);
   }
 
   private void print() {
