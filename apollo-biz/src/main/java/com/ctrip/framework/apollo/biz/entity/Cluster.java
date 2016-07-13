@@ -49,6 +49,16 @@ public class Cluster extends BaseEntity implements Comparable<Cluster>{
     if (o == null){
       return 1;
     }
-    return (int) (getId() - o.getId());
+
+    long selfId = getId();
+    long targetId = o.getId();
+
+    if (selfId > targetId){
+      return 1;
+    }else if (selfId == targetId){
+      return 0;
+    }else {
+      return -1;
+    }
   }
 }
