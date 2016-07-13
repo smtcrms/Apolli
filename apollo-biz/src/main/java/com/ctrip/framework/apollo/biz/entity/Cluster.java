@@ -16,7 +16,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "Cluster")
 @SQLDelete(sql = "Update Cluster set isDeleted = 1 where id = ?")
 @Where(clause = "isDeleted = 0")
-public class Cluster extends BaseEntity {
+public class Cluster extends BaseEntity implements Comparable<Cluster>{
 
   @Column(name = "Name", nullable = false)
   private String name;
@@ -42,5 +42,13 @@ public class Cluster extends BaseEntity {
 
   public String toString() {
     return toStringHelper().add("name", name).add("appId", appId).toString();
+  }
+
+  @Override
+  public int compareTo(Cluster o) {
+    if (o == null){
+      return 1;
+    }
+    return (int) (getId() - o.getId());
   }
 }
