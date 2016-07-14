@@ -14,7 +14,6 @@ release_history_module.controller("ReleaseHistoryController",
                                        $scope.page = 0;
                                        $scope.releases = [];
                                        $scope.hasLoadAll = false;
-
                                        $scope.findReleases = findReleases;
 
                                        $scope.loadMore = loadMore;
@@ -32,7 +31,16 @@ release_history_module.controller("ReleaseHistoryController",
                                                        $scope.hasLoadAll = true;
                                                        return;
                                                    }
+
+                                                   var hasParseNamepaceType = false;
                                                    result.forEach(function (release) {
+                                                       if (!hasParseNamepaceType){
+                                                           $scope.isTextFile = release.baseInfo.namespaceName.indexOf(".xml") > 0
+                                                                                || release.baseInfo.namespaceName.indexOf(".json") > 0
+                                                                                || release.baseInfo.namespaceName.indexOf(".yml") > 0
+                                                                                || release.baseInfo.namespaceName.indexOf(".yaml") > 0;
+                                                           hasParseNamepaceType = true;
+                                                       }
                                                        $scope.releases.push(release);
                                                    })
                                                }, function (result) {

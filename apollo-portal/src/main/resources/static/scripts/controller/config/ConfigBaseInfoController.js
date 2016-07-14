@@ -5,10 +5,15 @@ application_module.controller("ConfigBaseInfoController",
                                          AppUtil) {
 
                                    var appId = AppUtil.parseParams($location.$$url).appid;
+
+                                   //load session storage to recovery scene
+                                   var env = sessionStorage.getItem(appId + "+env"),
+                                       clusterName = sessionStorage.getItem(appId + "+cluster");
+
                                    var pageContext = {
                                        appId: appId,
-                                       env: '',
-                                       clusterName: 'default'
+                                       env: env ? env : '',
+                                       clusterName: clusterName ? clusterName : 'default'
                                    };
 
                                    $rootScope.pageContext = pageContext;
@@ -19,12 +24,14 @@ application_module.controller("ConfigBaseInfoController",
                                        var navTree = [];
                                        var nodes = AppUtil.collectData(result);
 
-                                       if (!nodes || nodes.length == 0){
-                                           toastr.error("加载导航信息出错");
+                                       if (!nodes || nodes.length == 0) {
+                                           toastr.error("加载环境信息出错");
                                            return;
                                        }
-                                       //默认显示第一个环境的default集群的
-                                       pageContext.env = nodes[0].env;
+                                       //default first env if session storage is empty
+                                       if (!pageContext.env) {
+                                           pageContext.env = nodes[0].env;
+                                       }
                                        $rootScope.refreshNamespaces();
 
                                        nodes.forEach(function (env, envIdx) {
@@ -32,33 +39,32 @@ application_module.controller("ConfigBaseInfoController",
                                                return;
                                            }
                                            var node = {};
-                                           //first nav
                                            node.text = env.env;
-                                           // node.icon = 'glyphicon glyphicon-console';
                                            var clusterNodes = [];
 
                                            //如果env下面只有一个default集群则不显示集群列表
                                            if (env.clusters && env.clusters.length == 1 && env.clusters[0].name
-                                                                                             == 'default') {
-                                               if (envIdx == 0){
+                                                                                           == 'default') {
+                                               if (envIdx == 0) {
                                                    node.state = {};
                                                    node.state.selected = true;
                                                }
                                                node.selectable = true;
                                            } else {
                                                node.selectable = false;
-                                               //second nav
+                                               //cluster list
                                                env.clusters.forEach(function (cluster, clusterIdx) {
                                                    var clusterNode = {},
                                                        parentNode = [];
 
-                                                   if (envIdx == 0 && clusterIdx == 0){
+                                                   //default selection from session storage or first env & first cluster
+                                                   if ((pageContext.env && pageContext.env == env.env && pageContext.clusterName == cluster.name)
+                                                       || (!pageContext.env && envIdx == 0 && clusterIdx == 0)) {
                                                        clusterNode.state = {};
                                                        clusterNode.state.selected = true;
                                                    }
 
                                                    clusterNode.text = cluster.name;
-                                                   // clusterNode.icon = 'glyphicon glyphicon-object-align-vertical';
                                                    parentNode.push(node.text);
                                                    clusterNode.tags = ['集群'];
                                                    clusterNode.parentNode = parentNode;
@@ -83,10 +89,21 @@ application_module.controller("ConfigBaseInfoController",
                                                                            $rootScope.pageContext.clusterName =
                                                                                'default';
                                                                        } else {//second cluster node
-                                                                           $rootScope.pageContext.env = data.parentNode[0];
+                                                                           $rootScope.pageContext.env =
+                                                                               data.parentNode[0];
                                                                            $rootScope.pageContext.clusterName =
                                                                                data.text;
                                                                        }
+                                                                       //session storage
+                                                                       //appId+env = env
+                                                                       //appId+cluster = cluster
+                                                                       sessionStorage.setItem(
+                                                                           $rootScope.pageContext.appId + "+env",
+                                                                           $rootScope.pageContext.env);
+                                                                       sessionStorage.setItem(
+                                                                           $rootScope.pageContext.appId + "+cluster",
+                                                                           $rootScope.pageContext.clusterName);
+
                                                                        $rootScope.refreshNamespaces();
                                                                    }
                                                                });
@@ -135,15 +152,15 @@ application_module.controller("ConfigBaseInfoController",
                                    PermissionService.has_create_namespace_permission(appId).then(function (result) {
                                        $scope.hasCreateNamespacePermission = result.hasPermission;
                                    }, function (result) {
-                                       
+
                                    });
-                                   
+
                                    PermissionService.has_create_cluster_permission(appId).then(function (result) {
                                        $scope.hasCreateClusterPermission = result.hasPermission;
                                    }, function (result) {
 
                                    });
-                                   
+
                                    PermissionService.has_assign_user_permission(appId).then(function (result) {
                                        $scope.hasAssignUserPermission = result.hasPermission;
                                    }, function (result) {
