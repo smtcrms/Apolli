@@ -7,13 +7,12 @@ application_module.controller("ConfigBaseInfoController",
                                    var appId = AppUtil.parseParams($location.$$url).appid;
 
                                    //load session storage to recovery scene
-                                   var env = sessionStorage.getItem(appId + "+env"),
-                                       clusterName = sessionStorage.getItem(appId + "+cluster");
+                                   var scene = JSON.parse(sessionStorage.getItem(appId));
 
                                    var pageContext = {
                                        appId: appId,
-                                       env: env ? env : '',
-                                       clusterName: clusterName ? clusterName : 'default'
+                                       env: scene ? scene.env : '',
+                                       clusterName: scene ? scene.cluster : 'default'
                                    };
 
                                    $rootScope.pageContext = pageContext;
@@ -58,8 +57,7 @@ application_module.controller("ConfigBaseInfoController",
                                                        parentNode = [];
 
                                                    //default selection from session storage or first env & first cluster
-                                                   if ((pageContext.env && pageContext.env == env.env && pageContext.clusterName == cluster.name)
-                                                       || (!pageContext.env && envIdx == 0 && clusterIdx == 0)) {
+                                                   if (pageContext.env == env.env && pageContext.clusterName == cluster.name) {
                                                        clusterNode.state = {};
                                                        clusterNode.state.selected = true;
                                                    }
@@ -94,15 +92,13 @@ application_module.controller("ConfigBaseInfoController",
                                                                            $rootScope.pageContext.clusterName =
                                                                                data.text;
                                                                        }
-                                                                       //session storage
-                                                                       //appId+env = env
-                                                                       //appId+cluster = cluster
+                                                                       //storage scene
                                                                        sessionStorage.setItem(
-                                                                           $rootScope.pageContext.appId + "+env",
-                                                                           $rootScope.pageContext.env);
-                                                                       sessionStorage.setItem(
-                                                                           $rootScope.pageContext.appId + "+cluster",
-                                                                           $rootScope.pageContext.clusterName);
+                                                                           $rootScope.pageContext.appId,
+                                                                           JSON.stringify({
+                                                                               env: $rootScope.pageContext.env,
+                                                                               cluster: $rootScope.pageContext.clusterName
+                                                                           }));
 
                                                                        $rootScope.refreshNamespaces();
                                                                    }
