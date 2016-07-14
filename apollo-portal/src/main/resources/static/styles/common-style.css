@@ -395,6 +395,14 @@ table th {
     padding-left: 20px;
 }
 
+.release-history .panel-body .load-more{
+    margin-top: 20px;
+}
+
+.release-history .media-body textarea{
+    margin-top: 10px;
+}
+
 .release-history .icon{
     font-size: 13px;
 }

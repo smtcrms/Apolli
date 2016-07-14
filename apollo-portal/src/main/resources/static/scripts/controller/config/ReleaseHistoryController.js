@@ -14,7 +14,6 @@ release_history_module.controller("ReleaseHistoryController",
                                        $scope.page = 0;
                                        $scope.releases = [];
                                        $scope.hasLoadAll = false;
-
                                        $scope.findReleases = findReleases;
 
                                        $scope.loadMore = loadMore;
@@ -32,7 +31,13 @@ release_history_module.controller("ReleaseHistoryController",
                                                        $scope.hasLoadAll = true;
                                                        return;
                                                    }
+
+                                                   var hasParseNamepaceType = false;
                                                    result.forEach(function (release) {
+                                                       if (!hasParseNamepaceType){
+                                                           $scope.isTextFile = /\.(json|yaml|yml|xml)$/gi.test(release.baseInfo.namespaceName);
+                                                           hasParseNamepaceType = true;
+                                                       }
                                                        $scope.releases.push(release);
                                                    })
                                                }, function (result) {
