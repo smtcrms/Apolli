@@ -35,7 +35,7 @@ release_history_module.controller("ReleaseHistoryController",
                                                    var hasParseNamepaceType = false;
                                                    result.forEach(function (release) {
                                                        if (!hasParseNamepaceType){
-                                                           $scope.isTextFile = /([^\s]+(?=\.(json|yaml|yml|xml)$))/gi.test(release.baseInfo.namespaceName);
+                                                           $scope.isTextFile = /\.(json|yaml|yml|xml)$/gi.test(release.baseInfo.namespaceName);
                                                            hasParseNamepaceType = true;
                                                        }
                                                        $scope.releases.push(release);
