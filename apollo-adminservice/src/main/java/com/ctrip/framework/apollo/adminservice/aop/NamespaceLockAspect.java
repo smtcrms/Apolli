@@ -83,6 +83,10 @@ public class NamespaceLockAspect {
   }
 
   void acquireLock(long namespaceId, String currentUser) {
+    if (apolloSwitcher.isNamespaceLockSwitchOff()) {
+      return;
+    }
+
     Namespace namespace = namespaceService.findOne(namespaceId);
 
     acquireLock(namespace, currentUser);
