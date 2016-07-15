@@ -3,21 +3,19 @@ package com.ctrip.framework.apollo.portal.service.txtresolver;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.portal.AbstractIntegrationTest;
+import com.ctrip.framework.apollo.portal.AbstractUnitTest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.mockito.InjectMocks;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-public class FileTextResolverTest extends AbstractIntegrationTest {
+public class FileTextResolverTest extends AbstractUnitTest {
 
-  @Qualifier("fileTextResolver")
-  @Autowired
-  private ConfigTextResolver resolver;
+  @InjectMocks
+  private FileTextResolver resolver;
 
   private final String CONFIG_TEXT = "config_text";
   private final long NAMESPACE = 1000;
