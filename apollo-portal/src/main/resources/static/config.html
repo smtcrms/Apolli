@@ -159,7 +159,7 @@
                                             ng-if="config.item.key && config.isModified">
                                             <td width="20%" title="{{config.item.key}}">
                                                         <span class="label label-danger"
-                                                              ng-show="!config.item.lastModifiedBy">deleted</span>
+                                                              ng-show="config.isDeleted">deleted</span>
                                                 <span ng-bind="config.item.key | limitTo: 250"></span>
                                                 <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                                             </td>

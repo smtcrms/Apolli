@@ -228,7 +228,7 @@ application_module.controller("ConfigNamespaceController",
                                                    //check key unique
                                                    var hasRepeatKey = false;
                                                    toOperationNamespace.items.forEach(function (item) {
-                                                      if ($scope.item.key == item.item.key){
+                                                      if (!item.isDeleted && $scope.item.key == item.item.key){
                                                           toastr.error("key=" + $scope.item.key + " 已存在");
                                                           hasRepeatKey = true;
                                                           return;
