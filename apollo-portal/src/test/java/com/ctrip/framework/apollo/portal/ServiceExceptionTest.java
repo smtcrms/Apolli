@@ -30,7 +30,7 @@ import com.ctrip.framework.apollo.portal.service.UserService;
 
 import com.google.gson.Gson;
 
-public class ServiceExceptionTest extends AbstractPortalTest {
+public class ServiceExceptionTest extends AbstractIntegrationTest {
 
   @Autowired
   private AppController appController;

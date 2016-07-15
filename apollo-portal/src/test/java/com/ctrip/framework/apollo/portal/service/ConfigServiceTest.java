@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal;
+package com.ctrip.framework.apollo.portal.service;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;

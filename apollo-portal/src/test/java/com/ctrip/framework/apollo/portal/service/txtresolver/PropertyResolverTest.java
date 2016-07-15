@@ -1,25 +1,23 @@
-package com.ctrip.framework.apollo.portal;
+package com.ctrip.framework.apollo.portal.service.txtresolver;
 
 
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
+import com.ctrip.framework.apollo.portal.AbstractUnitTest;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.mockito.InjectMocks;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PropertyResolverTest extends AbstractPortalTest {
+public class PropertyResolverTest extends AbstractUnitTest {
 
-  @Autowired
-  @Qualifier("propertyResolver")
-  private ConfigTextResolver resolver;
+  @InjectMocks
+  private PropertyResolver resolver;
 
   @Test
   public void testEmptyText() {
