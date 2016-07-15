@@ -128,7 +128,7 @@ public class NamespaceService {
     }
 
     //deleted items
-    List<NamespaceVO.ItemVO> deletedItems = countDeletedItemNum(items, releaseItems);
+    List<NamespaceVO.ItemVO> deletedItems = parseDeletedItems(items, releaseItems);
     itemVos.addAll(deletedItems);
     modifiedItemCnt += deletedItems.size();
 
@@ -161,7 +161,7 @@ public class NamespaceService {
     namespace.setPublic(isPublic);
 
   }
-  private List<NamespaceVO.ItemVO> countDeletedItemNum(List<ItemDTO> newItems, Map<String, String> releaseItems) {
+  private List<NamespaceVO.ItemVO> parseDeletedItems(List<ItemDTO> newItems, Map<String, String> releaseItems) {
     Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
 
     List<NamespaceVO.ItemVO> deletedItems = new LinkedList<>();
@@ -170,6 +170,7 @@ public class NamespaceService {
       if (newItemMap.get(key) == null) {
         NamespaceVO.ItemVO deletedItem = new NamespaceVO.ItemVO();
 
+        deletedItem.setDeleted(true);
         ItemDTO deletedItemDto = new ItemDTO();
         deletedItemDto.setKey(key);
         String oldValue = entry.getValue();

@@ -65,6 +65,7 @@ public class NamespaceVO {
   public static class ItemVO{
     private ItemDTO item;
     private boolean isModified;
+    private boolean isDeleted;
     private String oldValue;
     private String newValue;
 
@@ -74,6 +75,14 @@ public class NamespaceVO {
 
     public void setItem(ItemDTO item) {
       this.item = item;
+    }
+
+    public boolean isDeleted() {
+      return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+      isDeleted = deleted;
     }
 
     public boolean isModified() {

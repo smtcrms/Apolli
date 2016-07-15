@@ -152,7 +152,7 @@
             <tbody>
 
             <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
-                ng-if="config.item.key && config.item.lastModifiedBy">
+                ng-if="config.item.key && !config.isDeleted">
                 <td width="20%" title="{{config.item.key}}">
                     <span ng-bind="config.item.key | limitTo: 250"></span>
                     <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
