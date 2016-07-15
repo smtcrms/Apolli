@@ -119,10 +119,10 @@ directive_module.directive('apollonspanel',
                                        }
 
                                        function modifyByText(namespace) {
-                                           scope.commitChange(namespace);
-                                           namespace.commited = true;
-                                           toggleTextEditStatus(namespace);
-
+                                           if (scope.commitChange(namespace)){
+                                               namespace.commited = true;
+                                               toggleTextEditStatus(namespace);    
+                                           }
                                        }
 
                                        //local method

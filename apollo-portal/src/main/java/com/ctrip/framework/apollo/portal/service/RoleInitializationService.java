@@ -102,13 +102,12 @@ public class RoleInitializationService {
 
   private void createDefaultNamespaceRole(String appId, String namespaceName, String permissionType, String roleName) {
 
-    Permission
-        modifyDefaultNsPermission =
+    Permission permisson =
         createPermisson(RoleUtils.buildNamespaceTargetId(appId, namespaceName), permissionType);
-    Permission createdModifyDefaultNsPermission = rolePermissionService.createPermission(modifyDefaultNsPermission);
+    Permission createdPermission = rolePermissionService.createPermission(permisson);
 
     Role role = createRole(roleName);
     rolePermissionService
-        .createRoleWithPermissions(role, Sets.newHashSet(createdModifyDefaultNsPermission.getId()));
+        .createRoleWithPermissions(role, Sets.newHashSet(createdPermission.getId()));
   }
 }

@@ -99,9 +99,11 @@ application_module.controller("ConfigNamespaceController",
                                                toastr.success("更新成功, 如需生效请发布");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
+                                               return true;
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
+                                               return false;
                                            }
                                        );
                                    }

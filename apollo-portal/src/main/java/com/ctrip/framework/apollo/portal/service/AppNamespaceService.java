@@ -65,8 +65,7 @@ public class AppNamespaceService {
   @Transactional
   public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
     // unique check
-    if (appNamespace.isPublic() &&
-        appNamespaceRepository.findByNameAndIsPublic(appNamespace.getName(), true) != null) {
+    if (appNamespace.isPublic() && findPublicAppNamespace(appNamespace.getName()) != null) {
       throw new BadRequestException(appNamespace.getName() + "已存在");
     }
 
