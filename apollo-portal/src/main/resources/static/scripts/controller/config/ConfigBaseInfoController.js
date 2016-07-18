@@ -44,7 +44,7 @@ application_module.controller("ConfigBaseInfoController",
                                            //如果env下面只有一个default集群则不显示集群列表
                                            if (env.clusters && env.clusters.length == 1 && env.clusters[0].name
                                                                                            == 'default') {
-                                               if (envIdx == 0) {
+                                               if (pageContext.env == env.env) {
                                                    node.state = {};
                                                    node.state.selected = true;
                                                }
