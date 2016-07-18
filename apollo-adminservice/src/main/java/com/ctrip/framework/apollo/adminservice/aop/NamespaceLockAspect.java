@@ -71,7 +71,7 @@ public class NamespaceLockAspect {
     acquireLock(item.getNamespaceId(), operator);
   }
 
-  private void acquireLock(String appId, String clusterName, String namespaceName,
+  void acquireLock(String appId, String clusterName, String namespaceName,
                            String currentUser) {
     if (apolloSwitcher.isNamespaceLockSwitchOff()) {
       return;
@@ -82,7 +82,11 @@ public class NamespaceLockAspect {
     acquireLock(namespace, currentUser);
   }
 
-  private void acquireLock(long namespaceId, String currentUser) {
+  void acquireLock(long namespaceId, String currentUser) {
+    if (apolloSwitcher.isNamespaceLockSwitchOff()) {
+      return;
+    }
+
     Namespace namespace = namespaceService.findOne(namespaceId);
 
     acquireLock(namespace, currentUser);

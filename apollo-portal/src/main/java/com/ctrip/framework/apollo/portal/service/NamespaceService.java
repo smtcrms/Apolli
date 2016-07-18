@@ -92,7 +92,7 @@ public class NamespaceService {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setNamespace(namespace);
 
-    namespaceVO.setFormat(getNamespaceFormat(namespace));
+    fillFormatAndIsPublicAndParentAppField(namespaceVO);
 
     List<NamespaceVO.ItemVO> itemVos = new LinkedList<>();
     namespaceVO.setItems(itemVos);
@@ -128,7 +128,7 @@ public class NamespaceService {
     }
 
     //deleted items
-    List<NamespaceVO.ItemVO> deletedItems = countDeletedItemNum(items, releaseItems);
+    List<NamespaceVO.ItemVO> deletedItems = parseDeletedItems(items, releaseItems);
     itemVos.addAll(deletedItems);
     modifiedItemCnt += deletedItems.size();
 
@@ -137,22 +137,31 @@ public class NamespaceService {
     return namespaceVO;
   }
 
-  private String getNamespaceFormat(NamespaceDTO namespace){
+  private void fillFormatAndIsPublicAndParentAppField(NamespaceVO namespace) {
 
+    NamespaceDTO namespaceDTO = namespace.getNamespace();
     //先从当前appId下面找,包含私有的和公共的
-    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(namespace.getAppId(), namespace.getNamespaceName());
+    AppNamespace appNamespace =
+        appNamespaceService.findByAppIdAndName(namespaceDTO.getAppId(), namespaceDTO.getNamespaceName());
     //再从公共的app namespace里面找
     if (appNamespace == null) {
-      appNamespace = appNamespaceService.findPublicAppNamespace(namespace.getNamespaceName());
+      appNamespace = appNamespaceService.findPublicAppNamespace(namespaceDTO.getNamespaceName());
     }
-    if (appNamespace == null){
-      return ConfigFileFormat.Properties.getValue();
-    }else {
-      return appNamespace.getFormat();
+    String format;
+    boolean isPublic;
+    if (appNamespace == null) {
+      format = ConfigFileFormat.Properties.getValue();
+      isPublic = false;
+    } else {
+      format = appNamespace.getFormat();
+      isPublic = appNamespace.isPublic();
+      namespace.setParentAppId(appNamespace.getAppId());
     }
+    namespace.setFormat(format);
+    namespace.setPublic(isPublic);
 
   }
-  private List<NamespaceVO.ItemVO> countDeletedItemNum(List<ItemDTO> newItems, Map<String, String> releaseItems) {
+  private List<NamespaceVO.ItemVO> parseDeletedItems(List<ItemDTO> newItems, Map<String, String> releaseItems) {
     Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
 
     List<NamespaceVO.ItemVO> deletedItems = new LinkedList<>();
@@ -161,6 +170,7 @@ public class NamespaceService {
       if (newItemMap.get(key) == null) {
         NamespaceVO.ItemVO deletedItem = new NamespaceVO.ItemVO();
 
+        deletedItem.setDeleted(true);
         ItemDTO deletedItemDto = new ItemDTO();
         deletedItemDto.setKey(key);
         String oldValue = entry.getValue();

@@ -65,14 +65,20 @@
 
                 </div>
             </section>
-            <apolloentrance apollo-title="'补缺环境'" apollo-img-src="'img/plus-orange.png'"
-                            ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()"></apolloentrance>
+            <a class="list-group-item" ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()">
+                <div class="row">
+                    <div class="col-md-2"><img src="img/plus-orange.png" class="i-20"></div>
+                    <div class="col-md-10 hidden-xs">
+                        <p class="btn-title">补缺环境</p>
+                    </div>
+                </div>
+            </a>
 
             <apolloentrance apollo-title="'添加集群'" apollo-img-src="'img/plus-orange.png'"
                             apollo-href="'cluster.html?#/appid=' + pageContext.appId"></apolloentrance>
 
             <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'img/plus-orange.png'"
-                            apollo-href="'namespace.html?#/appid=' + pageContext.appId + '&type=link'"
+                            apollo-href="'namespace.html?#/appid=' + pageContext.appId"
                             ng-show="hasCreateNamespacePermission"></apolloentrance>
 
             <apolloentrance apollo-title="'项目权限'" apollo-img-src="'img/user_manage.png'"
@@ -80,7 +86,6 @@
                             ng-show="hasAssignUserPermission"></apolloentrance>
             </section>
 
-            <!--create env modal-->
 
         </div>
 
@@ -154,7 +159,7 @@
                                             ng-if="config.item.key && config.isModified">
                                             <td width="20%" title="{{config.item.key}}">
                                                         <span class="label label-danger"
-                                                              ng-show="!config.item.lastModifiedBy">deleted</span>
+                                                              ng-show="config.isDeleted">deleted</span>
                                                 <span ng-bind="config.item.key | limitTo: 250"></span>
                                                 <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                                             </td>
@@ -191,9 +196,12 @@
                                     </div>
 
                                 </div>
-                                <span ng-show="!toReleaseNamespace.itemModifiedCnt">
+                                <div class="col-sm-5">
+                                    <span ng-show="!toReleaseNamespace.itemModifiedCnt">
                                         配置没有变化
                                     </span>
+                                </div>
+
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
@@ -345,6 +353,7 @@
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
 <script type="application/javascript" src="scripts/services/ConfigService.js"></script>
+<script type="application/javascript" src="scripts/services/ReleaseService.js"></script>
 <script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 <script type="application/javascript" src="scripts/services/CommitService.js"></script>
 <script type="application/javascript" src="scripts/services/NamespaceLockService.js"></script>

@@ -38,6 +38,8 @@ directive_module.directive('apollonspanel',
 
                                        scope.modifyByText = modifyByText;
 
+                                       scope.goToParentAppConfigPage = goToParentAppConfigPage;
+
                                        initNamespace(scope.namespace);
 
                                        //init method
@@ -115,14 +117,18 @@ directive_module.directive('apollonspanel',
                                                + scope.env + "&clusterName="
                                                + scope.cluster
                                                + "&namespaceName=" + namespace.namespace.namespaceName;
-
                                        }
 
                                        function modifyByText(namespace) {
-                                           scope.commitChange(namespace);
-                                           namespace.commited = true;
-                                           toggleTextEditStatus(namespace);
+                                           if (scope.commitChange(namespace)){
+                                               namespace.commited = true;
+                                               toggleTextEditStatus(namespace);    
+                                           }
+                                       }
 
+                                       function goToParentAppConfigPage(namespace) {
+                                           $window.location.href = "/config.html?#/appid=" + namespace.parentAppId;
+                                           $window.location.reload();
                                        }
 
                                        //local method
@@ -226,6 +232,8 @@ directive_module.directive('apollonspanel',
                                            namespace.itemCnt = itemCnt < MIN_ROW_SIZE ? MIN_ROW_SIZE : itemCnt;
                                            return result;
                                        }
+
+
 
                                        function lockCheck(namespace) {
                                            if (namespace.lockOwner && scope.currentUser != namespace.lockOwner) {

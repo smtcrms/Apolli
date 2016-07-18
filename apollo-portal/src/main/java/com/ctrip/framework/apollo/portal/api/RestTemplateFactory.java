@@ -58,11 +58,13 @@ public class RestTemplateFactory implements FactoryBean<RestTemplate>, Initializ
         HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider)
             .setDefaultHeaders(defaultHeaders).build();
 
+
     restTemplate = new RestTemplate(httpMessageConverters.getConverters());
     HttpComponentsClientHttpRequestFactory requestFactory =
         new HttpComponentsClientHttpRequestFactory(httpClient);
     requestFactory.setConnectTimeout(getConnectTimeout());
     requestFactory.setReadTimeout(getReadTimeout());
+
     restTemplate.setRequestFactory(requestFactory);
   }
 

@@ -1,18 +1,13 @@
 package com.ctrip.framework.apollo.portal.controller;
 
-
-
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.service.ConfigService;
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +29,6 @@ public class ConfigController {
 
   @Autowired
   private ConfigService configService;
-  @Autowired
-  private ServerConfigService serverConfigService;
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
@@ -86,22 +79,7 @@ public class ConfigController {
     configService.deleteItem(Env.valueOf(env), itemId);
   }
 
-  @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName)")
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST, consumes = {
-      "application/json"})
-  public ReleaseDTO createRelease(@PathVariable String appId,
-                                  @PathVariable String env, @PathVariable String clusterName,
-                                  @PathVariable String namespaceName, @RequestBody NamespaceReleaseModel model) {
 
-    checkModel(model != null);
-    model.setAppId(appId);
-    model.setEnv(env);
-    model.setClusterName(clusterName);
-    model.setNamespaceName(namespaceName);
-
-    return configService.createRelease(model);
-
-  }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items")
   public List<ItemDTO> findItems(@PathVariable String appId, @PathVariable String env,

@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PortalApplication.class)
 @WebIntegrationTest(randomPort = true)
-public abstract class AbstractPortalTest {
+public abstract class AbstractIntegrationTest {
 
   RestTemplate restTemplate = new TestRestTemplate("apollo", "");
 

@@ -1,10 +1,10 @@
 application_module.controller("ConfigNamespaceController",
                               ['$rootScope', '$scope', '$window', '$location', 'toastr', 'AppUtil', 'ConfigService',
                                'PermissionService',
-                               'CommitService', 'NamespaceLockService', 'UserService',
+                               'CommitService', 'NamespaceLockService', 'UserService', 'ReleaseService',
                                function ($rootScope, $scope, $window,  $location, toastr, AppUtil, ConfigService,
                                          PermissionService,
-                                         CommitService, NamespaceLockService, UserService) {
+                                         CommitService, NamespaceLockService, UserService, ReleaseService) {
 
                                    var namespace_view_type = {
                                        TEXT: 'text',
@@ -99,9 +99,11 @@ application_module.controller("ConfigNamespaceController",
                                                toastr.success("更新成功, 如需生效请发布");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
+                                               return true;
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
+                                               return false;
                                            }
                                        );
                                    }
@@ -117,13 +119,13 @@ application_module.controller("ConfigNamespaceController",
                                        } else {
                                            $('#releaseModal').modal('show');
                                        }
-                                       $scope.releaseTitle = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                                       $scope.releaseTitle = new Date().Format("yyyyMMddhhmmss") + "-release";
                                        $scope.toReleaseNamespace = namespace;
                                    }
 
                                    $scope.releaseComment = '';
                                    function release() {
-                                       ConfigService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                       ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                              $rootScope.pageContext.clusterName,
                                                              $scope.toReleaseNamespace.namespace.namespaceName,
                                                              $scope.releaseTitle,
@@ -228,7 +230,7 @@ application_module.controller("ConfigNamespaceController",
                                                    //check key unique
                                                    var hasRepeatKey = false;
                                                    toOperationNamespace.items.forEach(function (item) {
-                                                      if ($scope.item.key == item.item.key){
+                                                      if (!item.isDeleted && $scope.item.key == item.item.key){
                                                           toastr.error("key=" + $scope.item.key + " 已存在");
                                                           hasRepeatKey = true;
                                                           return;

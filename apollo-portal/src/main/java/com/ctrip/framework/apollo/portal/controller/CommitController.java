@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.dto.CommitDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.service.CommitService;
@@ -24,9 +25,8 @@ public class CommitController {
                               @PathVariable String clusterName, @PathVariable String namespaceName,
                               @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
 
-    if (page < 0){
-      page = 0;
-    }
+    RequestPrecondition.checkNumberPositive(size);
+    RequestPrecondition.checkNumberNotNegative(page);
 
     return commitService.find(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
 

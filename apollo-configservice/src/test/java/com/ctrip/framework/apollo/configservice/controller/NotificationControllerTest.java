@@ -11,6 +11,7 @@ import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
+import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 
@@ -61,10 +62,13 @@ public class NotificationControllerTest {
   @Before
   public void setUp() throws Exception {
     controller = new NotificationController();
-    ReflectionTestUtils.setField(controller, "appNamespaceService", appNamespaceService);
     ReflectionTestUtils.setField(controller, "releaseMessageService", releaseMessageService);
     ReflectionTestUtils.setField(controller, "entityManagerUtil", entityManagerUtil);
     ReflectionTestUtils.setField(controller, "namespaceUtil", namespaceUtil);
+    WatchKeysUtil watchKeysUtil = new WatchKeysUtil();
+    ReflectionTestUtils.setField(watchKeysUtil, "appNamespaceService", appNamespaceService);
+    ReflectionTestUtils.setField(controller, "watchKeysUtil", watchKeysUtil);
+
 
     someAppId = "someAppId";
     someCluster = "someCluster";
