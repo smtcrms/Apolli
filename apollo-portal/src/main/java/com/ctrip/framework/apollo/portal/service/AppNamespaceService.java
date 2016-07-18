@@ -22,7 +22,8 @@ public class AppNamespaceService {
   private UserInfoHolder userInfoHolder;
   @Autowired
   private AppNamespaceRepository appNamespaceRepository;
-
+  @Autowired
+  private RoleInitializationService roleInitializationService;
 
   /**
    * 公共的app ns,能被其它项目关联到的app ns
@@ -74,7 +75,14 @@ public class AppNamespaceService {
       throw new BadRequestException(appNamespace.getName() + "已存在");
     }
 
-    return appNamespaceRepository.save(appNamespace);
+    AppNamespace createdAppNamespace = appNamespaceRepository.save(appNamespace);
+
+    //如果是私有的app namespace 要默认初始化权限,如果是公共的,则在关联此namespace的时候初始化权限
+    if (!createdAppNamespace.isPublic()) {
+      roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName());
+    }
+
+    return createdAppNamespace;
   }
 
 }

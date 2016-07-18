@@ -82,7 +82,7 @@ public class AdminServiceAPI {
                          getAdminServiceHost(env), namespace.getAppId(), namespace.getClusterName()).getBody();
     }
 
-    public AppNamespaceDTO createOrUpdateAppNamespace(Env env, AppNamespaceDTO appNamespace) {
+    public AppNamespaceDTO createAppNamespace(Env env, AppNamespaceDTO appNamespace) {
       return restTemplate.postForEntity("{host}/apps/{appId}/appnamespaces", appNamespace, AppNamespaceDTO.class,
                                         getAdminServiceHost(env), appNamespace.getAppId()).getBody();
     }
@@ -146,7 +146,7 @@ public class AdminServiceAPI {
 
     }
 
-    public ClusterDTO createOrUpdate(Env env, ClusterDTO cluster) {
+    public ClusterDTO create(Env env, ClusterDTO cluster) {
       return restTemplate.postForObject("{host}/apps/{appId}/clusters", cluster, ClusterDTO.class,
                                         getAdminServiceHost(env), cluster.getAppId());
     }

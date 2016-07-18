@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class CreationListener {
     for (Env env : envs) {
       try {
         appAPI.createApp(env, appDTO);
-      } catch (HttpStatusCodeException e) {
+      } catch (Throwable e) {
         logger.error("call appAPI.createApp error.[{app}, {env}]", appDTO.getAppId(), env, e);
       }
     }
@@ -50,15 +49,10 @@ public class CreationListener {
     List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
-        namespaceAPI.createOrUpdateAppNamespace(env, dto);
-      } catch (HttpStatusCodeException e) {
-        logger.error("call namespaceAPI.createOrUpdateAppNamespace error. [{app}, {env}]", dto.getAppId(), env, e);
+        namespaceAPI.createAppNamespace(env, dto);
+      } catch (Throwable e) {
+        logger.error("call namespaceAPI.createAppNamespace error. [{app}, {env}]", dto.getAppId(), env, e);
       }
-    }
-
-    //如果是私有的app namespace 要默认初始化权限
-    if (!dto.isPublic()) {
-      roleInitializationService.initNamespaceRoles(dto.getAppId(), dto.getName());
     }
   }
 
