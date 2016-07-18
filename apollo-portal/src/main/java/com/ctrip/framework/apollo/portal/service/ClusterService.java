@@ -24,7 +24,7 @@ public class ClusterService {
     if (!clusterAPI.isClusterUnique(cluster.getAppId(), env, cluster.getName())){
       throw new BadRequestException(String.format("cluster %s already exists.", cluster.getName()));
     }
-    return clusterAPI.createOrUpdate(env, cluster);
+    return clusterAPI.create(env, cluster);
   }
 
 }
