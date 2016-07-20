@@ -24,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PostConstruct;
 
@@ -81,6 +84,25 @@ public abstract class AbstractBaseIntegrationTest {
     release = releaseRepository.save(release);
 
     return release;
+  }
+
+  protected void periodicSendMessage(ExecutorService executorService, String message, AtomicBoolean stop) {
+    executorService.submit((Runnable) () -> {
+      //wait for the request connected to server
+      while (!stop.get() && !Thread.currentThread().isInterrupted()) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {
+        }
+
+        //double check
+        if (stop.get()) {
+          break;
+        }
+
+        sendReleaseMessage(message);
+      }
+    });
   }
 
 }
