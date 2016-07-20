@@ -41,6 +41,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +63,7 @@ public class RemoteConfigLongPollService implements Initializable {
   private RateLimiter m_longPollRateLimiter;
   private final AtomicBoolean m_longPollStarted;
   private final Multimap<String, RemoteConfigRepository> m_longPollNamespaces;
-  private final Map<String, Long> m_notifications;
+  private final ConcurrentMap<String, Long> m_notifications;
   private Type m_responseType;
   private Gson gson;
   @Inject
