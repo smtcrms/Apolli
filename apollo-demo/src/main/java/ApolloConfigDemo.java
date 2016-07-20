@@ -1,8 +1,6 @@
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
-import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
@@ -18,11 +16,12 @@ import java.io.InputStreamReader;
  */
 public class ApolloConfigDemo {
   private static final Logger logger = LoggerFactory.getLogger(ApolloConfigDemo.class);
+  private String DEFAULT_VALUE = "undefined";
   private Config config;
+  private Config publicConfig;
 
   public ApolloConfigDemo() {
-    config = ConfigService.getAppConfig();
-    config.addChangeListener(new ConfigChangeListener() {
+    ConfigChangeListener changeListener = new ConfigChangeListener() {
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
         logger.info("Changes for namespace {}", changeEvent.getNamespace());
@@ -33,12 +32,19 @@ public class ApolloConfigDemo {
               change.getChangeType());
         }
       }
-    });
+    };
+    config = ConfigService.getAppConfig();
+    config.addChangeListener(changeListener);
+    publicConfig = ConfigService.getConfig("FX.apollo");
+    publicConfig.addChangeListener(changeListener);
   }
 
   private String getConfig(String key) {
-    String result = config.getProperty(key, "undefined");
-    logger.info(String.format("Loading key: %s with value: %s", key, result));
+    String result = config.getProperty(key, DEFAULT_VALUE);
+    if (DEFAULT_VALUE.equals(result)) {
+      result = publicConfig.getProperty(key, DEFAULT_VALUE);
+    }
+    logger.info(String.format("Loading key : %s with value: %s", key, result));
     return result;
   }
 
