@@ -11,6 +11,7 @@ sync_item_module.controller("SyncItemController",
                                    };
                                    
 
+                                   $scope.syncBtnDisabled = false;
                                    
                                    ////// load items //////
                                    ConfigService.find_items($scope.pageContext.appId, $scope.pageContext.env,
@@ -51,15 +52,20 @@ sync_item_module.controller("SyncItemController",
                                            toastr.error(AppUtil.errorMsg(result));
                                        });
                                    };
-                                   
+
                                    $scope.syncItems = function () {
-                                    ConfigService.sync_items($scope.pageContext.appId, $scope.pageContext.namespaceName, parseSyncSourceData()).then(function (result) {
-                                        $scope.syncItemStep += 1;
-                                        $scope.syncSuccess = true;
-                                    }, function (result) {
-                                        $scope.syncSuccess = false;
-                                        toastr.error(AppUtil.errorMsg(result));
-                                    });    
+                                       $scope.syncBtnDisabled = true;
+                                       ConfigService.sync_items($scope.pageContext.appId,
+                                                                $scope.pageContext.namespaceName,
+                                                                parseSyncSourceData()).then(function (result) {
+                                           $scope.syncItemStep += 1;
+                                           $scope.syncSuccess = true;
+                                           $scope.syncBtnDisabled = false;
+                                       }, function (result) {
+                                           $scope.syncSuccess = false;
+                                           $scope.syncBtnDisabled = false;
+                                           toastr.error(AppUtil.errorMsg(result));
+                                       });
                                    };
 
                                    var selectedClusters = [];

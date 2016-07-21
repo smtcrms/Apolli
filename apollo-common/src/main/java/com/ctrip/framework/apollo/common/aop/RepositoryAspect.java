@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.biz.aop;
+package com.ctrip.framework.apollo.common.aop;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
@@ -10,9 +10,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
 @Aspect
 @Component
 public class RepositoryAspect {

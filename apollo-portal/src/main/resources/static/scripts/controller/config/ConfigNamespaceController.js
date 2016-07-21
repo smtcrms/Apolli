@@ -38,7 +38,12 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.createItem = createItem;
                                    
                                    $scope.doItem = doItem;
-                                   
+
+
+                                   $scope.releaseBtnDisabled = false;
+                                   $scope.addItemBtnDisabled = false;
+                                   $scope.commitChangeBtnDisabled = false;
+
 
                                    PermissionService.get_app_role_users($rootScope.pageContext.appId)
                                        .then(function (result) {
@@ -91,6 +96,12 @@ application_module.controller("ConfigNamespaceController",
                                            namespaceId: namespace.namespace.id,
                                            format: namespace.format
                                        };
+
+                                       //prevent repeat submit
+                                       if ($scope.commitChangeBtnDisabled){
+                                           return;
+                                       }
+                                       $scope.commitChangeBtnDisabled = true;
                                        ConfigService.modify_items($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                                   $rootScope.pageContext.clusterName,
                                                                   namespace.namespace.namespaceName,
@@ -99,14 +110,17 @@ application_module.controller("ConfigNamespaceController",
                                                toastr.success("更新成功, 如需生效请发布");
                                                //refresh all namespace items
                                                $rootScope.refreshNamespaces();
+                                               $scope.commitChangeBtnDisabled = false;
                                                return true;
 
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "更新失败");
+                                               $scope.commitChangeBtnDisabled = false;
                                                return false;
                                            }
                                        );
                                    }
+
                                    var releaseModal = $('#releaseModal');
                                    $scope.toReleaseNamespace = {};
                                    function prepareReleaseNamespace(namespace) {
@@ -125,6 +139,7 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.releaseComment = '';
                                    function release() {
+                                       $scope.releaseBtnDisabled = true;
                                        ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                              $rootScope.pageContext.clusterName,
                                                              $scope.toReleaseNamespace.namespace.namespaceName,
@@ -134,9 +149,11 @@ application_module.controller("ConfigNamespaceController",
                                                releaseModal.modal('hide');
                                                toastr.success("发布成功");
                                                //refresh all namespace items
+                                               $scope.releaseBtnDisabled = false;
                                                $rootScope.refreshNamespaces();
 
                                            }, function (result) {
+                                               $scope.releaseBtnDisabled = false;
                                                toastr.error(AppUtil.errorMsg(result), "发布失败");
 
                                            }
@@ -240,6 +257,7 @@ application_module.controller("ConfigNamespaceController",
                                                        return;
                                                    }
 
+                                                   $scope.addItemBtnDisabled = true;
                                                    ConfigService.create_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
@@ -249,8 +267,10 @@ application_module.controller("ConfigNamespaceController",
                                                            toastr.success(cluster.env + " , " + $scope.item.key,
                                                                           "添加成功");
                                                            itemModal.modal('hide');
+                                                           $scope.addItemBtnDisabled = false;
                                                            $rootScope.refreshNamespaces(namespace_view_type.TABLE);
                                                        }, function (result) {
+                                                           $scope.addItemBtnDisabled = false;
                                                            toastr.error(AppUtil.errorMsg(result), "添加失败");
                                                        });
 

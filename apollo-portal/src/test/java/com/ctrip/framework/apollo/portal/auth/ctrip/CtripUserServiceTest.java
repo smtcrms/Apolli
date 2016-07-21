@@ -1,16 +1,16 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.ctrip;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import com.ctrip.framework.apollo.portal.AbstractUnitTest;
+import com.ctrip.framework.apollo.portal.auth.ctrip.CtripUserService;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -32,8 +32,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@RunWith(MockitoJUnitRunner.class)
-public class CtripUserServiceTest {
+public class CtripUserServiceTest extends AbstractUnitTest{
   private CtripUserService ctripUserService;
   private String someUserServiceUrl;
   private String someUserServiceToken;
@@ -48,6 +47,8 @@ public class CtripUserServiceTest {
 
   @Before
   public void setUp() throws Exception {
+    when(serverConfigService.getValue("api.connectTimeout", "3000")).thenReturn("3000");
+    when(serverConfigService.getValue("api.readTimeout", "3000")).thenReturn("3000");
     ctripUserService = new CtripUserService(serverConfigService);
     ReflectionTestUtils.setField(ctripUserService, "restTemplate", restTemplate);
     someResponseType =
@@ -58,6 +59,7 @@ public class CtripUserServiceTest {
     someUserServiceToken = "someToken";
     when(serverConfigService.getValue("userService.url")).thenReturn(someUserServiceUrl);
     when(serverConfigService.getValue("userService.accessToken")).thenReturn(someUserServiceToken);
+
   }
 
   @Test

@@ -16,7 +16,6 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -32,26 +31,19 @@ public class AdminServiceAPI {
   public static class HealthAPI extends API {
 
     public Health health(Env env) {
-      return restTemplate.getForObject(getAdminServiceHost(env) + "/health", Health.class);
+      return restTemplate.get(env, "/health", Health.class);
     }
   }
 
   @Service
   public static class AppAPI extends API {
 
-    public List<AppDTO> findApps(Env env) {
-      AppDTO[] appDTOs =
-          restTemplate.getForObject("{host}/apps", AppDTO[].class, getAdminServiceHost(env));
-      return Arrays.asList(appDTOs);
-    }
-
     public AppDTO loadApp(Env env, String appId) {
-      return restTemplate.getForObject("{host}/apps/{appId}", AppDTO.class, getAdminServiceHost(env), appId);
+      return restTemplate.get(env, "apps/{appId}", AppDTO.class, appId);
     }
 
     public AppDTO createApp(Env env, AppDTO app) {
-      return restTemplate.postForEntity("{host}/apps", app, AppDTO.class, getAdminServiceHost(env))
-          .getBody();
+      return restTemplate.post(env, "apps", app, AppDTO.class);
     }
   }
 
@@ -60,31 +52,30 @@ public class AdminServiceAPI {
   public static class NamespaceAPI extends API {
 
     public List<NamespaceDTO> findNamespaceByCluster(String appId, Env env, String clusterName) {
-      NamespaceDTO[] namespaceDTOs = restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces",
-                                                               NamespaceDTO[].class, getAdminServiceHost(env), appId,
-                                                               clusterName);
+      NamespaceDTO[] namespaceDTOs = restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces",
+                                                      NamespaceDTO[].class, appId,
+                                                      clusterName);
       return Arrays.asList(namespaceDTOs);
     }
 
     public NamespaceDTO loadNamespace(String appId, Env env, String clusterName,
                                       String namespaceName) {
-      NamespaceDTO
-          dto =
-          restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/" + namespaceName,
-                                    NamespaceDTO.class, getAdminServiceHost(env), appId, clusterName);
+      NamespaceDTO dto =
+          restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}",
+                           NamespaceDTO.class, appId, clusterName, namespaceName);
       return dto;
     }
 
 
     public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
       return restTemplate
-          .postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces", namespace, NamespaceDTO.class,
-                         getAdminServiceHost(env), namespace.getAppId(), namespace.getClusterName()).getBody();
+          .post(env, "apps/{appId}/clusters/{clusterName}/namespaces", namespace, NamespaceDTO.class,
+                namespace.getAppId(), namespace.getClusterName());
     }
 
     public AppNamespaceDTO createAppNamespace(Env env, AppNamespaceDTO appNamespace) {
-      return restTemplate.postForEntity("{host}/apps/{appId}/appnamespaces", appNamespace, AppNamespaceDTO.class,
-                                        getAdminServiceHost(env), appNamespace.getAppId()).getBody();
+      return restTemplate
+          .post(env, "apps/{appId}/appnamespaces", appNamespace, AppNamespaceDTO.class, appNamespace.getAppId());
     }
 
   }
@@ -94,34 +85,32 @@ public class AdminServiceAPI {
 
     public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
       ItemDTO[] itemDTOs =
-          restTemplate
-              .getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
-                            ItemDTO[].class,
-                            getAdminServiceHost(env), appId, clusterName, namespaceName);
+          restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
+                           ItemDTO[].class, appId, clusterName, namespaceName);
       return Arrays.asList(itemDTOs);
     }
 
     public void updateItemsByChangeSet(String appId, Env env, String clusterName, String namespace,
                                        ItemChangeSets changeSets) {
-      restTemplate.postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset",
-                                 changeSets, Void.class, getAdminServiceHost(env), appId, clusterName, namespace);
+      restTemplate.post(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset",
+                        changeSets, Void.class, appId, clusterName, namespace);
     }
 
     public void updateItem(String appId, Env env, String clusterName, String namespace, long itemId, ItemDTO item) {
-      restTemplate.put("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}",
-                       item, getAdminServiceHost(env), appId, clusterName, namespace, itemId);
+      restTemplate.put(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}",
+                       item, appId, clusterName, namespace, itemId);
 
     }
 
     public ItemDTO createItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
-      return restTemplate.postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
-                                        item, ItemDTO.class, getAdminServiceHost(env), appId, clusterName, namespace)
-          .getBody();
+      return restTemplate.post(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
+                               item, ItemDTO.class, appId, clusterName, namespace)
+          ;
     }
 
     public void deleteItem(Env env, long itemId, String operator) {
 
-      restTemplate.delete("{host}/items/{itemId}?operator={operator}", getAdminServiceHost(env), itemId, operator);
+      restTemplate.delete(env, "items/{itemId}?operator={operator}", itemId, operator);
     }
   }
 
@@ -129,64 +118,64 @@ public class AdminServiceAPI {
   public static class ClusterAPI extends API {
 
     public List<ClusterDTO> findClustersByApp(String appId, Env env) {
-      ClusterDTO[] clusterDTOs = restTemplate.getForObject("{host}/apps/{appId}/clusters", ClusterDTO[].class,
-                                                           getAdminServiceHost(env), appId);
+      ClusterDTO[] clusterDTOs = restTemplate.get(env, "apps/{appId}/clusters", ClusterDTO[].class,
+                                                  appId);
       return Arrays.asList(clusterDTOs);
     }
 
     public ClusterDTO loadCluster(String appId, Env env, String clusterName) {
-      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}", ClusterDTO.class,
-                                       getAdminServiceHost(env), appId, clusterName);
+      return restTemplate.get(env, "apps/{appId}/clusters/{clusterName}", ClusterDTO.class,
+                              appId, clusterName);
     }
 
     public boolean isClusterUnique(String appId, Env env, String clusterName) {
       return restTemplate
-          .getForObject("{host}/apps/{appId}/cluster/{clusterName}/unique", Boolean.class, getAdminServiceHost(env),
-                        appId, clusterName);
+          .get(env, "apps/{appId}/cluster/{clusterName}/unique", Boolean.class,
+               appId, clusterName);
 
     }
 
     public ClusterDTO create(Env env, ClusterDTO cluster) {
-      return restTemplate.postForObject("{host}/apps/{appId}/clusters", cluster, ClusterDTO.class,
-                                        getAdminServiceHost(env), cluster.getAppId());
+      return restTemplate.post(env, "apps/{appId}/clusters", cluster, ClusterDTO.class,
+                               cluster.getAppId());
     }
   }
 
   @Service
   public static class ReleaseAPI extends API {
 
-    public List<ReleaseDTO> findReleases(String appId, Env env, String clusterName, String namespaceName, int page, int size){
-      ReleaseDTO[] releaseDTOs = restTemplate.getForObject(
-          "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases?page={page}&size={size}",
+    public List<ReleaseDTO> findReleases(String appId, Env env, String clusterName, String namespaceName, int page,
+                                         int size) {
+      ReleaseDTO[] releaseDTOs = restTemplate.get(
+          env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases?page={page}&size={size}",
           ReleaseDTO[].class,
-          getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
+          appId, clusterName, namespaceName, page, size);
       return Arrays.asList(releaseDTOs);
     }
 
     public ReleaseDTO loadLatestRelease(String appId, Env env, String clusterName,
                                         String namespace) {
       ReleaseDTO releaseDTO = restTemplate
-          .getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest",
-                        ReleaseDTO.class, getAdminServiceHost(env), appId, clusterName, namespace);
+          .get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest",
+               ReleaseDTO.class, appId, clusterName, namespace);
       return releaseDTO;
     }
 
     public ReleaseDTO release(String appId, Env env, String clusterName, String namespace,
-                              String releaseBy, String comment, String operator) {
+                              String releaseTitle, String comment, String operator) {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"));
       MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-      parameters.add("name", releaseBy);
+      parameters.add("name", releaseTitle);
       parameters.add("comment", comment);
       parameters.add("operator", operator);
       HttpEntity<MultiValueMap<String, String>> entity =
-          new HttpEntity<MultiValueMap<String, String>>(parameters, headers);
-      ResponseEntity<ReleaseDTO> response =
-          restTemplate
-              .postForEntity("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases", entity,
-                             ReleaseDTO.class,
-                             getAdminServiceHost(env), appId, clusterName, namespace);
-      return response.getBody();
+          new HttpEntity<>(parameters, headers);
+      ReleaseDTO response = restTemplate.post(
+          env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases", entity,
+          ReleaseDTO.class,
+          appId, clusterName, namespace);
+      return response;
     }
   }
 
@@ -195,10 +184,10 @@ public class AdminServiceAPI {
 
     public List<CommitDTO> find(String appId, Env env, String clusterName, String namespaceName, int page, int size) {
 
-      CommitDTO[] commitDTOs = restTemplate.getForObject(
-              "{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
-              CommitDTO[].class,
-              getAdminServiceHost(env), appId, clusterName, namespaceName, page, size);
+      CommitDTO[] commitDTOs = restTemplate.get(env,
+                                                "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/commit?page={page}&size={size}",
+                                                CommitDTO[].class,
+                                                appId, clusterName, namespaceName, page, size);
 
       return Arrays.asList(commitDTOs);
     }
@@ -208,9 +197,9 @@ public class AdminServiceAPI {
   public static class NamespaceLockAPI extends API {
 
     public NamespaceLockDTO getNamespaceLockOwner(String appId, Env env, String clusterName, String namespaceName) {
-      return restTemplate.getForObject("{host}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/lock",
-                                       NamespaceLockDTO.class,
-                                       getAdminServiceHost(env), appId, clusterName, namespaceName);
+      return restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/lock",
+                              NamespaceLockDTO.class,
+                              appId, clusterName, namespaceName);
 
     }
   }

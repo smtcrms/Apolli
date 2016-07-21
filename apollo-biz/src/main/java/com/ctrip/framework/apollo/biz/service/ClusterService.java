@@ -46,10 +46,12 @@ public class ClusterService {
     }
 
     List<Cluster> clusters = clusterRepository.findByAppId(appId);
-    Collections.sort(clusters);
     if (clusters == null) {
       return Collections.emptyList();
     }
+
+    Collections.sort(clusters);
+
     return clusters;
   }
 

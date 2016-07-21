@@ -1,13 +1,13 @@
 package com.ctrip.framework.apollo.portal.configutation;
 
-import com.ctrip.framework.apollo.portal.auth.CtripLogoutHandler;
-import com.ctrip.framework.apollo.portal.auth.CtripSsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.auth.CtripUserInfoHolder;
-import com.ctrip.framework.apollo.portal.auth.CtripUserService;
-import com.ctrip.framework.apollo.portal.auth.DefaultLogoutHandler;
-import com.ctrip.framework.apollo.portal.auth.DefaultSsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.auth.DefaultUserInfoHolder;
-import com.ctrip.framework.apollo.portal.auth.DefaultUserService;
+import com.ctrip.framework.apollo.portal.auth.ctrip.CtripLogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.ctrip.CtripSsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.auth.ctrip.CtripUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.ctrip.CtripUserService;
+import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultLogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultSsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultUserInfoHolder;
+import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultUserService;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;

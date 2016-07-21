@@ -10,12 +10,12 @@ public class NamespaceReleaseModel implements Verifiable {
   private String env;
   private String clusterName;
   private String namespaceName;
-  private String releaseBy;
+  private String releaseTitle;
   private String releaseComment;
 
   @Override
   public boolean isInvalid() {
-    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, releaseBy);
+    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, releaseTitle);
   }
 
   public String getAppId() {
@@ -50,12 +50,12 @@ public class NamespaceReleaseModel implements Verifiable {
     this.namespaceName = namespaceName;
   }
 
-  public String getReleaseBy() {
-    return releaseBy;
+  public String getReleaseTitle() {
+    return releaseTitle;
   }
 
-  public void setReleaseBy(String releaseBy) {
-    this.releaseBy = releaseBy;
+  public void setReleaseTitle(String releaseTitle) {
+    this.releaseTitle = releaseTitle;
   }
 
   public String getReleaseComment() {

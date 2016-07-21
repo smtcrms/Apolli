@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -11,20 +9,23 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.CatEventType;
+import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
+import com.dianping.cat.Cat;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +33,6 @@ import java.util.Map;
 
 @Service
 public class ConfigService {
-
-  private Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -77,6 +76,9 @@ public class ConfigService {
 
     changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
+
+    Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
 
@@ -92,7 +94,9 @@ public class ConfigService {
     item.setDataChangeCreatedBy(username);
     item.setDataChangeLastModifiedBy(username);
 
-    return itemAPI.createItem(appId, env, clusterName, namespaceName, item);
+    ItemDTO itemDTO = itemAPI.createItem(appId, env, clusterName, namespaceName, item);
+    Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    return itemDTO;
   }
 
   public void updateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
@@ -115,17 +119,16 @@ public class ConfigService {
       NamespaceIdentifer namespaceIdentifer = itemDiff.getNamespace();
       ItemChangeSets changeSets = itemDiff.getDiffs();
       changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
-      try {
-        itemAPI
-            .updateItemsByChangeSet(namespaceIdentifer.getAppId(), namespaceIdentifer.getEnv(),
-                                    namespaceIdentifer.getClusterName(),
-                                    namespaceIdentifer.getNamespaceName(), changeSets);
-      } catch (HttpClientErrorException e) {
-        logger.error("sync items error. namespace:{}", namespaceIdentifer);
-        throw new ServiceException(String.format("sync item error. env:%s, clusterName:%s", namespaceIdentifer.getEnv(),
-                                                 namespaceIdentifer.getClusterName()), e);
+
+      String appId = namespaceIdentifer.getAppId();
+      Env env = namespaceIdentifer.getEnv();
+      String clusterName = namespaceIdentifer.getClusterName();
+      String namespaceName = namespaceIdentifer.getNamespaceName();
+
+      itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
+
+      Cat.logEvent(CatEventType.SYNC_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
       }
-    }
   }
 
   public List<ItemDiffs> compare(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {

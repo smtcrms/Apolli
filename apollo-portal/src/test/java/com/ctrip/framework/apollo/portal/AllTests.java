@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     ConfigServiceTest.class, PropertyResolverTest.class,
     NamespaceServiceTest.class, ServiceExceptionTest.class, RolePermissionServiceTest.class,
-    AppNamespaceServiceTest.class, RoleInitializationServiceTest.class, FileTextResolverTest.class
+    AppNamespaceServiceTest.class, RoleInitializationServiceTest.class, FileTextResolverTest.class,
+    RetryableRestTemplateTest.class
 })
 public class AllTests {
 
