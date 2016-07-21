@@ -8,8 +8,10 @@ import com.dianping.cat.Cat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +24,16 @@ public class ReleaseMessageService {
   private ReleaseMessageRepository releaseMessageRepository;
 
   public ReleaseMessage findLatestReleaseMessageForMessages(Collection<String> messages) {
+    if (CollectionUtils.isEmpty(messages)) {
+      return null;
+    }
     return releaseMessageRepository.findTopByMessageInOrderByIdDesc(messages);
   }
 
   public List<ReleaseMessage> findLatestReleaseMessagesGroupByMessages(Collection<String> messages) {
+    if (CollectionUtils.isEmpty(messages)) {
+      return Collections.EMPTY_LIST;
+    }
     List<Object[]> result =
         releaseMessageRepository.findLatestReleaseMessagesGroupByMessages(messages);
     List<ReleaseMessage> releaseMessages = Lists.newArrayList();

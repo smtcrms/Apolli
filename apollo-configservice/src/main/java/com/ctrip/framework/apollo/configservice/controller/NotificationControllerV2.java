@@ -108,6 +108,10 @@ public class NotificationControllerV2 implements ReleaseMessageListener {
       clientSideNotifications.put(namespace, notification.getNotificationId());
     }
 
+    if (CollectionUtils.isEmpty(namespaces)) {
+      throw new BadRequestException("Invalid format of notifications: " + notificationsAsString);
+    }
+
     Multimap<String, String> watchedKeysMap =
         watchKeysUtil.assembleAllWatchKeys(appId, cluster, namespaces, dataCenter);
 
