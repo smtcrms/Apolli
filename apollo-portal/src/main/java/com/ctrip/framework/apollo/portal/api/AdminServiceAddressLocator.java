@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.portal.api;
 
+import com.google.common.collect.Lists;
+
 import com.ctrip.framework.apollo.core.MetaDomainConsts;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
@@ -11,9 +13,11 @@ import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,7 +71,13 @@ public class AdminServiceAddressLocator {
   }
 
   public List<ServiceDTO> getServiceList(Env env) {
-    return cache.get(env);
+    List<ServiceDTO> services = cache.get(env);
+    if (CollectionUtils.isEmpty(services)) {
+      return Collections.EMPTY_LIST;
+    }
+    List<ServiceDTO> randomConfigServices = Lists.newArrayList(services);
+    Collections.shuffle(randomConfigServices);
+    return randomConfigServices;
   }
 
   //Maintain admin server address

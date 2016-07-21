@@ -78,8 +78,6 @@ public class RetryableRestTemplate {
       ct.complete();
       throw e;
     }
-    //randomly load balance
-    Collections.shuffle(services);
 
     for (ServiceDTO serviceDTO : services) {
       try {
