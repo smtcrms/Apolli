@@ -31,21 +31,25 @@ public class MachineUtil {
     try {
       StringBuilder sb = new StringBuilder();
       Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-      while (e.hasMoreElements()) {
-        NetworkInterface ni = e.nextElement();
-        sb.append(ni.toString());
-        byte[] mac = ni.getHardwareAddress();
-        if (mac != null) {
-          ByteBuffer bb = ByteBuffer.wrap(mac);
-          try {
-            sb.append(bb.getChar());
-            sb.append(bb.getChar());
-            sb.append(bb.getChar());
-          } catch (BufferUnderflowException shortHardwareAddressException) { //NOPMD
-            // mac with less than 6 bytes. continue
+
+      if (e != null){
+        while (e.hasMoreElements()) {
+          NetworkInterface ni = e.nextElement();
+          sb.append(ni.toString());
+          byte[] mac = ni.getHardwareAddress();
+          if (mac != null) {
+            ByteBuffer bb = ByteBuffer.wrap(mac);
+            try {
+              sb.append(bb.getChar());
+              sb.append(bb.getChar());
+              sb.append(bb.getChar());
+            } catch (BufferUnderflowException shortHardwareAddressException) { //NOPMD
+              // mac with less than 6 bytes. continue
+            }
           }
         }
       }
+
       machinePiece = sb.toString().hashCode();
     } catch (Throwable ex) {
       // exception sometimes happens with IBM JVM, use random

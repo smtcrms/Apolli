@@ -7,6 +7,8 @@ role_module.controller('AppRoleController',
                                 appId: params.appid
                             };
 
+                            $scope.submitBtnDisabled = false;
+                            
                             $scope.userSelectWidgetId = 'toAssignMasterRoleUser';
 
                             PermissionService.has_assign_user_permission($scope.pageContext.appId)
@@ -31,13 +33,16 @@ role_module.controller('AppRoleController',
                                     return;
                                 }
                                 var toAssignMasterRoleUser = user.id;
+                                $scope.submitBtnDisabled = true;
                                 PermissionService.assign_master_role($scope.pageContext.appId,
                                                                      toAssignMasterRoleUser)
                                     .then(function (result) {
+                                        $scope.submitBtnDisabled = false;
                                         toastr.success("添加成功");
                                         $scope.appRoleUsers.masterUsers.push({userId: toAssignMasterRoleUser});
                                         $('.' + $scope.userSelectWidgetId).select2("val", "");
                                     }, function (result) {
+                                        $scope.submitBtnDisabled = false;
                                         toastr.error(AppUtil.errorMsg(result), "添加失败");
                                     });
                             };

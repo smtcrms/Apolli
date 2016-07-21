@@ -10,6 +10,8 @@ namespace_module.controller("LinkNamespaceController",
 
                                  $scope.step = 1;
 
+                                 $scope.submitBtnDisabled = false;
+
                                  PermissionService.has_root_permission().then(function (result) {
                                      $scope.hasRootPermission = result.hasPermission;
                                  });
@@ -90,23 +92,29 @@ namespace_module.controller("LinkNamespaceController",
                                                                               }
                                                                           });
                                          });
+
+                                         $scope.submitBtnDisabled = true;
                                          NamespaceService.createNamespace($scope.appId, namespaceCreationModels)
                                              .then(function (result) {
                                                  toastr.success("创建成功");
                                                  $scope.step = 2;
                                                  setInterval(function () {
+                                                     $scope.submitBtnDisabled = false;
                                                      $window.location.href =
                                                          '/namespace/role.html?#appid=' + $scope.appId
                                                          + "&namespaceName=" + $scope.namespaceName;
                                                  }, 1000);
                                              }, function (result) {
+                                                 $scope.submitBtnDisabled = false;
                                                  toastr.error(AppUtil.errorMsg(result));
                                              });
                                      } else {
+                                         $scope.submitBtnDisabled = true;
                                          NamespaceService.createAppNamespace($scope.appId, $scope.appNamespace).then(
                                              function (result) {
                                                  $scope.step = 2;
                                                  setInterval(function () {
+                                                     $scope.submitBtnDisabled = false;
                                                      if ($scope.appNamespace.isPublic) {
                                                          $window.location.reload();
                                                      } else {//private的直接link并且跳转到授权页面
@@ -116,6 +124,7 @@ namespace_module.controller("LinkNamespaceController",
                                                      }
                                                  }, 1000);
                                              }, function (result) {
+                                                 $scope.submitBtnDisabled = false;
                                                  toastr.error(AppUtil.errorMsg(result), "创建失败");
                                              });
                                      }

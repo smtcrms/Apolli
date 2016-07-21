@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.portal;
 
 
-import com.google.common.base.Strings;
 
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -10,7 +9,6 @@ import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -33,9 +31,8 @@ public class PortalSettings {
 
   private Logger logger = LoggerFactory.getLogger(PortalSettings.class);
 
-  private static final int HEALTH_CHECK_INTERVAL = 5000;
+  private static final int HEALTH_CHECK_INTERVAL = 10 * 1000;
 
-  private List<String> allStrEnvs;
 
   @Autowired
   ApplicationContext applicationContext;
@@ -43,9 +40,7 @@ public class PortalSettings {
   @Autowired
   private ServerConfigService serverConfigService;
 
-  private List<Env> allEnvs = new ArrayList<Env>();
-
-  private List<Env> activeEnvs;
+  private List<Env> allEnvs = new ArrayList<>();
 
   //mark env up or down
   private Map<Env, Boolean> envStatusMark = new ConcurrentHashMap<>();
@@ -54,18 +49,15 @@ public class PortalSettings {
 
   @PostConstruct
   private void postConstruct() {
+
     //初始化portal支持操作的环境集合,线上的portal可能支持所有的环境操作,而线下环境则支持一部分.
     // 每个环境的portal支持哪些环境配置在数据库里
-    String serverConfig = serverConfigService.getValue("apollo.portal.envs");
-    if (!Strings.isNullOrEmpty(serverConfig)){
-      String[] configedEnvs = serverConfig.split(",");
-      allStrEnvs = Arrays.asList(configedEnvs);
-    }
-
+    String serverConfig = serverConfigService.getValue("apollo.portal.envs", "FAT,UAT,PRO");
+    String[] configedEnvs = serverConfig.split(",");
+    List<String> allStrEnvs = Arrays.asList(configedEnvs);
     for (String e : allStrEnvs) {
       allEnvs.add(Env.valueOf(e.toUpperCase()));
     }
-
 
     for (Env env : allEnvs) {
       envStatusMark.put(env, true);
@@ -79,6 +71,10 @@ public class PortalSettings {
 
   }
 
+  public List<Env> getAllEnvs(){
+    return allEnvs;
+  }
+
   public List<Env> getActiveEnvs() {
     List<Env> activeEnvs = new LinkedList<>();
     for (Env env : allEnvs) {
@@ -86,14 +82,8 @@ public class PortalSettings {
         activeEnvs.add(env);
       }
     }
-    this.activeEnvs = activeEnvs;
     return activeEnvs;
   }
-
-  public Env getFirstAliveEnv() {
-    return activeEnvs.get(0);
-  }
-
 
   class HealthCheckTask implements Runnable {
 
