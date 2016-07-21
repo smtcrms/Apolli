@@ -87,9 +87,10 @@ public class AdminServiceAddressLocator {
 
       try {
         ServiceDTO[] services = getAdminServerAddress(env);
-        if (services != null && services.length > 0) {
-          cache.put(env, Arrays.asList(services));
+        if (services == null || services.length == 0) {
+          continue;
         }
+        cache.put(env, Arrays.asList(services));
         break;
       } catch (Throwable e) {//meta server error
         Cat.logError("get admin server address fail", e);
