@@ -124,6 +124,7 @@ public class ConfigFileController implements ReleaseMessageListener{
     String result = localCache.getIfPresent(cacheKey);
 
     if (Strings.isNullOrEmpty(result)) {
+      Cat.logEvent("ConfigFile-Cache-Miss", cacheKey);
       ApolloConfig apolloConfig =
           configController
               .queryConfig(appId, clusterName, namespace, dataCenter, "-1", clientIp,
@@ -148,6 +149,8 @@ public class ConfigFileController implements ReleaseMessageListener{
 
       cacheKey2WatchedKeys.putAll(cacheKey, watchedKeys);
       logger.debug("added cache for key: {}", cacheKey);
+    } else {
+      Cat.logEvent("ConfigFile-Cache-Hit", cacheKey);
     }
 
     return new ResponseEntity<>(result, responseHeaders,
