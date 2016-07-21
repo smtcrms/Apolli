@@ -20,6 +20,7 @@ import org.springframework.web.util.DefaultUriTemplateHandler;
 import org.springframework.web.util.UriTemplateHandler;
 
 import java.net.SocketTimeoutException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -77,6 +78,8 @@ public class RetryableRestTemplate {
       ct.complete();
       throw e;
     }
+    //randomly load balance
+    Collections.shuffle(services);
 
     for (ServiceDTO serviceDTO : services) {
       try {
