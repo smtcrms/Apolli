@@ -49,12 +49,14 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   private String someReleaseKey;
   private File configDir;
   private String defaultNamespace;
+  private String someOtherNamespace;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
 
     defaultNamespace = ConfigConsts.NAMESPACE_APPLICATION;
+    someOtherNamespace = "someOtherNamespace";
     someReleaseKey = "1";
     configDir = new File(ClassLoaderUtil.getClassPath() + "config-cache");
     if (configDir.exists()) {
@@ -246,7 +248,9 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
     ContextHandler pollHandler =
         mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
-            new ApolloConfigNotification(apolloConfig.getNamespaceName(), someNotificationId), false);
+            Lists.newArrayList(
+                new ApolloConfigNotification(apolloConfig.getNamespaceName(), someNotificationId)),
+            false);
 
     startServerWithHandlers(configHandler, pollHandler);
 
@@ -267,14 +271,109 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
     longPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
+  }
+
+  @Test
+  public void testLongPollRefreshWithMultipleNamespacesAndOnlyOneNamespaceNotified() throws Exception {
+    final String someKey = "someKey";
+    final String someValue = "someValue";
+    final String anotherValue = "anotherValue";
+    long someNotificationId = 1;
+
+    long pollTimeoutInMS = 50;
+    Map<String, String> configurations = Maps.newHashMap();
+    configurations.put(someKey, someValue);
+    ApolloConfig apolloConfig = assembleApolloConfig(configurations);
+    ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
+    ContextHandler pollHandler =
+        mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
+            Lists.newArrayList(
+                new ApolloConfigNotification(apolloConfig.getNamespaceName(), someNotificationId)),
+            false);
+
+    startServerWithHandlers(configHandler, pollHandler);
+
+    Config someOtherConfig = ConfigService.getConfig(someOtherNamespace);
+    Config config = ConfigService.getAppConfig();
+    assertEquals(someValue, config.getProperty(someKey, null));
+    assertEquals(someValue, someOtherConfig.getProperty(someKey, null));
+
+    final SettableFuture<Boolean> longPollFinished = SettableFuture.create();
+
+    config.addChangeListener(new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        longPollFinished.set(true);
+      }
+    });
+
+    apolloConfig.getConfigurations().put(someKey, anotherValue);
+
+    longPollFinished.get(pollTimeoutInMS * 50, TimeUnit.MILLISECONDS);
+
+    assertEquals(anotherValue, config.getProperty(someKey, null));
+
+    TimeUnit.MILLISECONDS.sleep(pollTimeoutInMS * 10);
+    assertEquals(someValue, someOtherConfig.getProperty(someKey, null));
+  }
+
+  @Test
+  public void testLongPollRefreshWithMultipleNamespacesAndMultipleNamespaceNotified() throws Exception {
+    final String someKey = "someKey";
+    final String someValue = "someValue";
+    final String anotherValue = "anotherValue";
+    long someNotificationId = 1;
+
+    long pollTimeoutInMS = 50;
+    Map<String, String> configurations = Maps.newHashMap();
+    configurations.put(someKey, someValue);
+    ApolloConfig apolloConfig = assembleApolloConfig(configurations);
+    ContextHandler configHandler = mockConfigServerHandler(HttpServletResponse.SC_OK, apolloConfig);
+    ContextHandler pollHandler =
+        mockPollNotificationHandler(pollTimeoutInMS, HttpServletResponse.SC_OK,
+            Lists.newArrayList(
+                new ApolloConfigNotification(apolloConfig.getNamespaceName(), someNotificationId),
+                new ApolloConfigNotification(someOtherNamespace, someNotificationId)),
+            false);
+
+    startServerWithHandlers(configHandler, pollHandler);
+
+    Config config = ConfigService.getAppConfig();
+    Config someOtherConfig = ConfigService.getConfig(someOtherNamespace);
+    assertEquals(someValue, config.getProperty(someKey, null));
+    assertEquals(someValue, someOtherConfig.getProperty(someKey, null));
+
+    final SettableFuture<Boolean> longPollFinished = SettableFuture.create();
+    final SettableFuture<Boolean> someOtherNamespacelongPollFinished = SettableFuture.create();
+
+    config.addChangeListener(new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        longPollFinished.set(true);
+      }
+    });
+    someOtherConfig.addChangeListener(new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        someOtherNamespacelongPollFinished.set(true);
+      }
+    });
+
+    apolloConfig.getConfigurations().put(someKey, anotherValue);
+
+    longPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
+    someOtherNamespacelongPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
+
+    assertEquals(anotherValue, config.getProperty(someKey, null));
+    assertEquals(anotherValue, someOtherConfig.getProperty(someKey, null));
 
   }
 
   private ContextHandler mockPollNotificationHandler(final long pollResultTimeOutInMS,
                                                      final int statusCode,
-                                                     final ApolloConfigNotification result,
+                                                     final List<ApolloConfigNotification> result,
                                                      final boolean failedAtFirstTime) {
-    ContextHandler context = new ContextHandler("/notifications");
+    ContextHandler context = new ContextHandler("/notifications/v2");
     context.setHandler(new AbstractHandler() {
       AtomicInteger counter = new AtomicInteger(0);
 

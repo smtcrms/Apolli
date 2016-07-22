@@ -59,6 +59,17 @@ public class NotificationController implements ReleaseMessageListener {
   @Autowired
   private NamespaceUtil namespaceUtil;
 
+  /**
+   * For single namespace notification, reserved for older version of apollo clients
+   *
+   * @param appId          the appId
+   * @param cluster        the cluster
+   * @param namespace      the namespace name
+   * @param dataCenter     the datacenter
+   * @param notificationId the notification id for the namespace
+   * @param clientIp       the client side ip
+   * @return a deferred result
+   */
   @RequestMapping(method = RequestMethod.GET)
   public DeferredResult<ResponseEntity<ApolloConfigNotification>> pollNotification(
       @RequestParam(value = "appId") String appId,

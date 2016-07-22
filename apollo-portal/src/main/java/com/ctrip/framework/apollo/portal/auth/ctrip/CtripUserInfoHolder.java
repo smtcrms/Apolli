@@ -1,5 +1,6 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.ctrip;
 
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 
 import java.lang.reflect.Method;
@@ -7,7 +8,7 @@ import java.lang.reflect.Method;
 /**
  * ctrip内部实现的获取用户信息
  */
-public class CtripUserInfoHolder implements UserInfoHolder{
+public class CtripUserInfoHolder implements UserInfoHolder {
 
   private Object assertionHolder;
 

@@ -1,5 +1,6 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.ctrip;
 
+import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class CtripLogoutHandler implements LogoutHandler{
+public class CtripLogoutHandler implements LogoutHandler {
 
   @Autowired
   private ServerConfigService serverConfigService;

@@ -32,7 +32,7 @@
                             ng-click="diff()">下一步
                     </button>
                     <button type="button" class="btn btn-success" ng-show="syncItemStep == 2 && hasDiff"
-                            ng-click="syncItems()">同步
+                            ng-click="syncItems()" ng-disabled="syncBtnDisabled">同步
                     </button>
                     <button type="button" class="btn btn-info" data-dismiss="modal"
                             ng-click="backToAppHomePage()">返回到项目首页

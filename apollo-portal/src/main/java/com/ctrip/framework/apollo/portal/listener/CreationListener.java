@@ -6,7 +6,7 @@ import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,6 @@ public class CreationListener {
   private AdminServiceAPI.AppAPI appAPI;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
-  @Autowired
-  private RoleInitializationService roleInitializationService;
 
   @EventListener
   public void onAppCreationEvent(AppCreationEvent event) {
@@ -38,20 +36,22 @@ public class CreationListener {
       try {
         appAPI.createApp(env, appDTO);
       } catch (Throwable e) {
-        logger.error("call appAPI.createApp error.[{app}, {env}]", appDTO.getAppId(), env, e);
+        logger.error("call appAPI.createApp error.(appId={appId}, env={env})", appDTO.getAppId(), env, e);
+        Cat.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appDTO.getAppId(), env), e);
       }
     }
   }
 
   @EventListener
   public void onAppNamespaceCreationEvent(AppNamespaceCreationEvent event){
-    AppNamespaceDTO dto = BeanUtils.transfrom(AppNamespaceDTO.class, event.getAppNamespace());
+    AppNamespaceDTO appNamespace = BeanUtils.transfrom(AppNamespaceDTO.class, event.getAppNamespace());
     List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {
       try {
-        namespaceAPI.createAppNamespace(env, dto);
+        namespaceAPI.createAppNamespace(env, appNamespace);
       } catch (Throwable e) {
-        logger.error("call namespaceAPI.createAppNamespace error. [{app}, {env}]", dto.getAppId(), env, e);
+        logger.error("call appAPI.createApp error.(appId={appId}, env={env})", appNamespace.getAppId(), env, e);
+        Cat.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appNamespace.getAppId(), env), e);
       }
     }
   }

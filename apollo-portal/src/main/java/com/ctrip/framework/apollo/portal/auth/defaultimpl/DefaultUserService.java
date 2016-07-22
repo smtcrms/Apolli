@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.defaultimpl;
 
 import com.google.common.collect.Lists;
 

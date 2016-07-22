@@ -9,6 +9,8 @@ cluster_module.controller('ClusterController',
 
                                $scope.step = 1;
                                
+                               $scope.submitBtnDisabled = false;
+                               
                                EnvService.find_all_envs().then(function (result) {
                                    $scope.envs = [];
                                    result.forEach(function (env) {
@@ -35,6 +37,7 @@ cluster_module.controller('ClusterController',
                                    $scope.envs.forEach(function (env) {
                                        if (env.checked) {
                                            noEnvChecked = false;
+                                           $scope.submitBtnDisabled = true;
                                            ClusterService.create_cluster($scope.appId, env.name,
                                                                          {
                                                                              name: $scope.clusterName,
@@ -42,8 +45,10 @@ cluster_module.controller('ClusterController',
                                                                          }).then(function (result) {
                                                toastr.success(env.name, "集群创建成功");
                                                $scope.step = 2;
+                                               $scope.submitBtnDisabled = false;
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "集群创建失败");
+                                               $scope.submitBtnDisabled = false;
                                            })
                                        }
                                    });

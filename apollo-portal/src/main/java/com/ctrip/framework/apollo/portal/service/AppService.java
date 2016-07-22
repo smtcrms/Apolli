@@ -20,8 +20,10 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 import com.ctrip.framework.apollo.portal.repository.AppRepository;
+import com.dianping.cat.Cat;
 
 @Service
 public class AppService {
@@ -94,6 +96,8 @@ public class AppService {
       appNamespaceService.createDefaultAppNamespace(appId);
       //role
       roleInitializationService.initAppRoles(createdApp);
+
+      Cat.logEvent(CatEventType.CREATE_APP, appId);
       return createdApp;
     }
   }

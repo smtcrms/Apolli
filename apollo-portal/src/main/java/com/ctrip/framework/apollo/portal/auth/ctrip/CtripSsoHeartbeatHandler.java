@@ -1,4 +1,6 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.ctrip;
+
+import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
 
 import java.io.IOException;
 
@@ -8,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-public class DefaultSsoHeartbeatHandler implements SsoHeartbeatHandler {
+public class CtripSsoHeartbeatHandler implements SsoHeartbeatHandler {
   @Override
   public void doHeartbeat(HttpServletRequest request, HttpServletResponse response) {
     try {
-      response.getWriter().write("default sso heartbeat handler");
+      response.sendRedirect("ctrip_sso_heartbeat.html");
     } catch (IOException e) {
     }
   }

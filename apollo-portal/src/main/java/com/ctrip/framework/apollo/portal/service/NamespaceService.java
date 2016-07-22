@@ -13,7 +13,9 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +44,8 @@ public class NamespaceService {
   private AdminServiceAPI.ReleaseAPI releaseAPI;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
-
-
   @Autowired
   private AppNamespaceService appNamespaceService;
-
 
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
@@ -56,6 +55,9 @@ public class NamespaceService {
     namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
+    Cat.logEvent(CatEventType.CREATE_NAMESPACE,
+                 String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
+                               namespace.getNamespaceName()));
     return createdNamespace;
   }
 
@@ -100,11 +102,13 @@ public class NamespaceService {
     String namespaceName = namespace.getNamespaceName();
 
     //latest Release
-    ReleaseDTO release = null;
+    ReleaseDTO latestRelease = null;
     Map<String, String> releaseItems = new HashMap<>();
     try {
-      release = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
-      releaseItems = gson.fromJson(release.getConfigurations(), Map.class);
+      latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+      if (latestRelease != null) {
+        releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
+      }
     } catch (HttpClientErrorException e) {
       if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
         logger.warn(ExceptionUtils.toString(e));
@@ -161,6 +165,7 @@ public class NamespaceService {
     namespace.setPublic(isPublic);
 
   }
+
   private List<NamespaceVO.ItemVO> parseDeletedItems(List<ItemDTO> newItems, Map<String, String> releaseItems) {
     Map<String, ItemDTO> newItemMap = BeanUtils.mapByKey("key", newItems);
 

@@ -2,6 +2,9 @@ package com.ctrip.framework.apollo.configservice.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
@@ -11,6 +14,8 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,32 +28,61 @@ public class WatchKeysUtil {
   @Autowired
   private AppNamespaceService appNamespaceService;
 
+  /**
+   * Assemble watch keys for the given appId, cluster, namespace, dataCenter combination
+   */
   public Set<String> assembleAllWatchKeys(String appId, String clusterName, String namespace,
                                           String dataCenter) {
-    Set<String> watchedKeys = assembleWatchKeys(appId, clusterName, namespace, dataCenter);
-
-    //Listen on more namespaces if it's a public namespace
-    if (!namespaceBelongsToAppId(appId, namespace)) {
-      watchedKeys.addAll(this.findPublicConfigWatchKey(appId, clusterName, namespace, dataCenter));
-    }
-
-    return watchedKeys;
-
+    Multimap<String, String> watchedKeysMap =
+        assembleAllWatchKeys(appId, clusterName, Sets.newHashSet(namespace), dataCenter);
+    return Sets.newHashSet(watchedKeysMap.get(namespace));
   }
 
-  private Set<String> findPublicConfigWatchKey(String applicationId, String clusterName,
-                                               String namespace,
-                                               String dataCenter) {
-    AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespace);
+  /**
+   * Assemble watch keys for the given appId, cluster, namespaces, dataCenter combination
+   * @return a multimap with namespace as the key and watch keys as the value
+   */
+  public Multimap<String, String> assembleAllWatchKeys(String appId, String clusterName,
+                                                       Set<String> namespaces,
+                                                       String dataCenter) {
+    Multimap<String, String> watchedKeysMap =
+        assembleWatchKeys(appId, clusterName, namespaces, dataCenter);
 
-    //check whether the namespace's appId equals to current one
-    if (Objects.isNull(appNamespace) || Objects.equals(applicationId, appNamespace.getAppId())) {
-      return Sets.newHashSet();
+    //Every app has an 'application' namespace
+    if (!(namespaces.size() == 1 && namespaces.contains(ConfigConsts.NAMESPACE_APPLICATION))) {
+      Set<String> namespacesBelongToAppId = namespacesBelongToAppId(appId, namespaces);
+      Set<String> publicNamespaces = Sets.difference(namespaces, namespacesBelongToAppId);
+
+      //Listen on more namespaces if it's a public namespace
+      if (!publicNamespaces.isEmpty()) {
+        watchedKeysMap
+            .putAll(findPublicConfigWatchKeys(appId, clusterName, publicNamespaces, dataCenter));
+      }
     }
 
-    String publicConfigAppId = appNamespace.getAppId();
+    return watchedKeysMap;
+  }
 
-    return assembleWatchKeys(publicConfigAppId, clusterName, namespace, dataCenter);
+  private Multimap<String, String> findPublicConfigWatchKeys(String applicationId,
+                                                             String clusterName,
+                                                             Set<String> namespaces,
+                                                             String dataCenter) {
+    Multimap<String, String> watchedKeysMap = HashMultimap.create();
+    List<AppNamespace> appNamespaces = appNamespaceService.findPublicNamespacesByNames(namespaces);
+
+    for (AppNamespace appNamespace : appNamespaces) {
+      //check whether the namespace's appId equals to current one
+      if (Objects.equals(applicationId, appNamespace.getAppId())) {
+        continue;
+      }
+
+      String publicConfigAppId = appNamespace.getAppId();
+
+      watchedKeysMap.putAll(appNamespace.getName(),
+          assembleWatchKeys(publicConfigAppId, clusterName, appNamespace.getName(), dataCenter));
+    }
+
+    return watchedKeysMap;
   }
 
   private String assembleKey(String appId, String cluster, String namespace) {
@@ -57,6 +91,7 @@ public class WatchKeysUtil {
 
   private Set<String> assembleWatchKeys(String appId, String clusterName, String namespace,
                                         String dataCenter) {
+
     Set<String> watchedKeys = Sets.newHashSet();
 
     //watch specified cluster config change
@@ -75,14 +110,27 @@ public class WatchKeysUtil {
     return watchedKeys;
   }
 
-  private boolean namespaceBelongsToAppId(String appId, String namespaceName) {
-    //Every app has an 'application' namespace
-    if (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) {
-      return true;
+  private Multimap<String, String> assembleWatchKeys(String appId, String clusterName,
+                                                     Set<String> namespaces,
+                                                     String dataCenter) {
+    Multimap<String, String> watchedKeysMap = HashMultimap.create();
+
+    for (String namespace : namespaces) {
+      watchedKeysMap
+          .putAll(namespace, assembleWatchKeys(appId, clusterName, namespace, dataCenter));
     }
 
-    AppNamespace appNamespace = appNamespaceService.findOne(appId, namespaceName);
+    return watchedKeysMap;
+  }
 
-    return appNamespace != null;
+  private Set<String> namespacesBelongToAppId(String appId, Set<String> namespaces) {
+    List<AppNamespace> appNamespaces =
+        appNamespaceService.findByAppIdAndNamespaces(appId, namespaces);
+
+    if (appNamespaces == null || appNamespaces.isEmpty()) {
+      return Collections.emptySet();
+    }
+
+    return FluentIterable.from(appNamespaces).transform(AppNamespace::getName).toSet();
   }
 }

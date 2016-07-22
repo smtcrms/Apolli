@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.auth;
+package com.ctrip.framework.apollo.portal.auth.ctrip;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -62,7 +62,7 @@ public class CtripUserService implements UserService {
   }
 
   @Override
-  public List<UserInfo> searchUsers(String keyword, int offset, int limit) {
+   public List<UserInfo> searchUsers(String keyword, int offset, int limit) {
     UserServiceRequest request = assembleSearchUserRequest(keyword, offset, limit);
 
     HttpEntity<UserServiceRequest> entity = new HttpEntity<>(request);
