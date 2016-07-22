@@ -64,8 +64,10 @@ public class ReleaseController {
                               @PathVariable("clusterName") String clusterName,
                               @PathVariable("namespaceName") String namespaceName) {
     Release release = configService.findRelease(appId, clusterName, namespaceName);
+    //// TODO: 16/7/22 返回null
     if (release == null) {
-      return null;
+      throw new NotFoundException(String.format("latest release not found for %s %s %s", appId,
+                                                clusterName, namespaceName));
     } else {
       return BeanUtils.transfrom(ReleaseDTO.class, release);
     }
