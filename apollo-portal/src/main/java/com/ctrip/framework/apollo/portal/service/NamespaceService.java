@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
 import com.ctrip.framework.apollo.core.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
@@ -19,7 +20,9 @@ import com.dianping.cat.Cat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -101,9 +104,17 @@ public class NamespaceService {
     //latest Release
     ReleaseDTO latestRelease = null;
     Map<String, String> releaseItems = new HashMap<>();
-    latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
-    if (latestRelease != null){
-      releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
+    try {
+      latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+      if (latestRelease != null) {
+        releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
+      }
+    } catch (HttpClientErrorException e) {
+      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+        logger.warn(ExceptionUtils.toString(e));
+      } else {
+        throw e;
+      }
     }
 
     //not Release config items
