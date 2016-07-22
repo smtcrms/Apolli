@@ -11,7 +11,7 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
         }
     });
 
-    function createRelease(appId, env, clusterName, namespaceName, releaseBy, comment) {
+    function createRelease(appId, env, clusterName, namespaceName, releaseTitle, comment) {
         var d = $q.defer();
         resource.release({
                              appId: appId,
@@ -19,7 +19,7 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
                              clusterName: clusterName,
                              namespaceName: namespaceName
                          }, {
-                             releaseBy: releaseBy,
+                             releaseTitle: releaseTitle,
                              releaseComment: comment
                          }, function (result) {
             d.resolve(result);
