@@ -12,6 +12,10 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+body.modal-open {
+    overflow: visible;
+}
+
 a {
     cursor: pointer;
 }
