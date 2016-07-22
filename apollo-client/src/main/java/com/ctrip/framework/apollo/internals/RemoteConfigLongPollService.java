@@ -221,7 +221,16 @@ public class RemoteConfigLongPollService implements Initializable {
       if (Strings.isNullOrEmpty(notification.getNamespaceName())) {
         continue;
       }
-      m_notifications.put(notification.getNamespaceName(), notification.getNotificationId());
+      String namespaceName = notification.getNamespaceName();
+      if (m_notifications.containsKey(namespaceName)) {
+        m_notifications.put(namespaceName, notification.getNotificationId());
+      }
+      //since .properties are filtered out by default, so we need to check if there is notification with .properties suffix
+      String namespaceNameWithPropertiesSuffix =
+          String.format("%s.%s", namespaceName, ConfigFileFormat.Properties.getValue());
+      if (m_notifications.containsKey(namespaceNameWithPropertiesSuffix)) {
+        m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());
+      }
     }
   }
 
