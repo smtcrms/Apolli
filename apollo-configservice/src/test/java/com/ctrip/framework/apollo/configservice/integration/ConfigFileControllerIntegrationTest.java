@@ -2,6 +2,8 @@ package com.ctrip.framework.apollo.configservice.integration;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +33,8 @@ public class ConfigFileControllerIntegrationTest extends AbstractBaseIntegration
   private String somePublicNamespace;
   private String someDC;
   private String someDefaultCluster;
+  private Gson gson = new Gson();
+  private Type mapResponseType = new TypeToken<Map<String, String>>(){}.getType();
 
   @Before
   public void setUp() throws Exception {
@@ -44,7 +49,7 @@ public class ConfigFileControllerIntegrationTest extends AbstractBaseIntegration
   @Test
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-  public void testQueryConfigAsFile() throws Exception {
+  public void testQueryConfigAsProperties() throws Exception {
     ResponseEntity<String> response =
         restTemplate
             .getForEntity("{baseurl}/configfiles/{appId}/{clusterName}/{namespace}", String.class,
@@ -60,7 +65,7 @@ public class ConfigFileControllerIntegrationTest extends AbstractBaseIntegration
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/test-release-public-dc-override.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-  public void testQueryPublicConfigAsFile() throws Exception {
+  public void testQueryPublicConfigAsProperties() throws Exception {
     ResponseEntity<String> response =
         restTemplate
             .getForEntity(
@@ -73,6 +78,42 @@ public class ConfigFileControllerIntegrationTest extends AbstractBaseIntegration
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(result.contains("k1=override-someDC-v1"));
     assertTrue(result.contains("k2=someDC-v2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryConfigAsJson() throws Exception {
+    ResponseEntity<String> response =
+        restTemplate
+            .getForEntity("{baseurl}/configfiles/json/{appId}/{clusterName}/{namespace}", String.class,
+                getHostUrl(), someAppId, someCluster, someNamespace);
+
+    String result = response.getBody();
+    Map<String, String> configs = gson.fromJson(response.getBody(), mapResponseType);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("v2", configs.get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-release-public-dc-override.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigAsJson() throws Exception {
+    ResponseEntity<String> response =
+        restTemplate
+            .getForEntity(
+                "{baseurl}/configfiles/json/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+                String.class,
+                getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someDC);
+
+    String result = response.getBody();
+    Map<String, String> configs = gson.fromJson(response.getBody(), mapResponseType);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("override-someDC-v1", configs.get("k1"));
+    assertEquals("someDC-v2", configs.get("k2"));
   }
 
   @Test

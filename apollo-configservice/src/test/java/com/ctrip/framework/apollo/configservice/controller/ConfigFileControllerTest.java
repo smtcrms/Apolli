@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.message.Topics;
@@ -21,7 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.List;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +83,7 @@ public class ConfigFileControllerTest {
   }
 
   @Test
-  public void testQueryConfigAsFile() throws Exception {
+  public void testQueryConfigAsProperties() throws Exception {
     String someKey = "someKey";
     String someValue = "someValue";
     String anotherKey = "anotherKey";
@@ -93,7 +95,7 @@ public class ConfigFileControllerTest {
 
     String cacheKey =
         configFileController
-            .assembleCacheKey(someAppId, someClusterName, someNamespace, someDataCenter);
+            .assembleCacheKey(ConfigFileController.ConfigFileOutputFormat.PROPERTIES, someAppId, someClusterName, someNamespace, someDataCenter);
 
     Map<String, String> configurations =
         ImmutableMap.of(someKey, someValue, anotherKey, anotherValue);
@@ -108,7 +110,7 @@ public class ConfigFileControllerTest {
 
     ResponseEntity<String> response =
         configFileController
-            .queryConfigAsFile(someAppId, someClusterName, someNamespace, someDataCenter,
+            .queryConfigAsProperties(someAppId, someClusterName, someNamespace, someDataCenter,
                 someClientIp, someResponse);
 
     assertEquals(2, watchedKeys2CacheKey.size());
@@ -124,7 +126,7 @@ public class ConfigFileControllerTest {
 
     ResponseEntity<String> anotherResponse =
         configFileController
-            .queryConfigAsFile(someAppId, someClusterName, someNamespace, someDataCenter,
+            .queryConfigAsProperties(someAppId, someClusterName, someNamespace, someDataCenter,
                 someClientIp, someResponse);
 
     assertEquals(response, anotherResponse);
@@ -132,6 +134,36 @@ public class ConfigFileControllerTest {
     verify(configController, times(1))
         .queryConfig(someAppId, someClusterName, someNamespace, someDataCenter, "-1", someClientIp,
             someResponse);
+  }
+
+  @Test
+  public void testQueryConfigAsJson() throws Exception {
+    String someKey = "someKey";
+    String someValue = "someValue";
+    Gson gson = new Gson();
+    Type responseType = new TypeToken<Map<String, String>>(){}.getType();
+
+    String someWatchKey = "someWatchKey";
+    Set<String> watchKeys = Sets.newHashSet(someWatchKey);
+
+    Map<String, String> configurations =
+        ImmutableMap.of(someKey, someValue);
+    ApolloConfig someApolloConfig = mock(ApolloConfig.class);
+    when(configController
+        .queryConfig(someAppId, someClusterName, someNamespace, someDataCenter, "-1", someClientIp,
+            someResponse)).thenReturn(someApolloConfig);
+    when(someApolloConfig.getConfigurations()).thenReturn(configurations);
+    when(watchKeysUtil
+        .assembleAllWatchKeys(someAppId, someClusterName, someNamespace, someDataCenter))
+        .thenReturn(watchKeys);
+
+    ResponseEntity<String> response =
+        configFileController
+            .queryConfigAsJson(someAppId, someClusterName, someNamespace, someDataCenter,
+                someClientIp, someResponse);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(configurations, gson.fromJson(response.getBody(), responseType));
   }
 
   @Test
