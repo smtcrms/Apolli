@@ -31,10 +31,16 @@
                 <div class="media-left media-middle badge-{{$index % 4}}">
                 </div>
                 <div class="media-body">
+                    <div class="row text-right">
+                        <span class="label label-info no-radius"
+                              ng-show="release.baseInfo.isAbandoned">已废弃</span>
+                        <span class="label label-primary no-radius"
+                              ng-if="release.active">当前生效</span>
+                    </div>
                     <div class="row">
                         <div class="col-md-2 user">
                             <img src="../img/user.png" class="i-20">
-                        <span class="info" ng-bind="release.baseInfo.dataChangeCreatedBy"></span>
+                            <span class="info" ng-bind="release.baseInfo.dataChangeCreatedBy"></span>
                         </div>
                         <div class="col-md-3 time">
                             <img src="../img/time.png" class="i-20">
@@ -62,7 +68,8 @@
                             </td>
                         </tr>
                     </table>
-                    <textarea class="form-control no-radius" rows="15" ng-show="isTextFile" ng-bind="release.items[0].value" disabled>
+                    <textarea class="form-control no-radius" rows="15" ng-show="isTextFile"
+                              ng-bind="release.items[0].value" disabled>
 
                     </textarea>
                 </div>

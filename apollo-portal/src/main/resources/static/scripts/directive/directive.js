@@ -31,8 +31,10 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
 
             scope.changeSearchKey = function () {
                 scope.copyedApps = [];
+                var searchKey = scope.searchKey.toLocaleLowerCase();
                 scope.sourceApps.forEach(function (app) {
-                    if (app.name.indexOf(scope.searchKey) > -1 || app.appId.indexOf(scope.searchKey) > -1) {
+                    if (app.name.toLocaleLowerCase().indexOf(searchKey) > -1
+                        || app.appId.toLocaleLowerCase().indexOf(searchKey) > -1) {
                         scope.copyedApps.push(app);
                     }
                 });

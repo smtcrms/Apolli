@@ -12,6 +12,7 @@ directive_module.directive('apollonspanel',
                                        env: '=',
                                        cluster: '=',
                                        preReleaseNs: '=',
+                                       showRollbackTips: '=',
                                        createItem: '=',
                                        editItem: '=',
                                        preDeleteItem: '=',
@@ -74,7 +75,7 @@ directive_module.directive('apollonspanel',
                                            CommitService.find_commits(scope.appId,
                                                                       scope.env,
                                                                       scope.cluster,
-                                                                      namespace.namespace.namespaceName,
+                                                                      namespace.baseInfo.namespaceName,
                                                                       namespace.commitPage)
                                                .then(function (result) {
                                                    if (result.length == 0) {
@@ -116,7 +117,7 @@ directive_module.directive('apollonspanel',
                                                "config/sync.html?#/appid=" + scope.appId + "&env="
                                                + scope.env + "&clusterName="
                                                + scope.cluster
-                                               + "&namespaceName=" + namespace.namespace.namespaceName;
+                                               + "&namespaceName=" + namespace.baseInfo.namespaceName;
                                        }
 
                                        function modifyByText(namespace) {
@@ -139,7 +140,7 @@ directive_module.directive('apollonspanel',
 
                                            //namespace view name hide suffix
                                            namespace.viewName =
-                                               namespace.namespace.namespaceName.replace(".xml", "").replace(
+                                               namespace.baseInfo.namespaceName.replace(".xml", "").replace(
                                                    ".properties", "");
 
                                            if (!viewType) {
@@ -155,7 +156,7 @@ directive_module.directive('apollonspanel',
                                            //permission
                                            PermissionService.has_modify_namespace_permission(
                                                scope.appId,
-                                               namespace.namespace.namespaceName)
+                                               namespace.baseInfo.namespaceName)
                                                .then(function (result) {
                                                    namespace.hasModifyPermission = result.hasPermission;
                                                }, function (result) {
@@ -164,7 +165,7 @@ directive_module.directive('apollonspanel',
 
                                            PermissionService.has_release_namespace_permission(
                                                scope.appId,
-                                               namespace.namespace.namespaceName)
+                                               namespace.baseInfo.namespaceName)
                                                .then(function (result) {
                                                    namespace.hasReleasePermission = result.hasPermission;
                                                }, function (result) {
@@ -175,7 +176,7 @@ directive_module.directive('apollonspanel',
                                            NamespaceLockService.get_namespace_lock(
                                                scope.appId, scope.env,
                                                scope.cluster,
-                                               namespace.namespace.namespaceName)
+                                               namespace.baseInfo.namespaceName)
                                                .then(function (result) {
                                                    if (result.dataChangeCreatedBy) {
                                                        namespace.lockOwner = result.dataChangeCreatedBy;

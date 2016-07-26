@@ -96,7 +96,8 @@
                                env="pageContext.env" cluster="pageContext.clusterName"
                                pre-release-ns="prepareReleaseNamespace"
                                create-item="createItem" edit-item="editItem"
-                               pre-delete-item="preDeleteItem" commit-change="commitChange"></apollonspanel>
+                               pre-delete-item="preDeleteItem" commit-change="commitChange"
+                               show-rollback-tips="showRollbackTips"></apollonspanel>
             </div>
 
             <!-- delete modal-->
@@ -114,7 +115,13 @@
             <apolloconfirmdialog apollo-dialog-id="'releaseDenyDialog'" apollo-title="'发布受限'"
                                  apollo-detail="'您不能发布哟~ 编辑和发布不能为同一个人'"
                                  apollo-show-cancel-btn="false"></apolloconfirmdialog>
-            <!--create release modal-->
+
+            <apolloconfirmdialog apollo-dialog-id="'rollbackTips'" apollo-title="'回滚'"
+                                 apollo-detail="'此操作将会回滚到上一个发布版本，且作废当前版本。确定要回滚吗?'"
+                                 apollo-show-cancel-btn="true" apollo-confirm="preRollback"></apolloconfirmdialog>
+
+
+            <!--create createRelease modal-->
             <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
                   ng-submit="release()">
                 <div class="modal-dialog" role="document" style="width: 960px">
@@ -308,12 +315,82 @@
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                             </button>
                             <button type="submit" class="btn btn-primary"
-                                    ng-show="tableViewOperType != 'retrieve'" ng-disabled="addItemBtnDisabled && tableViewOperType == 'create'">提交
+                                    ng-show="tableViewOperType != 'retrieve'"
+                                    ng-disabled="addItemBtnDisabled && tableViewOperType == 'create'">提交
                             </button>
                         </div>
                     </div>
                 </div>
             </form>
+
+            <!--rollback-->
+            <form class="modal fade form-horizontal" id="rollbackModal" tabindex="-1" role="dialog"
+                  ng-submit="rollback()">
+                <div class="modal-dialog" role="document" style="width: 960px">
+                    <div class="modal-content">
+                        <div class="modal-header panel-primary">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">回滚</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row text-center">
+                                <span style="font-size: 18px;" ng-bind="firstRelease.name"></span>
+                                <span style="font-size: 18px;"> &nbsp;回滚到&nbsp;</span>
+                                <span style="font-size: 18px;" ng-bind="secondRelease.name"></span>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label class="col-sm-2 control-label">
+                                    Changes:</label>
+                                <div class="col-sm-10" ng-if="releaseCompareResult.length > 0">
+                                    <table class="table table-bordered table-striped text-center table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                Key
+                                            </th>
+                                            <th>
+                                                回滚前
+                                            </th>
+                                            <th>
+                                                回滚后
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <tr ng-repeat="pair in releaseCompareResult">
+                                            <td width="20%" ng-bind="pair.firstEntity.key">
+
+                                            </td>
+                                            <td width="40%" ng-bind="pair.firstEntity.value">
+                                            </td>
+                                            <td width="40%" ng-bind="pair.secondEntity.value">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-5">
+                                    <span ng-if="releaseCompareResult.length == 0">
+                                        配置没有变化
+                                    </span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="submit" class="btn btn-danger" ng-if="releaseCompareResult.length > 0"
+                                    ng-disabled="rollbackBtnDisabled">回滚
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
         </div>
     </div>
 

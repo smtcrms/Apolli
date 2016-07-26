@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.biz.service;
 
+import com.ctrip.framework.apollo.biz.AbstractUnitTest;
 import com.ctrip.framework.apollo.biz.entity.ServerConfig;
 import com.ctrip.framework.apollo.biz.repository.ServerConfigRepository;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -7,9 +8,7 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.*;
@@ -19,8 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ServerConfigServiceTest {
+public class ServerConfigServiceTest extends AbstractUnitTest{
   private ServerConfigService serverConfigService;
   @Mock
   private ServerConfigRepository serverConfigRepository;

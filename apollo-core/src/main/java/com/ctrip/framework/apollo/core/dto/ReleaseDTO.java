@@ -17,6 +17,8 @@ public class ReleaseDTO extends BaseDTO{
 
   private String comment;
 
+  private boolean isAbandoned;
+
   public long getId() {
     return id;
   }
@@ -81,4 +83,11 @@ public class ReleaseDTO extends BaseDTO{
     this.namespaceName = namespaceName;
   }
 
+  public boolean isAbandoned() {
+    return isAbandoned;
+  }
+
+  public void setAbandoned(boolean abandoned) {
+    isAbandoned = abandoned;
+  }
 }

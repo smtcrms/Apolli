@@ -144,10 +144,24 @@ public class AdminServiceAPI {
   @Service
   public static class ReleaseAPI extends API {
 
-    public List<ReleaseDTO> findReleases(String appId, Env env, String clusterName, String namespaceName, int page,
-                                         int size) {
+    public ReleaseDTO loadRelease(Env env, long releaseId) {
+      return restTemplate.get(env, "releases/{releaseId}", ReleaseDTO.class, releaseId);
+    }
+
+    public List<ReleaseDTO> findAllReleases(String appId, Env env, String clusterName, String namespaceName, int page,
+                                            int size) {
       ReleaseDTO[] releaseDTOs = restTemplate.get(
-          env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases?page={page}&size={size}",
+          env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all?page={page}&size={size}",
+          ReleaseDTO[].class,
+          appId, clusterName, namespaceName, page, size);
+      return Arrays.asList(releaseDTOs);
+    }
+
+    public List<ReleaseDTO> findActiveReleases(String appId, Env env, String clusterName, String namespaceName,
+                                               int page,
+                                               int size) {
+      ReleaseDTO[] releaseDTOs = restTemplate.get(
+          env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active?page={page}&size={size}",
           ReleaseDTO[].class,
           appId, clusterName, namespaceName, page, size);
       return Arrays.asList(releaseDTOs);
@@ -161,8 +175,8 @@ public class AdminServiceAPI {
       return releaseDTO;
     }
 
-    public ReleaseDTO release(String appId, Env env, String clusterName, String namespace,
-                              String releaseTitle, String comment, String operator) {
+    public ReleaseDTO createRelease(String appId, Env env, String clusterName, String namespace,
+                                    String releaseTitle, String comment, String operator) {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"));
       MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
@@ -176,6 +190,12 @@ public class AdminServiceAPI {
           ReleaseDTO.class,
           appId, clusterName, namespace);
       return response;
+    }
+
+    public void rollback(Env env, long releaseId, String operator) {
+      restTemplate.put(env,
+                "releases/{releaseId}/rollback?operator={operator}",
+                null, releaseId, operator);
     }
   }
 

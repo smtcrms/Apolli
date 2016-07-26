@@ -1,14 +1,13 @@
 package com.ctrip.framework.apollo.biz.message;
 
+import com.ctrip.framework.apollo.biz.AbstractUnitTest;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -20,8 +19,7 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@RunWith(MockitoJUnitRunner.class)
-public class DatabaseMessageSenderTest {
+public class DatabaseMessageSenderTest extends AbstractUnitTest{
   private DatabaseMessageSender messageSender;
   @Mock
   private ReleaseMessageRepository releaseMessageRepository;

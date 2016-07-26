@@ -1,12 +1,11 @@
 package com.ctrip.framework.apollo.biz.eureka;
 
+import com.ctrip.framework.apollo.biz.AbstractUnitTest;
 import com.ctrip.framework.apollo.biz.service.ServerConfigService;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,8 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ApolloEurekaClientConfigTest {
+public class ApolloEurekaClientConfigTest extends AbstractUnitTest {
   private ApolloEurekaClientConfig eurekaClientConfig;
   @Mock
   private ServerConfigService serverConfigService;
