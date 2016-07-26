@@ -1,6 +1,8 @@
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
+import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.ConfigService;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
@@ -19,6 +21,8 @@ public class ApolloConfigDemo {
   private String DEFAULT_VALUE = "undefined";
   private Config config;
   private Config publicConfig;
+  private ConfigFile applicationConfigFile;
+  private ConfigFile xmlConfigFile;
 
   public ApolloConfigDemo() {
     ConfigChangeListener changeListener = new ConfigChangeListener() {
@@ -37,6 +41,8 @@ public class ApolloConfigDemo {
     config.addChangeListener(changeListener);
     publicConfig = ConfigService.getConfig("FX.apollo");
     publicConfig.addChangeListener(changeListener);
+    applicationConfigFile = ConfigService.getConfigFile("application", ConfigFileFormat.Properties);
+    xmlConfigFile = ConfigService.getConfigFile("datasources", ConfigFileFormat.XML);
   }
 
   private String getConfig(String key) {
@@ -46,6 +52,26 @@ public class ApolloConfigDemo {
     }
     logger.info(String.format("Loading key : %s with value: %s", key, result));
     return result;
+  }
+
+  private void print(String namespace) {
+    switch (namespace) {
+      case "application":
+        print(applicationConfigFile);
+        return;
+      case "xml":
+        print(xmlConfigFile);
+        return;
+    }
+  }
+
+  private void print(ConfigFile configFile) {
+    if (!configFile.hasContent()) {
+      System.out.println("No config file content found for " + configFile.getNamespace());
+      return;
+    }
+    System.out.println("=== Config File Content for " + configFile.getNamespace() + " is as follows: ");
+    System.out.println(configFile.getContent());
   }
 
   public static void main(String[] args) throws IOException {
@@ -59,6 +85,14 @@ public class ApolloConfigDemo {
         continue;
       }
       input = input.trim();
+      if (input.equalsIgnoreCase("application")) {
+        apolloConfigDemo.print("application");
+        continue;
+      }
+      if (input.equalsIgnoreCase("xml")) {
+        apolloConfigDemo.print("xml");
+        continue;
+      }
       if (input.equalsIgnoreCase("quit")) {
         System.exit(0);
       }
