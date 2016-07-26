@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.biz.service;
 
 import com.ctrip.framework.apollo.biz.AbstractUnitTest;
-import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
 import com.ctrip.framework.apollo.core.exception.BadRequestException;
@@ -34,7 +33,6 @@ public class ReleaseServiceTest extends AbstractUnitTest {
   private String clusterName = "cluster-test";
   private String namespaceName = "namespace-test";
   private String user = "user-test";
-  private Namespace namespace;
   private long releaseId = 1;
   private Release firstRelease;
   private Release secondRelease;
@@ -42,10 +40,6 @@ public class ReleaseServiceTest extends AbstractUnitTest {
 
   @Before
   public void init() {
-    namespace = new Namespace();
-    namespace.setAppId(appId);
-    namespace.setClusterName(clusterName);
-    namespace.setNamespaceName(namespaceName);
 
     firstRelease = new Release();
     firstRelease.setId(releaseId);
@@ -67,7 +61,6 @@ public class ReleaseServiceTest extends AbstractUnitTest {
   public void testNamespaceNotExist() {
 
     when(releaseRepository.findOne(releaseId)).thenReturn(firstRelease);
-    when(namespaceService.findOne(appId, clusterName, namespaceName)).thenThrow(new BadRequestException("xx"));
 
     releaseService.rollback(releaseId, user);
   }
@@ -76,7 +69,6 @@ public class ReleaseServiceTest extends AbstractUnitTest {
   public void testHasNoRelease() {
 
     when(releaseRepository.findOne(releaseId)).thenReturn(firstRelease);
-    when(namespaceService.findOne(appId, clusterName, namespaceName)).thenReturn(namespace);
     when(releaseRepository.findByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(appId,
                                                                                                      clusterName,
                                                                                                      namespaceName,
@@ -90,7 +82,6 @@ public class ReleaseServiceTest extends AbstractUnitTest {
   public void testRollback() {
 
     when(releaseRepository.findOne(releaseId)).thenReturn(firstRelease);
-    when(namespaceService.findOne(appId, clusterName, namespaceName)).thenReturn(namespace);
     when(releaseRepository.findByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(appId,
                                                                                                      clusterName,
                                                                                                      namespaceName,

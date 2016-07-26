@@ -41,9 +41,6 @@ public class ReleaseService {
   private AuditService auditService;
   @Autowired
   private NamespaceLockService namespaceLockService;
-  @Autowired
-  private NamespaceService namespaceService;
-
 
   public Release findOne(long releaseId) {
     Release release = releaseRepository.findOne(releaseId);
@@ -126,17 +123,11 @@ public class ReleaseService {
     String clusterName = release.getClusterName();
     String namespaceName = release.getNamespaceName();
 
-    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
-    if (namespace == null) {
-      throw new BadRequestException(String.format("namespace not existed. (appId=%s, cluster=%s, namespace=%s)", appId,
-                                                  clusterName, namespaceName));
-    }
-
     PageRequest page = new PageRequest(0, 2);
     List<Release> twoLatestActiveReleases = findActiveReleases(appId, clusterName, namespaceName, page);
     if (twoLatestActiveReleases == null || twoLatestActiveReleases.size() < 2) {
       throw new BadRequestException(String.format(
-          "Can't rollback namespace(appId=%s, clusterName=%s, namespaceName=%s) because only one active release", appId,
+          "Can't rollback namespace(appId=%s, clusterName=%s, namespaceName=%s) because there is only one active release", appId,
           clusterName,
           namespaceName));
     }
