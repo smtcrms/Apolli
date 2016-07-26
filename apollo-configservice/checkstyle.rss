@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 11,
+      <title>File: 15,
              Errors: 0,
-             Warnings: 27,
+             Warnings: 38,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html</link>
@@ -46,13 +46,13 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.metaservice.controller.ServiceController.java">com/ctrip/framework/apollo/metaservice/controller/ServiceController.java</a>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.controller.ConfigFileController.java">com/ctrip/framework/apollo/configservice/controller/ConfigFileController.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  3
+                  10
                 </td>
                 <td>
                   0
@@ -61,6 +61,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.ConfigServiceAutoConfiguration.java">com/ctrip/framework/apollo/configservice/ConfigServiceAutoConfiguration.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.util.NamespaceUtil.java">com/ctrip/framework/apollo/configservice/util/NamespaceUtil.java</a>
                 </td>
                 <td>
                   0
@@ -102,6 +116,62 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.util.WatchKeysUtil.java">com/ctrip/framework/apollo/configservice/util/WatchKeysUtil.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/framework/apollo/configservice/ConfigServiceHealthIndicator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.controller.NotificationControllerV2.java">com/ctrip/framework/apollo/configservice/controller/NotificationControllerV2.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.metaservice.controller.ServiceController.java">com/ctrip/framework/apollo/metaservice/controller/ServiceController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.metaservice.service.DiscoveryService.java">com/ctrip/framework/apollo/metaservice/service/DiscoveryService.java</a>
                 </td>
                 <td>
@@ -122,7 +192,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  11
+                  10
                 </td>
                 <td>
                   0
@@ -150,21 +220,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  8
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-configservice/checkstyle.html#com.ctrip.framework.apollo.configservice.ConfigServiceHealthIndicator.java">com/ctrip/framework/apollo/configservice/ConfigServiceHealthIndicator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
+                  3
                 </td>
                 <td>
                   0
