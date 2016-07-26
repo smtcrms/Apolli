@@ -31,8 +31,7 @@ import javax.annotation.PostConstruct;
 public class AdminServiceAddressLocator {
 
   private static final int DEFAULT_TIMEOUT_MS = 1000;
-//  private static final long REFRESH_INTERVAL = 5 * 60 * 1000;
-  private static final long REFRESH_INTERVAL =  1000;
+  private static final long REFRESH_INTERVAL = 5 * 60 * 1000;
   private static final int RETRY_TIMES = 3;
   private static final String ADMIN_SERVICE_URL_PATH = "/services/admin";
 

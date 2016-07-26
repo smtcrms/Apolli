@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
@@ -97,7 +98,7 @@ public class ReleaseService {
       String key = entry.getKey();
       String firstValue = entry.getValue();
       String secondValue = secondItems.get(key);
-      if (secondValue == null || !firstValue.equals(secondValue)) {
+      if (!Objects.equal(firstValue, secondValue)) {
         compareResult.addEntityPair(new KVEntity(key, firstValue), new KVEntity(key, secondValue));
       }
     }
