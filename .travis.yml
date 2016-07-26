@@ -15,8 +15,7 @@ before_install:
   - pip install --user codecov
 
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report
-  - mvn clean site
+  - mvn clean site -DskipTests=true
   - codecov
 
 branches:
@@ -37,3 +36,7 @@ addons:
     build_command_prepend: "mvn clean"
     build_command:   "mvn -DskipTests=true compile"
     branch_pattern: master
+
+cache:
+  directories:
+  - $HOME/.m2
