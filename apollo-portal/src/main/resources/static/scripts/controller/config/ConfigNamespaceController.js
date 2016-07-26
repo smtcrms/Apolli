@@ -2,7 +2,7 @@ application_module.controller("ConfigNamespaceController",
                               ['$rootScope', '$scope', '$window', '$location', 'toastr', 'AppUtil', 'ConfigService',
                                'PermissionService',
                                'CommitService', 'NamespaceLockService', 'UserService', 'ReleaseService',
-                               function ($rootScope, $scope, $window,  $location, toastr, AppUtil, ConfigService,
+                               function ($rootScope, $scope, $window, $location, toastr, AppUtil, ConfigService,
                                          PermissionService,
                                          CommitService, NamespaceLockService, UserService, ReleaseService) {
 
@@ -18,32 +18,36 @@ application_module.controller("ConfigNamespaceController",
                                        UPDATE: 'update'
                                    };
 
-
                                    $rootScope.refreshNamespaces = refreshNamespaces;
-                                   
+
                                    $scope.commitChange = commitChange;
-                                   
+
                                    $scope.prepareReleaseNamespace = prepareReleaseNamespace;
-                                   
+
                                    $scope.release = release;
-                                   
+
+                                   $scope.showRollbackTips = showRollbackTips;
+
+                                   $scope.preRollback = preRollback;
+
+                                   $scope.rollback = rollback;
+
                                    $scope.retrieveItem = retrieveItem;
-                                   
+
                                    $scope.preDeleteItem = preDeleteItem;
-                                   
+
                                    $scope.deleteItem = deleteItem;
-                                   
+
                                    $scope.editItem = editItem;
-                                   
+
                                    $scope.createItem = createItem;
-                                   
+
                                    $scope.doItem = doItem;
 
-
                                    $scope.releaseBtnDisabled = false;
+                                   $scope.rollbackBtnDisabled = false;
                                    $scope.addItemBtnDisabled = false;
                                    $scope.commitChangeBtnDisabled = false;
-
 
                                    PermissionService.get_app_role_users($rootScope.pageContext.appId)
                                        .then(function (result) {
@@ -55,7 +59,7 @@ application_module.controller("ConfigNamespaceController",
                                        }, function (result) {
 
                                        });
-                                   
+
                                    UserService.load_user().then(function (result) {
                                        $scope.currentUser = result.userId;
                                    });
@@ -93,18 +97,19 @@ application_module.controller("ConfigNamespaceController",
                                    function commitChange(namespace) {
                                        var model = {
                                            configText: namespace.editText,
-                                           namespaceId: namespace.namespace.id,
+                                           namespaceId: namespace.baseInfo.id,
                                            format: namespace.format
                                        };
 
                                        //prevent repeat submit
-                                       if ($scope.commitChangeBtnDisabled){
+                                       if ($scope.commitChangeBtnDisabled) {
                                            return;
                                        }
                                        $scope.commitChangeBtnDisabled = true;
-                                       ConfigService.modify_items($rootScope.pageContext.appId, $rootScope.pageContext.env,
+                                       ConfigService.modify_items($rootScope.pageContext.appId,
+                                                                  $rootScope.pageContext.env,
                                                                   $rootScope.pageContext.clusterName,
-                                                                  namespace.namespace.namespaceName,
+                                                                  namespace.baseInfo.namespaceName,
                                                                   model).then(
                                            function (result) {
                                                toastr.success("更新成功, 如需生效请发布");
@@ -127,7 +132,7 @@ application_module.controller("ConfigNamespaceController",
                                        if (!namespace.hasReleasePermission) {
                                            $('#releaseNoPermissionDialog').modal('show');
                                            return;
-                                       } else if (namespace.lockOwner && $scope.currentUser == namespace.lockOwner){
+                                       } else if (namespace.lockOwner && $scope.currentUser == namespace.lockOwner) {
                                            //自己修改不能自己发布
                                            $('#releaseDenyDialog').modal('show');
                                        } else {
@@ -141,10 +146,10 @@ application_module.controller("ConfigNamespaceController",
                                    function release() {
                                        $scope.releaseBtnDisabled = true;
                                        ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
-                                                             $rootScope.pageContext.clusterName,
-                                                             $scope.toReleaseNamespace.namespace.namespaceName,
-                                                             $scope.releaseTitle,
-                                                             $scope.releaseComment).then(
+                                                              $rootScope.pageContext.clusterName,
+                                                              $scope.toReleaseNamespace.baseInfo.namespaceName,
+                                                              $scope.releaseTitle,
+                                                              $scope.releaseComment).then(
                                            function (result) {
                                                releaseModal.modal('hide');
                                                toastr.success("发布成功");
@@ -160,7 +165,58 @@ application_module.controller("ConfigNamespaceController",
                                        );
                                    }
 
+                                   var toRollbackNamespace = {};
+                                   function showRollbackTips(namespace) {
+                                       toRollbackNamespace = namespace;
+                                       $("#rollbackTips").modal('show');
+                                   }
 
+                                   
+
+                                   function preRollback() {
+                                       
+                                       //load latest two active releases
+                                       ReleaseService.findActiveRelease($rootScope.pageContext.appId,
+                                                                        $rootScope.pageContext.env,
+                                                                        $rootScope.pageContext.clusterName,
+                                                                        toRollbackNamespace.baseInfo.namespaceName, 0, 2)
+                                           .then(function (result) {
+                                               if (result.length <= 1) {
+                                                   toastr.error("没有可以回滚的发布历史");
+                                                   return;
+                                               }
+                                               $scope.firstRelease = result[0];
+                                               $scope.secondRelease = result[1];
+
+                                               ReleaseService.compare($rootScope.pageContext.env,
+                                                                      $scope.firstRelease.id,
+                                                                      $scope.secondRelease.id)
+                                                   .then(function (result) {
+                                                       $scope.releaseCompareResult = result.changes;
+                                                       $("#rollbackModal").modal('show');
+                                                   }, function (result) {
+                                                       toastr.error(AppUtil.errorMsg(result), "对比失败");
+                                                   })
+                                           }, function (result) {
+                                               toastr.error(AppUtil.errorMsg(result), "加载最近两次发布失败");
+                                           });
+                                   }
+
+                                   function rollback() {
+                                       $scope.rollbackBtnDisabled = true;
+                                       ReleaseService.rollback(
+                                                               $rootScope.pageContext.env,
+                                                               $scope.firstRelease.id)
+                                           .then(function (result) {
+                                               toastr.success("回滚成功");
+                                               $scope.rollbackBtnDisabled = false;
+                                               $("#rollbackModal").modal("hide");
+                                               $rootScope.refreshNamespaces();
+                                           }, function (result) {
+                                               $scope.rollbackBtnDisabled = false;
+                                               toastr.error(AppUtil.errorMsg(result), "回滚失败");
+                                           })
+                                   }
 
                                    $scope.tableViewOperType = '', $scope.item = {};
                                    var toOperationNamespace;
@@ -175,8 +231,9 @@ application_module.controller("ConfigNamespaceController",
                                    }
 
                                    var toDeleteItemId = 0;
+
                                    function preDeleteItem(namespace, itemId) {
-                                       if (!lockCheck(namespace)){
+                                       if (!lockCheck(namespace)) {
                                            return;
                                        }
 
@@ -190,7 +247,7 @@ application_module.controller("ConfigNamespaceController",
                                        ConfigService.delete_item($rootScope.pageContext.appId,
                                                                  $rootScope.pageContext.env,
                                                                  $rootScope.pageContext.clusterName,
-                                                                 toOperationNamespace.namespace.namespaceName,
+                                                                 toOperationNamespace.baseInfo.namespaceName,
                                                                  toDeleteItemId).then(
                                            function (result) {
                                                toastr.success("删除成功!");
@@ -202,7 +259,7 @@ application_module.controller("ConfigNamespaceController",
 
                                    //修改配置
                                    function editItem(namespace, item) {
-                                       if (!lockCheck(namespace)){
+                                       if (!lockCheck(namespace)) {
                                            return;
                                        }
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
@@ -214,7 +271,7 @@ application_module.controller("ConfigNamespaceController",
 
                                    //新增配置
                                    function createItem(namespace) {
-                                       if (!lockCheck(namespace)){
+                                       if (!lockCheck(namespace)) {
                                            return;
                                        }
 
@@ -234,6 +291,7 @@ application_module.controller("ConfigNamespaceController",
                                    }
 
                                    var itemModal = $("#itemModal");
+
                                    function doItem() {
 
                                        if (selectedClusters.length == 0) {
@@ -247,13 +305,13 @@ application_module.controller("ConfigNamespaceController",
                                                    //check key unique
                                                    var hasRepeatKey = false;
                                                    toOperationNamespace.items.forEach(function (item) {
-                                                      if (!item.isDeleted && $scope.item.key == item.item.key){
-                                                          toastr.error("key=" + $scope.item.key + " 已存在");
-                                                          hasRepeatKey = true;
-                                                          return;
-                                                          }
+                                                       if (!item.isDeleted && $scope.item.key == item.item.key) {
+                                                           toastr.error("key=" + $scope.item.key + " 已存在");
+                                                           hasRepeatKey = true;
+                                                           return;
+                                                       }
                                                    });
-                                                   if (hasRepeatKey){
+                                                   if (hasRepeatKey) {
                                                        return;
                                                    }
 
@@ -261,7 +319,7 @@ application_module.controller("ConfigNamespaceController",
                                                    ConfigService.create_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
-                                                                             toOperationNamespace.namespace.namespaceName,
+                                                                             toOperationNamespace.baseInfo.namespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
                                                            toastr.success(cluster.env + " , " + $scope.item.key,
@@ -282,7 +340,7 @@ application_module.controller("ConfigNamespaceController",
                                                    ConfigService.update_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,
-                                                                             toOperationNamespace.namespace.namespaceName,
+                                                                             toOperationNamespace.baseInfo.namespaceName,
                                                                              $scope.item).then(
                                                        function (result) {
                                                            toastr.success("更新成功, 如需生效请发布");

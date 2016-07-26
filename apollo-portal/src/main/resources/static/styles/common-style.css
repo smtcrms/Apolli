@@ -448,3 +448,7 @@ table th {
 .release-history .badge-3{
     background: #3478a8;
 }
+
+.release-history .label{
+    margin-right: 15px;
+}

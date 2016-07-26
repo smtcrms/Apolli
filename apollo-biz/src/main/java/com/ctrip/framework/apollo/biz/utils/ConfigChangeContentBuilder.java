@@ -28,8 +28,10 @@ public class ConfigChangeContentBuilder {
   }
 
   public ConfigChangeContentBuilder updateItem(Item oldItem, Item newItem) {
-    ItemPair itemPair = new ItemPair(oldItem, newItem);
-    updateItems.add(itemPair);
+    if (!oldItem.getValue().equals(newItem.getValue())){
+      ItemPair itemPair = new ItemPair(oldItem, newItem);
+      updateItems.add(itemPair);
+    }
     return this;
   }
 

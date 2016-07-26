@@ -8,7 +8,6 @@ import com.ctrip.framework.apollo.biz.repository.AppRepositoryTest;
 import com.ctrip.framework.apollo.biz.service.AdminServiceTest;
 import com.ctrip.framework.apollo.biz.service.AdminServiceTransactionTest;
 import com.ctrip.framework.apollo.biz.service.ClusterServiceTest;
-import com.ctrip.framework.apollo.biz.service.ConfigServiceTest;
 import com.ctrip.framework.apollo.biz.service.PrivilegeServiceTest;
 import com.ctrip.framework.apollo.biz.service.ServerConfigServiceTest;
 import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGeneratorTest;
@@ -22,7 +21,6 @@ import org.junit.runners.Suite.SuiteClasses;
     AppRepositoryTest.class,
     AppNamespaceRepositoryTest.class,
     AdminServiceTest.class,
-    ConfigServiceTest.class,
     PrivilegeServiceTest.class,
     AdminServiceTransactionTest.class,
     DatabaseMessageSenderTest.class,

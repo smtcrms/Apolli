@@ -66,6 +66,10 @@ public class RetryableRestTemplate {
   private <T> T execute(HttpMethod method, Env env, String path, Object request, Class<T> responseType,
                         Object... uriVariables) {
 
+    if (path.startsWith("/")){
+      path = path.substring(1, path.length());
+    }
+
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
     Transaction ct = Cat.newTransaction("AdminAPI", uri);
 

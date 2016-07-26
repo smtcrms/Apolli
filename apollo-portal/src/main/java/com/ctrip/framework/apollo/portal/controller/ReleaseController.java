@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
+import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseVO;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
 
@@ -42,16 +43,46 @@ public class ReleaseController {
   }
 
 
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases")
-  public List<ReleaseVO> findReleases(@PathVariable String appId,
-                                      @PathVariable String env, @PathVariable String clusterName,
-                                      @PathVariable String namespaceName,
-                                      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all")
+  public List<ReleaseVO> findAllReleases(@PathVariable String appId,
+                                         @PathVariable String env,
+                                         @PathVariable String clusterName,
+                                         @PathVariable String namespaceName,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "5") int size) {
 
     RequestPrecondition.checkNumberPositive(size);
     RequestPrecondition.checkNumberNotNegative(page);
 
-    return releaseService.findReleases(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
+    return releaseService.findAllReleases(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
+  }
 
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active")
+  public List<ReleaseDTO> findActiveReleases(@PathVariable String appId,
+                                             @PathVariable String env,
+                                             @PathVariable String clusterName,
+                                             @PathVariable String namespaceName,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "5") int size) {
+
+    RequestPrecondition.checkNumberPositive(size);
+    RequestPrecondition.checkNumberNotNegative(page);
+
+    return releaseService.findActiveReleases(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
+  }
+
+  @RequestMapping(value = "/envs/{env}/releases/compare")
+  public ReleaseCompareResult compareRelease(@PathVariable String env,
+                                             @RequestParam long firstReleaseId,
+                                             @RequestParam long secondReleaseId) {
+
+    return releaseService.compare(Env.valueOf(env), firstReleaseId, secondReleaseId);
+  }
+
+
+  @RequestMapping(path = "/envs/{env}/releases/{releaseId}/rollback", method = RequestMethod.PUT)
+  public void rollback(@PathVariable String env,
+                       @PathVariable long releaseId) {
+    releaseService.rollback(Env.valueOf(env), releaseId);
   }
 }

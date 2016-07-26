@@ -2,7 +2,8 @@
     <div class="row namespace-attribute-panel" ng-if="namespace.isPublic">
         <div class="text-center namespace-attribute-public" data-tooltip="tooltip" data-placement="bottom"
              title="点击跳转到公共Namespace" ng-click="goToParentAppConfigPage(namespace)">
-            公共
+            <span ng-show="namespace.parentAppId == namespace.baseInfo.appId">公共</span>
+            <span ng-show="namespace.parentAppId != namespace.baseInfo.appId">关联</span>
         </div>
     </div>
     <header class="panel-heading">
@@ -10,10 +11,11 @@
 
             <div class="col-md-6">
                 <b ng-bind="namespace.viewName" style="font-size: 20px;"></b>
-                                <span class="label label-info no-radius" ng-bind="namespace.format" ></span>
-                                <span class="label label-primary no-radius" ng-show="namespace.itemModifiedCnt > 0" >有修改
+                <span class="label label-info no-radius" ng-bind="namespace.format"></span>
+                                <span class="label label-primary no-radius" ng-show="namespace.itemModifiedCnt > 0">有修改
                                 <span class="badge label" ng-bind="namespace.itemModifiedCnt"></span></span>
-                <span class="label label-warning no-radius" ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
+                <span class="label label-warning no-radius"
+                      ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
             </div>
             <div class="col-md-6 text-right">
                 <button type="button"
@@ -26,18 +28,19 @@
 
                 </button>
                 <button type="button"
-                        class="btn btn-default btn-sm J_tableview_btn" disabled
-                        ng-show="namespace.hasReleasePermission">
+                        class="btn btn-default btn-sm J_tableview_btn"
+                        ng-show="namespace.hasReleasePermission"
+                        ng-click="showRollbackTips(namespace)">
                     <img src="img/rollback.png">
                     回滚
                 </button>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                        href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.namespace.namespaceName}}">
+                   href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}">
                     <img src="img/release-history.png">
                     发布历史
                 </a>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                   href="/namespace/role.html?#/appid={{appId}}&namespaceName={{namespace.namespace.namespaceName}}"
+                   href="/namespace/role.html?#/appid={{appId}}&namespaceName={{namespace.baseInfo.namespaceName}}"
                    ng-show="hasAssignUserPermission">
                     <img src="img/assign.png">
                     授权
