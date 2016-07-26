@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2016 Ctrip, Inc.</copyright>
     <item>
-      <title>File: 51,
+      <title>File: 49,
              Errors: 0,
-             Warnings: 182,
+             Warnings: 193,
              Infos: 0
       </title>
             <link>https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html</link>
@@ -66,7 +66,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  3
                 </td>
                 <td>
                   0
@@ -108,7 +108,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  2
                 </td>
                 <td>
                   0
@@ -122,7 +122,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  25
+                  15
                 </td>
                 <td>
                   0
@@ -192,7 +192,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  20
                 </td>
                 <td>
                   0
@@ -452,20 +452,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.ConfigService.java">com/ctrip/framework/apollo/biz/service/ConfigService.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.service.AuditService.java">com/ctrip/framework/apollo/biz/service/AuditService.java</a>
                 </td>
                 <td>
@@ -578,20 +564,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.aop.RepositoryAspect.java">com/ctrip/framework/apollo/biz/aop/RepositoryAspect.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://ctripcorp.github.io/apollo/apollo-biz/checkstyle.html#com.ctrip.framework.apollo.biz.repository.CommitRepository.java">com/ctrip/framework/apollo/biz/repository/CommitRepository.java</a>
                 </td>
                 <td>
@@ -612,7 +584,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  6
+                  8
                 </td>
                 <td>
                   0
@@ -710,7 +682,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
                 <td>
                   0
