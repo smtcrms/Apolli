@@ -16,7 +16,7 @@ sync_item_module.controller("SyncItemController",
                                  ConfigService.find_items($scope.pageContext.appId, $scope.pageContext.env,
                                                           $scope.pageContext.clusterName,
                                                           $scope.pageContext.namespaceName,
-                                                          "lastModifyTime")
+                                                          "lastModifiedTime")
                                      .then(function (result) {
 
                                          $scope.sourceItems = [];

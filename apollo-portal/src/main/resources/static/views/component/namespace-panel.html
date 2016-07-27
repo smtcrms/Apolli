@@ -1,9 +1,10 @@
 <div class="panel" style="border-top: 0px;">
     <div class="row namespace-attribute-panel" ng-if="namespace.isPublic">
-        <div class="text-center namespace-attribute-public" data-tooltip="tooltip" data-placement="bottom"
-             title="点击跳转到公共Namespace">
-            <span ng-show="namespace.parentAppId == namespace.baseInfo.appId">公共</span>
-            <span ng-show="namespace.parentAppId != namespace.baseInfo.appId"
+        <div class="text-center namespace-attribute-public">
+            <span data-tooltip="tooltip" data-placement="bottom" title="公共的Namespace"
+                  ng-show="namespace.parentAppId == namespace.baseInfo.appId">公共</span>
+            <span data-tooltip="tooltip" data-placement="bottom" title="点击跳转到公共的Namespace"
+                  ng-show="namespace.parentAppId != namespace.baseInfo.appId"
                   ng-click="goToParentAppConfigPage(namespace)">关联</span>
         </div>
     </div>
