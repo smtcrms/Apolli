@@ -106,11 +106,11 @@
 
             <!--step 2-->
             <div class="row" ng-show="syncItemStep == 2" ng-repeat="clusterDiff in clusterDiffs">
-                <h5 class="text-center">
+                <h4 class="text-center">
                     环境:<span ng-bind="clusterDiff.namespace.env"></span>
                     集群:<span ng-bind="clusterDiff.namespace.clusterName"></span>
                     <span ng-show="!clusterDiff.extInfo">Namespace:{{pageContext.namespaceName}}</span>
-                </h5>
+                </h4>
                 <div class="text-center"
                      ng-show="clusterDiff.diffs.createItems.length + clusterDiff.diffs.updateItems.length == 0 || clusterDiff.extInfo">
                     <span ng-show="clusterDiff.diffs.createItems.length + clusterDiff.diffs.updateItems.length == 0 && !clusterDiff.extInfo">没有更新的配置</span>
@@ -162,7 +162,6 @@
                         </div>
                     </div>
                 </div>
-                <hr>
             </div>
 
 
