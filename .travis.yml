@@ -15,7 +15,6 @@ before_install:
   - pip install --user codecov
 
 after_success:
-  - mvn clean site -DskipTests=true
   - codecov
 
 branches:
