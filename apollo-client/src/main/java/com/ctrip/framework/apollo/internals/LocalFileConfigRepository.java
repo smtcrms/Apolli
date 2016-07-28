@@ -49,6 +49,10 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
    * @param namespace the namespace
    */
   public LocalFileConfigRepository(String namespace) {
+    this(namespace, null);
+  }
+
+  public LocalFileConfigRepository(String namespace, ConfigRepository upstream) {
     m_namespace = namespace;
     m_container = ContainerLoader.getDefaultContainer();
     try {
@@ -57,13 +61,17 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       Cat.logError(ex);
       throw new ApolloConfigException("Unable to load component!", ex);
     }
-    this.setLocalCacheDir(findLocalCacheDir());
+    this.setLocalCacheDir(findLocalCacheDir(), false);
+    this.setUpstreamRepository(upstream);
+    this.trySync();
   }
 
-  void setLocalCacheDir(File baseDir) {
+  void setLocalCacheDir(File baseDir, boolean syncImmediately) {
     m_baseDir = baseDir;
     this.checkLocalConfigCacheDir(m_baseDir);
-    this.trySync();
+    if (syncImmediately) {
+      this.trySync();
+    }
   }
 
   private File findLocalCacheDir() {
@@ -95,6 +103,9 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   @Override
   public void setUpstreamRepository(ConfigRepository upstreamConfigRepository) {
+    if (upstreamConfigRepository == null) {
+      return;
+    }
     //clear previous listener
     if (m_upstream != null) {
       m_upstream.removeChangeListener(this);
@@ -118,7 +129,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
   @Override
   protected void sync() {
     //sync with upstream immediately
-   boolean syncFromUpstreamResultSuccess = trySyncFromUpstream();
+    boolean syncFromUpstreamResultSuccess = trySyncFromUpstream();
 
     if (syncFromUpstreamResultSuccess) {
       return;
@@ -252,7 +263,8 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
     } catch (IOException ex) {
       ApolloConfigException exception =
           new ApolloConfigException(
-              String.format("Create local config directory %s failed", baseDir.getAbsolutePath()), ex);
+              String.format("Create local config directory %s failed", baseDir.getAbsolutePath()),
+              ex);
       Cat.logError(exception);
       transaction.setStatus(exception);
       logger.warn(
