@@ -370,9 +370,9 @@
 
                                         <tr ng-repeat="change in releaseCompareResult">
                                             <td width="10%">
-                                                <span ng-show="change.type == 'ADD'">新增</span>
-                                                <span ng-show="change.type == 'MODIFY'">更新</span>
-                                                <span ng-show="change.type == 'DELETE'">删除</span>
+                                                <span ng-show="change.type == 'ADDED'">新增</span>
+                                                <span ng-show="change.type == 'MODIFIED'">更新</span>
+                                                <span ng-show="change.type == 'DELETED'">删除</span>
                                             </td>
                                             <td width="20%" ng-bind="change.entity.firstEntity.key">
 

@@ -101,10 +101,10 @@ public class ReleaseService {
       String secondValue = secondItems.get(key);
       //added
       if (secondValue == null) {
-        compareResult.addEntityPair(ChangeType.DELETE, new KVEntity(key, firstValue),
+        compareResult.addEntityPair(ChangeType.DELETED, new KVEntity(key, firstValue),
                                     new KVEntity(key, secondValue));
       } else if (!Objects.equal(firstValue, secondValue)) {
-        compareResult.addEntityPair(ChangeType.MODIFY, new KVEntity(key, firstValue),
+        compareResult.addEntityPair(ChangeType.MODIFIED, new KVEntity(key, firstValue),
                                     new KVEntity(key, secondValue));
       }
 
@@ -116,7 +116,7 @@ public class ReleaseService {
       String value = entry.getValue();
       if (firstItems.get(key) == null) {
         compareResult
-            .addEntityPair(ChangeType.ADD, new KVEntity(key, ""), new KVEntity(key, value));
+            .addEntityPair(ChangeType.ADDED, new KVEntity(key, ""), new KVEntity(key, value));
       }
 
     }
