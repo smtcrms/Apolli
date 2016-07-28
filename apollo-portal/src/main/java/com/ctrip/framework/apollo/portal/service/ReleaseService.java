@@ -12,6 +12,7 @@ import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.KVEntity;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseVO;
+import com.ctrip.framework.apollo.portal.enums.ChangeType;
 import com.dianping.cat.Cat;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +101,10 @@ public class ReleaseService {
       String secondValue = secondItems.get(key);
       //added
       if (secondValue == null) {
-        compareResult.addEntityPair(ReleaseCompareResult.ChangeType.DELETE, new KVEntity(key, firstValue),
+        compareResult.addEntityPair(ChangeType.DELETE, new KVEntity(key, firstValue),
                                     new KVEntity(key, secondValue));
       } else if (!Objects.equal(firstValue, secondValue)) {
-        compareResult.addEntityPair(ReleaseCompareResult.ChangeType.MODIFY, new KVEntity(key, firstValue),
+        compareResult.addEntityPair(ChangeType.MODIFY, new KVEntity(key, firstValue),
                                     new KVEntity(key, secondValue));
       }
 
@@ -115,7 +116,7 @@ public class ReleaseService {
       String value = entry.getValue();
       if (firstItems.get(key) == null) {
         compareResult
-            .addEntityPair(ReleaseCompareResult.ChangeType.ADD, new KVEntity(key, ""), new KVEntity(key, value));
+            .addEntityPair(ChangeType.ADD, new KVEntity(key, ""), new KVEntity(key, value));
       }
 
     }
