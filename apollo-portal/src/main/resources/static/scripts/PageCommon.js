@@ -12,26 +12,18 @@ $(document).ready(function () {
                              zindex: '1000'
                          });
 
-    // bootstrap tooltip
+    // bootstrap tooltip & textarea scroll
     setInterval(function () {
         $('[data-tooltip="tooltip"]').tooltip();
-        $('html').bind('mousewheel DOMMouseScroll',
-                                    function (e) {
-                                        var e0 = e.originalEvent,
-                                            delta = e0.wheelDelta
-                                                    || -e0.detail;
 
-                                        this.scrollTop +=
-                                            ( delta < 0 ? 1 : -1 ) * 30;
-                                        e.preventDefault();
-                                    });
+        $("textarea").niceScroll({styler: "fb", cursorcolor: "#fff"});
+
     }, 2500);
 });
 
-
-// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
+// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
 // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
-Date.prototype.Format = function (fmt) { 
+Date.prototype.Format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 

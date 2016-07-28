@@ -26,7 +26,7 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.release = release;
 
-                                   $scope.showRollbackTips = showRollbackTips;
+                                   $scope.showRollbackAlertDialog = showRollbackAlertDialog;
 
                                    $scope.preRollback = preRollback;
 
@@ -75,7 +75,7 @@ application_module.controller("ConfigNamespaceController",
                                            function (result) {
 
                                                $scope.namespaces = result;
-
+                                               
                                            }, function (result) {
                                                toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
                                            });
@@ -152,21 +152,20 @@ application_module.controller("ConfigNamespaceController",
                                        );
                                    }
 
-                                   var toRollbackNamespace = {};
-                                   function showRollbackTips(namespace) {
-                                       toRollbackNamespace = namespace;
-                                       $("#rollbackTips").modal('show');
+                                   function showRollbackAlertDialog() {
+                                       $("#rollbackModal").modal('hide');
+                                       $("#rollbackAlertDialog").modal('show');
                                    }
 
                                    
-
-                                   function preRollback() {
-                                       
+                                   $scope.toRollbackNamespace = {};
+                                   function preRollback(namespace) {
+                                       $scope.toRollbackNamespace = namespace;
                                        //load latest two active releases
                                        ReleaseService.findActiveRelease($rootScope.pageContext.appId,
                                                                         $rootScope.pageContext.env,
                                                                         $rootScope.pageContext.clusterName,
-                                                                        toRollbackNamespace.baseInfo.namespaceName, 0, 2)
+                                                                        $scope.toRollbackNamespace.baseInfo.namespaceName, 0, 2)
                                            .then(function (result) {
                                                if (result.length <= 1) {
                                                    toastr.error("没有可以回滚的发布历史");
@@ -180,6 +179,7 @@ application_module.controller("ConfigNamespaceController",
                                                                       $scope.secondRelease.id)
                                                    .then(function (result) {
                                                        $scope.releaseCompareResult = result.changes;
+
                                                        $("#rollbackModal").modal('show');
                                                    }, function (result) {
                                                        toastr.error(AppUtil.errorMsg(result), "对比失败");

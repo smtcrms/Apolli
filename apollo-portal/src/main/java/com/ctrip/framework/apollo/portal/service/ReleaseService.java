@@ -98,9 +98,15 @@ public class ReleaseService {
       String key = entry.getKey();
       String firstValue = entry.getValue();
       String secondValue = secondItems.get(key);
-      if (!Objects.equal(firstValue, secondValue)) {
-        compareResult.addEntityPair(new KVEntity(key, firstValue), new KVEntity(key, secondValue));
+      //added
+      if (secondValue == null) {
+        compareResult.addEntityPair(ReleaseCompareResult.ChangeType.DELETE, new KVEntity(key, firstValue),
+                                    new KVEntity(key, secondValue));
+      } else if (!Objects.equal(firstValue, secondValue)) {
+        compareResult.addEntityPair(ReleaseCompareResult.ChangeType.MODIFY, new KVEntity(key, firstValue),
+                                    new KVEntity(key, secondValue));
       }
+
     }
 
     //deleted in firstRelease
@@ -108,7 +114,8 @@ public class ReleaseService {
       String key = entry.getKey();
       String value = entry.getValue();
       if (firstItems.get(key) == null) {
-        compareResult.addEntityPair(new KVEntity(key, ""), new KVEntity(key, value));
+        compareResult
+            .addEntityPair(ReleaseCompareResult.ChangeType.ADD, new KVEntity(key, ""), new KVEntity(key, value));
       }
 
     }
