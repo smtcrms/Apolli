@@ -3,13 +3,16 @@ package com.ctrip.framework.apollo.spi;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.internals.DefaultConfig;
 import com.ctrip.framework.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.framework.apollo.internals.PropertiesConfigFile;
 import com.ctrip.framework.apollo.internals.XmlConfigFile;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.unidal.lookup.ComponentTestCase;
 
 import java.util.Properties;
@@ -17,8 +20,8 @@ import java.util.Properties;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -29,10 +32,15 @@ import static org.mockito.Mockito.when;
  */
 public class DefaultConfigFactoryTest extends ComponentTestCase {
   private DefaultConfigFactory defaultConfigFactory;
+  private static String someAppId;
+  private static Env someEnv;
 
   @Before
   public void setUp() throws Exception {
     super.setUp();
+    someAppId = "someId";
+    someEnv = Env.DEV;
+    defineComponent(ConfigUtil.class, MockConfigUtil.class);
     defaultConfigFactory = spy((DefaultConfigFactory) lookup(ConfigFactory.class));
   }
 
@@ -54,6 +62,17 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
     assertThat("DefaultConfigFactory should create DefaultConfig", result,
         is(instanceOf(DefaultConfig.class)));
     assertEquals(someValue, result.getProperty(someKey, null));
+  }
+
+  @Test
+  public void testCreateLocalConfigRepositoryInLocalDev() throws Exception {
+    String someNamespace = "someName";
+    someEnv = Env.LOCAL;
+
+    LocalFileConfigRepository localFileConfigRepository =
+        defaultConfigFactory.createLocalConfigRepository(someNamespace);
+
+    assertNull(ReflectionTestUtils.getField(localFileConfigRepository, "m_upstream"));
   }
 
   @Test
@@ -80,6 +99,18 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
     assertThat("Should create XmlConfigFile for xml format", xmlConfigFile, is(instanceOf(
         XmlConfigFile.class)));
     assertEquals(anotherNamespace, xmlConfigFile.getNamespace());
+  }
+
+  public static class MockConfigUtil extends ConfigUtil {
+    @Override
+    public String getAppId() {
+      return someAppId;
+    }
+
+    @Override
+    public Env getApolloEnv() {
+      return someEnv;
+    }
   }
 
 }

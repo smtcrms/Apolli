@@ -14,6 +14,7 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
+import com.ctrip.framework.apollo.internals.RemoteConfigLongPollService;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 import org.eclipse.jetty.server.Request;
@@ -22,6 +23,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,6 +52,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
   private File configDir;
   private String defaultNamespace;
   private String someOtherNamespace;
+  private RemoteConfigLongPollService remoteConfigLongPollService;
 
   @Before
   public void setUp() throws Exception {
@@ -63,11 +66,13 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
       configDir.delete();
     }
     configDir.mkdirs();
+    remoteConfigLongPollService = lookup(RemoteConfigLongPollService.class);
   }
 
   @Override
   @After
   public void tearDown() throws Exception {
+    ReflectionTestUtils.invokeMethod(remoteConfigLongPollService, "stopLongPollingRefresh");
     recursiveDelete(configDir);
     super.tearDown();
   }
@@ -309,7 +314,7 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    longPollFinished.get(pollTimeoutInMS * 50, TimeUnit.MILLISECONDS);
+    longPollFinished.get(5000, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
 
@@ -361,8 +366,8 @@ public class ConfigIntegrationTest extends BaseIntegrationTest {
 
     apolloConfig.getConfigurations().put(someKey, anotherValue);
 
-    longPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
-    someOtherNamespacelongPollFinished.get(pollTimeoutInMS * 20, TimeUnit.MILLISECONDS);
+    longPollFinished.get(5000, TimeUnit.MILLISECONDS);
+    someOtherNamespacelongPollFinished.get(5000, TimeUnit.MILLISECONDS);
 
     assertEquals(anotherValue, config.getProperty(someKey, null));
     assertEquals(anotherValue, someOtherConfig.getProperty(someKey, null));

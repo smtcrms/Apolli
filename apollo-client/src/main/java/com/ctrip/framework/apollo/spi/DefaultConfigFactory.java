@@ -9,9 +9,11 @@ import com.ctrip.framework.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.framework.apollo.internals.PropertiesConfigFile;
 import com.ctrip.framework.apollo.internals.RemoteConfigRepository;
 import com.ctrip.framework.apollo.internals.XmlConfigFile;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 /**
@@ -20,6 +22,8 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = ConfigFactory.class)
 public class DefaultConfigFactory implements ConfigFactory {
   private static final Logger logger = LoggerFactory.getLogger(DefaultConfigFactory.class);
+  @Inject
+  private ConfigUtil m_configUtil;
 
   @Override
   public Config create(String namespace) {
@@ -44,7 +48,13 @@ public class DefaultConfigFactory implements ConfigFactory {
   LocalFileConfigRepository createLocalConfigRepository(String namespace) {
     LocalFileConfigRepository localFileConfigRepository =
         new LocalFileConfigRepository(namespace);
-    localFileConfigRepository.setUpstreamRepository(createRemoteConfigRepository(namespace));
+    if (m_configUtil.isInLocalMode()) {
+      logger.warn(
+          "==== Apollo is in local mode! Won't pull configs from remote server for namespace {} ! ====",
+          namespace);
+    } else {
+      localFileConfigRepository.setUpstreamRepository(createRemoteConfigRepository(namespace));
+    }
     return localFileConfigRepository;
   }
 

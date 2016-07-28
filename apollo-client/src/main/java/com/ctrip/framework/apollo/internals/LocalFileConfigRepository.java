@@ -184,6 +184,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
         properties = new Properties();
         properties.load(in);
+        logger.debug("Loading local config file {} successfully!", file.getAbsolutePath());
       } catch (IOException ex) {
         Cat.logError(ex);
         throw new ApolloConfigException(String
