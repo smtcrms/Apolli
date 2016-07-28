@@ -1,22 +1,24 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
 
+import com.ctrip.framework.apollo.portal.enums.ChangeType;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class ReleaseCompareResult {
 
-  private List<EntityPair<KVEntity>> changes = new LinkedList<>();
+  private List<Change> changes = new LinkedList<>();
 
-  public void addEntityPair(KVEntity firstEntity, KVEntity secondEntity){
-    changes.add(new EntityPair<>(firstEntity, secondEntity));
+  public void addEntityPair(ChangeType type, KVEntity firstEntity, KVEntity secondEntity) {
+    changes.add(new Change(type, new EntityPair<>(firstEntity, secondEntity)));
   }
 
-  public List<EntityPair<KVEntity>> getChanges() {
+  public List<Change> getChanges() {
     return changes;
   }
 
-  public void setChanges(
-      List<EntityPair<KVEntity>> changes) {
+  public void setChanges(List<Change> changes) {
     this.changes = changes;
   }
+
 }
