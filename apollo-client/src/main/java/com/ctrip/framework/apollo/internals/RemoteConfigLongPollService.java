@@ -171,6 +171,11 @@ public class RemoteConfigLongPollService implements Initializable {
           notify(lastServiceDto, response.getBody());
         }
 
+        //try to load balance
+        if (random.nextBoolean()) {
+          lastServiceDto = null;
+        }
+
         m_longPollFailSchedulePolicyInSecond.success();
         transaction.addData("StatusCode", response.getStatusCode());
         transaction.setStatus(Message.SUCCESS);

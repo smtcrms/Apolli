@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   private File someBaseDir;
   private String someNamespace;
-  private ConfigRepository fallbackRepo;
+  private ConfigRepository upstreamRepo;
   private Properties someProperties;
   private static String someAppId = "someApp";
   private static String someCluster = "someCluster";
@@ -51,8 +51,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     defaultKey = "defaultKey";
     defaultValue = "defaultValue";
     someProperties.setProperty(defaultKey, defaultValue);
-    fallbackRepo = mock(ConfigRepository.class);
-    when(fallbackRepo.getConfig()).thenReturn(someProperties);
+    upstreamRepo = mock(ConfigRepository.class);
+    when(upstreamRepo.getConfig()).thenReturn(someProperties);
 
     defineComponent(ConfigUtil.class, MockConfigUtil.class);
   }
@@ -93,7 +93,7 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     createLocalCachePropertyFile(someProperties);
 
     LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someNamespace);
-    localRepo.setLocalCacheDir(someBaseDir);
+    localRepo.setLocalCacheDir(someBaseDir, true);
     Properties properties = localRepo.getConfig();
 
     assertEquals(someValue, properties.getProperty(someKey));
@@ -108,11 +108,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
 
     Files.write(defaultKey + "=" + someValue, file, Charsets.UTF_8);
 
-    LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someNamespace);
-    localRepo.setLocalCacheDir(someBaseDir);
-
-    //when fallback is set, it will try to sync from it
-    localRepo.setUpstreamRepository(fallbackRepo);
+    LocalFileConfigRepository localRepo = new LocalFileConfigRepository(someNamespace, upstreamRepo);
+    localRepo.setLocalCacheDir(someBaseDir, true);
 
     Properties properties = localRepo.getConfig();
 
@@ -123,10 +120,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   public void testLoadConfigWithNoLocalFile() throws Exception {
     LocalFileConfigRepository
         localFileConfigRepository =
-        new LocalFileConfigRepository(someNamespace);
-    localFileConfigRepository.setLocalCacheDir(someBaseDir);
-
-    localFileConfigRepository.setUpstreamRepository(fallbackRepo);
+        new LocalFileConfigRepository(someNamespace, upstreamRepo);
+    localFileConfigRepository.setLocalCacheDir(someBaseDir, true);
 
     Properties result = localFileConfigRepository.getConfig();
 
@@ -138,17 +133,15 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
   @Test
   public void testLoadConfigWithNoLocalFileMultipleTimes() throws Exception {
     LocalFileConfigRepository localRepo =
-        new LocalFileConfigRepository(someNamespace);
-    localRepo.setLocalCacheDir(someBaseDir);
-
-    localRepo.setUpstreamRepository(fallbackRepo);
+        new LocalFileConfigRepository(someNamespace, upstreamRepo);
+    localRepo.setLocalCacheDir(someBaseDir, true);
 
     Properties someProperties = localRepo.getConfig();
 
     LocalFileConfigRepository
         anotherLocalRepoWithNoFallback =
         new LocalFileConfigRepository(someNamespace);
-    anotherLocalRepoWithNoFallback.setLocalCacheDir(someBaseDir);
+    anotherLocalRepoWithNoFallback.setLocalCacheDir(someBaseDir, true);
 
     Properties anotherProperties = anotherLocalRepoWithNoFallback.getConfig();
 
@@ -163,9 +156,8 @@ public class LocalFileConfigRepositoryTest extends ComponentTestCase {
     RepositoryChangeListener someListener = mock(RepositoryChangeListener.class);
 
     LocalFileConfigRepository localFileConfigRepository =
-        new LocalFileConfigRepository(someNamespace);
-    localFileConfigRepository.setLocalCacheDir(someBaseDir);
-    localFileConfigRepository.setUpstreamRepository(fallbackRepo);
+        new LocalFileConfigRepository(someNamespace, upstreamRepo);
+    localFileConfigRepository.setLocalCacheDir(someBaseDir, true);
     localFileConfigRepository.addChangeListener(someListener);
 
     localFileConfigRepository.getConfig();

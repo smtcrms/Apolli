@@ -46,16 +46,13 @@ public class DefaultConfigFactory implements ConfigFactory {
   }
 
   LocalFileConfigRepository createLocalConfigRepository(String namespace) {
-    LocalFileConfigRepository localFileConfigRepository =
-        new LocalFileConfigRepository(namespace);
     if (m_configUtil.isInLocalMode()) {
       logger.warn(
           "==== Apollo is in local mode! Won't pull configs from remote server for namespace {} ! ====",
           namespace);
-    } else {
-      localFileConfigRepository.setUpstreamRepository(createRemoteConfigRepository(namespace));
+      return new LocalFileConfigRepository(namespace);
     }
-    return localFileConfigRepository;
+    return new LocalFileConfigRepository(namespace, createRemoteConfigRepository(namespace));
   }
 
   RemoteConfigRepository createRemoteConfigRepository(String namespace) {
