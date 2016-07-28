@@ -1,9 +1,9 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.utils.InputValidator;
-import com.ctrip.framework.apollo.core.dto.ClusterDTO;
+import com.ctrip.framework.apollo.common.dto.ClusterDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 

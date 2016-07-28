@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.service.txtresolver;
 
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
 
 import java.util.List;
 

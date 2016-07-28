@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.portal.controller;
 
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel;

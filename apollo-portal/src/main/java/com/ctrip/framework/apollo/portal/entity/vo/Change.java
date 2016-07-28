@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
 
+import com.ctrip.framework.apollo.common.entity.EntityPair;
 import com.ctrip.framework.apollo.portal.enums.ChangeType;
 
 public class Change {
@@ -24,8 +25,7 @@ public class Change {
     return entity;
   }
 
-  public void setEntity(
-      EntityPair<KVEntity> entity) {
+  public void setEntity(EntityPair<KVEntity> entity) {
     this.entity = entity;
   }
 }

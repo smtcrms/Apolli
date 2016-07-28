@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock;
 import com.ctrip.framework.apollo.biz.service.ItemSetService;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
 
 @RestController
 public class ItemSetController {

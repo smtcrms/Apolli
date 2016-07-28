@@ -7,8 +7,8 @@ import com.ctrip.framework.apollo.biz.service.ItemService;
 import com.ctrip.framework.apollo.biz.service.NamespaceLockService;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.biz.utils.ApolloSwitcher;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

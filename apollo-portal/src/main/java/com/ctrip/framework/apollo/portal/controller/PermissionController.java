@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.controller;
 
 import com.google.common.collect.Sets;
 
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;

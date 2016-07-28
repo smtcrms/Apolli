@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
 
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 
 import java.util.Set;
 

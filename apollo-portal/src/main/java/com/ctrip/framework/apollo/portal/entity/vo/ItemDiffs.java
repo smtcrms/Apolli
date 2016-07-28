@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
 
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
 
 public class ItemDiffs {
   private NamespaceIdentifer namespace;

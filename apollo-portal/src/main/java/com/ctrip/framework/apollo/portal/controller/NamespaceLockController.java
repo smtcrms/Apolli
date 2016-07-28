@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.controller;
 
-import com.ctrip.framework.apollo.core.dto.NamespaceLockDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceLockDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.service.NamespaceLockService;
 

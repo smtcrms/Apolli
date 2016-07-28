@@ -12,7 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.repository.AppRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.dto.AppDTO;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
 
 public class AppControllerTest extends AbstractControllerTest {
 

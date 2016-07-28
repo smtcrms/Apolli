@@ -14,9 +14,9 @@ import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
 
 @RestController
 public class NamespaceController {
