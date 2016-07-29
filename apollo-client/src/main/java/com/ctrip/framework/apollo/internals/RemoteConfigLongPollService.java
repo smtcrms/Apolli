@@ -172,7 +172,7 @@ public class RemoteConfigLongPollService implements Initializable {
         }
 
         //try to load balance
-        if (random.nextBoolean()) {
+        if (response.getStatusCode() == 304 && random.nextBoolean()) {
           lastServiceDto = null;
         }
 
