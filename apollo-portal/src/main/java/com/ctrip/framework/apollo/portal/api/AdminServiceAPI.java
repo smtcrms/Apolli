@@ -1,16 +1,16 @@
 package com.ctrip.framework.apollo.portal.api;
 
 
-import com.ctrip.framework.apollo.core.dto.AppNamespaceDTO;
-import com.ctrip.framework.apollo.core.dto.CommitDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceLockDTO;
+import com.ctrip.framework.apollo.common.dto.AppNamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.CommitDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceLockDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.dto.AppDTO;
-import com.ctrip.framework.apollo.core.dto.ClusterDTO;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
+import com.ctrip.framework.apollo.common.dto.ClusterDTO;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.http.HttpEntity;

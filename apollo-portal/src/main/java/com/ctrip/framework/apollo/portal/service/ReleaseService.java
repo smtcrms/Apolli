@@ -3,7 +3,7 @@ package com.ctrip.framework.apollo.portal.service;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;

@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.entity.form;
 
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 
 
 public class NamespaceCreationModel {

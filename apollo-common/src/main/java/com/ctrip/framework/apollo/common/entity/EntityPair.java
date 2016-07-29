@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.entity.vo;
+package com.ctrip.framework.apollo.common.entity;
 
 public class EntityPair<E> {
 

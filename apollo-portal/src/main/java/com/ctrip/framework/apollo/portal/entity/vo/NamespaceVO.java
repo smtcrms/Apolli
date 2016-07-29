@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 
 import java.util.List;
 

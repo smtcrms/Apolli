@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.common.utils;
 
+import com.ctrip.framework.apollo.common.exception.BeanUtilsException;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class BeanUtils {
     try {
       instance = clazz.newInstance();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new BeanUtilsException(e);
     }
     org.springframework.beans.BeanUtils.copyProperties(src, instance, getNullPropertyNames(src));
     return instance;
@@ -95,7 +97,7 @@ public class BeanUtils {
         map.put((K) field.get(o), (V) o);
       }
     } catch (Exception e) {
-      throw new RuntimeException();
+      throw new BeanUtilsException(e);
     }
     return map;
   }
@@ -127,7 +129,7 @@ public class BeanUtils {
         map.get(k).add((V) o);
       }
     } catch (Exception e) {
-      throw new RuntimeException();
+      throw new BeanUtilsException(e);
     }
     return map;
   }
@@ -155,7 +157,7 @@ public class BeanUtils {
         set.add((K)field.get(o));
       }
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new BeanUtilsException(e);
     }
     return set;
   }
@@ -187,7 +189,7 @@ public class BeanUtils {
         return field.get(obj);
       }
     } catch (Exception e) {
-      // ig
+      throw new BeanUtilsException(e);
     }
     return null;
   }
@@ -203,7 +205,7 @@ public class BeanUtils {
         field.set(obj, value);
       }
     } catch (Exception e) {
-      // ig
+      throw new BeanUtilsException(e);
     }
   }
 

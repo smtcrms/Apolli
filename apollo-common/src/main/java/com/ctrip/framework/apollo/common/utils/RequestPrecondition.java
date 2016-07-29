@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.common.utils;
 
 
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 

@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.api;
 
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
