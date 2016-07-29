@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.portal.service.txtresolver;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import org.springframework.stereotype.Component;
@@ -37,6 +37,7 @@ public class FileTextResolver implements ConfigTextResolver {
     item.setId(itemId);
     item.setNamespaceId(namespaceId);
     item.setValue(value);
+    item.setLineNum(1);
     item.setKey(ConfigConsts.CONFIG_FILE_CONTENT_KEY);
     return item;
   }

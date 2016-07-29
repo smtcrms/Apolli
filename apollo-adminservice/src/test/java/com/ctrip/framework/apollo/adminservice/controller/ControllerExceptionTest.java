@@ -19,9 +19,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.service.AdminService;
 import com.ctrip.framework.apollo.biz.service.AppService;
-import com.ctrip.framework.apollo.core.dto.AppDTO;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerExceptionTest {

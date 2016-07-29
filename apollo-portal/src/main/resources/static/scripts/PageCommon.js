@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+    // nicescroll
     $("html").niceScroll({
                              styler: "fb",
                              cursorcolor: "#e8403f",
@@ -9,15 +11,19 @@ $(document).ready(function () {
                              cursorborder: '',
                              zindex: '1000'
                          });
+
+    // bootstrap tooltip & textarea scroll
+    setInterval(function () {
+        $('[data-tooltip="tooltip"]').tooltip();
+
+        $("textarea").niceScroll({styler: "fb", cursorcolor: "#fff"});
+
+    }, 2500);
 });
 
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-});
-
-// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
+// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
 // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
-Date.prototype.Format = function (fmt) { 
+Date.prototype.Format = function (fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 

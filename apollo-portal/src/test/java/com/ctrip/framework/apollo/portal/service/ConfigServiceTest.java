@@ -1,9 +1,9 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
@@ -12,7 +12,6 @@ import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.service.ConfigService;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Assert;

@@ -184,4 +184,14 @@ public class ConfigUtil {
     //TODO call Framework Foundation to get the default local cache dir
     return String.format("/opt/data/%s", getAppId());
   }
+
+  public boolean isInLocalMode() {
+    try {
+      Env env = getApolloEnv();
+      return env == Env.LOCAL;
+    } catch (Throwable ex) {
+      //ignore
+    }
+    return false;
+  }
 }

@@ -23,8 +23,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
-import com.ctrip.framework.apollo.core.dto.AppDTO;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.controller.AppController;
 import com.ctrip.framework.apollo.portal.service.UserService;
 
@@ -69,9 +69,8 @@ public class ServiceExceptionTest extends AbstractIntegrationTest {
     } catch (HttpStatusCodeException e) {
       @SuppressWarnings("unchecked")
       Map<String, String> attr = new Gson().fromJson(e.getResponseBodyAsString(), Map.class);
-      System.out.println(ExceptionUtils.toString(e));
-      Assert.assertEquals("No available admin service", attr.get("message"));
-      Assert.assertEquals("8848", attr.get("errorCode"));
+      Assert.assertEquals("500 admin server error", attr.get("message"));
+      Assert.assertEquals(500.0, attr.get("status"));
     }
   }
 

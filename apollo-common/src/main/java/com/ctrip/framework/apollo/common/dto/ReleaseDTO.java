@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.core.dto;
+package com.ctrip.framework.apollo.common.dto;
 
 public class ReleaseDTO extends BaseDTO{
   private long id;
@@ -16,6 +16,8 @@ public class ReleaseDTO extends BaseDTO{
   private String configurations;
 
   private String comment;
+
+  private boolean isAbandoned;
 
   public long getId() {
     return id;
@@ -81,4 +83,11 @@ public class ReleaseDTO extends BaseDTO{
     this.namespaceName = namespaceName;
   }
 
+  public boolean isAbandoned() {
+    return isAbandoned;
+  }
+
+  public void setAbandoned(boolean abandoned) {
+    isAbandoned = abandoned;
+  }
 }

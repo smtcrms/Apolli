@@ -12,6 +12,11 @@
 		<component>
 			<role>com.ctrip.framework.apollo.spi.ConfigFactory</role>
 			<implementation>com.ctrip.framework.apollo.spi.DefaultConfigFactory</implementation>
+			<requirements>
+				<requirement>
+					<role>com.ctrip.framework.apollo.util.ConfigUtil</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.ctrip.framework.apollo.spi.ConfigRegistry</role>

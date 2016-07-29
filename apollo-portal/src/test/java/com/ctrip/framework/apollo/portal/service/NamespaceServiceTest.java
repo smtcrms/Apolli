@@ -1,15 +1,13 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
-import com.ctrip.framework.apollo.portal.service.NamespaceService;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Before;
@@ -94,9 +92,9 @@ public class NamespaceServiceTest {
     assertEquals(4, namespaceVO.getItems().size());
     assertEquals("a", namespaceVO.getItems().get(0).getItem().getKey());
     assertEquals(2, namespaceVO.getItemModifiedCnt());
-    assertEquals(appId, namespaceVO.getNamespace().getAppId());
-    assertEquals(clusterName, namespaceVO.getNamespace().getClusterName());
-    assertEquals(namespaceName, namespaceVO.getNamespace().getNamespaceName());
+    assertEquals(appId, namespaceVO.getBaseInfo().getAppId());
+    assertEquals(clusterName, namespaceVO.getBaseInfo().getClusterName());
+    assertEquals(namespaceName, namespaceVO.getBaseInfo().getNamespaceName());
 
   }
 

@@ -1,3 +1,5 @@
+import com.google.common.base.Charsets;
+
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.ConfigFile;
@@ -80,7 +82,7 @@ public class ApolloConfigDemo {
         "Apollo Config Demo. Please input key to get the value.");
     while (true) {
       System.out.print("> ");
-      String input = new BufferedReader(new InputStreamReader(System.in)).readLine();
+      String input = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
       if (input == null || input.length() == 0) {
         continue;
       }

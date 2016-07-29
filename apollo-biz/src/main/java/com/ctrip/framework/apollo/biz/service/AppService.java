@@ -13,7 +13,7 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.repository.AppRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 
 @Service
 public class AppService {

@@ -27,18 +27,18 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
                 }, function (result) {
                     toastr.error(AppUtil.errorMsg(result), "load apps error"); 
                 });    
-            };
+            }
             
-
             $scope.search = function () {
-                    var key = $scope.searchKey;
+                    var key = $scope.searchKey.toLocaleLowerCase();
                     if (key == '') {
                             $scope.apps = apps;
                             return;
                     }
                     var result = [];
                     apps.forEach(function (item) {
-                            if (item.appId.indexOf(key) >= 0 || item.name.indexOf(key) >= 0) {
+                            if (item.appId.toLocaleLowerCase().indexOf(key) >= 0 ||
+                                item.name.toLocaleLowerCase().indexOf(key) >= 0) {
                                     result.push(item);
                             }
                     });

@@ -1,6 +1,5 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,9 @@ import com.ctrip.framework.apollo.biz.service.ItemService;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
 
 @RestController
 public class ItemController {
@@ -131,16 +130,7 @@ public class ItemController {
   public List<ItemDTO> findItems(@PathVariable("appId") String appId,
                                  @PathVariable("clusterName") String clusterName,
                                  @PathVariable("namespaceName") String namespaceName) {
-    List<Item> items = itemService.findItems(appId, clusterName, namespaceName);
-    List<ItemDTO> itemDTOs = new LinkedList<>();
-
-    for (Item item : items) {
-      ItemDTO itemDTO = BeanUtils.transfrom(ItemDTO.class, item);
-      itemDTO.setLastModifiedBy(item.getDataChangeLastModifiedBy());
-      itemDTO.setLastModifiedTime(item.getDataChangeLastModifiedTime());
-      itemDTOs.add(itemDTO);
-    }
-    return itemDTOs;
+    return BeanUtils.batchTransform(ItemDTO.class, itemService.findItems(appId, clusterName, namespaceName));
   }
 
   @RequestMapping("/items/{itemId}")

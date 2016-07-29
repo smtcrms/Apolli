@@ -1,23 +1,28 @@
 <div class="panel" style="border-top: 0px;">
     <div class="row namespace-attribute-panel" ng-if="namespace.isPublic">
-        <div class="text-center namespace-attribute-public" data-tooltip="tooltip" data-placement="bottom"
-             title="点击跳转到公共Namespace" ng-click="goToParentAppConfigPage(namespace)">
-            公共
+        <div class="text-center namespace-attribute-public">
+            <span data-tooltip="tooltip" data-placement="bottom" title="公共的Namespace"
+                  ng-show="namespace.parentAppId == namespace.baseInfo.appId">公共</span>
+            <span data-tooltip="tooltip" data-placement="bottom" title="点击跳转到公共的Namespace"
+                  ng-show="namespace.parentAppId != namespace.baseInfo.appId"
+                  ng-click="goToParentAppConfigPage(namespace)">关联</span>
         </div>
     </div>
     <header class="panel-heading">
         <div class="row">
 
-            <div class="col-md-6">
-                <b ng-bind="namespace.viewName" style="font-size: 20px;"></b>
-                                <span class="label label-info no-radius" ng-bind="namespace.format" ></span>
-                                <span class="label label-primary no-radius" ng-show="namespace.itemModifiedCnt > 0" >有修改
+            <div class="col-md-7">
+                <b ng-bind="namespace.viewName" style="font-size: 20px;" data-tooltip="tooltip" data-placement="bottom"
+                   title="{{namespace.comment}}"></b>
+                <span class="label label-info no-radius" ng-bind="namespace.format"></span>
+                                <span class="label label-primary no-radius" ng-show="namespace.itemModifiedCnt > 0">有修改
                                 <span class="badge label" ng-bind="namespace.itemModifiedCnt"></span></span>
-                <span class="label label-warning no-radius" ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
+                <span class="label label-warning no-radius"
+                      ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
             </div>
-            <div class="col-md-6 text-right">
-                <button type="button"
-                        class="btn btn-success btn-sm J_tableview_btn"
+            <div class="col-md-5 text-right">
+                <button type="button" class="btn btn-success btn-sm J_tableview_btn"
+                        data-tooltip="tooltip" data-placement="bottom" title="发布配置"
                         ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
                         ng-disabled="namespace.isTextEditing"
                         ng-click="preReleaseNs(namespace)">
@@ -25,24 +30,28 @@
                     发布
 
                 </button>
-                <button type="button"
-                        class="btn btn-default btn-sm J_tableview_btn" disabled
-                        ng-show="namespace.hasReleasePermission">
+                <button type="button" class="btn btn-default btn-sm J_tableview_btn"
+                        data-tooltip="tooltip" data-placement="bottom" title="回滚配置"
+                        ng-show="namespace.hasReleasePermission"
+                        ng-click="preRollback(namespace)">
                     <img src="img/rollback.png">
                     回滚
                 </button>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                        href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.namespace.namespaceName}}">
+                   data-tooltip="tooltip" data-placement="bottom" title="查看发布历史"
+                   href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}">
                     <img src="img/release-history.png">
                     发布历史
                 </a>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
-                   href="/namespace/role.html?#/appid={{appId}}&namespaceName={{namespace.namespace.namespaceName}}"
+                   data-tooltip="tooltip" data-placement="bottom" title="配置修改、发布权限"
+                   href="/namespace/role.html?#/appid={{appId}}&namespaceName={{namespace.baseInfo.namespaceName}}"
                    ng-show="hasAssignUserPermission">
                     <img src="img/assign.png">
                     授权
                 </a>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
+                   data-tooltip="tooltip" data-placement="bottom" title="同步各环境间配置"
                    ng-click="goToSyncPage(namespace)"
                    ng-show="namespace.hasModifyPermission && namespace.isPropertiesFormat">
                     <img src="img/sync.png">
@@ -165,10 +174,10 @@
                     <span ng-bind="config.item.comment | limitTo: 250"></span>
                     <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
                 </td>
-                <td width="10%" ng-bind="config.item.lastModifiedBy">
+                <td width="10%" ng-bind="config.item.dataChangeLastModifiedBy">
                 </td>
                 <td width="15%"
-                    ng-bind="config.item.lastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                    ng-bind="config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
                 </td>
 
                 <td width="10%">

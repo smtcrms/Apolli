@@ -14,29 +14,38 @@ release_history_module.controller("ReleaseHistoryController",
                                        $scope.page = 0;
                                        $scope.releases = [];
                                        $scope.hasLoadAll = false;
+
                                        $scope.findReleases = findReleases;
 
                                        $scope.loadMore = loadMore;
 
                                        findReleases($scope.page);
 
+                                       var hasFindActiveRelease = false;
                                        function findReleases(page) {
-                                           ReleaseService.findRelease($scope.pageContext.appId,
-                                                                      $scope.pageContext.env,
-                                                                      $scope.pageContext.clusterName,
-                                                                      $scope.pageContext.namespaceName,
-                                                                      page)
+                                           ReleaseService.findAllRelease($scope.pageContext.appId,
+                                                                         $scope.pageContext.env,
+                                                                         $scope.pageContext.clusterName,
+                                                                         $scope.pageContext.namespaceName,
+                                                                         page)
                                                .then(function (result) {
-                                                   if (!result || result.length == 0){
+                                                   if (!result || result.length == 0) {
                                                        $scope.hasLoadAll = true;
                                                        return;
                                                    }
 
-                                                   var hasParseNamepaceType = false;
+                                                   var hasParseNamespaceType = false;
+
                                                    result.forEach(function (release) {
-                                                       if (!hasParseNamepaceType){
-                                                           $scope.isTextFile = /\.(json|yaml|yml|xml)$/gi.test(release.baseInfo.namespaceName);
-                                                           hasParseNamepaceType = true;
+                                                       if (!hasParseNamespaceType) {
+                                                           $scope.isTextFile =
+                                                               /\.(json|yaml|yml|xml)$/gi.test(
+                                                                   release.baseInfo.namespaceName);
+                                                           hasParseNamespaceType = true;
+                                                       }
+                                                       if (!hasFindActiveRelease && !release.baseInfo.isAbandoned) {
+                                                           release.active = true;
+                                                           hasFindActiveRelease = true;
                                                        }
                                                        $scope.releases.push(release);
                                                    })

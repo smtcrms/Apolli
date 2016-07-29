@@ -9,9 +9,12 @@ import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
 import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,29 +30,47 @@ import java.util.Map;
  */
 @Service
 public class ReleaseService {
+
   private Gson gson = new Gson();
 
   @Autowired
   private ReleaseRepository releaseRepository;
-
   @Autowired
   private ItemRepository itemRepository;
-
   @Autowired
   private AuditService auditService;
-
   @Autowired
   private NamespaceLockService namespaceLockService;
-
 
   public Release findOne(long releaseId) {
     Release release = releaseRepository.findOne(releaseId);
     return release;
   }
 
-  public List<Release> findReleases(String appId, String clusterName, String namespaceName, Pageable page) {
+  public Release findLatestActiveRelease(String appId, String clusterName, String namespaceName) {
+    Release release = releaseRepository.findFirstByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(
+        appId, clusterName, namespaceName);
+    return release;
+  }
+
+  public List<Release> findAllReleases(String appId, String clusterName, String namespaceName, Pageable page) {
     List<Release> releases = releaseRepository.findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(appId,
-                                                                                                      clusterName, namespaceName, page);
+                                                                                                      clusterName,
+                                                                                                      namespaceName,
+                                                                                                      page);
+    if (releases == null) {
+      return Collections.emptyList();
+    }
+    return releases;
+  }
+
+  public List<Release> findActiveReleases(String appId, String clusterName, String namespaceName, Pageable page) {
+    List<Release>
+        releases =
+        releaseRepository.findByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(appId,
+                                                                                                    clusterName,
+                                                                                                    namespaceName,
+                                                                                                    page);
     if (releases == null) {
       return Collections.emptyList();
     }
@@ -57,7 +78,7 @@ public class ReleaseService {
   }
 
   @Transactional
-  public Release buildRelease(String name, String comment, Namespace namespace, String owner) {
+  public Release buildRelease(String name, String comment, Namespace namespace, String operator) {
 
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
     Map<String, String> configurations = new HashMap<String, String>();
@@ -71,8 +92,8 @@ public class ReleaseService {
     Release release = new Release();
     release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
     release.setDataChangeCreatedTime(new Date());
-    release.setDataChangeCreatedBy(owner);
-    release.setDataChangeLastModifiedBy(owner);
+    release.setDataChangeCreatedBy(operator);
+    release.setDataChangeLastModifiedBy(operator);
     release.setName(name);
     release.setComment(comment);
     release.setAppId(namespace.getAppId());
@@ -83,9 +104,37 @@ public class ReleaseService {
 
     namespaceLockService.unlock(namespace.getId());
     auditService.audit(Release.class.getSimpleName(), release.getId(), Audit.OP.INSERT,
-        release.getDataChangeCreatedBy());
+                       release.getDataChangeCreatedBy());
 
     return release;
   }
 
+  @Transactional
+  public Release rollback(long releaseId, String operator) {
+    Release release = findOne(releaseId);
+    if (release == null){
+      throw new NotFoundException("release not found");
+    }
+    if (release.isAbandoned()){
+      throw new BadRequestException("release is not active");
+    }
+
+    String appId = release.getAppId();
+    String clusterName = release.getClusterName();
+    String namespaceName = release.getNamespaceName();
+
+    PageRequest page = new PageRequest(0, 2);
+    List<Release> twoLatestActiveReleases = findActiveReleases(appId, clusterName, namespaceName, page);
+    if (twoLatestActiveReleases == null || twoLatestActiveReleases.size() < 2) {
+      throw new BadRequestException(String.format(
+          "Can't rollback namespace(appId=%s, clusterName=%s, namespaceName=%s) because there is only one active release", appId,
+          clusterName,
+          namespaceName));
+    }
+
+    release.setAbandoned(true);
+    release.setDataChangeLastModifiedBy(operator);
+
+    return releaseRepository.save(release);
+  }
 }

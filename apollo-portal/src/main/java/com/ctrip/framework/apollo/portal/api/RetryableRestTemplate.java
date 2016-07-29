@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.api;
 
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.exception.ServiceException;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
@@ -65,6 +65,10 @@ public class RetryableRestTemplate {
 
   private <T> T execute(HttpMethod method, Env env, String path, Object request, Class<T> responseType,
                         Object... uriVariables) {
+
+    if (path.startsWith("/")){
+      path = path.substring(1, path.length());
+    }
 
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
     Transaction ct = Cat.newTransaction("AdminAPI", uri);

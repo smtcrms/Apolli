@@ -40,6 +40,9 @@ public class Release extends BaseEntity {
   @Column(name = "Comment", nullable = false)
   private String comment;
 
+  @Column(name = "IsAbandoned", columnDefinition = "Bit default '0'")
+  private boolean isAbandoned;
+
   public String getReleaseKey() {
     return releaseKey;
   }
@@ -96,9 +99,17 @@ public class Release extends BaseEntity {
     this.name = name;
   }
 
+  public boolean isAbandoned() {
+    return isAbandoned;
+  }
+
+  public void setAbandoned(boolean abandoned) {
+    isAbandoned = abandoned;
+  }
+
   public String toString() {
     return toStringHelper().add("name", name).add("appId", appId).add("clusterName", clusterName)
         .add("namespaceName", namespaceName).add("configurations", configurations)
-        .add("comment", comment).toString();
+        .add("comment", comment).add("isAbandoned", isAbandoned).toString();
   }
 }

@@ -13,8 +13,10 @@ import com.ctrip.framework.apollo.biz.entity.Release;
  */
 public interface ReleaseRepository extends PagingAndSortingRepository<Release, Long> {
 
-  Release findFirstByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(@Param("appId") String appId, @Param("clusterName") String clusterName,
-      @Param("namespaceName") String namespaceName);
+  Release findFirstByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(@Param("appId") String appId, @Param("clusterName") String clusterName,
+                                                                                         @Param("namespaceName") String namespaceName);
 
   List<Release> findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(String appId, String clusterName, String namespaceName, Pageable page);
+
+  List<Release> findByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(String appId, String clusterName, String namespaceName, Pageable page);
 }

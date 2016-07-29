@@ -50,7 +50,7 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
   @BeforeClass
   public static void beforeClass() throws Exception {
     File apolloEnvPropertiesFile = new File(ClassLoaderUtil.getClassPath(), "apollo-env.properties");
-    Files.write("local.meta=" + metaServiceUrl, apolloEnvPropertiesFile, Charsets.UTF_8);
+    Files.write("dev.meta=" + metaServiceUrl, apolloEnvPropertiesFile, Charsets.UTF_8);
     apolloEnvPropertiesFile.deleteOnExit();
   }
 
@@ -159,7 +159,7 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
 
     @Override
     public Env getApolloEnv() {
-      return Env.LOCAL;
+      return Env.DEV;
     }
 
     @Override

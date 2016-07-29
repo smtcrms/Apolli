@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
-import com.ctrip.framework.apollo.core.dto.CommitDTO;
+import com.ctrip.framework.apollo.common.dto.CommitDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.service.CommitService;
 

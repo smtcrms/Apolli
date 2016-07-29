@@ -9,18 +9,16 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
@@ -77,7 +75,8 @@ public class ConfigService {
     changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
 
-    Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT,
+                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
@@ -128,7 +127,7 @@ public class ConfigService {
       itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
 
       Cat.logEvent(CatEventType.SYNC_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
-      }
+    }
   }
 
   public List<ItemDiffs> compare(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {
@@ -212,7 +211,7 @@ public class ConfigService {
   private ItemDTO buildItem(long namespaceId, int lineNum, ItemDTO sourceItem) {
     ItemDTO createdItem = new ItemDTO();
     BeanUtils.copyEntityProperties(sourceItem, createdItem);
-    createdItem.setLineNum(lineNum++);
+    createdItem.setLineNum(lineNum);
     createdItem.setNamespaceId(namespaceId);
     return createdItem;
   }

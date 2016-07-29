@@ -46,4 +46,8 @@ public class ApolloEurekaClientConfig extends EurekaClientConfigBean {
     return super.getEurekaServerServiceUrls(myZone);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    return super.equals(o);
+  }
 }

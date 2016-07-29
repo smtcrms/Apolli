@@ -1,25 +1,25 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 
 import java.util.List;
 
 public class NamespaceVO {
-  private NamespaceDTO namespace;
+  private NamespaceDTO baseInfo;
   private int itemModifiedCnt;
   private List<ItemVO> items;
   private String format;
   private boolean isPublic;
   private String parentAppId;
+  private String comment;
 
 
-  public NamespaceDTO getNamespace() {
-    return namespace;
+  public NamespaceDTO getBaseInfo() {
+    return baseInfo;
   }
 
-  public void setNamespace(NamespaceDTO namespace) {
-    this.namespace = namespace;
+  public void setBaseInfo(NamespaceDTO baseInfo) {
+    this.baseInfo = baseInfo;
   }
 
   public int getItemModifiedCnt() {
@@ -60,6 +60,14 @@ public class NamespaceVO {
 
   public void setParentAppId(String parentAppId) {
     this.parentAppId = parentAppId;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
   }
 
   public static class ItemVO{
@@ -108,6 +116,7 @@ public class NamespaceVO {
     public void setNewValue(String newValue) {
       this.newValue = newValue;
     }
+
 
 
   }

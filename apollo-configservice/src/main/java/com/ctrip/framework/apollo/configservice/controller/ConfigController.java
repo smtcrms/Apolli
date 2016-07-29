@@ -8,10 +8,10 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
-import com.ctrip.framework.apollo.biz.service.ConfigService;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/configs")
 public class ConfigController {
   @Autowired
-  private ConfigService configService;
+  private ReleaseService releaseService;
   @Autowired
   private AppNamespaceService appNamespaceService;
   @Autowired
@@ -143,7 +143,7 @@ public class ConfigController {
     //load from specified cluster fist
     if (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusterName)) {
       Release clusterRelease =
-          configService.findRelease(appId, clusterName, namespace);
+          releaseService.findLatestActiveRelease(appId, clusterName, namespace);
 
       if (!Objects.isNull(clusterRelease)) {
         return clusterRelease;
@@ -153,15 +153,15 @@ public class ConfigController {
     //try to load via data center
     if (!Strings.isNullOrEmpty(dataCenter) && !Objects.equals(dataCenter, clusterName)) {
       Release dataCenterRelease =
-          configService.findRelease(appId, dataCenter, namespace);
+          releaseService.findLatestActiveRelease(appId, dataCenter, namespace);
       if (!Objects.isNull(dataCenterRelease)) {
         return dataCenterRelease;
       }
     }
 
     //fallback to default release
-    return configService
-        .findRelease(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace);
+    return releaseService
+        .findLatestActiveRelease(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespace);
   }
 
   /**

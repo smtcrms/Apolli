@@ -6,13 +6,12 @@ import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.message.MessageSender;
 import com.ctrip.framework.apollo.biz.message.Topics;
-import com.ctrip.framework.apollo.biz.service.ConfigService;
 import com.ctrip.framework.apollo.biz.service.NamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
-import com.ctrip.framework.apollo.core.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -31,9 +30,6 @@ public class ReleaseController {
   private ReleaseService releaseService;
 
   @Autowired
-  private ConfigService configService;
-
-  @Autowired
   private NamespaceService namespaceService;
 
   @Autowired
@@ -41,7 +37,7 @@ public class ReleaseController {
 
   private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
 
-  @RequestMapping("/release/{releaseId}")
+  @RequestMapping("/releases/{releaseId}")
   public ReleaseDTO get(@PathVariable("releaseId") long releaseId) {
     Release release = releaseService.findOne(releaseId);
     if (release == null) {
@@ -50,12 +46,31 @@ public class ReleaseController {
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all")
+  public List<ReleaseDTO> findAllReleases(@PathVariable("appId") String appId,
+                                          @PathVariable("clusterName") String clusterName,
+                                          @PathVariable("namespaceName") String namespaceName,
+                                          Pageable page) {
+    List<Release> releases = releaseService.findAllReleases(appId, clusterName, namespaceName, page);
+    return BeanUtils.batchTransform(ReleaseDTO.class, releases);
+  }
+
+  // TODO: 16/7/25 兼容老接口,下版本删除
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases")
-  public List<ReleaseDTO> find(@PathVariable("appId") String appId,
-                               @PathVariable("clusterName") String clusterName,
-                               @PathVariable("namespaceName") String namespaceName,
-                               Pageable page) {
-    List<Release> releases = releaseService.findReleases(appId, clusterName, namespaceName, page);
+  public List<ReleaseDTO> findReleases(@PathVariable("appId") String appId,
+                                       @PathVariable("clusterName") String clusterName,
+                                       @PathVariable("namespaceName") String namespaceName,
+                                       Pageable page) {
+    List<Release> releases = releaseService.findAllReleases(appId, clusterName, namespaceName, page);
+    return BeanUtils.batchTransform(ReleaseDTO.class, releases);
+  }
+
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active")
+  public List<ReleaseDTO> findActiveReleases(@PathVariable("appId") String appId,
+                                             @PathVariable("clusterName") String clusterName,
+                                             @PathVariable("namespaceName") String namespaceName,
+                                             Pageable page) {
+    List<Release> releases = releaseService.findActiveReleases(appId, clusterName, namespaceName, page);
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 
@@ -63,14 +78,8 @@ public class ReleaseController {
   public ReleaseDTO getLatest(@PathVariable("appId") String appId,
                               @PathVariable("clusterName") String clusterName,
                               @PathVariable("namespaceName") String namespaceName) {
-    Release release = configService.findRelease(appId, clusterName, namespaceName);
-    //// TODO: 16/7/22 返回null
-    if (release == null) {
-      throw new NotFoundException(String.format("latest release not found for %s %s %s", appId,
-                                                clusterName, namespaceName));
-    } else {
-      return BeanUtils.transfrom(ReleaseDTO.class, release);
-    }
+    Release release = releaseService.findLatestActiveRelease(appId, clusterName, namespaceName);
+    return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
@@ -83,12 +92,26 @@ public class ReleaseController {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) {
       throw new NotFoundException(String.format("Could not find namespace for %s %s %s", appId,
-          clusterName, namespaceName));
+                                                clusterName, namespaceName));
     }
     Release release = releaseService.buildRelease(name, comment, namespace, operator);
     messageSender.sendMessage(assembleKey(appId, clusterName, namespaceName),
-        Topics.APOLLO_RELEASE_TOPIC);
+                              Topics.APOLLO_RELEASE_TOPIC);
     return BeanUtils.transfrom(ReleaseDTO.class, release);
+  }
+
+  @RequestMapping(path = "/releases/{releaseId}/rollback", method = RequestMethod.PUT)
+  public void rollback(@PathVariable("releaseId") long releaseId,
+                       @RequestParam("operator") String operator) {
+
+    Release release = releaseService.rollback(releaseId, operator);
+
+    String appId = release.getAppId();
+    String clusterName = release.getClusterName();
+    String namespaceName = release.getNamespaceName();
+    //send release message
+    messageSender.sendMessage(assembleKey(appId, clusterName, namespaceName),
+                              Topics.APOLLO_RELEASE_TOPIC);
   }
 
   private String assembleKey(String appId, String cluster, String namespace) {

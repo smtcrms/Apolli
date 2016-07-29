@@ -186,6 +186,7 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
         .assembleQueryConfigUrl(someUri, someAppId, someCluster, someNamespace, null,
             someApolloConfig);
 
+    remoteConfigLongPollService.stopLongPollingRefresh();
     assertTrue(queryConfigUrl
         .contains(
             "http://someServer/configs/someAppId/someCluster+%20&.-_someSign/" + someNamespace));

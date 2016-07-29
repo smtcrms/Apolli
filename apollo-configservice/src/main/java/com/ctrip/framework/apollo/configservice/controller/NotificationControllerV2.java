@@ -21,7 +21,7 @@ import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
-import com.ctrip.framework.apollo.core.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;

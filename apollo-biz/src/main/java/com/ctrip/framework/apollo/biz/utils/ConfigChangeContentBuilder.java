@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import com.ctrip.framework.apollo.biz.entity.Item;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -28,8 +25,10 @@ public class ConfigChangeContentBuilder {
   }
 
   public ConfigChangeContentBuilder updateItem(Item oldItem, Item newItem) {
-    ItemPair itemPair = new ItemPair(oldItem, newItem);
-    updateItems.add(itemPair);
+    if (!oldItem.getValue().equals(newItem.getValue())){
+      ItemPair itemPair = new ItemPair(oldItem, newItem);
+      updateItems.add(itemPair);
+    }
     return this;
   }
 
@@ -54,7 +53,7 @@ public class ConfigChangeContentBuilder {
     return gson.toJson(this);
   }
 
-  class ItemPair {
+  static class ItemPair {
 
     Item oldItem;
     Item newItem;

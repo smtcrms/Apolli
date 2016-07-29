@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
-import com.ctrip.framework.apollo.core.dto.ItemDTO;
-import com.ctrip.framework.apollo.core.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.core.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -20,9 +19,7 @@ import com.dianping.cat.Cat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,9 +89,9 @@ public class NamespaceService {
   @SuppressWarnings("unchecked")
   private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
     NamespaceVO namespaceVO = new NamespaceVO();
-    namespaceVO.setNamespace(namespace);
+    namespaceVO.setBaseInfo(namespace);
 
-    fillFormatAndIsPublicAndParentAppField(namespaceVO);
+    fillAppNamespaceProperties(namespaceVO);
 
     List<NamespaceVO.ItemVO> itemVos = new LinkedList<>();
     namespaceVO.setItems(itemVos);
@@ -104,17 +101,9 @@ public class NamespaceService {
     //latest Release
     ReleaseDTO latestRelease = null;
     Map<String, String> releaseItems = new HashMap<>();
-    try {
-      latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
-      if (latestRelease != null) {
-        releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
-      }
-    } catch (HttpClientErrorException e) {
-      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-        logger.warn(ExceptionUtils.toString(e));
-      } else {
-        throw e;
-      }
+    latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+    if (latestRelease != null) {
+      releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
     }
 
     //not Release config items
@@ -141,9 +130,9 @@ public class NamespaceService {
     return namespaceVO;
   }
 
-  private void fillFormatAndIsPublicAndParentAppField(NamespaceVO namespace) {
+  private void fillAppNamespaceProperties(NamespaceVO namespace) {
 
-    NamespaceDTO namespaceDTO = namespace.getNamespace();
+    NamespaceDTO namespaceDTO = namespace.getBaseInfo();
     //先从当前appId下面找,包含私有的和公共的
     AppNamespace appNamespace =
         appNamespaceService.findByAppIdAndName(namespaceDTO.getAppId(), namespaceDTO.getNamespaceName());
@@ -151,6 +140,7 @@ public class NamespaceService {
     if (appNamespace == null) {
       appNamespace = appNamespaceService.findPublicAppNamespace(namespaceDTO.getNamespaceName());
     }
+
     String format;
     boolean isPublic;
     if (appNamespace == null) {
@@ -160,10 +150,10 @@ public class NamespaceService {
       format = appNamespace.getFormat();
       isPublic = appNamespace.isPublic();
       namespace.setParentAppId(appNamespace.getAppId());
+      namespace.setComment(appNamespace.getComment());
     }
     namespace.setFormat(format);
     namespace.setPublic(isPublic);
-
   }
 
   private List<NamespaceVO.ItemVO> parseDeletedItems(List<ItemDTO> newItems, Map<String, String> releaseItems) {
