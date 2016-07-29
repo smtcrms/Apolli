@@ -37,6 +37,7 @@ public class FileTextResolver implements ConfigTextResolver {
     item.setId(itemId);
     item.setNamespaceId(namespaceId);
     item.setValue(value);
+    item.setLineNum(1);
     item.setKey(ConfigConsts.CONFIG_FILE_CONTENT_KEY);
     return item;
   }
