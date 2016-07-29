@@ -21,8 +21,8 @@
                       ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
             </div>
             <div class="col-md-6 text-right">
-                <button type="button"
-                        class="btn btn-success btn-sm J_tableview_btn"
+                <button type="button" class="btn btn-success btn-sm J_tableview_btn"
+                        data-tooltip="tooltip" data-placement="bottom" title="发布配置"
                         ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
                         ng-disabled="namespace.isTextEditing"
                         ng-click="preReleaseNs(namespace)">
@@ -30,25 +30,28 @@
                     发布
 
                 </button>
-                <button type="button"
-                        class="btn btn-default btn-sm J_tableview_btn"
+                <button type="button" class="btn btn-default btn-sm J_tableview_btn"
+                        data-tooltip="tooltip" data-placement="bottom" title="回滚配置"
                         ng-show="namespace.hasReleasePermission"
                         ng-click="preRollback(namespace)">
                     <img src="img/rollback.png">
                     回滚
                 </button>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
+                   data-tooltip="tooltip" data-placement="bottom" title="查看发布历史"
                    href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}">
                     <img src="img/release-history.png">
                     发布历史
                 </a>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
+                   data-tooltip="tooltip" data-placement="bottom" title="配置修改、发布权限"
                    href="/namespace/role.html?#/appid={{appId}}&namespaceName={{namespace.baseInfo.namespaceName}}"
                    ng-show="hasAssignUserPermission">
                     <img src="img/assign.png">
                     授权
                 </a>
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
+                   data-tooltip="tooltip" data-placement="bottom" title="同步各环境间配置"
                    ng-click="goToSyncPage(namespace)"
                    ng-show="namespace.hasModifyPermission && namespace.isPropertiesFormat">
                     <img src="img/sync.png">
