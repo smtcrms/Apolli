@@ -11,7 +11,7 @@
     <header class="panel-heading">
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <b ng-bind="namespace.viewName" style="font-size: 20px;" data-tooltip="tooltip" data-placement="bottom"
                    title="{{namespace.comment}}"></b>
                 <span class="label label-info no-radius" ng-bind="namespace.format"></span>
@@ -20,7 +20,7 @@
                 <span class="label label-warning no-radius"
                       ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-md-5 text-right">
                 <button type="button" class="btn btn-success btn-sm J_tableview_btn"
                         data-tooltip="tooltip" data-placement="bottom" title="发布配置"
                         ng-show="namespace.hasReleasePermission || namespace.hasModifyPermission"
