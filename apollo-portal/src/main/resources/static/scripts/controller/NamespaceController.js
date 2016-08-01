@@ -109,6 +109,7 @@ namespace_module.controller("LinkNamespaceController",
                                                  toastr.error(AppUtil.errorMsg(result));
                                              });
                                      } else {
+
                                          $scope.submitBtnDisabled = true;
                                          NamespaceService.createAppNamespace($scope.appId, $scope.appNamespace).then(
                                              function (result) {

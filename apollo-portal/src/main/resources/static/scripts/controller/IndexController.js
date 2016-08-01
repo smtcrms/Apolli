@@ -11,32 +11,60 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
                     toastr.error(AppUtil.errorMsg(result), "load env error");
             });
 
-            var apps = [];
-       
+
+
             $scope.switchEnv = function (env) {
                 $scope.selectedEnv = env;
                 loadApps(env);
             };
-            
+
+            var sourceApps = [];
+
             function loadApps(env){
                 AppService.find_all_app(env).then(function (result) {
-                    apps = result;
-                    $scope.apps = apps;
-                    $scope.appsCount = apps.length;
+                    sourceApps = sortApps(result);
+                    $scope.apps = sourceApps;
+                    $scope.appsCount = sourceApps.length;
                     $scope.selectedEnv = env;
                 }, function (result) {
-                    toastr.error(AppUtil.errorMsg(result), "load apps error"); 
-                });    
+                    toastr.error(AppUtil.errorMsg(result), "load apps error");
+                });
             }
-            
+
+            var VISITED_APPS_STORAGE_KEY = "VisitedApps";
+            //访问过的App放在列表最前面,方便用户选择
+            function sortApps(sourceApps) {
+                var visitedApps = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
+                if (!visitedApps){
+                    return;
+                }
+                var existedVisitedAppsMap = {};
+                visitedApps.forEach(function (app) {
+                    existedVisitedAppsMap[app] = true;
+                });
+
+                var sortedApps = [];
+                sourceApps.forEach(function (app) {
+                    if (existedVisitedAppsMap[app.appId]){
+                        sortedApps.push(app);
+                    }
+                });
+                sourceApps.forEach(function (app) {
+                    if (!existedVisitedAppsMap[app.appId]){
+                        sortedApps.push(app);
+                    }
+                });
+                return sortedApps;
+            }
+
             $scope.search = function () {
                     var key = $scope.searchKey.toLocaleLowerCase();
                     if (key == '') {
-                            $scope.apps = apps;
+                            $scope.apps = sourceApps;
                             return;
                     }
                     var result = [];
-                    apps.forEach(function (item) {
+                    sourceApps.forEach(function (item) {
                             if (item.appId.toLocaleLowerCase().indexOf(key) >= 0 ||
                                 item.name.toLocaleLowerCase().indexOf(key) >= 0) {
                                     result.push(item);
