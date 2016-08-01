@@ -7,12 +7,13 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.MetaDomainConsts;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.enums.EnvUtils;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.foundation.Foundation;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.unidal.lookup.annotation.Named;
-import org.unidal.net.Networks;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,12 +42,15 @@ public class ConfigUtil {
   /**
    * Get the app id for the current application.
    *
-   * @return the app id
-   * @throws IllegalStateException if app id is not set
+   * @return the app id or ConfigConsts.NO_APPID_PLACEHOLDER if app id is not available
    */
   public String getAppId() {
     String appId = Foundation.app().getAppId();
-    Preconditions.checkState(appId != null, "app.id is not set");
+    if (Strings.isNullOrEmpty(appId)) {
+      appId = ConfigConsts.NO_APPID_PLACEHOLDER;
+      logger.error("app.id is not set, apollo will only load public namespace configurations!");
+      Cat.logError(new ApolloConfigException("app.id is not set"));
+    }
     return appId;
   }
 

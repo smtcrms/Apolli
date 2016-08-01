@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -283,8 +284,8 @@ public class ConfigControllerTest {
     when(somePublicRelease.getReleaseKey()).thenReturn(someServerSideReleaseKey);
 
     ApolloConfig result = configController
-            .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
-                someClientSideReleaseKey, someClientIp, someResponse);
+        .queryConfig(someAppId, someClusterName, somePublicNamespaceName, someDataCenter,
+            someClientSideReleaseKey, someClientIp, someResponse);
 
     assertEquals(someServerSideReleaseKey, result.getReleaseKey());
     assertEquals(someAppId, result.getAppId());
@@ -429,6 +430,50 @@ public class ConfigControllerTest {
     someRelease.setConfigurations(someInvalidConfiguration);
 
     configController.mergeReleaseConfigurations(Lists.newArrayList(someRelease));
+  }
+
+  @Test
+  public void testQueryConfigForNoAppIdPlaceHolder() throws Exception {
+    String someClientSideReleaseKey = "1";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    String appId = ConfigConsts.NO_APPID_PLACEHOLDER;
+
+    ApolloConfig result = configController.queryConfig(appId, someClusterName,
+        defaultNamespaceName, someDataCenter, someClientSideReleaseKey,
+        someClientIp, someResponse);
+
+    verify(releaseService, never()).findLatestActiveRelease(appId, someClusterName, defaultNamespaceName);
+    verify(appNamespaceService, never()).findPublicNamespaceByName(defaultNamespaceName);
+    assertNull(result);
+    verify(someResponse, times(1)).sendError(eq(HttpServletResponse.SC_NOT_FOUND), anyString());
+  }
+
+  @Test
+  public void testQueryConfigForNoAppIdPlaceHolderWithPublicNamespace() throws Exception {
+    String someClientSideReleaseKey = "1";
+    String someServerSideReleaseKey = "2";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    String somePublicAppId = "somePublicAppId";
+    AppNamespace somePublicAppNamespace =
+        assemblePublicAppNamespace(somePublicAppId, somePublicNamespaceName);
+    String appId = ConfigConsts.NO_APPID_PLACEHOLDER;
+
+    when(appNamespaceService.findPublicNamespaceByName(somePublicNamespaceName))
+        .thenReturn(somePublicAppNamespace);
+    when(releaseService.findLatestActiveRelease(somePublicAppId, someDataCenter, somePublicNamespaceName))
+        .thenReturn(somePublicRelease);
+    when(somePublicRelease.getReleaseKey()).thenReturn(someServerSideReleaseKey);
+
+    ApolloConfig result = configController.queryConfig(appId, someClusterName,
+        somePublicNamespaceName, someDataCenter, someClientSideReleaseKey,
+        someClientIp, someResponse);
+
+    verify(releaseService, never()).findLatestActiveRelease(appId, someClusterName, somePublicNamespaceName);
+    assertEquals(someServerSideReleaseKey, result.getReleaseKey());
+    assertEquals(appId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(somePublicNamespaceName, result.getNamespaceName());
+    assertEquals("foo", result.getConfigurations().get("apollo.public.bar"));
   }
 
   private AppNamespace assemblePublicAppNamespace(String appId, String namespace) {

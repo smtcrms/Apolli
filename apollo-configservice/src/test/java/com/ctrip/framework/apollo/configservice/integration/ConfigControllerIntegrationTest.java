@@ -217,4 +217,37 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals("v1-file", result.getConfigurations().get("k1"));
     assertEquals(null, result.getConfigurations().get("k2"));
   }
+
+  @Test
+  public void testQueryConfigForNoAppIdPlaceHolderWithPrivateNamespace() throws Exception {
+
+    HttpStatusCodeException httpException = null;
+    try {
+      ResponseEntity<ApolloConfig> response = restTemplate
+          .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}", ApolloConfig.class,
+              getHostUrl(), ConfigConsts.NO_APPID_PLACEHOLDER, someCluster, ConfigConsts.NAMESPACE_APPLICATION);
+    } catch (HttpStatusCodeException ex) {
+      httpException = ex;
+    }
+
+    assertEquals(HttpStatus.NOT_FOUND, httpException.getStatusCode());
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicConfigForNoAppIdPlaceHolder() throws Exception {
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?dataCenter={dateCenter}",
+            ApolloConfig.class,
+            getHostUrl(), ConfigConsts.NO_APPID_PLACEHOLDER, someCluster, somePublicNamespace, someDC);
+    ApolloConfig result = response.getBody();
+
+    assertEquals("TEST-RELEASE-KEY4", result.getReleaseKey());
+    assertEquals(ConfigConsts.NO_APPID_PLACEHOLDER, result.getAppId());
+    assertEquals(someCluster, result.getCluster());
+    assertEquals(somePublicNamespace, result.getNamespaceName());
+    assertEquals("someDC-v1", result.getConfigurations().get("k1"));
+    assertEquals("someDC-v2", result.getConfigurations().get("k2"));
+  }
 }

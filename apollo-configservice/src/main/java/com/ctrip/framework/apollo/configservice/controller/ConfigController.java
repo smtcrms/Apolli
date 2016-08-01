@@ -59,19 +59,20 @@ public class ConfigController {
                                   @RequestParam(value = "ip", required = false) String clientIp,
                                   HttpServletResponse response) throws IOException {
     String originalNamespace = namespace;
-
     //strip out .properties suffix
     namespace = namespaceUtil.filterNamespaceName(namespace);
 
     List<Release> releases = Lists.newLinkedList();
 
-    Release currentAppRelease = loadConfig(appId, clusterName, namespace, dataCenter);
     String appClusterNameLoaded = clusterName;
+    if (!ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) {
+      Release currentAppRelease = loadConfig(appId, clusterName, namespace, dataCenter);
 
-    if (currentAppRelease != null) {
-      releases.add(currentAppRelease);
-      //we have cluster search process, so the cluster name might be overridden
-      appClusterNameLoaded = currentAppRelease.getClusterName();
+      if (currentAppRelease != null) {
+        releases.add(currentAppRelease);
+        //we have cluster search process, so the cluster name might be overridden
+        appClusterNameLoaded = currentAppRelease.getClusterName();
+      }
     }
 
     //if namespace does not belong to this appId, should check if there is a public configuration
@@ -114,6 +115,11 @@ public class ConfigController {
     //Every app has an 'application' namespace
     if (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) {
       return true;
+    }
+
+    //if no appId is present, then no other namespace belongs to it
+    if (ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) {
+      return false;
     }
 
     AppNamespace appNamespace = appNamespaceService.findOne(appId, namespaceName);
