@@ -75,6 +75,8 @@ public class WatchKeysUtilTest {
     when(somePublicAppNamespace.getName()).thenReturn(somePublicNamespace);
     when(appNamespaceService.findPublicNamespacesByNames(Sets.newHashSet(somePublicNamespace)))
         .thenReturn(Lists.newArrayList(somePublicAppNamespace));
+    when(appNamespaceService.findPublicNamespacesByNames(Sets.newHashSet(someNamespace, somePublicNamespace)))
+        .thenReturn(Lists.newArrayList(somePublicAppNamespace));
 
     ReflectionTestUtils.setField(watchKeysUtil, "appNamespaceService", appNamespaceService);
   }
@@ -138,6 +140,28 @@ public class WatchKeysUtilTest {
     assertWatchKeys(someAppId, clusters, someNamespace, watchKeysMap.get(someNamespace));
     assertWatchKeys(someAppId, clusters, anotherNamespace, watchKeysMap.get(anotherNamespace));
     assertWatchKeys(someAppId, clusters, somePublicNamespace, watchKeysMap.get(somePublicNamespace));
+    assertWatchKeys(somePublicAppId, clusters, somePublicNamespace, watchKeysMap.get(somePublicNamespace));
+  }
+
+  @Test
+  public void testAssembleWatchKeysForNoAppIdPlaceHolder() throws Exception {
+    Multimap<String, String> watchKeysMap =
+        watchKeysUtil.assembleAllWatchKeys(ConfigConsts.NO_APPID_PLACEHOLDER, someCluster,
+            Sets.newHashSet(someNamespace, anotherNamespace), someDC);
+
+    assertTrue(watchKeysMap.isEmpty());
+  }
+
+  @Test
+  public void testAssembleWatchKeysForNoAppIdPlaceHolderAndPublicNamespace() throws Exception {
+    Multimap<String, String> watchKeysMap =
+        watchKeysUtil.assembleAllWatchKeys(ConfigConsts.NO_APPID_PLACEHOLDER, someCluster,
+            Sets.newHashSet(someNamespace, somePublicNamespace), someDC);
+
+    Set<String> clusters = Sets.newHashSet(defaultCluster, someCluster, someDC);
+
+    assertEquals(clusters.size(), watchKeysMap.size());
+
     assertWatchKeys(somePublicAppId, clusters, somePublicNamespace, watchKeysMap.get(somePublicNamespace));
   }
 
