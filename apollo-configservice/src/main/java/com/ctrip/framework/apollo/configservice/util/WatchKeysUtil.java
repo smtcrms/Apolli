@@ -40,6 +40,7 @@ public class WatchKeysUtil {
 
   /**
    * Assemble watch keys for the given appId, cluster, namespaces, dataCenter combination
+   *
    * @return a multimap with namespace as the key and watch keys as the value
    */
   public Multimap<String, String> assembleAllWatchKeys(String appId, String clusterName,
@@ -91,7 +92,9 @@ public class WatchKeysUtil {
 
   private Set<String> assembleWatchKeys(String appId, String clusterName, String namespace,
                                         String dataCenter) {
-
+    if (ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) {
+      return Collections.emptySet();
+    }
     Set<String> watchedKeys = Sets.newHashSet();
 
     //watch specified cluster config change
@@ -124,6 +127,9 @@ public class WatchKeysUtil {
   }
 
   private Set<String> namespacesBelongToAppId(String appId, Set<String> namespaces) {
+    if (ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) {
+      return Collections.emptySet();
+    }
     List<AppNamespace> appNamespaces =
         appNamespaceService.findByAppIdAndNamespaces(appId, namespaces);
 
