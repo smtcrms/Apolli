@@ -25,15 +25,15 @@ p, td, span {
     word-break: break-all;
 }
 
-table{
+table {
     text-align: center;
 }
 
-.no-radius{
+.no-radius {
     border-radius: 0px;
 }
 
-.hide-border-top{
+.hide-border-top {
     border-top: 0px;
 }
 
@@ -270,12 +270,11 @@ table th {
     background: #f1f2f7;
 }
 
-.namespace-attribute-public{
+.namespace-attribute-public {
     background: #31708f;
     width: 40px;
     cursor: pointer;
 }
-
 
 .second-panel-heading .nav-tabs {
     border-bottom: 0px;
@@ -400,60 +399,74 @@ table th {
     height: 5px;
 }
 
-.release-history .media-body{
+.release-history .media-body {
     padding-left: 20px;
 }
 
-.release-history .panel-body .load-more{
+.release-history .panel-body .load-more {
     margin-top: 20px;
 }
 
-.release-history .media-body textarea{
+.release-history .media-body textarea {
     margin-top: 10px;
 }
 
-.release-history .icon{
+.release-history .icon {
     font-size: 13px;
 }
 
-.release-history .info{
+.release-history .info {
     font-size: 13px;
     margin-left: 5px;
     margin-top: 2px;
 }
 
-.release-history .user .info{
+.release-history .user .info {
     font-size: 22px;
 }
 
-.release-history .time{
+.release-history .time {
     padding-top: 8px;
 }
 
-.release-history .comment{
+.release-history .comment {
     padding-top: 10px;
 }
 
-.release-history .table{
+.release-history .table {
     margin-top: 15px;
 }
 
-.release-history .badge-0{
+.release-history .badge-0 {
     background: #f0ad4e;
 }
 
-.release-history .badge-1{
+.release-history .badge-1 {
     background: #c3c3c3;
 }
 
-.release-history .badge-2{
+.release-history .badge-2 {
     background: #27AE60;
 }
 
-.release-history .badge-3{
+.release-history .badge-3 {
     background: #3478a8;
 }
 
-.release-history .label{
+.release-history .label {
     margin-right: 15px;
 }
+
+.valdr-message {
+    display: none;
+}
+
+.valdr-message.ng-dirty.ng-invalid.ng-touched {
+    display: inline;
+    color: #a94442;
+}
+
+.form-group .form-control.ng-invalid.ng-dirty.ng-touched {
+    border-color: #a94442;
+}
+

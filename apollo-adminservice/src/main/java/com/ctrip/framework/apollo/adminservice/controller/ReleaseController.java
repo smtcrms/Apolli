@@ -55,15 +55,6 @@ public class ReleaseController {
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 
-  // TODO: 16/7/25 兼容老接口,下版本删除
-  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases")
-  public List<ReleaseDTO> findReleases(@PathVariable("appId") String appId,
-                                       @PathVariable("clusterName") String clusterName,
-                                       @PathVariable("namespaceName") String namespaceName,
-                                       Pageable page) {
-    List<Release> releases = releaseService.findAllReleases(appId, clusterName, namespaceName, page);
-    return BeanUtils.batchTransform(ReleaseDTO.class, releases);
-  }
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active")
   public List<ReleaseDTO> findActiveReleases(@PathVariable("appId") String appId,

@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.configutation;
+package com.ctrip.framework.apollo.portal.configuration;
 
 import com.ctrip.framework.apollo.portal.auth.ctrip.CtripLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.ctrip.CtripSsoHeartbeatHandler;

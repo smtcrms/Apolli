@@ -32,7 +32,7 @@
                 </header>
                 <div class="panel-body">
                     <table class="project-info">
-                        <tbody>
+                        <tbody class="text-left">
                         <tr>
                             <th>AppId:</th>
                             <td ng-bind="appBaseInfo.appId"></td>
@@ -122,7 +122,7 @@
 
 
             <!--create createRelease modal-->
-            <form class="modal fade form-horizontal" id="releaseModal" tabindex="-1" role="dialog"
+            <form class="modal fade form-horizontal" name="releaseForm" valdr-type="Release" id="releaseModal" tabindex="-1" role="dialog"
                   ng-submit="release()">
                 <div class="modal-dialog" role="document" style="width: 960px">
                     <div class="modal-content">
@@ -135,7 +135,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
                                     Changes:</label>
-                                <div class="col-sm-10" ng-if="toReleaseNamespace.itemModifiedCnt">
+                                <div class="col-sm-10" ng-if="toReleaseNamespace.itemModifiedCnt" valdr-form-group>
 
                                     <!--properites format-->
                                     <table class="table table-bordered table-striped text-center table-hover"
@@ -203,7 +203,7 @@
                                     </div>
 
                                 </div>
-                                <div class="col-sm-5">
+                                <div class="col-sm-5" valdr-form-group>
                                     <span ng-show="!toReleaseNamespace.itemModifiedCnt">
                                         配置没有变化
                                     </span>
@@ -214,15 +214,15 @@
                                 <label class="col-sm-2 control-label">
                                     <apollorequiredfiled></apollorequiredfiled>
                                     Release Name:</label>
-                                <div class="col-sm-5">
-                                    <input type="text" class="form-control" placeholder="input release title"
+                                <div class="col-sm-5" valdr-form-group>
+                                    <input type="text" name="releaseName" class="form-control" placeholder="input release name"
                                            ng-model="releaseTitle" ng-required="true">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Comment:</label>
-                                <div class="col-sm-10">
-                                            <textarea rows="4" class="form-control" style="margin-top: 15px;"
+                                <div class="col-sm-10" valdr-form-group>
+                                            <textarea rows="4" name="comment" class="form-control" style="margin-top: 15px;"
                                                       ng-model="releaseComment"
                                                       placeholder="Add an optional extended description..."></textarea>
                                 </div>
@@ -232,7 +232,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="submit" class="btn btn-primary" ng-disabled="releaseBtnDisabled">发布
+                            <button type="submit" class="btn btn-primary" ng-disabled="releaseForm.$invalid || releaseBtnDisabled">发布
                             </button>
                         </div>
                     </div>
@@ -240,7 +240,7 @@
             </form>
 
             <!--table mode item modal-->
-            <form class="modal fade form-horizontal" id="itemModal" role="dialog" ng-submit="doItem()">
+            <form class="modal fade form-horizontal" name="itemForm" valdr-type="Item" id="itemModal" role="dialog" ng-submit="doItem()">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header panel-primary">
@@ -259,8 +259,8 @@
                                             ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
                                     Key
                                 </label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" ng-model="item.key"
+                                <div class="col-sm-10" valdr-form-group>
+                                    <input type="text" name="key" class="form-control" ng-model="item.key"
                                            ng-required="true" ng-disabled="tableViewOperType != 'create'">
                                 </div>
                             </div>
@@ -270,26 +270,15 @@
                                             ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
                                     Value
                                 </label>
-                                <div class="col-sm-10">
-                                            <textarea type="text" class="form-control" rows="6" ng-model="item.value"
-                                                      ng-show="tableViewOperType != 'retrieve'">
+                                <div class="col-sm-10" valdr-form-group>
+                                            <textarea type="text" name="value" class="form-control" rows="6" ng-model="item.value">
                                                 </textarea>
-                                    <p ng-bind="item.value" ng-show="tableViewOperType == 'retrieve'"></p>
-                                </div>
-                            </div>
-                            <div class="form-group" ng-show="tableViewOperType == 'retrieve'">
-                                <label class="col-sm-2 control-label">Released Value</label>
-                                <div class="col-sm-10">
-                                    <p ng-show="!item.oldValue">这是新增的配置</p>
-                                    <p ng-show="item.oldValue" ng-bind="item.oldValue"></p>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Comment</label>
-                                <div class="col-sm-10">
-                                            <textarea class="form-control" ng-model="item.comment" rows="2"
-                                                      ng-disabled="tableViewOperType == 'retrieve'">
-
+                                <div class="col-sm-10" valdr-form-group>
+                                            <textarea class="form-control" name="comment" ng-model="item.comment" rows="2">
                                             </textarea>
                                 </div>
                             </div>
@@ -316,7 +305,7 @@
                             </button>
                             <button type="submit" class="btn btn-primary"
                                     ng-show="tableViewOperType != 'retrieve'"
-                                    ng-disabled="addItemBtnDisabled && tableViewOperType == 'create'">提交
+                                    ng-disabled="itemForm.$invalid || (addItemBtnDisabled && tableViewOperType == 'create')">提交
                             </button>
                         </div>
                     </div>
@@ -453,6 +442,10 @@
 <script src="vendor/bootstrap/js/bootstrap-treeview.min.js" type="text/javascript"></script>
 
 
+<!--valdr-->
+<script src="vendor/valdr/valdr.min.js" type="text/javascript"></script>
+<script src="vendor/valdr/valdr-message.min.js" type="text/javascript"></script>
+
 <!--biz script-->
 <script type="application/javascript" src="scripts/app.js"></script>
 
@@ -479,5 +472,6 @@
 
 <script type="application/javascript" src="scripts/PageCommon.js"></script>
 
+<script src="scripts/valdr.js" type="text/javascript"></script>
 </body>
 </html>

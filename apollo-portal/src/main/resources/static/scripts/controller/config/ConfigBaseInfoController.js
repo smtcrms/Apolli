@@ -6,6 +6,27 @@ application_module.controller("ConfigBaseInfoController",
 
                                    var appId = AppUtil.parseParams($location.$$url).appid;
 
+                                   //save user recent visited apps
+                                   var VISITED_APPS_STORAGE_KEY = "VisitedApps";
+                                   var visitedApps = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
+                                   var hasSaved = false;
+                                   if (visitedApps){
+                                       visitedApps.forEach(function (app) {
+                                           if (app == appId){
+                                               hasSaved = true;
+                                               return;
+                                           }
+                                       });
+                                   }else {
+                                       visitedApps = [];
+                                   }
+                                   if (!hasSaved){
+                                       visitedApps.push(appId);
+                                       
+                                       localStorage.setItem(VISITED_APPS_STORAGE_KEY,
+                                                            JSON.stringify(visitedApps));
+                                   }
+
                                    //load session storage to recovery scene
                                    var scene = JSON.parse(sessionStorage.getItem(appId));
 

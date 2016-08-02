@@ -18,4 +18,6 @@ public interface CatEventType {
 
   String API_RETRY = "API.Retry";
 
+  String USER_ACCESS = "User.Access";
+
 }

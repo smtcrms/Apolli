@@ -33,6 +33,7 @@ cluster_module.controller('ClusterController',
                                };
 
                                $scope.create = function () {
+
                                    var noEnvChecked = true;
                                    $scope.envs.forEach(function (env) {
                                        if (env.checked) {
