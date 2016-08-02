@@ -38,7 +38,7 @@ public class ReleaseMessageScanner implements InitializingBean {
   private long maxIdScanned;
 
   public ReleaseMessageScanner() {
-    listeners = Lists.newLinkedList();
+    listeners = Lists.newCopyOnWriteArrayList();
     executorService = Executors.newScheduledThreadPool(1, ApolloThreadFactory
         .create("ReleaseMessageScanner", true));
   }
