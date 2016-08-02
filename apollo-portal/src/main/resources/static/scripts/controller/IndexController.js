@@ -36,7 +36,7 @@ index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppS
             function sortApps(sourceApps) {
                 var visitedApps = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
                 if (!visitedApps){
-                    return;
+                    return sourceApps;
                 }
                 var existedVisitedAppsMap = {};
                 visitedApps.forEach(function (app) {
