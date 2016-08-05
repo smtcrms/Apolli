@@ -121,7 +121,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-10">
                                 <button type="submit" class="btn btn-primary"
-                                        ng-disabled="namespaceForm.$invalid || submitBtnDisabled">提交
+                                        ng-disabled="(type == 'create' && namespaceForm.$invalid) || submitBtnDisabled">提交
                                 </button>
                             </div>
                         </div>
