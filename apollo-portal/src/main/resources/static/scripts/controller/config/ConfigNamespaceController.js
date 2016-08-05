@@ -131,6 +131,7 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.releaseComment = '';
                                    function release() {
+
                                        $scope.releaseBtnDisabled = true;
                                        ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
                                                               $rootScope.pageContext.clusterName,
@@ -289,6 +290,7 @@ application_module.controller("ConfigNamespaceController",
                                            }
                                            selectedClusters.forEach(function (cluster) {
                                                if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.CREATE) {
+
                                                    //check key unique
                                                    var hasRepeatKey = false;
                                                    toOperationNamespace.items.forEach(function (item) {
@@ -324,6 +326,7 @@ application_module.controller("ConfigNamespaceController",
                                                    if (!$scope.item.comment) {
                                                        $scope.item.comment = "";
                                                    }
+
                                                    ConfigService.update_item($rootScope.pageContext.appId,
                                                                              cluster.env,
                                                                              cluster.name,

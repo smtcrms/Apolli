@@ -1,10 +1,13 @@
-package com.ctrip.framework.apollo.portal.configutation;
+package com.ctrip.framework.apollo.portal.configuration;
 
 import com.google.common.base.Strings;
 
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.filters.RecordAccessUserFilter;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +18,15 @@ import javax.servlet.ServletException;
 
 @Configuration
 @Profile("ctrip")
-public class ServletContextConfiguration {
+public class WebContextConfiguration {
 
   @Autowired
   private ServerConfigService serverConfigService;
+  @Autowired
+  private UserInfoHolder userInfoHolder;
 
   @Bean
-  public ServletContextInitializer initializer() {
+  public ServletContextInitializer servletContextInitializer() {
 
     return new ServletContextInitializer() {
 
@@ -31,13 +36,21 @@ public class ServletContextConfiguration {
         String loggingServerPort = serverConfigService.getValue("loggingServerPort");
         String credisServiceUrl = serverConfigService.getValue("credisServiceUrl");
         servletContext.setInitParameter("loggingServerIP",
-            Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
+                                        Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
         servletContext.setInitParameter("loggingServerPort",
-            Strings.isNullOrEmpty(loggingServerPort) ? "" : loggingServerPort);
+                                        Strings.isNullOrEmpty(loggingServerPort) ? "" : loggingServerPort);
         servletContext.setInitParameter("credisServiceUrl",
-            Strings.isNullOrEmpty(credisServiceUrl) ? "" : credisServiceUrl);
+                                        Strings.isNullOrEmpty(credisServiceUrl) ? "" : credisServiceUrl);
       }
     };
+  }
+
+  @Bean
+  public FilterRegistrationBean recordAccessUserFilter() {
+    FilterRegistrationBean filter = new FilterRegistrationBean();
+    filter.setFilter(new RecordAccessUserFilter(userInfoHolder));
+    filter.addUrlPatterns("/apps");
+    return filter;
   }
 
 }

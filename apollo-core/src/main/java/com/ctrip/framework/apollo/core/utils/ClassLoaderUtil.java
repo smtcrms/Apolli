@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.core.utils;
 
+import com.google.common.base.Strings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +27,18 @@ public class ClassLoaderUtil {
     try {
       URL url = loader.getResource("");
       // get class path
-      classPath = url.getPath();
-      classPath = URLDecoder.decode(classPath, "utf-8");
+      if (url != null) {
+        classPath = url.getPath();
+        classPath = URLDecoder.decode(classPath, "utf-8");
+      }
 
       // 如果是jar包内的，则返回当前路径
-      if (classPath.contains(".jar!")) {
-        logger.warn("using config file inline jar!");
+      if (Strings.isNullOrEmpty(classPath) || classPath.contains(".jar!")) {
         classPath = System.getProperty("user.dir");
       }
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+    } catch (Throwable ex) {
+      classPath = System.getProperty("user.dir");
+      ex.printStackTrace();
     }
   }
 

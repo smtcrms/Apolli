@@ -1,5 +1,5 @@
-create_app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService', 'UserService', 'AppUtil', 'OrganizationService',
-    function ($scope, $window, toastr, AppService, UserService, AppUtil, OrganizationService) {
+app_module.controller('CreateAppController', ['$scope', '$window', 'toastr', 'AppService', 'UserService', 'AppUtil', 'OrganizationService',
+                                              function ($scope, $window, toastr, AppService, UserService, AppUtil, OrganizationService) {
 
         $scope.submitBtnDisabled = false;
         
