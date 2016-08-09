@@ -1,13 +1,15 @@
 package com.ctrip.framework.apollo;
 
+import java.util.Set;
+
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public interface Config {
   /**
    * Return the property value with the given key, or {@code defaultValue} if the key doesn't exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value
    */
@@ -16,11 +18,10 @@ public interface Config {
   /**
    * Return the integer property value with the given key, or {@code defaultValue} if the key
    * doesn't exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as integer
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Integer getIntProperty(String key, Integer defaultValue);
@@ -28,11 +29,10 @@ public interface Config {
   /**
    * Return the long property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as long
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Long getLongProperty(String key, Long defaultValue);
@@ -40,11 +40,10 @@ public interface Config {
   /**
    * Return the short property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as short
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Short getShortProperty(String key, Short defaultValue);
@@ -52,11 +51,10 @@ public interface Config {
   /**
    * Return the float property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as float
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Float getFloatProperty(String key, Float defaultValue);
@@ -64,11 +62,10 @@ public interface Config {
   /**
    * Return the double property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as double
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Double getDoubleProperty(String key, Double defaultValue);
@@ -76,11 +73,10 @@ public interface Config {
   /**
    * Return the byte property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as byte
-   *
    * @throws NumberFormatException if the property value is invalid
    */
   public Byte getByteProperty(String key, Byte defaultValue);
@@ -88,8 +84,8 @@ public interface Config {
   /**
    * Return the boolean property value with the given key, or {@code defaultValue} if the key
    * doesn't exist.
-   * 
-   * @param key the property name
+   *
+   * @param key          the property name
    * @param defaultValue the default value when key is not found
    * @return the property value as boolean
    */
@@ -98,18 +94,24 @@ public interface Config {
   /**
    * Return the array property value with the given key, or {@code defaultValue} if the key doesn't
    * exist.
-   * 
-   * @param key the property name
-   * @param delimiter the delimiter regex
+   *
+   * @param key          the property name
+   * @param delimiter    the delimiter regex
    * @param defaultValue the default value when key is not found
-   * @return
    */
   public String[] getArrayProperty(String key, String delimiter, String[] defaultValue);
 
   /**
    * Add change listener to this config instance.
-   * 
+   *
    * @param listener the config change listener
    */
   public void addChangeListener(ConfigChangeListener listener);
+
+  /**
+   * Return a set of the property names
+   *
+   * @return the property names
+   */
+  public Set<String> getPropertyNames();
 }

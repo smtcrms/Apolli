@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
+import java.util.Set;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -93,6 +95,11 @@ public class DefaultConfigManagerTest extends ComponentTestCase {
             @Override
             public String getProperty(String key, String defaultValue) {
               return namespace + ":" + key;
+            }
+
+            @Override
+            public Set<String> getPropertyNames() {
+              return null;
             }
           };
         }

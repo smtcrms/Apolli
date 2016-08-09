@@ -11,9 +11,11 @@ import com.dianping.cat.Cat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -57,6 +59,15 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
       return defaultValue;
     }
     return this.m_configProperties.getProperty(key, defaultValue);
+  }
+
+  @Override
+  public Set<String> getPropertyNames() {
+    if (m_configProperties == null) {
+      return Collections.emptySet();
+    }
+
+    return m_configProperties.stringPropertyNames();
   }
 
   @Override

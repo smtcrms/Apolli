@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -91,6 +93,11 @@ public class ConfigServiceTest extends ComponentTestCase {
       }
 
       return m_namespace + ":" + key;
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+      return null;
     }
   }
 
