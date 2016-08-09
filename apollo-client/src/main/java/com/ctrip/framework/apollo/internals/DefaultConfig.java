@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -88,6 +90,16 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     }
 
     return value == null ? defaultValue : value;
+  }
+
+  @Override
+  public Set<String> getPropertyNames() {
+    Properties properties = m_configProperties.get();
+    if (properties == null) {
+      return Collections.emptySet();
+    }
+
+    return properties.stringPropertyNames();
   }
 
   @Override
