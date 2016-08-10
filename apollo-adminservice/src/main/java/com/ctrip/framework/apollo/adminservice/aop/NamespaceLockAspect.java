@@ -67,7 +67,9 @@ public class NamespaceLockAspect {
   @Before("@annotation(PreAcquireNamespaceLock) && args(itemId, operator, ..)")
   public void requireLockAdvice(long itemId, String operator) {
     Item item = itemService.findOne(itemId);
-
+    if (item == null){
+      throw new BadRequestException("item not exist.");
+    }
     acquireLock(item.getNamespaceId(), operator);
   }
 

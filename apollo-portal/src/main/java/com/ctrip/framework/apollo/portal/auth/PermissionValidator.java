@@ -57,4 +57,8 @@ public class PermissionValidator {
       return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
     }
   }
+
+  public boolean isSuperAdmin() {
+    return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
+  }
 }

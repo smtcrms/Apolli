@@ -10,7 +10,7 @@ import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
-import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
@@ -44,7 +44,7 @@ public class ConfigServiceTest {
   private UserInfoHolder userInfoHolder;
 
   @InjectMocks
-  private ConfigService configService;
+  private ItemService configService;
 
   @Before
   public void setup() {
@@ -100,7 +100,7 @@ public class ConfigServiceTest {
 
     String appId = "6666", env = "LOCAL", clusterName = ConfigConsts.CLUSTER_NAME_DEFAULT,
         namespaceName = ConfigConsts.NAMESPACE_APPLICATION;
-    List<NamespaceIdentifer> namespaceIdentifers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
+    List<NamespaceIdentifier> namespaceIdentifiers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
     NamespaceDTO namespaceDTO = generateNamespaceDTO(appId, clusterName, namespaceName);
 
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
@@ -110,7 +110,7 @@ public class ConfigServiceTest {
     userInfo.setUserId("test");
     when(userInfoHolder.getUser()).thenReturn(userInfo);
 
-    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
+    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifiers, sourceItems);
 
     assertEquals(1,itemDiffses.size());
     ItemDiffs itemDiffs = itemDiffses.get(0);
@@ -141,7 +141,7 @@ public class ConfigServiceTest {
 
     String appId = "6666", env = "LOCAL", clusterName = ConfigConsts.CLUSTER_NAME_DEFAULT,
         namespaceName = ConfigConsts.NAMESPACE_APPLICATION;
-    List<NamespaceIdentifer> namespaceIdentifers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
+    List<NamespaceIdentifier> namespaceIdentifiers = generateNamespaceIdentifer(appId, env, clusterName, namespaceName);
     NamespaceDTO namespaceDTO = generateNamespaceDTO(appId, clusterName, namespaceName);
 
     when(namespaceAPI.loadNamespace(appId, Env.valueOf(env), clusterName, namespaceName)).thenReturn(namespaceDTO);
@@ -151,7 +151,7 @@ public class ConfigServiceTest {
     userInfo.setUserId("test");
     when(userInfoHolder.getUser()).thenReturn(userInfo);
 
-    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifers, sourceItems);
+    List<ItemDiffs> itemDiffses = configService.compare(namespaceIdentifiers, sourceItems);
     assertEquals(1, itemDiffses.size());
 
     ItemDiffs itemDiffs = itemDiffses.get(0);
@@ -161,11 +161,11 @@ public class ConfigServiceTest {
     assertEquals(2, changeSets.getUpdateItems().size());
     assertEquals(1, changeSets.getCreateItems().size());
 
-    NamespaceIdentifer namespaceIdentifer = itemDiffs.getNamespace();
-    assertEquals(appId, namespaceIdentifer.getAppId());
-    assertEquals(Env.valueOf("LOCAL"), namespaceIdentifer.getEnv());
-    assertEquals(clusterName, namespaceIdentifer.getClusterName());
-    assertEquals(namespaceName, namespaceIdentifer.getNamespaceName());
+    NamespaceIdentifier namespaceIdentifier = itemDiffs.getNamespace();
+    assertEquals(appId, namespaceIdentifier.getAppId());
+    assertEquals(Env.valueOf("LOCAL"), namespaceIdentifier.getEnv());
+    assertEquals(clusterName, namespaceIdentifier.getClusterName());
+    assertEquals(namespaceName, namespaceIdentifier.getNamespaceName());
 
     ItemDTO createdItem = changeSets.getCreateItems().get(0);
     assertEquals("newKey", createdItem.getKey());
@@ -198,8 +198,8 @@ public class ConfigServiceTest {
     return namespaceDTO;
   }
 
-  private List<NamespaceIdentifer> generateNamespaceIdentifer(String appId, String env, String clusterName, String namespaceName){
-    NamespaceIdentifer targetNamespace = new NamespaceIdentifer();
+  private List<NamespaceIdentifier> generateNamespaceIdentifer(String appId, String env, String clusterName, String namespaceName){
+    NamespaceIdentifier targetNamespace = new NamespaceIdentifier();
     targetNamespace.setAppId(appId);
     targetNamespace.setEnv(env);
     targetNamespace.setClusterName(clusterName);

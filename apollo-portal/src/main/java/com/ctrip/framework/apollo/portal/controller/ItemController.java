@@ -4,10 +4,11 @@ import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.service.ConfigService;
+import com.ctrip.framework.apollo.portal.service.ItemService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,9 @@ import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkM
 public class ItemController {
 
   @Autowired
-  private ConfigService configService;
+  private ItemService configService;
+  @Autowired
+  private UserInfoHolder userInfoHolder;
 
   @PreAuthorize(value = "@permissionValidator.hasModifyNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.PUT, consumes = {
@@ -77,7 +80,7 @@ public class ItemController {
     if (itemId <= 0){
       throw new BadRequestException("item id invalid");
     }
-    configService.deleteItem(Env.valueOf(env), itemId);
+    configService.deleteItem(Env.valueOf(env), itemId, userInfoHolder.getUser().getUserId());
   }
 
 

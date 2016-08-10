@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.entity.form;
 
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
-import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
 
 import org.springframework.util.CollectionUtils;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class NamespaceSyncModel implements Verifiable {
 
-  private List<NamespaceIdentifer> syncToNamespaces;
+  private List<NamespaceIdentifier> syncToNamespaces;
   private List<ItemDTO> syncItems;
 
   @Override
@@ -17,19 +17,19 @@ public class NamespaceSyncModel implements Verifiable {
     if (CollectionUtils.isEmpty(syncToNamespaces) || CollectionUtils.isEmpty(syncItems)){
       return true;
     }
-    for (NamespaceIdentifer namespaceIdentifer: syncToNamespaces){
-      if (namespaceIdentifer.isInvalid()){
+    for (NamespaceIdentifier namespaceIdentifier : syncToNamespaces){
+      if (namespaceIdentifier.isInvalid()){
         return true;
       }
     }
     return false;
   }
 
-  public List<NamespaceIdentifer> getSyncToNamespaces() {
+  public List<NamespaceIdentifier> getSyncToNamespaces() {
     return syncToNamespaces;
   }
 
-  public void setSyncToNamespaces(List<NamespaceIdentifer> syncToNamespaces) {
+  public void setSyncToNamespaces(List<NamespaceIdentifier> syncToNamespaces) {
     this.syncToNamespaces = syncToNamespaces;
   }
 

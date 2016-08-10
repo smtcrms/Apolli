@@ -90,6 +90,10 @@ public class AdminServiceAPI {
       return Arrays.asList(itemDTOs);
     }
 
+    public ItemDTO loadItem(Env env, long itemId) {
+      return restTemplate.get(env, "/items/{itemId}", ItemDTO.class, itemId);
+    }
+
     public void updateItemsByChangeSet(String appId, Env env, String clusterName, String namespace,
                                        ItemChangeSets changeSets) {
       restTemplate.post(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/itemset",
@@ -104,8 +108,7 @@ public class AdminServiceAPI {
 
     public ItemDTO createItem(String appId, Env env, String clusterName, String namespace, ItemDTO item) {
       return restTemplate.post(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items",
-                               item, ItemDTO.class, appId, clusterName, namespace)
-          ;
+                               item, ItemDTO.class, appId, clusterName, namespace);
     }
 
     public void deleteItem(Env env, long itemId, String operator) {

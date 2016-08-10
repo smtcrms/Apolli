@@ -49,7 +49,7 @@ public class AppService {
   public List<App> findAll() {
     Iterable<App> apps = appRepository.findAll();
     if (apps == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return Lists.newArrayList((apps));
   }

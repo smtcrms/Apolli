@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.portal.service;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +36,9 @@ public class NamespaceService {
   @Autowired
   private UserInfoHolder userInfoHolder;
   @Autowired
-  private AdminServiceAPI.ItemAPI itemAPI;
+  private ItemService itemService;
   @Autowired
-  private AdminServiceAPI.ReleaseAPI releaseAPI;
+  private ReleaseService releaseService;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
@@ -58,6 +58,13 @@ public class NamespaceService {
     return createdNamespace;
   }
 
+  public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName){
+    NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    if (namespace == null){
+      throw new BadRequestException("namespaces not existed");
+    }
+    return namespace;
+  }
 
   /**
    * load cluster all namespace info with items
@@ -66,7 +73,7 @@ public class NamespaceService {
 
     List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
-      return Collections.emptyList();
+      throw new BadRequestException("namespaces not existed");
     }
 
     List<NamespaceVO> namespaceVOs = new LinkedList<>();
@@ -86,6 +93,14 @@ public class NamespaceService {
     return namespaceVOs;
   }
 
+  public NamespaceVO loadNamespace(String appId, Env env, String clusterName, String namespaceName){
+    NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    if (namespace == null){
+      throw new BadRequestException("namespaces not existed");
+    }
+    return parseNamespace(appId, env, clusterName, namespace);
+  }
+
   @SuppressWarnings("unchecked")
   private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
     NamespaceVO namespaceVO = new NamespaceVO();
@@ -101,13 +116,13 @@ public class NamespaceService {
     //latest Release
     ReleaseDTO latestRelease = null;
     Map<String, String> releaseItems = new HashMap<>();
-    latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+    latestRelease = releaseService.loadLatestRelease(appId, env, clusterName, namespaceName);
     if (latestRelease != null) {
       releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
     }
 
     //not Release config items
-    List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
+    List<ItemDTO> items = itemService.findItems(appId, env, clusterName, namespaceName);
     int modifiedItemCnt = 0;
     for (ItemDTO itemDTO : items) {
 

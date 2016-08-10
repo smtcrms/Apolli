@@ -20,7 +20,7 @@ import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
-import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifer;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
 import com.dianping.cat.Cat;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ConfigService {
+public class ItemService {
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -38,8 +38,6 @@ public class ConfigService {
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
   private AdminServiceAPI.ItemAPI itemAPI;
-  @Autowired
-  private AdminServiceAPI.ReleaseAPI releaseAPI;
 
   @Autowired
   @Qualifier("fileTextResolver")
@@ -89,9 +87,11 @@ public class ConfigService {
     }
     item.setNamespaceId(namespace.getId());
 
-    String username = userInfoHolder.getUser().getUserId();
-    item.setDataChangeCreatedBy(username);
-    item.setDataChangeLastModifiedBy(username);
+    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())){
+      String username = userInfoHolder.getUser().getUserId();
+      item.setDataChangeCreatedBy(username);
+      item.setDataChangeLastModifiedBy(username);
+    }
 
     ItemDTO itemDTO = itemAPI.createItem(appId, env, clusterName, namespaceName, item);
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
@@ -99,30 +99,36 @@ public class ConfigService {
   }
 
   public void updateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
-    String username = userInfoHolder.getUser().getUserId();
-    item.setDataChangeLastModifiedBy(username);
+    if (StringUtils.isEmpty(item.getDataChangeLastModifiedBy())){
+      String username = userInfoHolder.getUser().getUserId();
+      item.setDataChangeLastModifiedBy(username);
+    }
     itemAPI.updateItem(appId, env, clusterName, namespaceName, item.getId(), item);
   }
 
-  public void deleteItem(Env env, long itemId) {
-    itemAPI.deleteItem(env, itemId, userInfoHolder.getUser().getUserId());
+  public void deleteItem(Env env, long itemId, String userId) {
+    itemAPI.deleteItem(env, itemId, userId);
   }
 
   public List<ItemDTO> findItems(String appId, Env env, String clusterName, String namespaceName) {
     return itemAPI.findItems(appId, env, clusterName, namespaceName);
   }
 
-  public void syncItems(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {
+  public ItemDTO loadItem(Env env, long itemId){
+    return itemAPI.loadItem(env, itemId);
+  }
+
+  public void syncItems(List<NamespaceIdentifier> comparedNamespaces, List<ItemDTO> sourceItems) {
     List<ItemDiffs> itemDiffs = compare(comparedNamespaces, sourceItems);
     for (ItemDiffs itemDiff : itemDiffs) {
-      NamespaceIdentifer namespaceIdentifer = itemDiff.getNamespace();
+      NamespaceIdentifier namespaceIdentifier = itemDiff.getNamespace();
       ItemChangeSets changeSets = itemDiff.getDiffs();
       changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
 
-      String appId = namespaceIdentifer.getAppId();
-      Env env = namespaceIdentifer.getEnv();
-      String clusterName = namespaceIdentifer.getClusterName();
-      String namespaceName = namespaceIdentifer.getNamespaceName();
+      String appId = namespaceIdentifier.getAppId();
+      Env env = namespaceIdentifier.getEnv();
+      String clusterName = namespaceIdentifier.getClusterName();
+      String namespaceName = namespaceIdentifier.getNamespaceName();
 
       itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
 
@@ -130,11 +136,11 @@ public class ConfigService {
     }
   }
 
-  public List<ItemDiffs> compare(List<NamespaceIdentifer> comparedNamespaces, List<ItemDTO> sourceItems) {
+  public List<ItemDiffs> compare(List<NamespaceIdentifier> comparedNamespaces, List<ItemDTO> sourceItems) {
 
     List<ItemDiffs> result = new LinkedList<>();
 
-    for (NamespaceIdentifer namespace : comparedNamespaces) {
+    for (NamespaceIdentifier namespace : comparedNamespaces) {
 
       ItemDiffs itemDiffs = new ItemDiffs(namespace);
       try {
@@ -149,11 +155,11 @@ public class ConfigService {
     return result;
   }
 
-  private long getNamespaceId(NamespaceIdentifer namespaceIdentifer) {
-    String appId = namespaceIdentifer.getAppId();
-    String clusterName = namespaceIdentifer.getClusterName();
-    String namespaceName = namespaceIdentifer.getNamespaceName();
-    Env env = namespaceIdentifer.getEnv();
+  private long getNamespaceId(NamespaceIdentifier namespaceIdentifier) {
+    String appId = namespaceIdentifier.getAppId();
+    String clusterName = namespaceIdentifier.getClusterName();
+    String namespaceName = namespaceIdentifier.getNamespaceName();
+    Env env = namespaceIdentifier.getEnv();
     NamespaceDTO namespaceDTO = null;
     try {
       namespaceDTO = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
@@ -167,7 +173,7 @@ public class ConfigService {
     return namespaceDTO.getId();
   }
 
-  private ItemChangeSets parseChangeSets(NamespaceIdentifer namespace, List<ItemDTO> sourceItems) {
+  private ItemChangeSets parseChangeSets(NamespaceIdentifier namespace, List<ItemDTO> sourceItems) {
     ItemChangeSets changeSets = new ItemChangeSets();
     List<ItemDTO>
         targetItems =

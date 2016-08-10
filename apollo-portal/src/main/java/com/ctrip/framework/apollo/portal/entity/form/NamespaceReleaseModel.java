@@ -12,6 +12,7 @@ public class NamespaceReleaseModel implements Verifiable {
   private String namespaceName;
   private String releaseTitle;
   private String releaseComment;
+  private String releaseBy;
 
   @Override
   public boolean isInvalid() {
@@ -66,4 +67,11 @@ public class NamespaceReleaseModel implements Verifiable {
     this.releaseComment = releaseComment;
   }
 
+  public String getReleaseBy() {
+    return releaseBy;
+  }
+
+  public void setReleaseBy(String releaseBy) {
+    this.releaseBy = releaseBy;
+  }
 }

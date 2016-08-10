@@ -2,17 +2,18 @@ package com.ctrip.framework.apollo.portal.controller;
 
 
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
 import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
 /**
@@ -26,11 +27,12 @@ public class ServerConfigController {
   @Autowired
   private UserInfoHolder userInfoHolder;
 
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/server/config", method = RequestMethod.POST)
   public ServerConfig createOrUpdate(@RequestBody ServerConfig serverConfig) {
 
     checkModel(serverConfig != null);
-    checkArgument(serverConfig.getKey(), serverConfig.getValue());
+    RequestPrecondition.checkArgumentsNotEmpty(serverConfig.getKey(), serverConfig.getValue());
 
     String modifiedBy = userInfoHolder.getUser().getUserId();
 

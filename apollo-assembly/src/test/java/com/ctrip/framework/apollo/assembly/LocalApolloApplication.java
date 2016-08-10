@@ -12,7 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import com.ctrip.framework.apollo.adminservice.AdminServiceApplication;
 import com.ctrip.framework.apollo.configservice.ConfigServiceApplication;
-import com.ctrip.framework.apollo.portal.PortalApplication;
+import com.ctrip.framework.apollo.PortalApplication;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})

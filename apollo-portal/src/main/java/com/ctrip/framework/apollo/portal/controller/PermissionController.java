@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.portal.controller;
 import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
-import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
 
 
 @RestController
@@ -94,7 +94,7 @@ public class PermissionController {
   public ResponseEntity<Void> assignNamespaceRoleToUser(@PathVariable String appId, @PathVariable String namespaceName,
                                                         @PathVariable String roleType, @RequestBody String user){
     checkUserExists(user);
-    checkArgument(user);
+    RequestPrecondition.checkArgumentsNotEmpty(user);
 
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");
@@ -112,7 +112,7 @@ public class PermissionController {
   @RequestMapping(value = "/apps/{appId}/namespaces/{namespaceName}/roles/{roleType}", method = RequestMethod.DELETE)
   public ResponseEntity<Void> removeNamespaceRoleFromUser(@PathVariable String appId, @PathVariable String namespaceName,
                                                  @PathVariable String roleType, @RequestParam String user){
-    checkArgument(user);
+    RequestPrecondition.checkArgumentsNotEmpty(user);
 
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");
@@ -138,7 +138,7 @@ public class PermissionController {
   public ResponseEntity<Void> assignAppRoleToUser(@PathVariable String appId, @PathVariable String roleType,
                                                   @RequestBody String user){
     checkUserExists(user);
-    checkArgument(user);
+    RequestPrecondition.checkArgumentsNotEmpty(user);
 
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");
@@ -156,7 +156,7 @@ public class PermissionController {
   @RequestMapping(value = "/apps/{appId}/roles/{roleType}", method = RequestMethod.DELETE)
   public ResponseEntity<Void> removeAppRoleFromUser(@PathVariable String appId, @PathVariable String roleType,
                                                  @RequestParam String user){
-    checkArgument(user);
+    RequestPrecondition.checkArgumentsNotEmpty(user);
 
     if (!RoleType.isValidRoleType(roleType)){
       throw new BadRequestException("role type is illegal");

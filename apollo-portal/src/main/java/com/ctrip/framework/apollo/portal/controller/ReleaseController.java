@@ -28,7 +28,7 @@ public class ReleaseController {
   private ReleaseService releaseService;
 
   @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName)")
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/release", method = RequestMethod.POST)
   public ReleaseDTO createRelease(@PathVariable String appId,
                                   @PathVariable String env, @PathVariable String clusterName,
                                   @PathVariable String namespaceName, @RequestBody NamespaceReleaseModel model) {

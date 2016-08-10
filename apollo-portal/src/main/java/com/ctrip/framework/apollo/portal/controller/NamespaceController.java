@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkArgument;
 import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
 @RestController
@@ -71,7 +71,8 @@ public class NamespaceController {
     for (NamespaceCreationModel model : models) {
       NamespaceDTO namespace = model.getNamespace();
 
-      checkArgument(model.getEnv(), namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
+      RequestPrecondition
+          .checkArgumentsNotEmpty(model.getEnv(), namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
 
       try {
         // TODO: 16/6/17 某些环境创建失败,统一处理这种场景
@@ -89,7 +90,7 @@ public class NamespaceController {
   @RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
   public AppNamespace createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
-    checkArgument(appNamespace.getAppId(), appNamespace.getName());
+    RequestPrecondition.checkArgumentsNotEmpty(appNamespace.getAppId(), appNamespace.getName());
     if (!InputValidator.isValidAppNamespace(appNamespace.getName())) {
       throw new BadRequestException(String.format("Namespace格式错误: %s",
                                                   InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE + " & "
