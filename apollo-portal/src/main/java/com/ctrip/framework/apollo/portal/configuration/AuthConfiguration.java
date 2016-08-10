@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.portal.configuration;
 import com.google.common.collect.Maps;
 
 import com.ctrip.framework.apollo.openapi.filter.ConsumerAuthenticationFilter;
+import com.ctrip.framework.apollo.openapi.util.ConsumerAuditUtil;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
@@ -177,10 +178,11 @@ public class AuthConfiguration {
   static class DefaultAuthAutoConfiguration {
 
     @Bean
-    public FilterRegistrationBean openApiAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil) {
+    public FilterRegistrationBean openApiAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil,
+                                                              ConsumerAuditUtil consumerAuditUtil) {
       FilterRegistrationBean openApiFilter = new FilterRegistrationBean();
 
-      openApiFilter.setFilter(new ConsumerAuthenticationFilter(consumerAuthUtil));
+      openApiFilter.setFilter(new ConsumerAuthenticationFilter(consumerAuthUtil, consumerAuditUtil));
       openApiFilter.addUrlPatterns("/openapi/*");
 
       return openApiFilter;

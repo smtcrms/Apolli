@@ -7,7 +7,9 @@ import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 
 import com.ctrip.framework.apollo.openapi.entity.Consumer;
+import com.ctrip.framework.apollo.openapi.entity.ConsumerAudit;
 import com.ctrip.framework.apollo.openapi.entity.ConsumerToken;
+import com.ctrip.framework.apollo.openapi.repository.ConsumerAuditRepository;
 import com.ctrip.framework.apollo.openapi.repository.ConsumerRepository;
 import com.ctrip.framework.apollo.openapi.repository.ConsumerTokenRepository;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
@@ -33,6 +35,8 @@ public class ConsumerService implements InitializingBean {
   private ConsumerTokenRepository consumerTokenRepository;
   @Autowired
   private ConsumerRepository consumerRepository;
+  @Autowired
+  private ConsumerAuditRepository consumerAuditRepository;
   @Autowired
   private ServerConfigService serverConfigService;
 
@@ -69,6 +73,11 @@ public class ConsumerService implements InitializingBean {
     entity.setId(0); //for protection
 
     return consumerTokenRepository.save(entity);
+  }
+
+  @Transactional
+  public void createConsumerAudits(Iterable<ConsumerAudit> consumerAudits) {
+    consumerAuditRepository.save(consumerAudits);
   }
 
   String generateConsumerToken(String consumerAppId, Date generationTime, String
