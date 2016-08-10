@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.openapi.filter;
 
+import com.ctrip.framework.apollo.openapi.util.ConsumerAuditUtil;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
 
 import java.io.IOException;
@@ -18,9 +19,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ConsumerAuthenticationFilter implements Filter {
   private ConsumerAuthUtil consumerAuthUtil;
+  private ConsumerAuditUtil consumerAuditUtil;
 
-  public ConsumerAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil) {
+  public ConsumerAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil, ConsumerAuditUtil consumerAuditUtil) {
     this.consumerAuthUtil = consumerAuthUtil;
+    this.consumerAuditUtil = consumerAuditUtil;
   }
 
   @Override
@@ -44,6 +47,7 @@ public class ConsumerAuthenticationFilter implements Filter {
     }
 
     consumerAuthUtil.storeConsumerId(request, consumerId);
+    consumerAuditUtil.audit(request, consumerId);
 
     chain.doFilter(req, resp);
   }

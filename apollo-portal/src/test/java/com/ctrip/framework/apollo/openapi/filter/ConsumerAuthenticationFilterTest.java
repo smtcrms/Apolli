@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.openapi.filter;
 
+import com.ctrip.framework.apollo.openapi.util.ConsumerAuditUtil;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
 
 import org.junit.Before;
@@ -12,7 +13,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -30,6 +30,8 @@ public class ConsumerAuthenticationFilterTest {
   @Mock
   private ConsumerAuthUtil consumerAuthUtil;
   @Mock
+  private ConsumerAuditUtil consumerAuditUtil;
+  @Mock
   private HttpServletRequest request;
   @Mock
   private HttpServletResponse response;
@@ -38,7 +40,7 @@ public class ConsumerAuthenticationFilterTest {
 
   @Before
   public void setUp() throws Exception {
-    authenticationFilter = new ConsumerAuthenticationFilter(consumerAuthUtil);
+    authenticationFilter = new ConsumerAuthenticationFilter(consumerAuthUtil, consumerAuditUtil);
   }
 
   @Test
@@ -52,6 +54,7 @@ public class ConsumerAuthenticationFilterTest {
     authenticationFilter.doFilter(request, response, filterChain);
 
     verify(consumerAuthUtil, times(1)).storeConsumerId(request, someConsumerId);
+    verify(consumerAuditUtil, times(1)).audit(request, someConsumerId);
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -66,6 +69,7 @@ public class ConsumerAuthenticationFilterTest {
 
     verify(response, times(1)).sendError(eq(HttpServletResponse.SC_UNAUTHORIZED), anyString());
     verify(consumerAuthUtil, never()).storeConsumerId(eq(request), anyLong());
+    verify(consumerAuditUtil, never()).audit(eq(request), anyLong());
     verify(filterChain, never()).doFilter(request, response);
   }
 }
