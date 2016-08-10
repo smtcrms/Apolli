@@ -81,6 +81,7 @@ public class Consumer extends BaseEntity {
     this.ownerName = ownerName;
   }
 
+  @Override
   public String toString() {
     return toStringHelper().add("name", name).add("appId", appId)
         .add("orgId", orgId)

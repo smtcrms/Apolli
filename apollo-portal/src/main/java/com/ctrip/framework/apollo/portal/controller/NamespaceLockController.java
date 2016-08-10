@@ -17,9 +17,9 @@ public class NamespaceLockController {
 
   @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock")
   public NamespaceLockDTO getNamespaceLock(@PathVariable String appId, @PathVariable String env,
-                                           @PathVariable String clusterName, @PathVariable String namespaceName){
+                                           @PathVariable String clusterName, @PathVariable String namespaceName) {
 
-      return namespaceLockService.getNamespaceLock(appId, Env.valueOf(env), clusterName, namespaceName);
+    return namespaceLockService.getNamespaceLock(appId, Env.valueOf(env), clusterName, namespaceName);
   }
 
 }

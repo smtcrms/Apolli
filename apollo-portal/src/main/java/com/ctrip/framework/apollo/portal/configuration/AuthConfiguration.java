@@ -3,7 +3,6 @@ package com.ctrip.framework.apollo.portal.configuration;
 import com.google.common.collect.Maps;
 
 import com.ctrip.framework.apollo.openapi.filter.ConsumerAuthenticationFilter;
-import com.ctrip.framework.apollo.openapi.service.ConsumerService;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
 import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.util.EventListener;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.Filter;

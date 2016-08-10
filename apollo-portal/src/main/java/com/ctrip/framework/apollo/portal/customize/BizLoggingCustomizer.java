@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("ctrip")
-public class BizLoggingCustomizer extends LoggingCustomizer{
+public class BizLoggingCustomizer extends LoggingCustomizer {
 
   private static final String CLOGGING_SERVER_URL_KEY = "clogging.server.url";
   private static final String CLOGGING_SERVER_PORT_KEY = "clogging.server.port";
@@ -22,7 +22,7 @@ public class BizLoggingCustomizer extends LoggingCustomizer{
 
   @Override
   protected String cloggingUrl() {
-    if (cloggingUrl == null){
+    if (cloggingUrl == null) {
       cloggingUrl = serverConfigService.getValue(CLOGGING_SERVER_URL_KEY);
     }
     return cloggingUrl;
@@ -30,7 +30,7 @@ public class BizLoggingCustomizer extends LoggingCustomizer{
 
   @Override
   protected String cloggingPort() {
-    if (cloggingPort == null){
+    if (cloggingPort == null) {
       cloggingPort = serverConfigService.getValue(CLOGGING_SERVER_PORT_KEY);
     }
     return cloggingPort;

@@ -14,11 +14,11 @@ public class NamespaceSyncModel implements Verifiable {
 
   @Override
   public boolean isInvalid() {
-    if (CollectionUtils.isEmpty(syncToNamespaces) || CollectionUtils.isEmpty(syncItems)){
+    if (CollectionUtils.isEmpty(syncToNamespaces) || CollectionUtils.isEmpty(syncItems)) {
       return true;
     }
-    for (NamespaceIdentifier namespaceIdentifier : syncToNamespaces){
-      if (namespaceIdentifier.isInvalid()){
+    for (NamespaceIdentifier namespaceIdentifier : syncToNamespaces) {
+      if (namespaceIdentifier.isInvalid()) {
         return true;
       }
     }

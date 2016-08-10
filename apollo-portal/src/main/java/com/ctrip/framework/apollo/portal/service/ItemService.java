@@ -1,29 +1,29 @@
 package com.ctrip.framework.apollo.portal.service;
 
 
+import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.CatEventType;
+import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
+import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
+import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
+import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
+import com.dianping.cat.Cat;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
-
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.common.dto.ItemDTO;
-import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
-import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
-import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
-import com.dianping.cat.Cat;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class ItemService {
         model.getFormat() == ConfigFileFormat.Properties ? propertyResolver : fileTextResolver;
 
     ItemChangeSets changeSets = resolver.resolve(namespaceId, configText,
-                                                 itemAPI.findItems(appId, env, clusterName, namespaceName));
+        itemAPI.findItems(appId, env, clusterName, namespaceName));
     if (changeSets.isEmpty()) {
       return;
     }
@@ -74,7 +74,7 @@ public class ItemService {
     itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
 
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT,
-                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+        String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
@@ -87,7 +87,7 @@ public class ItemService {
     }
     item.setNamespaceId(namespace.getId());
 
-    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())){
+    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())) {
       String username = userInfoHolder.getUser().getUserId();
       item.setDataChangeCreatedBy(username);
       item.setDataChangeLastModifiedBy(username);
@@ -99,7 +99,7 @@ public class ItemService {
   }
 
   public void updateItem(String appId, Env env, String clusterName, String namespaceName, ItemDTO item) {
-    if (StringUtils.isEmpty(item.getDataChangeLastModifiedBy())){
+    if (StringUtils.isEmpty(item.getDataChangeLastModifiedBy())) {
       String username = userInfoHolder.getUser().getUserId();
       item.setDataChangeLastModifiedBy(username);
     }
@@ -114,7 +114,7 @@ public class ItemService {
     return itemAPI.findItems(appId, env, clusterName, namespaceName);
   }
 
-  public ItemDTO loadItem(Env env, long itemId){
+  public ItemDTO loadItem(Env env, long itemId) {
     return itemAPI.loadItem(env, itemId);
   }
 
@@ -178,7 +178,7 @@ public class ItemService {
     List<ItemDTO>
         targetItems =
         itemAPI.findItems(namespace.getAppId(), namespace.getEnv(),
-                          namespace.getClusterName(), namespace.getNamespaceName());
+            namespace.getClusterName(), namespace.getNamespaceName());
 
     long namespaceId = getNamespaceId(namespace);
 
@@ -203,7 +203,7 @@ public class ItemService {
           changeSets.addCreateItem(buildItem(namespaceId, ++maxLineNum, sourceItem));
 
         } else if (isModified(sourceValue, targetItem.getValue(), sourceComment,
-                              targetItem.getComment())) {//modified items
+            targetItem.getComment())) {//modified items
           targetItem.setValue(sourceValue);
           targetItem.setComment(sourceComment);
           changeSets.addUpdateItem(targetItem);

@@ -18,42 +18,42 @@ public class PermissionValidator {
 
   public boolean hasModifyNamespacePermission(String appId, String namespaceName) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-                                                   PermissionType.MODIFY_NAMESPACE,
-                                                   RoleUtils.buildNamespaceTargetId(appId, namespaceName));
+        PermissionType.MODIFY_NAMESPACE,
+        RoleUtils.buildNamespaceTargetId(appId, namespaceName));
 
   }
 
   public boolean hasReleaseNamespacePermission(String appId, String namespaceName) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-                                                   PermissionType.RELEASE_NAMESPACE,
-                                                   RoleUtils.buildNamespaceTargetId(appId, namespaceName));
+        PermissionType.RELEASE_NAMESPACE,
+        RoleUtils.buildNamespaceTargetId(appId, namespaceName));
 
   }
 
   public boolean hasAssignRolePermission(String appId) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-                                                   PermissionType.ASSIGN_ROLE,
-                                                   appId);
+        PermissionType.ASSIGN_ROLE,
+        appId);
   }
 
   public boolean hasCreateNamespacePermission(String appId) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-                                                   PermissionType.CREATE_NAMESPACE,
-                                                   appId);
+        PermissionType.CREATE_NAMESPACE,
+        appId);
   }
 
 
   public boolean hasCreateClusterPermission(String appId) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-                                                   PermissionType.CREATE_CLUSTER,
-                                                   appId);
+        PermissionType.CREATE_CLUSTER,
+        appId);
   }
 
   public boolean hasCreateAppNamespacePermission(String appId, AppNamespace appNamespace) {
     boolean isPublicAppNamespace = appNamespace.isPublic();
-    if (isPublicAppNamespace){
+    if (isPublicAppNamespace) {
       return hasCreateNamespacePermission(appId);
-    }else {
+    } else {
       return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
     }
   }

@@ -38,4 +38,9 @@ public class ConsumerRole extends BaseEntity {
   public void setRoleId(long roleId) {
     this.roleId = roleId;
   }
+
+  @Override
+  public String toString() {
+    return toStringHelper().add("consumerId", consumerId).add("roleId", roleId).toString();
+  }
 }

@@ -1,10 +1,10 @@
 package com.ctrip.framework.apollo.portal.controller;
 
-import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.dto.ClusterDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 
@@ -29,7 +29,7 @@ public class ClusterController {
   @PreAuthorize(value = "@permissionValidator.hasCreateClusterPermission(#appId)")
   @RequestMapping(value = "apps/{appId}/envs/{env}/clusters", method = RequestMethod.POST)
   public ClusterDTO createCluster(@PathVariable String appId, @PathVariable String env,
-                                  @RequestBody ClusterDTO cluster){
+                                  @RequestBody ClusterDTO cluster) {
 
     checkModel(cluster != null);
     RequestPrecondition.checkArgumentsNotEmpty(cluster.getAppId(), cluster.getName());

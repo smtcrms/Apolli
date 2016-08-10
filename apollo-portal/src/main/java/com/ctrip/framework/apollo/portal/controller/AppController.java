@@ -2,12 +2,12 @@ package com.ctrip.framework.apollo.portal.controller;
 
 
 import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
 import com.ctrip.framework.apollo.common.http.RichResponseEntity;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
@@ -76,13 +76,13 @@ public class AppController {
   public ResponseEntity<Void> create(@RequestBody App app) {
 
     RequestPrecondition.checkArgumentsNotEmpty(app.getName(), app.getAppId(), app.getOwnerName(),
-                                               app.getOrgId(), app.getOrgName());
+        app.getOrgId(), app.getOrgName());
     if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
       throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
 
     UserInfo userInfo = userService.findByUserId(app.getOwnerName());
-    if (userInfo == null){
+    if (userInfo == null) {
       throw new BadRequestException("应用负责人不存在");
     }
     app.setOwnerEmail(userInfo.getEmail());
@@ -99,7 +99,7 @@ public class AppController {
   public ResponseEntity<Void> create(@PathVariable String env, @RequestBody App app) {
 
     RequestPrecondition.checkArgumentsNotEmpty(app.getName(), app.getAppId(), app.getOwnerEmail(), app.getOwnerName(),
-                                               app.getOrgId(), app.getOrgName());
+        app.getOrgId(), app.getOrgName());
     if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
       throw new BadRequestException(InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE);
     }

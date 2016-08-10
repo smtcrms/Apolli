@@ -51,4 +51,10 @@ public class ConsumerToken extends BaseEntity {
   public void setExpires(Date expires) {
     this.expires = expires;
   }
+
+  @Override
+  public String toString() {
+    return toStringHelper().add("consumerId", consumerId).add("token", token)
+        .add("expires", expires).toString();
+  }
 }

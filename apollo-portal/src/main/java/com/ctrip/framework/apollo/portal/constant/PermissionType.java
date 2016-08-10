@@ -2,7 +2,9 @@ package com.ctrip.framework.apollo.portal.constant;
 
 public interface PermissionType {
 
-  /** APP level permission */
+  /**
+   * APP level permission
+   */
 
   String CREATE_NAMESPACE = "CreateNamespace";
 
@@ -13,7 +15,9 @@ public interface PermissionType {
    */
   String ASSIGN_ROLE = "AssignRole";
 
-  /** namespace level permission*/
+  /**
+   * namespace level permission
+   */
 
   String MODIFY_NAMESPACE = "ModifyNamespace";
 

@@ -16,7 +16,7 @@ public class CommitService {
   @Autowired
   private AdminServiceAPI.CommitAPI commitAPI;
 
-  public List<CommitDTO> find(String appId, Env env, String clusterName, String namespaceName, int page, int size){
+  public List<CommitDTO> find(String appId, Env env, String clusterName, String namespaceName, int page, int size) {
     return commitAPI.find(appId, env, clusterName, namespaceName, page, size);
   }
 

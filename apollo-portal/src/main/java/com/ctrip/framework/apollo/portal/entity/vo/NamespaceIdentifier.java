@@ -51,10 +51,10 @@ public class NamespaceIdentifier implements Verifiable {
   @Override
   public String toString() {
     return "NamespaceIdentifer{" +
-           "appId='" + appId + '\'' +
-           ", env='" + env + '\'' +
-           ", clusterName='" + clusterName + '\'' +
-           ", namespaceName='" + namespaceName + '\'' +
-           '}';
+        "appId='" + appId + '\'' +
+        ", env='" + env + '\'' +
+        ", clusterName='" + clusterName + '\'' +
+        ", namespaceName='" + namespaceName + '\'' +
+        '}';
   }
 }

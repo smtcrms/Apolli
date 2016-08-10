@@ -12,7 +12,7 @@ public class NamespaceReleaseModel implements Verifiable {
   private String namespaceName;
   private String releaseTitle;
   private String releaseComment;
-  private String releaseBy;
+  private String releasedBy;
 
   @Override
   public boolean isInvalid() {
@@ -67,11 +67,11 @@ public class NamespaceReleaseModel implements Verifiable {
     this.releaseComment = releaseComment;
   }
 
-  public String getReleaseBy() {
-    return releaseBy;
+  public String getReleasedBy() {
+    return releasedBy;
   }
 
-  public void setReleaseBy(String releaseBy) {
-    this.releaseBy = releaseBy;
+  public void setReleasedBy(String releasedBy) {
+    this.releasedBy = releasedBy;
   }
 }

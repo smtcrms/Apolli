@@ -2,12 +2,12 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.gson.Gson;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -53,15 +53,15 @@ public class NamespaceService {
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
     Cat.logEvent(CatEventType.CREATE_NAMESPACE,
-                 String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
-                               namespace.getNamespaceName()));
+        String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
+            namespace.getNamespaceName()));
     return createdNamespace;
   }
 
-  public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName){
+  public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
-    if (namespace == null){
-      throw new BadRequestException("namespaces not existed");
+    if (namespace == null) {
+      throw new BadRequestException("namespaces not exist");
     }
     return namespace;
   }
@@ -73,7 +73,7 @@ public class NamespaceService {
 
     List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
-      throw new BadRequestException("namespaces not existed");
+      throw new BadRequestException("namespaces not exist");
     }
 
     List<NamespaceVO> namespaceVOs = new LinkedList<>();
@@ -85,7 +85,7 @@ public class NamespaceService {
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-                     appId, env, clusterName, namespace.getNamespaceName(), e);
+            appId, env, clusterName, namespace.getNamespaceName(), e);
         throw e;
       }
     }
@@ -93,10 +93,10 @@ public class NamespaceService {
     return namespaceVOs;
   }
 
-  public NamespaceVO loadNamespace(String appId, Env env, String clusterName, String namespaceName){
+  public NamespaceVO loadNamespace(String appId, Env env, String clusterName, String namespaceName) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
-    if (namespace == null){
-      throw new BadRequestException("namespaces not existed");
+    if (namespace == null) {
+      throw new BadRequestException("namespaces not exist");
     }
     return parseNamespace(appId, env, clusterName, namespace);
   }

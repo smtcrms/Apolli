@@ -30,7 +30,7 @@ public class UserInfoController {
 
   @RequestMapping("/user")
   public UserInfo getCurrentUserName() {
-      return userInfoHolder.getUser();
+    return userInfoHolder.getUser();
   }
 
   @RequestMapping("/user/logout")

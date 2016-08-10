@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.portal.api;
 
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
@@ -66,7 +66,7 @@ public class RetryableRestTemplate {
   private <T> T execute(HttpMethod method, Env env, String path, Object request, Class<T> responseType,
                         Object... uriVariables) {
 
-    if (path.startsWith("/")){
+    if (path.startsWith("/")) {
       path = path.substring(1, path.length());
     }
 
@@ -143,11 +143,11 @@ public class RetryableRestTemplate {
     Throwable nestedException = e.getCause();
     if (method == HttpMethod.GET) {
       return nestedException instanceof SocketTimeoutException
-             || nestedException instanceof HttpHostConnectException
-             || nestedException instanceof ConnectTimeoutException;
+          || nestedException instanceof HttpHostConnectException
+          || nestedException instanceof ConnectTimeoutException;
     } else {
       return nestedException instanceof HttpHostConnectException
-             || nestedException instanceof ConnectTimeoutException;
+          || nestedException instanceof ConnectTimeoutException;
     }
   }
 

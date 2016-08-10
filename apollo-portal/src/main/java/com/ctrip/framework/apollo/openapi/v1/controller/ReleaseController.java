@@ -42,11 +42,11 @@ public class ReleaseController {
                                       HttpServletRequest request) {
 
     checkModel(model != null);
-    RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(model.getReleaseBy(), model
+    RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(model.getReleasedBy(), model
             .getReleaseTitle()),
         "releaseTitle and releaseBy can not be empty");
 
-    if (userService.findByUserId(model.getReleaseBy()) == null) {
+    if (userService.findByUserId(model.getReleasedBy()) == null) {
       throw new BadRequestException("用户不存在.");
     }
 

@@ -2,8 +2,18 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.common.collect.Lists;
 
-import java.util.Collections;
-import java.util.List;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
+import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.CatEventType;
+import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
+import com.ctrip.framework.apollo.portal.repository.AppRepository;
+import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,18 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.utils.ExceptionUtils;
-import com.ctrip.framework.apollo.common.dto.AppDTO;
-import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
-import com.ctrip.framework.apollo.portal.repository.AppRepository;
-import com.dianping.cat.Cat;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AppService {
@@ -56,7 +56,7 @@ public class AppService {
 
   public App load(String appId) {
     App app = appRepository.findByAppId(appId);
-    if (app == null){
+    if (app == null) {
       throw new BadRequestException(String.format("app %s cant found.", appId));
     }
     return app;

@@ -7,9 +7,10 @@ public class ItemDiffs {
   private ItemChangeSets diffs;
   private String extInfo;
 
-  public ItemDiffs(NamespaceIdentifier namespace){
+  public ItemDiffs(NamespaceIdentifier namespace) {
     this.namespace = namespace;
   }
+
   public NamespaceIdentifier getNamespace() {
     return namespace;
   }
