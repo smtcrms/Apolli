@@ -4,6 +4,7 @@ package com.ctrip.framework.apollo.portal;
 import com.ctrip.framework.apollo.openapi.filter.ConsumerAuthenticationFilterTest;
 import com.ctrip.framework.apollo.openapi.service.ConsumerRolePermissionServiceTest;
 import com.ctrip.framework.apollo.openapi.service.ConsumerServiceTest;
+import com.ctrip.framework.apollo.openapi.util.ConsumerAuditUtilTest;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtilTest;
 import com.ctrip.framework.apollo.portal.controller.ConsumerControllerTest;
 import com.ctrip.framework.apollo.portal.service.AppNamespaceServiceTest;
@@ -25,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AppNamespaceServiceTest.class, RoleInitializationServiceTest.class, FileTextResolverTest.class,
     RetryableRestTemplateTest.class, ConsumerRolePermissionServiceTest.class,
     ConsumerAuthenticationFilterTest.class, ConsumerAuthUtilTest.class, ConsumerServiceTest.class,
-    ConsumerControllerTest.class
+    ConsumerControllerTest.class, ConsumerAuditUtilTest.class
 })
 public class AllTests {
 

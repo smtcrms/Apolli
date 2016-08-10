@@ -32,6 +32,9 @@ public class ConsumerAuditUtil implements InitializingBean {
   private BlockingQueue<ConsumerAudit> audits = Queues.newLinkedBlockingQueue(CONSUMER_AUDIT_MAX_SIZE);
   private final ExecutorService auditExecutorService;
   private final AtomicBoolean auditStopped;
+  private int BATCH_SIZE = 100;
+  private long BATCH_TIMEOUT = 5;
+  private TimeUnit BATCH_TIMEUNIT = TimeUnit.SECONDS;
 
   @Autowired
   private ConsumerService consumerService;
@@ -66,7 +69,7 @@ public class ConsumerAuditUtil implements InitializingBean {
       while (!auditStopped.get() && !Thread.currentThread().isInterrupted()) {
         List<ConsumerAudit> toAudit = Lists.newArrayList();
         try {
-          Queues.drain(audits, toAudit, 100, 5, TimeUnit.SECONDS);
+          Queues.drain(audits, toAudit, BATCH_SIZE, BATCH_TIMEOUT, BATCH_TIMEUNIT);
           if (!toAudit.isEmpty()) {
             consumerService.createConsumerAudits(toAudit);
           }
@@ -75,5 +78,9 @@ public class ConsumerAuditUtil implements InitializingBean {
         }
       }
     });
+  }
+
+  public void stopAudit() {
+    auditStopped.set(true);
   }
 }
