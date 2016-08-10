@@ -9,7 +9,7 @@ public class EnvClusterInfo {
   private Env env;
   private List<ClusterDTO> clusters;
 
-  public EnvClusterInfo(Env env){
+  public EnvClusterInfo(Env env) {
     this.env = env;
   }
 

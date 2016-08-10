@@ -1,5 +1,12 @@
 package com.ctrip.framework.apollo.portal.configuration;
 
+import com.google.common.collect.Maps;
+
+import com.ctrip.framework.apollo.openapi.filter.ConsumerAuthenticationFilter;
+import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
+import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
+import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.auth.ctrip.CtripLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.ctrip.CtripSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.ctrip.CtripUserInfoHolder;
@@ -8,9 +15,6 @@ import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.auth.defaultimpl.DefaultUserService;
-import com.ctrip.framework.apollo.portal.auth.LogoutHandler;
-import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.service.UserService;
 
@@ -23,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.util.EventListener;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -47,21 +50,21 @@ public class AuthConfiguration {
     private ServerConfigService serverConfigService;
 
     @Bean
-    public ServletListenerRegistrationBean redisAppSettingListner(){
+    public ServletListenerRegistrationBean redisAppSettingListner() {
       ServletListenerRegistrationBean redisAppSettingListner = new ServletListenerRegistrationBean();
       redisAppSettingListner.setListener(listener("org.jasig.cas.client.credis.CRedisAppSettingListner"));
       return redisAppSettingListner;
     }
 
     @Bean
-    public ServletListenerRegistrationBean singleSignOutHttpSessionListener(){
+    public ServletListenerRegistrationBean singleSignOutHttpSessionListener() {
       ServletListenerRegistrationBean singleSignOutHttpSessionListener = new ServletListenerRegistrationBean();
       singleSignOutHttpSessionListener.setListener(listener("org.jasig.cas.client.session.SingleSignOutHttpSessionListener"));
       return singleSignOutHttpSessionListener;
     }
 
     @Bean
-    public FilterRegistrationBean casFilter(){
+    public FilterRegistrationBean casFilter() {
       FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
       singleSignOutFilter.setFilter(filter("org.jasig.cas.client.session.SingleSignOutFilter"));
       singleSignOutFilter.addUrlPatterns("/*");
@@ -69,15 +72,16 @@ public class AuthConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean authenticationFilter(){
+    public FilterRegistrationBean authenticationFilter() {
       FilterRegistrationBean casFilter = new FilterRegistrationBean();
 
-      Map<String, String> filterInitParam = new HashMap();
+      Map<String, String> filterInitParam = Maps.newHashMap();
       filterInitParam.put("redisClusterName", "casClientPrincipal");
       filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
       filterInitParam.put("casServerLoginUrl", serverConfigService.getValue("casServerLoginUrl"));
       //we don't want to use session to store login information, since we will be deployed to a cluster, not a single instance
       filterInitParam.put("useSession", "false");
+      filterInitParam.put("/openapi.*", "exclude");
 
       casFilter.setInitParameters(filterInitParam);
       casFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAuthenticationFilter"));
@@ -87,9 +91,9 @@ public class AuthConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean casValidationFilter(){
+    public FilterRegistrationBean casValidationFilter() {
       FilterRegistrationBean casValidationFilter = new FilterRegistrationBean();
-      Map<String, String> filterInitParam = new HashMap();
+      Map<String, String> filterInitParam = Maps.newHashMap();
       filterInitParam.put("casServerUrlPrefix", serverConfigService.getValue("casServerUrlPrefix"));
       filterInitParam.put("serverName", serverConfigService.getValue("serverName"));
       filterInitParam.put("encoding", "UTF-8");
@@ -107,10 +111,14 @@ public class AuthConfiguration {
     }
 
 
-
     @Bean
-    public FilterRegistrationBean assertionHolder(){
+    public FilterRegistrationBean assertionHolder() {
       FilterRegistrationBean assertionHolderFilter = new FilterRegistrationBean();
+
+      Map<String, String> filterInitParam = Maps.newHashMap();
+      filterInitParam.put("/openapi.*", "exclude");
+
+      assertionHolderFilter.setInitParameters(filterInitParam);
 
       assertionHolderFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAssertionThreadLocalFilter"));
       assertionHolderFilter.addUrlPatterns("/*");
@@ -119,16 +127,16 @@ public class AuthConfiguration {
     }
 
     @Bean
-    public CtripUserInfoHolder ctripUserInfoHolder(){
+    public CtripUserInfoHolder ctripUserInfoHolder() {
       return new CtripUserInfoHolder();
     }
 
     @Bean
-    public CtripLogoutHandler logoutHandler(){
+    public CtripLogoutHandler logoutHandler() {
       return new CtripLogoutHandler();
     }
 
-    private Filter filter(String className){
+    private Filter filter(String className) {
       Class clazz = null;
       try {
         clazz = Class.forName(className);
@@ -140,7 +148,7 @@ public class AuthConfiguration {
 
     }
 
-    private EventListener listener(String className){
+    private EventListener listener(String className) {
       Class clazz = null;
       try {
         clazz = Class.forName(className);
@@ -169,6 +177,16 @@ public class AuthConfiguration {
   static class DefaultAuthAutoConfiguration {
 
     @Bean
+    public FilterRegistrationBean openApiAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil) {
+      FilterRegistrationBean openApiFilter = new FilterRegistrationBean();
+
+      openApiFilter.setFilter(new ConsumerAuthenticationFilter(consumerAuthUtil));
+      openApiFilter.addUrlPatterns("/openapi/*");
+
+      return openApiFilter;
+    }
+
+    @Bean
     @ConditionalOnMissingBean(SsoHeartbeatHandler.class)
     public SsoHeartbeatHandler defaultSsoHeartbeatHandler() {
       return new DefaultSsoHeartbeatHandler();
@@ -176,13 +194,13 @@ public class AuthConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(UserInfoHolder.class)
-    public DefaultUserInfoHolder notCtripUserInfoHolder(){
+    public DefaultUserInfoHolder notCtripUserInfoHolder() {
       return new DefaultUserInfoHolder();
     }
 
     @Bean
     @ConditionalOnMissingBean(LogoutHandler.class)
-    public DefaultLogoutHandler logoutHandler(){
+    public DefaultLogoutHandler logoutHandler() {
       return new DefaultLogoutHandler();
     }
 

@@ -2,9 +2,11 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -28,8 +31,10 @@ import java.util.Set;
 
 @Service
 public class ReleaseService {
-
   private static final Gson gson = new Gson();
+  private static final Type configurationTypeReference =
+      new TypeToken<Map<String, String>>() {
+      }.getType();
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -41,10 +46,13 @@ public class ReleaseService {
     Env env = model.getEnv();
     String clusterName = model.getClusterName();
     String namespaceName = model.getNamespaceName();
-    ReleaseDTO releaseDTO =
-        releaseAPI
-            .createRelease(appId, env, clusterName, namespaceName, model.getReleaseTitle(), model.getReleaseComment()
-                , userInfoHolder.getUser().getUserId());
+    String releaseBy =
+        StringUtils.isEmpty(model.getReleasedBy()) ? userInfoHolder.getUser().getUserId() : model.getReleasedBy();
+
+    ReleaseDTO releaseDTO = releaseAPI
+        .createRelease(appId, env, clusterName, namespaceName, model.getReleaseTitle(), model.getReleaseComment()
+            , releaseBy);
+
     Cat.logEvent(CatEventType.RELEASE_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     return releaseDTO;
   }
@@ -54,7 +62,7 @@ public class ReleaseService {
     List<ReleaseDTO> releaseDTOs = releaseAPI.findAllReleases(appId, env, clusterName, namespaceName, page, size);
 
     if (CollectionUtils.isEmpty(releaseDTOs)) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     List<ReleaseVO> releases = new LinkedList<>();
@@ -63,7 +71,8 @@ public class ReleaseService {
       release.setBaseInfo(releaseDTO);
 
       Set<KVEntity> kvEntities = new LinkedHashSet<>();
-      Set<Map.Entry> entries = gson.fromJson(releaseDTO.getConfigurations(), Map.class).entrySet();
+      Map<String, String> configurations = gson.fromJson(releaseDTO.getConfigurations(), configurationTypeReference);
+      Set<Map.Entry<String, String>> entries = configurations.entrySet();
       for (Map.Entry<String, String> entry : entries) {
         kvEntities.add(new KVEntity(entry.getKey(), entry.getValue()));
       }
@@ -81,6 +90,10 @@ public class ReleaseService {
     return releaseAPI.findActiveReleases(appId, env, clusterName, namespaceName, page, size);
   }
 
+  public ReleaseDTO loadLatestRelease(String appId, Env env, String clusterName, String namespaceName) {
+    return releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+  }
+
   public void rollback(Env env, long releaseId) {
     releaseAPI.rollback(env, releaseId, userInfoHolder.getUser().getUserId());
   }
@@ -89,8 +102,8 @@ public class ReleaseService {
     ReleaseDTO firstRelease = releaseAPI.loadRelease(env, firstReleaseId);
     ReleaseDTO secondRelease = releaseAPI.loadRelease(env, secondReleaseId);
 
-    Map<String, String> firstItems = gson.fromJson(firstRelease.getConfigurations(), Map.class);
-    Map<String, String> secondItems = gson.fromJson(secondRelease.getConfigurations(), Map.class);
+    Map<String, String> firstItems = gson.fromJson(firstRelease.getConfigurations(), configurationTypeReference);
+    Map<String, String> secondItems = gson.fromJson(secondRelease.getConfigurations(), configurationTypeReference);
 
     ReleaseCompareResult compareResult = new ReleaseCompareResult();
 
@@ -102,10 +115,10 @@ public class ReleaseService {
       //added
       if (secondValue == null) {
         compareResult.addEntityPair(ChangeType.DELETED, new KVEntity(key, firstValue),
-                                    new KVEntity(key, secondValue));
+            new KVEntity(key, secondValue));
       } else if (!Objects.equal(firstValue, secondValue)) {
         compareResult.addEntityPair(ChangeType.MODIFIED, new KVEntity(key, firstValue),
-                                    new KVEntity(key, secondValue));
+            new KVEntity(key, secondValue));
       }
 
     }

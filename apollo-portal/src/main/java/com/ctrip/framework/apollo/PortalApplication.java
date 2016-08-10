@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal;
+package com.ctrip.framework.apollo;
 
 import com.ctrip.framework.apollo.common.ApolloCommonConfig;
 
@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
-    PortalApplication.class})
+@ComponentScan(basePackageClasses = {ApolloCommonConfig.class, PortalApplication.class})
 public class PortalApplication {
 
   public static void main(String[] args) throws Exception {

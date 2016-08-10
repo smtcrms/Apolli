@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long>{
+public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long> {
 
   AppNamespace findByAppIdAndName(String appId, String namespaceName);
 

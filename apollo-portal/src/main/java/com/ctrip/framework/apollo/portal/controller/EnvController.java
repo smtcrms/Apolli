@@ -18,7 +18,7 @@ public class EnvController {
   private PortalSettings portalSettings;
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public List<Env> envs(){
+  public List<Env> envs() {
     return portalSettings.getActiveEnvs();
   }
 

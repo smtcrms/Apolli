@@ -30,9 +30,9 @@ public class NamespaceServiceTest {
   @Mock
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Mock
-  private AdminServiceAPI.ReleaseAPI releaseAPI;
+  private ReleaseService releaseService;
   @Mock
-  private AdminServiceAPI.ItemAPI itemAPI;
+  private ItemService itemService;
   @Mock
   private PropertyResolver resolver;
   @Mock
@@ -82,9 +82,9 @@ public class NamespaceServiceTest {
         .thenReturn(applicationAppNamespace);
     when(appNamespaceService.findPublicAppNamespace("hermes")).thenReturn(hermesAppNamespace);
     when(namespaceAPI.findNamespaceByCluster(appId, Env.DEV, clusterName)).thenReturn(namespaces);
-    when(releaseAPI.loadLatestRelease(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someRelease);
-    when(releaseAPI.loadLatestRelease(appId, Env.DEV, clusterName, "hermes")).thenReturn(someRelease);
-    when(itemAPI.findItems(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someItems);
+    when(releaseService.loadLatestRelease(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someRelease);
+    when(releaseService.loadLatestRelease(appId, Env.DEV, clusterName, "hermes")).thenReturn(someRelease);
+    when(itemService.findItems(appId, Env.DEV, clusterName, namespaceName)).thenReturn(someItems);
 
     List<NamespaceVO> namespaceVOs = namespaceService.findNamespaces(appId, Env.DEV, clusterName);
     assertEquals(2, namespaceVOs.size());

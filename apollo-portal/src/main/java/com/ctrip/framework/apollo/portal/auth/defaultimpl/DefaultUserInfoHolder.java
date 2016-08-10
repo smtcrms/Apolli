@@ -9,7 +9,7 @@ import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 public class DefaultUserInfoHolder implements UserInfoHolder {
 
 
-  public DefaultUserInfoHolder(){
+  public DefaultUserInfoHolder() {
 
   }
 

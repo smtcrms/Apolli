@@ -17,9 +17,10 @@ public class NamespaceTextModel implements Verifiable {
 
 
   @Override
-  public boolean isInvalid(){
+  public boolean isInvalid() {
     return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName) || namespaceId <= 0;
   }
+
   public String getAppId() {
     return appId;
   }

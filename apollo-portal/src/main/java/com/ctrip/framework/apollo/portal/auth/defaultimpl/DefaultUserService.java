@@ -6,7 +6,6 @@ import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.service.UserService;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**

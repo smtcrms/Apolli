@@ -33,7 +33,7 @@ public class RoleInitializationService {
     String appMasterRoleName = RoleUtils.buildAppMasterRoleName(appId);
 
     //has created before
-    if (rolePermissionService.findRoleByRoleName(appMasterRoleName) != null){
+    if (rolePermissionService.findRoleByRoleName(appMasterRoleName) != null) {
       return;
     }
     String operaterUserId = userInfoHolder.getUser().getUserId();
@@ -43,7 +43,7 @@ public class RoleInitializationService {
     //assign master role to user
     rolePermissionService
         .assignRoleToUsers(RoleUtils.buildAppMasterRoleName(appId), Sets.newHashSet(app.getOwnerName()),
-                           operaterUserId);
+            operaterUserId);
 
     initNamespaceRoles(appId, ConfigConsts.NAMESPACE_APPLICATION);
 
@@ -55,13 +55,13 @@ public class RoleInitializationService {
     String modifyNamespaceRoleName = RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName);
     if (rolePermissionService.findRoleByRoleName(modifyNamespaceRoleName) == null) {
       createDefaultNamespaceRole(appId, namespaceName, PermissionType.MODIFY_NAMESPACE,
-                                 RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName));
+          RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName));
     }
 
     String releaseNamespaceRoleName = RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName);
     if (rolePermissionService.findRoleByRoleName(releaseNamespaceRoleName) == null) {
       createDefaultNamespaceRole(appId, namespaceName, PermissionType.RELEASE_NAMESPACE,
-                                 RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName));
+          RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName));
     }
   }
 

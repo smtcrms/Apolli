@@ -50,7 +50,7 @@ public class AppNamespaceService {
 
   public List<AppNamespace> findPublicNamespacesByNames(Set<String> namespaceNames) {
     if (namespaceNames == null || namespaceNames.isEmpty()) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     return appNamespaceRepository.findByNameInAndIsPublicTrue(namespaceNames);
@@ -68,7 +68,7 @@ public class AppNamespaceService {
   public List<AppNamespace> findByAppIdAndNamespaces(String appId, Set<String> namespaceNames) {
     Preconditions.checkArgument(!Strings.isNullOrEmpty(appId), "appId must not be null");
     if (namespaceNames == null || namespaceNames.isEmpty()) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     return appNamespaceRepository.findByAppIdAndNameIn(appId, namespaceNames);
   }
