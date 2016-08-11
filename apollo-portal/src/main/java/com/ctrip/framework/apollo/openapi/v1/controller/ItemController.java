@@ -35,8 +35,7 @@ public class ItemController {
   @PreAuthorize(value = "@consumerPermissionValidator.hasModifyNamespacePermission(#request, #appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
   public OpenItemDTO createItem(@PathVariable String appId, @PathVariable String env,
-                                @PathVariable String clusterName, @PathVariable String
-                                    namespaceName,
+                                @PathVariable String clusterName, @PathVariable String namespaceName,
                                 @RequestBody OpenItemDTO item, HttpServletRequest request) {
 
     RequestPrecondition.checkArguments(
@@ -60,48 +59,53 @@ public class ItemController {
   }
 
   @PreAuthorize(value = "@consumerPermissionValidator.hasModifyNamespacePermission(#request, #appId, #namespaceName)")
-  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key:.+}", method = RequestMethod.PUT)
   public void updateItem(@PathVariable String appId, @PathVariable String env,
                          @PathVariable String clusterName, @PathVariable String namespaceName,
-                         @PathVariable long itemId, @RequestBody OpenItemDTO item,
-                         HttpServletRequest request) {
+                         @PathVariable String key, @RequestBody OpenItemDTO item, HttpServletRequest request) {
 
-    RequestPrecondition.checkArguments(item != null && item.getId() > 0 && itemId == item.getId(),
-        "item data error");
+    RequestPrecondition.checkArguments(item != null, "item payload can not be empty");
+
     RequestPrecondition.checkArguments(
-        !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item
-            .getDataChangeLastModifiedBy()),
+        !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item.getDataChangeLastModifiedBy()),
         "key,value,dataChangeLastModifiedBy 字段不能为空");
 
+    RequestPrecondition.checkArguments(item.getKey().equals(key), "path中的key和payload中的key不一致");
+
     if (userService.findByUserId(item.getDataChangeLastModifiedBy()) == null) {
-      throw new BadRequestException("用户不存在.");
+      throw new BadRequestException("用户不存在");
     }
 
-    ItemDTO toUpdateItem = itemService.loadItem(Env.fromString(env), itemId);
+    ItemDTO toUpdateItem = itemService.loadItem(Env.fromString(env), appId, clusterName, namespaceName, item.getKey());
     if (toUpdateItem == null) {
-      throw new BadRequestException("item not exist");
+      throw new BadRequestException("item不存在");
     }
     //protect. only value,comment,lastModifiedBy can be modified
     toUpdateItem.setComment(item.getComment());
     toUpdateItem.setValue(item.getValue());
     toUpdateItem.setDataChangeLastModifiedBy(item.getDataChangeLastModifiedBy());
 
-    itemService.updateItem(appId, Env.fromString(env), clusterName, namespaceName,
-        toUpdateItem);
+    itemService.updateItem(appId, Env.fromString(env), clusterName, namespaceName, toUpdateItem);
   }
 
 
   @PreAuthorize(value = "@consumerPermissionValidator.hasModifyNamespacePermission(#request, #appId, #namespaceName)")
-  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key:.+}", method = RequestMethod.DELETE)
   public void deleteItem(@PathVariable String appId, @PathVariable String env,
                          @PathVariable String clusterName, @PathVariable String namespaceName,
-                         @PathVariable long itemId, @RequestParam String operator,
+                         @PathVariable String key, @RequestParam String operator,
                          HttpServletRequest request) {
 
     if (userService.findByUserId(operator) == null) {
-      throw new BadRequestException("用户不存在.");
+      throw new BadRequestException("用户不存在");
     }
-    itemService.deleteItem(Env.fromString(env), itemId, operator);
+
+    ItemDTO toDeleteItem = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, key);
+    if (toDeleteItem == null){
+      throw new BadRequestException("item不存在");
+    }
+
+    itemService.deleteItem(Env.fromString(env), toDeleteItem.getId(), operator);
   }
 
 }

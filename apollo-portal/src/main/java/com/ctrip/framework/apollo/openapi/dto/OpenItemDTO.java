@@ -4,21 +4,11 @@ import com.ctrip.framework.apollo.common.dto.BaseDTO;
 
 public class OpenItemDTO extends BaseDTO {
 
-  private long id;
-
   private String key;
 
   private String value;
 
   private String comment;
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
 
   public String getKey() {
     return key;

@@ -114,8 +114,8 @@ public class ItemService {
     return itemAPI.findItems(appId, env, clusterName, namespaceName);
   }
 
-  public ItemDTO loadItem(Env env, long itemId) {
-    return itemAPI.loadItem(env, itemId);
+  public ItemDTO loadItem(Env env, String appId, String clusterName, String namespaceName, String key) {
+    return itemAPI.loadItem(env, appId, clusterName, namespaceName, key);
   }
 
   public void syncItems(List<NamespaceIdentifier> comparedNamespaces, List<ItemDTO> sourceItems) {
