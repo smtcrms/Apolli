@@ -68,17 +68,17 @@ public class ItemController {
 
     RequestPrecondition.checkArguments(
         !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item.getDataChangeLastModifiedBy()),
-        "key,value,dataChangeLastModifiedBy 字段不能为空");
+        "key,value,dataChangeLastModifiedBy can not be empty");
 
-    RequestPrecondition.checkArguments(item.getKey().equals(key), "path中的key和payload中的key不一致");
+    RequestPrecondition.checkArguments(item.getKey().equals(key), "Key in path and payload is not consistent");
 
     if (userService.findByUserId(item.getDataChangeLastModifiedBy()) == null) {
-      throw new BadRequestException("用户不存在");
+      throw new BadRequestException("user(dataChangeLastModifiedBy) not exists");
     }
 
     ItemDTO toUpdateItem = itemService.loadItem(Env.fromString(env), appId, clusterName, namespaceName, item.getKey());
     if (toUpdateItem == null) {
-      throw new BadRequestException("item不存在");
+      throw new BadRequestException("item not exists");
     }
     //protect. only value,comment,lastModifiedBy can be modified
     toUpdateItem.setComment(item.getComment());
@@ -97,12 +97,12 @@ public class ItemController {
                          HttpServletRequest request) {
 
     if (userService.findByUserId(operator) == null) {
-      throw new BadRequestException("用户不存在");
+      throw new BadRequestException("user(operator) not exists");
     }
 
     ItemDTO toDeleteItem = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, key);
     if (toDeleteItem == null){
-      throw new BadRequestException("item不存在");
+      throw new BadRequestException("item not exists");
     }
 
     itemService.deleteItem(Env.fromString(env), toDeleteItem.getId(), operator);

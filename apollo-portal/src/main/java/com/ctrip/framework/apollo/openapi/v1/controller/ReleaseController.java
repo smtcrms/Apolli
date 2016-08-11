@@ -47,7 +47,7 @@ public class ReleaseController {
         "releaseTitle and releaseBy can not be empty");
 
     if (userService.findByUserId(model.getReleasedBy()) == null) {
-      throw new BadRequestException("用户不存在.");
+      throw new BadRequestException("user(releaseBy) not exists");
     }
 
     model.setAppId(appId);
