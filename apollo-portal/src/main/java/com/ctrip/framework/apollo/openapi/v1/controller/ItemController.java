@@ -70,7 +70,7 @@ public class ItemController {
         !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item.getDataChangeLastModifiedBy()),
         "key,value,dataChangeLastModifiedBy 字段不能为空");
 
-    RequestPrecondition.checkArguments(item.getKey().equals(key), "item payload can not be empty");
+    RequestPrecondition.checkArguments(item.getKey().equals(key), "path中的key和payload中的key不一致");
 
     if (userService.findByUserId(item.getDataChangeLastModifiedBy()) == null) {
       throw new BadRequestException("用户不存在");
@@ -100,12 +100,12 @@ public class ItemController {
       throw new BadRequestException("用户不存在");
     }
 
-    ItemDTO toDeletedItem = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, key);
-    if (toDeletedItem == null){
+    ItemDTO toDeleteItem = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, key);
+    if (toDeleteItem == null){
       throw new BadRequestException("item不存在");
     }
 
-    itemService.deleteItem(Env.fromString(env), toDeletedItem.getId(), operator);
+    itemService.deleteItem(Env.fromString(env), toDeleteItem.getId(), operator);
   }
 
 }
