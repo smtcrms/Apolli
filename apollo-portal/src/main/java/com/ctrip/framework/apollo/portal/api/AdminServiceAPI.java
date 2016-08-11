@@ -90,8 +90,9 @@ public class AdminServiceAPI {
       return Arrays.asList(itemDTOs);
     }
 
-    public ItemDTO loadItem(Env env, long itemId) {
-      return restTemplate.get(env, "/items/{itemId}", ItemDTO.class, itemId);
+    public ItemDTO loadItem(Env env, String appId, String clusterName, String namespaceName, String key) {
+      return restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key}",
+                              ItemDTO.class, appId, clusterName, namespaceName, key);
     }
 
     public void updateItemsByChangeSet(String appId, Env env, String clusterName, String namespace,
