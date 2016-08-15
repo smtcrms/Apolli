@@ -86,12 +86,20 @@ public class GlobalDefaultExceptionHandler {
 
 
     Map<String, Object> errorAttributes = new HashMap<>();
+    boolean errorHandled = false;
 
-    //如果是admin server引起的异常,则显示内部的异常信息
     if (ex instanceof HttpStatusCodeException) {
-      errorAttributes = gson.fromJson(((HttpStatusCodeException) ex).getResponseBodyAsString(), mapType);
-      status = ((HttpStatusCodeException) ex).getStatusCode();
-    } else {
+      try {
+        //try to extract the original error info if it is thrown from apollo programs, e.g. admin service
+        errorAttributes = gson.fromJson(((HttpStatusCodeException) ex).getResponseBodyAsString(), mapType);
+        status = ((HttpStatusCodeException) ex).getStatusCode();
+        errorHandled = true;
+      } catch (Throwable th) {
+        //ignore
+      }
+    }
+
+    if (!errorHandled) {
       errorAttributes.put("status", status.value());
       errorAttributes.put("message", message);
       errorAttributes.put("timestamp",
