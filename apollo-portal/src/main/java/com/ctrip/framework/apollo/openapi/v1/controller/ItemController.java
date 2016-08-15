@@ -100,7 +100,7 @@ public class ItemController {
       throw new BadRequestException("user(operator) not exists");
     }
 
-    ItemDTO toDeleteItem = itemService.loadItem(Env.valueOf(env), appId, clusterName, namespaceName, key);
+    ItemDTO toDeleteItem = itemService.loadItem(Env.fromString(env), appId, clusterName, namespaceName, key);
     if (toDeleteItem == null){
       throw new BadRequestException("item not exists");
     }
