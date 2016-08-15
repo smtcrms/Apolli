@@ -14,7 +14,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -62,7 +61,7 @@ public class CtripUserService implements UserService {
   }
 
   @Override
-   public List<UserInfo> searchUsers(String keyword, int offset, int limit) {
+  public List<UserInfo> searchUsers(String keyword, int offset, int limit) {
     UserServiceRequest request = assembleSearchUserRequest(keyword, offset, limit);
 
     HttpEntity<UserServiceRequest> entity = new HttpEntity<>(request);

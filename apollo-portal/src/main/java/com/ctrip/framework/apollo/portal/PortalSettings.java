@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.portal;
 
 
-
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
@@ -67,11 +66,11 @@ public class PortalSettings {
 
     healthCheckService
         .scheduleWithFixedDelay(new HealthCheckTask(applicationContext), 1000, HEALTH_CHECK_INTERVAL,
-                                TimeUnit.MILLISECONDS);
+            TimeUnit.MILLISECONDS);
 
   }
 
-  public List<Env> getAllEnvs(){
+  public List<Env> getAllEnvs() {
     return allEnvs;
   }
 

@@ -35,7 +35,7 @@ public class PropertyResolver implements ConfigTextResolver {
 
     String[] newItems = configText.split(ITEM_SEPARATOR);
 
-    if (isHasRepeatKey(newItems)){
+    if (isHasRepeatKey(newItems)) {
       throw new BadRequestException("config text has repeat key please check.");
     }
 
@@ -71,27 +71,27 @@ public class PropertyResolver implements ConfigTextResolver {
     return changeSets;
   }
 
-  private boolean isHasRepeatKey(String[] newItems){
+  private boolean isHasRepeatKey(String[] newItems) {
     Set<String> keys = new HashSet<>();
     int lineCounter = 1;
     int keyCount = 0;
-    for (String item: newItems){
-      if (!isCommentItem(item) && !isBlankItem(item)){
+    for (String item : newItems) {
+      if (!isCommentItem(item) && !isBlankItem(item)) {
         keyCount++;
         String[] kv = parseKeyValueFromItem(item);
         if (kv != null) {
           keys.add(kv[0]);
-        }else {
+        } else {
           throw new BadRequestException("line:" + lineCounter + " key value must separate by '='");
         }
       }
-      lineCounter ++;
+      lineCounter++;
     }
 
     return keyCount > keys.size();
   }
 
-  private String[] parseKeyValueFromItem(String item){
+  private String[] parseKeyValueFromItem(String item) {
     int kvSeparator = item.indexOf(KV_SEPARATOR);
     if (kvSeparator == -1) {
       return null;
@@ -118,7 +118,7 @@ public class PropertyResolver implements ConfigTextResolver {
   }
 
   private void handleNormalLine(Long namespaceId, Map<String, ItemDTO> keyMapOldItem, String newItem,
-                                   int lineCounter, ItemChangeSets changeSets) {
+                                int lineCounter, ItemChangeSets changeSets) {
 
     String[] kv = parseKeyValueFromItem(newItem);
 
@@ -133,17 +133,17 @@ public class PropertyResolver implements ConfigTextResolver {
 
     if (oldItem == null) {//new item
       changeSets.addCreateItem(buildNormalItem(0l, namespaceId, newKey, newValue, "", lineCounter));
-    } else if (!newValue.equals(oldItem.getValue()) || lineCounter != oldItem.getLineNum()){//update item
+    } else if (!newValue.equals(oldItem.getValue()) || lineCounter != oldItem.getLineNum()) {//update item
       changeSets.addUpdateItem(
           buildNormalItem(oldItem.getId(), namespaceId, newKey, newValue, oldItem.getComment(),
-                          lineCounter));
+              lineCounter));
     }
     keyMapOldItem.remove(newKey);
   }
 
   private boolean isCommentItem(ItemDTO item) {
     return item != null && "".equals(item.getKey())
-           && (item.getComment().startsWith("#") || item.getComment().startsWith("!"));
+        && (item.getComment().startsWith("#") || item.getComment().startsWith("!"));
   }
 
   private boolean isCommentItem(String line) {

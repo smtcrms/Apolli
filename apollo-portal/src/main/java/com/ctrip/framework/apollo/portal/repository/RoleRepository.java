@@ -10,8 +10,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface RoleRepository extends PagingAndSortingRepository<Role, Long> {
   /**
    * find role by role name
-   * @param roleName
-   * @return
    */
   Role findTopByRoleName(String roleName);
 }

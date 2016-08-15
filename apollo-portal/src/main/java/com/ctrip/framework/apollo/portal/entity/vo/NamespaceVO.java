@@ -1,4 +1,5 @@
 package com.ctrip.framework.apollo.portal.entity.vo;
+
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 
@@ -70,7 +71,7 @@ public class NamespaceVO {
     this.comment = comment;
   }
 
-  public static class ItemVO{
+  public static class ItemVO {
     private ItemDTO item;
     private boolean isModified;
     private boolean isDeleted;
@@ -116,7 +117,6 @@ public class NamespaceVO {
     public void setNewValue(String newValue) {
       this.newValue = newValue;
     }
-
 
 
   }

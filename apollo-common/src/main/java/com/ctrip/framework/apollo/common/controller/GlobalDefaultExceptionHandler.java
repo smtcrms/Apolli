@@ -1,5 +1,11 @@
 package com.ctrip.framework.apollo.common.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import com.ctrip.framework.apollo.common.exception.AbstractApolloHttpException;
+import com.dianping.cat.Cat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,9 +18,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import com.ctrip.framework.apollo.common.exception.AbstractApolloHttpException;
-import com.dianping.cat.Cat;
-
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -24,12 +28,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @ControllerAdvice
 public class GlobalDefaultExceptionHandler {
+  private Gson gson = new Gson();
+  private static Type mapType = new TypeToken<Map<String, Object>>() {
+  }.getType();
 
   private static final Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
@@ -54,7 +61,7 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<Map<String, Object>> accessDeny(HttpServletRequest request,
                                                         AccessDeniedException ex) {
-    return handleError(request, UNAUTHORIZED, ex);
+    return handleError(request, FORBIDDEN, ex);
   }
 
   //处理自定义Exception
@@ -77,13 +84,29 @@ public class GlobalDefaultExceptionHandler {
     logger.error(message, ex);
     Cat.logError(ex);
 
-    Map<String, Object> errorAttributes = new HashMap<>();
 
-    errorAttributes.put("status", status.value());
-    errorAttributes.put("message", message);
-    errorAttributes.put("timestamp",
-                        LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-    errorAttributes.put("exception", ex.getClass().getName());
+    Map<String, Object> errorAttributes = new HashMap<>();
+    boolean errorHandled = false;
+
+    if (ex instanceof HttpStatusCodeException) {
+      try {
+        //try to extract the original error info if it is thrown from apollo programs, e.g. admin service
+        errorAttributes = gson.fromJson(((HttpStatusCodeException) ex).getResponseBodyAsString(), mapType);
+        status = ((HttpStatusCodeException) ex).getStatusCode();
+        errorHandled = true;
+      } catch (Throwable th) {
+        //ignore
+      }
+    }
+
+    if (!errorHandled) {
+      errorAttributes.put("status", status.value());
+      errorAttributes.put("message", message);
+      errorAttributes.put("timestamp",
+          LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      errorAttributes.put("exception", ex.getClass().getName());
+
+    }
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);

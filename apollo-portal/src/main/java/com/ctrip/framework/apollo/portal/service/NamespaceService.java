@@ -2,11 +2,12 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.gson.Gson;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +36,9 @@ public class NamespaceService {
   @Autowired
   private UserInfoHolder userInfoHolder;
   @Autowired
-  private AdminServiceAPI.ItemAPI itemAPI;
+  private ItemService itemService;
   @Autowired
-  private AdminServiceAPI.ReleaseAPI releaseAPI;
+  private ReleaseService releaseService;
   @Autowired
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
@@ -53,11 +53,18 @@ public class NamespaceService {
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
     Cat.logEvent(CatEventType.CREATE_NAMESPACE,
-                 String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
-                               namespace.getNamespaceName()));
+        String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
+            namespace.getNamespaceName()));
     return createdNamespace;
   }
 
+  public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName) {
+    NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    if (namespace == null) {
+      throw new BadRequestException("namespaces not exist");
+    }
+    return namespace;
+  }
 
   /**
    * load cluster all namespace info with items
@@ -66,7 +73,7 @@ public class NamespaceService {
 
     List<NamespaceDTO> namespaces = namespaceAPI.findNamespaceByCluster(appId, env, clusterName);
     if (namespaces == null || namespaces.size() == 0) {
-      return Collections.emptyList();
+      throw new BadRequestException("namespaces not exist");
     }
 
     List<NamespaceVO> namespaceVOs = new LinkedList<>();
@@ -78,12 +85,20 @@ public class NamespaceService {
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-                     appId, env, clusterName, namespace.getNamespaceName(), e);
+            appId, env, clusterName, namespace.getNamespaceName(), e);
         throw e;
       }
     }
 
     return namespaceVOs;
+  }
+
+  public NamespaceVO loadNamespace(String appId, Env env, String clusterName, String namespaceName) {
+    NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
+    if (namespace == null) {
+      throw new BadRequestException("namespaces not exist");
+    }
+    return parseNamespace(appId, env, clusterName, namespace);
   }
 
   @SuppressWarnings("unchecked")
@@ -101,13 +116,13 @@ public class NamespaceService {
     //latest Release
     ReleaseDTO latestRelease = null;
     Map<String, String> releaseItems = new HashMap<>();
-    latestRelease = releaseAPI.loadLatestRelease(appId, env, clusterName, namespaceName);
+    latestRelease = releaseService.loadLatestRelease(appId, env, clusterName, namespaceName);
     if (latestRelease != null) {
       releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
     }
 
     //not Release config items
-    List<ItemDTO> items = itemAPI.findItems(appId, env, clusterName, namespaceName);
+    List<ItemDTO> items = itemService.findItems(appId, env, clusterName, namespaceName);
     int modifiedItemCnt = 0;
     for (ItemDTO itemDTO : items) {
 

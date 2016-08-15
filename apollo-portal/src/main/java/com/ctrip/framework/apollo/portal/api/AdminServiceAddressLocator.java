@@ -73,7 +73,7 @@ public class AdminServiceAddressLocator {
   public List<ServiceDTO> getServiceList(Env env) {
     List<ServiceDTO> services = cache.get(env);
     if (CollectionUtils.isEmpty(services)) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     List<ServiceDTO> randomConfigServices = Lists.newArrayList(services);
     Collections.shuffle(randomConfigServices);
@@ -81,7 +81,7 @@ public class AdminServiceAddressLocator {
   }
 
   //Maintain admin server address
-  class RefreshAdminServerAddressTask implements Runnable {
+  private class RefreshAdminServerAddressTask implements Runnable {
 
     @Override
     public void run() {

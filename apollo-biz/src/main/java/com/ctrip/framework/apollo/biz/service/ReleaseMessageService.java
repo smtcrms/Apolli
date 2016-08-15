@@ -32,7 +32,7 @@ public class ReleaseMessageService {
 
   public List<ReleaseMessage> findLatestReleaseMessagesGroupByMessages(Collection<String> messages) {
     if (CollectionUtils.isEmpty(messages)) {
-      return Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
     List<Object[]> result =
         releaseMessageRepository.findLatestReleaseMessagesGroupByMessages(messages);

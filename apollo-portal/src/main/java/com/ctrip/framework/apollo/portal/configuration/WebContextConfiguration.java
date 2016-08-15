@@ -36,11 +36,11 @@ public class WebContextConfiguration {
         String loggingServerPort = serverConfigService.getValue("loggingServerPort");
         String credisServiceUrl = serverConfigService.getValue("credisServiceUrl");
         servletContext.setInitParameter("loggingServerIP",
-                                        Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
+            Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
         servletContext.setInitParameter("loggingServerPort",
-                                        Strings.isNullOrEmpty(loggingServerPort) ? "" : loggingServerPort);
+            Strings.isNullOrEmpty(loggingServerPort) ? "" : loggingServerPort);
         servletContext.setInitParameter("credisServiceUrl",
-                                        Strings.isNullOrEmpty(credisServiceUrl) ? "" : credisServiceUrl);
+            Strings.isNullOrEmpty(credisServiceUrl) ? "" : credisServiceUrl);
       }
     };
   }
