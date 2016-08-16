@@ -20,7 +20,7 @@
     <div class="row config-info-container">
 
         <!--tag导航-->
-        <div class="col-md-3" ng-controller="ConfigBaseInfoController">
+        <div class="col-md-3 col-xs-3 col-sm-3" ng-controller="ConfigBaseInfoController">
             <div id="treeview"></div>
             <!--app info-->
             <section class="panel">
@@ -66,22 +66,19 @@
                 </div>
             </section>
             <a class="list-group-item" ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()">
-                <div class="row">
-                    <div class="col-md-2"><img src="img/plus-orange.png" class="i-20"></div>
-                    <div class="col-md-10 hidden-xs">
-                        <p class="btn-title">补缺环境</p>
-                    </div>
+                <div class="row icon-text icon-plus-orange">
+                    <p class="btn-title ng-binding">补缺环境</p>
                 </div>
             </a>
 
-            <apolloentrance apollo-title="'添加集群'" apollo-img-src="'img/plus-orange.png'"
+            <apolloentrance apollo-title="'添加集群'" apollo-img-src="'plus-orange'"
                             apollo-href="'cluster.html?#/appid=' + pageContext.appId"></apolloentrance>
 
-            <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'img/plus-orange.png'"
+            <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'plus-orange'"
                             apollo-href="'namespace.html?#/appid=' + pageContext.appId"
                             ng-show="hasCreateNamespacePermission"></apolloentrance>
 
-            <apolloentrance apollo-title="'项目权限'" apollo-img-src="'img/user_manage.png'"
+            <apolloentrance apollo-title="'项目权限'" apollo-img-src="'user-manage'"
                             apollo-href="'/app/role.html?#/appid=' + pageContext.appId"
                             ng-show="hasAssignUserPermission"></apolloentrance>
             </section>
@@ -90,7 +87,7 @@
         </div>
 
         <!--namespaces-->
-        <div class="col-md-9 config-item-container hide" ng-controller="ConfigNamespaceController">
+        <div class="col-md-9 col-xs-9 col-sm-9 config-item-container hide" ng-controller="ConfigNamespaceController">
             <div ng-repeat="namespace in namespaces">
                 <apollonspanel namespace="namespace" app-id="pageContext.appId"
                                env="pageContext.env" cluster="pageContext.clusterName"

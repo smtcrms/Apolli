@@ -166,6 +166,15 @@ table th {
     font-weight: 300;
 }
 
+.panel-heading .header-namespace {
+    min-width: 415px;
+}
+
+.panel-heading .header-buttons {
+    float: right;
+    min-width: 405px;
+}
+
 .project-info th {
     text-align: right;
     padding: 4px 6px;
@@ -339,7 +348,23 @@ table th {
     color: gray;
     font-family: "Apple Color Emoji";
     font-size: 16px;
+    margin: 0;
 }
+
+.list-group-item .icon-plus-orange {
+    background: url(../img/plus-orange.png) no-repeat;
+}
+
+.list-group-item .icon-user-manage {
+    background: url(../img/user_manage.png) no-repeat;
+}
+
+.list-group-item .icon-text {
+    background-size: 20px;
+    background-position: 5% 50%;
+    padding: 5px 0 5px 50px;
+}
+
 
 /*搜索框*/
 ::-webkit-scrollbar {
