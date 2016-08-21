@@ -9,6 +9,7 @@ import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,9 +48,10 @@ public class ClusterController {
 
   @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "apps/{appId}/envs/{env}/clusters/{clusterName:.+}", method = RequestMethod.DELETE)
-  public void deleteCluster(@PathVariable String appId, @PathVariable String env,
-                            @PathVariable String clusterName){
+  public ResponseEntity<Void> deleteCluster(@PathVariable String appId, @PathVariable String env,
+                                            @PathVariable String clusterName){
     clusterService.deleteCluster(Env.valueOf(env), appId, clusterName);
+    return ResponseEntity.ok().build();
   }
 
 
