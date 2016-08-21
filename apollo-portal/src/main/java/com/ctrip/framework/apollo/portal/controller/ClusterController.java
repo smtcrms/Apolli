@@ -45,4 +45,12 @@ public class ClusterController {
     return clusterService.createCluster(Env.valueOf(env), cluster);
   }
 
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
+  @RequestMapping(value = "apps/{appId}/envs/{env}/clusters/{clusterName:.+}", method = RequestMethod.DELETE)
+  public void deleteCluster(@PathVariable String appId, @PathVariable String env,
+                            @PathVariable String clusterName){
+    clusterService.deleteCluster(Env.valueOf(env), appId, clusterName);
+  }
+
+
 }

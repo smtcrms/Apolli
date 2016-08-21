@@ -142,4 +142,9 @@ public class ReleaseService {
 
     return releaseRepository.save(release);
   }
+
+  @Transactional
+  public int batchDelete(String appId, String clusterName, String namespaceName, String operator){
+    return releaseRepository.batchDelete(appId, clusterName, namespaceName, operator);
+  }
 }

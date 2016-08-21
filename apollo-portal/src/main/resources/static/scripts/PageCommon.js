@@ -17,6 +17,7 @@ $(document).ready(function () {
         $('[data-tooltip="tooltip"]').tooltip();
 
         $("textarea").niceScroll({styler: "fb", cursorcolor: "#fff"});
+        $("pre").niceScroll({styler: "fb", cursorcolor: "#fff"});
 
     }, 2500);
 });

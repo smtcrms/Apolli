@@ -232,8 +232,8 @@
                     </thead>
                     <tbody>
 
-                    <tr ng-repeat="item in commits.changeSets.createItems"
-                        ng-show="item.key || item.comment">
+                    <!--兼容老数据,不显示item类型为空行和注释的item-->
+                    <tr ng-repeat="item in commits.changeSets.createItems" ng-show="item.key">
                         <td width="2%">
                             新增
                         </td>

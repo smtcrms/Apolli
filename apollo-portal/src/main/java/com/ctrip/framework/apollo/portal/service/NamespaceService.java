@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +34,8 @@ public class NamespaceService {
 
   private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
   private Gson gson = new Gson();
+  private static Type mapType = new TypeToken<Map<String, String>>() {
+  }.getType();
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -56,6 +60,10 @@ public class NamespaceService {
         String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
             namespace.getNamespaceName()));
     return createdNamespace;
+  }
+
+  public void deleteNamespace(String appId, Env env,  String clusterName, String namespaceName){
+    namespaceAPI.deleteNamespace(env, appId, clusterName, namespaceName, userInfoHolder.getUser().getUserId());
   }
 
   public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName) {
@@ -101,7 +109,6 @@ public class NamespaceService {
     return parseNamespace(appId, env, clusterName, namespace);
   }
 
-  @SuppressWarnings("unchecked")
   private NamespaceVO parseNamespace(String appId, Env env, String clusterName, NamespaceDTO namespace) {
     NamespaceVO namespaceVO = new NamespaceVO();
     namespaceVO.setBaseInfo(namespace);
@@ -118,7 +125,7 @@ public class NamespaceService {
     Map<String, String> releaseItems = new HashMap<>();
     latestRelease = releaseService.loadLatestRelease(appId, env, clusterName, namespaceName);
     if (latestRelease != null) {
-      releaseItems = gson.fromJson(latestRelease.getConfigurations(), Map.class);
+      releaseItems = gson.fromJson(latestRelease.getConfigurations(), mapType);
     }
 
     //not Release config items

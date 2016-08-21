@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Cluster;
 import com.ctrip.framework.apollo.biz.repository.ClusterRepository;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
@@ -26,8 +27,6 @@ public class ClusterService {
   private AuditService auditService;
   @Autowired
   private NamespaceService namespaceService;
-  @Autowired
-  private AppNamespaceService appNamespaceService;
 
 
   public boolean isClusterNameUnique(String appId, String clusterName) {
@@ -75,8 +74,11 @@ public class ClusterService {
   public void delete(long id, String operator) {
     Cluster cluster = clusterRepository.findOne(id);
     if (cluster == null) {
-      return;
+      throw new BadRequestException("cluster not exist");
     }
+
+    //delete linked namespaces
+    namespaceService.deleteByAppIdAndClusterName(cluster.getAppId(), cluster.getName(), operator);
 
     cluster.setDeleted(true);
     cluster.setDataChangeLastModifiedBy(operator);

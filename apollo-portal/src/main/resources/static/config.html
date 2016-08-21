@@ -118,8 +118,9 @@
                                  apollo-show-cancel-btn="true" apollo-confirm="rollback"></apolloconfirmdialog>
 
 
-            <!--create createRelease modal-->
-            <form class="modal fade form-horizontal" name="releaseForm" valdr-type="Release" id="releaseModal" tabindex="-1" role="dialog"
+            <!--create release modal-->
+            <form class="modal fade form-horizontal" name="releaseForm" valdr-type="Release" id="releaseModal"
+                  tabindex="-1" role="dialog"
                   ng-submit="release()">
                 <div class="modal-dialog" role="document" style="width: 960px">
                     <div class="modal-content">
@@ -130,8 +131,19 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">
-                                    Changes:</label>
+                                <div class="col-sm-2 control-label" ng-if="!toReleaseNamespace.isPropertiesFormat">
+                                    <div class="row">
+                                        <div class="btn-group btn-group-xs" style="padding-right: 10px" role="group">
+                                            <button type="button" class="btn btn-default" ng-class="{active:releaseChangeViewType=='change'}"
+                                                    ng-click="switchReleaseChangeViewType('change')">查看变更
+                                            </button>
+                                            <button type="button" class="btn btn-default" ng-class="{active:releaseChangeViewType=='release'}"
+                                                    ng-click="switchReleaseChangeViewType('release')">发布的值
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="col-sm-2 control-label" ng-if="toReleaseNamespace.isPropertiesFormat">Changes</label>
                                 <div class="col-sm-10" ng-if="toReleaseNamespace.itemModifiedCnt" valdr-form-group>
 
                                     <!--properites format-->
@@ -186,17 +198,15 @@
 
                                     <!--file format -->
                                     <div ng-repeat="item in toReleaseNamespace.items"
-                                         ng-if="!toReleaseNamespace.isPropertiesFormat">
-                                        <h3>new value</h3>
+                                         ng-if="!toReleaseNamespace.isPropertiesFormat" ng-show="releaseChangeViewType=='change'">
+                                        <apollodiff old-str="item.oldValue" new-str="item.newValue"
+                                                    apollo-id="'releaseStrDiff'"></apollodiff>
+                                    </div>
+                                    <div ng-repeat="item in toReleaseNamespace.items"
+                                         ng-if="!toReleaseNamespace.isPropertiesFormat" ng-show="releaseChangeViewType=='release'">
                                         <textarea class="form-control" rows="20" style="border-radius: 0px"
-                                                  ng-disabled="true" ng-show="item.newValue" ng-bind="item.newValue">
-                                            </textarea>
-                                        <hr>
-                                        <h3>old value</h3>
-                                        <textarea class="form-control" rows="20" style="border-radius: 0px"
-                                                  ng-disabled="true" ng-show="item.oldValue" ng-bind="item.oldValue">
-                                            </textarea>
-                                        <h4 ng-show="!item.oldValue">无</h4>
+                                        ng-disabled="true" ng-show="item.newValue" ng-bind="item.newValue">
+                                        </textarea>
                                     </div>
 
                                 </div>
@@ -205,21 +215,22 @@
                                         配置没有变化
                                     </span>
                                 </div>
-
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
                                     <apollorequiredfiled></apollorequiredfiled>
                                     Release Name:</label>
                                 <div class="col-sm-5" valdr-form-group>
-                                    <input type="text" name="releaseName" class="form-control" placeholder="input release name"
+                                    <input type="text" name="releaseName" class="form-control"
+                                           placeholder="input release name"
                                            ng-model="releaseTitle" ng-required="true">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Comment:</label>
                                 <div class="col-sm-10" valdr-form-group>
-                                            <textarea rows="4" name="comment" class="form-control" style="margin-top: 15px;"
+                                            <textarea rows="4" name="comment" class="form-control"
+                                                      style="margin-top: 15px;"
                                                       ng-model="releaseComment"
                                                       placeholder="Add an optional extended description..."></textarea>
                                 </div>
@@ -229,7 +240,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="submit" class="btn btn-primary" ng-disabled="releaseForm.$invalid || releaseBtnDisabled">发布
+                            <button type="submit" class="btn btn-primary"
+                                    ng-disabled="releaseForm.$invalid || releaseBtnDisabled">发布
                             </button>
                         </div>
                     </div>
@@ -237,15 +249,16 @@
             </form>
 
             <!--table mode item modal-->
-            <form class="modal fade form-horizontal" name="itemForm" valdr-type="Item" id="itemModal" role="dialog" ng-submit="doItem()">
+            <form class="modal fade form-horizontal" name="itemForm" valdr-type="Item" id="itemModal" role="dialog"
+                  ng-submit="doItem()">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header panel-primary">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    ng-click="cancelEdit()"><span
                                     aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title">
                                 <span ng-show="tableViewOperType == 'create'"> 添加配置项</span>
-                                <span ng-show="tableViewOperType == 'retrieve'"> 查看配置项</span>
                                 <span ng-show="tableViewOperType == 'update'"> 修改配置项</span>
                             </h4>
                         </div>
@@ -253,7 +266,7 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
                                     <apollorequiredfiled
-                                            ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                            ng-show="tableViewOperType == 'create'"></apollorequiredfiled>
                                     Key
                                 </label>
                                 <div class="col-sm-10" valdr-form-group>
@@ -263,19 +276,20 @@
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">
-                                    <apollorequiredfiled
-                                            ng-show="tableViewOperType != 'retrieve'"></apollorequiredfiled>
+                                    <apollorequiredfiled></apollorequiredfiled>
                                     Value
                                 </label>
                                 <div class="col-sm-10" valdr-form-group>
-                                            <textarea type="text" name="value" class="form-control" rows="6" ng-model="item.value">
+                                            <textarea type="text" name="value" class="form-control" rows="6"
+                                                      ng-model="item.value">
                                                 </textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Comment</label>
                                 <div class="col-sm-10" valdr-form-group>
-                                            <textarea class="form-control" name="comment" ng-model="item.comment" rows="2">
+                                            <textarea class="form-control" name="comment" ng-model="item.comment"
+                                                      rows="2">
                                             </textarea>
                                 </div>
                             </div>
@@ -295,14 +309,13 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" ng-click="switchToEdit()"
-                                    ng-show="tableViewOperType == 'retrieve' && hasModifyPermission">修改
                             </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelEdit()">
+                                关闭
                             </button>
                             <button type="submit" class="btn btn-primary"
-                                    ng-show="tableViewOperType != 'retrieve'"
-                                    ng-disabled="itemForm.$invalid || (addItemBtnDisabled && tableViewOperType == 'create')">提交
+                                    ng-disabled="itemForm.$invalid || (addItemBtnDisabled && tableViewOperType == 'create')">
+                                提交
                             </button>
                         </div>
                     </div>
@@ -438,6 +451,8 @@
 <script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="vendor/bootstrap/js/bootstrap-treeview.min.js" type="text/javascript"></script>
 
+<script src="vendor/diff.min.js" type="text/javascript"></script>
+
 
 <!--valdr-->
 <script src="vendor/valdr/valdr.min.js" type="text/javascript"></script>
@@ -462,6 +477,7 @@
 <!--directive-->
 <script type="application/javascript" src="scripts/directive/directive.js"></script>
 <script type="application/javascript" src="scripts/directive/namespace-panel-directive.js"></script>
+<script type="application/javascript" src="scripts/directive/diff-directive.js"></script>
 
 <!--controller-->
 <script type="application/javascript" src="scripts/controller/config/ConfigNamespaceController.js"></script>

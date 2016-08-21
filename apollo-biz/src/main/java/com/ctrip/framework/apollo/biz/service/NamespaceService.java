@@ -24,6 +24,13 @@ public class NamespaceService {
   private AuditService auditService;
   @Autowired
   private AppNamespaceService appNamespaceService;
+  @Autowired
+  private ItemService itemService;
+  @Autowired
+  private CommitService commitService;
+  @Autowired
+  private ReleaseService releaseService;
+
 
   public boolean isNamespaceUnique(String appId, String cluster, String namespace) {
     Objects.requireNonNull(appId, "AppId must not be null");
@@ -34,17 +41,32 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void delete(long id, String operator) {
-    Namespace namespace = namespaceRepository.findOne(id);
-    if (namespace == null) {
-      return;
+  public void deleteByAppIdAndClusterName(String appId, String clusterName, String operator){
+
+    List<Namespace> toDeleteNamespaces = findNamespaces(appId, clusterName);
+
+    for (Namespace namespace: toDeleteNamespaces){
+
+      deleteNamespace(namespace, operator);
+
     }
+  }
+
+  @Transactional
+  public Namespace deleteNamespace(Namespace namespace, String operator){
+    String appId = namespace.getAppId();
+    String clusterName = namespace.getClusterName();
+
+    itemService.batchDelete(namespace.getId(), operator);
+    commitService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
+    releaseService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
 
     namespace.setDeleted(true);
     namespace.setDataChangeLastModifiedBy(operator);
-    namespaceRepository.save(namespace);
 
-    auditService.audit(Namespace.class.getSimpleName(), id, Audit.OP.DELETE, operator);
+    auditService.audit(Namespace.class.getSimpleName(), namespace.getId(), Audit.OP.DELETE, operator);
+
+    return namespaceRepository.save(namespace);
   }
 
   public Namespace findOne(Long namespaceId) {
