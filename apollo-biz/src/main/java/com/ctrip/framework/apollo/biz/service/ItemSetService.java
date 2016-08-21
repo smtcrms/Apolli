@@ -59,7 +59,7 @@ public class ItemSetService {
         managedItem.setValue(entity.getValue());
         managedItem.setComment(entity.getComment());
         managedItem.setLineNum(entity.getLineNum());
-        entity.setDataChangeLastModifiedBy(operator);
+        managedItem.setDataChangeLastModifiedBy(operator);
 
         Item updatedItem = itemService.update(managedItem);
         configChangeContentBuilder.updateItem(beforeUpdateItem, updatedItem);
