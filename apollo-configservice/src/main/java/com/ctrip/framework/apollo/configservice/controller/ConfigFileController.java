@@ -42,6 +42,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -114,12 +115,13 @@ public class ConfigFileController implements ReleaseMessageListener {
                                                         @PathVariable String namespace,
                                                         @RequestParam(value = "dataCenter", required = false) String dataCenter,
                                                         @RequestParam(value = "ip", required = false) String clientIp,
+                                                        HttpServletRequest request,
                                                         HttpServletResponse response)
       throws IOException {
 
     String result =
         queryConfig(ConfigFileOutputFormat.PROPERTIES, appId, clusterName, namespace, dataCenter,
-            clientIp, response);
+            clientIp, request, response);
 
     if (result == null) {
       return NOT_FOUND_RESPONSE;
@@ -134,11 +136,12 @@ public class ConfigFileController implements ReleaseMessageListener {
                                                   @PathVariable String namespace,
                                                   @RequestParam(value = "dataCenter", required = false) String dataCenter,
                                                   @RequestParam(value = "ip", required = false) String clientIp,
+                                                  HttpServletRequest request,
                                                   HttpServletResponse response) throws IOException {
 
     String result =
         queryConfig(ConfigFileOutputFormat.JSON, appId, clusterName, namespace, dataCenter,
-            clientIp, response);
+            clientIp, request, response);
 
     if (result == null) {
       return NOT_FOUND_RESPONSE;
@@ -149,6 +152,7 @@ public class ConfigFileController implements ReleaseMessageListener {
 
   String queryConfig(ConfigFileOutputFormat outputFormat, String appId, String clusterName,
                      String namespace, String dataCenter, String clientIp,
+                     HttpServletRequest request,
                      HttpServletResponse response) throws IOException {
     //strip out .properties suffix
     namespace = namespaceUtil.filterNamespaceName(namespace);
@@ -162,7 +166,7 @@ public class ConfigFileController implements ReleaseMessageListener {
       Cat.logEvent("ConfigFile.Cache.Miss", cacheKey);
       ApolloConfig apolloConfig =
           configController
-              .queryConfig(appId, clusterName, namespace, dataCenter, "-1", clientIp,
+              .queryConfig(appId, clusterName, namespace, dataCenter, "-1", clientIp, request,
                   response);
 
       if (apolloConfig == null || apolloConfig.getConfigurations() == null) {

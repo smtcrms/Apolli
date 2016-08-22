@@ -8,10 +8,11 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import com.ctrip.framework.apollo.biz.service.ReleaseService;
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
+import com.ctrip.framework.apollo.biz.service.ReleaseService;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.configservice.util.InstanceConfigAuditUtil;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -44,6 +46,8 @@ public class ConfigController {
   private AppNamespaceService appNamespaceService;
   @Autowired
   private NamespaceUtil namespaceUtil;
+  @Autowired
+  private InstanceConfigAuditUtil instanceConfigAuditUtil;
 
   private static final Gson gson = new Gson();
   private static final Type configurationTypeReference =
@@ -54,13 +58,20 @@ public class ConfigController {
   @RequestMapping(value = "/{appId}/{clusterName}/{namespace:.+}", method = RequestMethod.GET)
   public ApolloConfig queryConfig(@PathVariable String appId, @PathVariable String clusterName,
                                   @PathVariable String namespace,
-                                  @RequestParam(value = "dataCenter", required = false) String dataCenter,
-                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
+                                  @RequestParam(value = "dataCenter", required = false) String
+                                      dataCenter,
+                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String
+                                      clientSideReleaseKey,
                                   @RequestParam(value = "ip", required = false) String clientIp,
+                                  HttpServletRequest request,
                                   HttpServletResponse response) throws IOException {
     String originalNamespace = namespace;
     //strip out .properties suffix
     namespace = namespaceUtil.filterNamespaceName(namespace);
+
+    if (Strings.isNullOrEmpty(clientIp)) {
+      clientIp = tryToGetClientIp(request);
+    }
 
     List<Release> releases = Lists.newLinkedList();
 
@@ -93,8 +104,10 @@ public class ConfigController {
       return null;
     }
 
+    auditReleases(appId, clusterName, dataCenter, clientIp, releases);
+
     String mergedReleaseKey = FluentIterable.from(releases).transform(
-        input -> String.valueOf(input.getReleaseKey())).join(STRING_JOINER);
+        input -> input.getReleaseKey()).join(STRING_JOINER);
 
     if (mergedReleaseKey.equals(clientSideReleaseKey)) {
       // Client side configuration is the same with server side, return 304
@@ -104,10 +117,12 @@ public class ConfigController {
       return null;
     }
 
-    ApolloConfig apolloConfig = new ApolloConfig(appId, appClusterNameLoaded, originalNamespace, mergedReleaseKey);
+    ApolloConfig apolloConfig = new ApolloConfig(appId, appClusterNameLoaded, originalNamespace,
+        mergedReleaseKey);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
-    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded, originalNamespace, dataCenter));
+    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded,
+        originalNamespace, dataCenter));
     return apolloConfig;
   }
 
@@ -132,7 +147,8 @@ public class ConfigController {
    * @param namespace     the namespace
    * @param dataCenter    the datacenter
    */
-  private Release findPublicConfig(String applicationId, String clusterName, String namespace, String dataCenter) {
+  private Release findPublicConfig(String applicationId, String clusterName, String namespace,
+                                   String dataCenter) {
     AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespace);
 
     //check whether the namespace's appId equals to current one
@@ -145,7 +161,8 @@ public class ConfigController {
     return loadConfig(publicConfigAppId, clusterName, namespace, dataCenter);
   }
 
-  private Release loadConfig(String appId, String clusterName, String namespace, String dataCenter) {
+  private Release loadConfig(String appId, String clusterName, String namespace, String
+      dataCenter) {
     //load from specified cluster fist
     if (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusterName)) {
       Release clusterRelease =
@@ -188,6 +205,26 @@ public class ConfigController {
       keyParts.add(datacenter);
     }
     return STRING_JOINER.join(keyParts);
+  }
+
+  private void auditReleases(String appId, String cluster, String datacenter, String clientIp,
+                             List<Release> releases) {
+    if (Strings.isNullOrEmpty(clientIp)) {
+      //no need to audit instance config when there is no ip
+      return;
+    }
+    for (Release release : releases) {
+      instanceConfigAuditUtil.audit(appId, cluster, datacenter, clientIp, release.getAppId(),
+          release.getNamespaceName(), release.getReleaseKey());
+    }
+  }
+
+  private String tryToGetClientIp(HttpServletRequest request) {
+    String ipAddress = request.getHeader("X-FORWARDED-FOR");
+    if (ipAddress == null) {
+      ipAddress = request.getRemoteAddr();
+    }
+    return ipAddress;
   }
 
 }
