@@ -13,7 +13,6 @@ application_module.controller("ConfigNamespaceController",
                                    };
 
                                    var TABLE_VIEW_OPER_TYPE = {
-                                       RETRIEVE: 'retrieve',
                                        CREATE: 'create',
                                        UPDATE: 'update'
                                    };
@@ -25,6 +24,8 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.prepareReleaseNamespace = prepareReleaseNamespace;
 
                                    $scope.release = release;
+                                   
+                                   $scope.switchReleaseChangeViewType = switchReleaseChangeViewType;
 
                                    $scope.showRollbackAlertDialog = showRollbackAlertDialog;
 
@@ -32,13 +33,13 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.rollback = rollback;
 
-                                   $scope.retrieveItem = retrieveItem;
-
                                    $scope.preDeleteItem = preDeleteItem;
 
                                    $scope.deleteItem = deleteItem;
 
                                    $scope.editItem = editItem;
+                                   
+                                   $scope.cancelEdit = cancelEdit;
 
                                    $scope.createItem = createItem;
 
@@ -152,6 +153,11 @@ application_module.controller("ConfigNamespaceController",
                                            }
                                        );
                                    }
+                                   
+                                   $scope.releaseChangeViewType = 'change';
+                                   function switchReleaseChangeViewType(type) {
+                                       $scope.releaseChangeViewType = type;
+                                   }
 
                                    function showRollbackAlertDialog() {
                                        $("#rollbackModal").modal('hide');
@@ -209,15 +215,6 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.tableViewOperType = '', $scope.item = {};
                                    var toOperationNamespace;
 
-                                   //查看配置
-                                   function retrieveItem(namespace, item, oldValue) {
-                                       switchTableViewOperType(TABLE_VIEW_OPER_TYPE.RETRIEVE);
-                                       $scope.item = item;
-                                       $scope.item.oldValue = oldValue;
-                                       toOperationNamespace = namespace;
-                                       $scope.hasModifyPermission = namespace.hasModifyPermission;
-                                   }
-
                                    var toDeleteItemId = 0;
 
                                    function preDeleteItem(namespace, itemId) {
@@ -245,6 +242,7 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    }
 
+                                   var backupItem = {};
                                    //修改配置
                                    function editItem(namespace, item) {
                                        if (!lockCheck(namespace)) {
@@ -252,9 +250,18 @@ application_module.controller("ConfigNamespaceController",
                                        }
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
                                        $scope.item = item;
+                                       backupItem.value = item.value;
+                                       backupItem.comment = item.comment;
                                        toOperationNamespace = namespace;
 
                                        $("#itemModal").modal("show");
+                                   }
+                                   
+                                   function cancelEdit() {
+                                       if($scope.tableViewOperType = TABLE_VIEW_OPER_TYPE.UPDATE){
+                                           $scope.item.value = backupItem.value;
+                                           $scope.item.comment = backupItem.comment;    
+                                       }    
                                    }
 
                                    //新增配置

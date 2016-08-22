@@ -43,7 +43,6 @@ public class NamespaceController {
 
   @Autowired
   private AppService appService;
-
   @Autowired
   private ApplicationEventPublisher publisher;
   @Autowired
@@ -83,6 +82,14 @@ public class NamespaceController {
             String.format("create namespace fail. (env=%s namespace=%s)", model.getEnv(), namespace.getNamespaceName()), e);
       }
     }
+    return ResponseEntity.ok().build();
+  }
+
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.DELETE)
+  public ResponseEntity<Void> deleteNamespace(@PathVariable String appId, @PathVariable String env,
+                                              @PathVariable String clusterName, @PathVariable String namespaceName){
+    namespaceService.deleteNamespace(appId, Env.valueOf(env), clusterName, namespaceName);
     return ResponseEntity.ok().build();
   }
 

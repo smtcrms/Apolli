@@ -88,7 +88,11 @@ public class ItemController {
 
     Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedEntity);
 
-    BeanUtils.copyEntityProperties(entity, managedEntity);
+    //protect. only value,comment,lastModifiedBy can be modified
+    managedEntity.setValue(entity.getValue());
+    managedEntity.setComment(entity.getComment());
+    managedEntity.setDataChangeLastModifiedBy(entity.getDataChangeLastModifiedBy());
+
     entity = itemService.update(managedEntity);
     builder.updateItem(beforeUpdateItem, entity);
     itemDTO = BeanUtils.transfrom(ItemDTO.class, entity);

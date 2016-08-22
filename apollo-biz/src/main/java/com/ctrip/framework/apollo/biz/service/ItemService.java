@@ -47,6 +47,12 @@ public class ItemService {
     return deletedItem;
   }
 
+  @Transactional
+  public int batchDelete(long namespaceId, String operator) {
+    return itemRepository.deleteByNamespaceId(namespaceId, operator);
+
+  }
+
   public Item findOne(String appId, String clusterName, String namespaceName, String key) {
     Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
         clusterName, namespaceName);
