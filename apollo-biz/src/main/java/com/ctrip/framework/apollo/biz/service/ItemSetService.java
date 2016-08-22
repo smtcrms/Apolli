@@ -13,7 +13,6 @@ import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
-import com.ctrip.framework.apollo.core.utils.StringUtils;
 
 
 @Service
@@ -50,14 +49,19 @@ public class ItemSetService {
       for (ItemDTO item : changeSet.getUpdateItems()) {
         Item entity = BeanUtils.transfrom(Item.class, item);
 
-        Item beforeUpdateItem = itemService.findOne(entity.getId());
-        if (beforeUpdateItem == null) {
+        Item managedItem = itemService.findOne(entity.getId());
+        if (managedItem == null) {
           throw new NotFoundException(String.format("item not found.(key=%s)", entity.getKey()));
         }
-        beforeUpdateItem = BeanUtils.transfrom(Item.class, beforeUpdateItem);
+        Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedItem);
 
-        entity.setDataChangeLastModifiedBy(operator);
-        Item updatedItem = itemService.update(entity);
+        //protect. only value,comment,lastModifiedBy,lineNum can be modified
+        managedItem.setValue(entity.getValue());
+        managedItem.setComment(entity.getComment());
+        managedItem.setLineNum(entity.getLineNum());
+        managedItem.setDataChangeLastModifiedBy(operator);
+
+        Item updatedItem = itemService.update(managedItem);
         configChangeContentBuilder.updateItem(beforeUpdateItem, updatedItem);
 
       }
@@ -72,8 +76,7 @@ public class ItemSetService {
       auditService.audit("ItemSet", null, Audit.OP.DELETE, operator);
     }
 
-    String configChangeContent = configChangeContentBuilder.build();
-    if (!StringUtils.isEmpty(configChangeContent)) {
+    if (configChangeContentBuilder.hasContent()){
       createCommit(appId, clusterName, namespaceName, configChangeContentBuilder.build(),
                    changeSet.getDataChangeLastModifiedBy());
     }

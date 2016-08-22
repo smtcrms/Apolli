@@ -26,4 +26,9 @@ public class CommitService {
     return commitRepository.findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(appId, clusterName, namespaceName, page);
   }
 
+  @Transactional
+  public int batchDelete(String appId, String clusterName, String namespaceName, String operator){
+    return commitRepository.batchDelete(appId, clusterName, namespaceName, operator);
+  }
+
 }

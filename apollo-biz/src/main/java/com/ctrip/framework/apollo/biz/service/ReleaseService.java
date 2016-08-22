@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.ctrip.framework.apollo.biz.entity.NamespaceLock;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.repository.ItemRepository;
 import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
@@ -79,6 +80,10 @@ public class ReleaseService {
 
   @Transactional
   public Release buildRelease(String name, String comment, Namespace namespace, String operator) {
+    NamespaceLock lock = namespaceLockService.findLock(namespace.getId());
+    if (lock != null && lock.getDataChangeCreatedBy().equals(operator)) {
+      throw new BadRequestException(String.format("Current editor %s is not allowed to release the config", operator));
+    }
 
     List<Item> items = itemRepository.findByNamespaceIdOrderByLineNumAsc(namespace.getId());
     Map<String, String> configurations = new HashMap<String, String>();
@@ -136,5 +141,10 @@ public class ReleaseService {
     release.setDataChangeLastModifiedBy(operator);
 
     return releaseRepository.save(release);
+  }
+
+  @Transactional
+  public int batchDelete(String appId, String clusterName, String namespaceName, String operator){
+    return releaseRepository.batchDelete(appId, clusterName, namespaceName, operator);
   }
 }
