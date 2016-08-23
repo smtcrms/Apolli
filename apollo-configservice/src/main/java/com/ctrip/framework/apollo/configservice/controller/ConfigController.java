@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.configservice.controller;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
@@ -40,6 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/configs")
 public class ConfigController {
+  private static final Splitter X_FORWARDED_FOR_SPLITTER = Splitter.on(",").omitEmptyStrings()
+      .trimResults();
   @Autowired
   private ReleaseService releaseService;
   @Autowired
@@ -220,11 +223,11 @@ public class ConfigController {
   }
 
   private String tryToGetClientIp(HttpServletRequest request) {
-    String ipAddress = request.getHeader("X-FORWARDED-FOR");
-    if (ipAddress == null) {
-      ipAddress = request.getRemoteAddr();
+    String forwardedFor = request.getHeader("X-FORWARDED-FOR");
+    if (!Strings.isNullOrEmpty(forwardedFor)) {
+      return X_FORWARDED_FOR_SPLITTER.splitToList(forwardedFor).get(0);
     }
-    return ipAddress;
+    return request.getRemoteAddr();
   }
 
 }
