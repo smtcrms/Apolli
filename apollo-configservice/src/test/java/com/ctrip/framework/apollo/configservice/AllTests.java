@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.configservice.integration.ConfigControllerInte
 import com.ctrip.framework.apollo.configservice.integration.ConfigFileControllerIntegrationTest;
 import com.ctrip.framework.apollo.configservice.integration.NotificationControllerIntegrationTest;
 import com.ctrip.framework.apollo.configservice.integration.NotificationControllerV2IntegrationTest;
+import com.ctrip.framework.apollo.configservice.util.InstanceConfigAuditUtilTest;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtilTest;
 import com.ctrip.framework.apollo.configservice.util.WatchKeysUtilTest;
 
@@ -20,7 +21,8 @@ import org.junit.runners.Suite.SuiteClasses;
     ConfigControllerIntegrationTest.class, NotificationControllerIntegrationTest.class,
     NamespaceUtilTest.class, ConfigFileControllerTest.class,
     ConfigFileControllerIntegrationTest.class, WatchKeysUtilTest.class,
-    NotificationControllerV2Test.class, NotificationControllerV2IntegrationTest.class
+    NotificationControllerV2Test.class, NotificationControllerV2IntegrationTest.class,
+    InstanceConfigAuditUtilTest.class
 })
 public class AllTests {
 

@@ -8,7 +8,9 @@ import com.ctrip.framework.apollo.biz.repository.AppRepositoryTest;
 import com.ctrip.framework.apollo.biz.service.AdminServiceTest;
 import com.ctrip.framework.apollo.biz.service.AdminServiceTransactionTest;
 import com.ctrip.framework.apollo.biz.service.ClusterServiceTest;
+import com.ctrip.framework.apollo.biz.service.InstanceServiceTest;
 import com.ctrip.framework.apollo.biz.service.PrivilegeServiceTest;
+import com.ctrip.framework.apollo.biz.service.ReleaseServiceTest;
 import com.ctrip.framework.apollo.biz.service.ServerConfigServiceTest;
 import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGeneratorTest;
 
@@ -26,9 +28,11 @@ import org.junit.runners.Suite.SuiteClasses;
     DatabaseMessageSenderTest.class,
     ServerConfigServiceTest.class,
     ApolloEurekaClientConfigTest.class,
+    ReleaseServiceTest.class,
     ReleaseMessageScannerTest.class,
     ClusterServiceTest.class,
-    ReleaseKeyGeneratorTest.class
+    ReleaseKeyGeneratorTest.class,
+    InstanceServiceTest.class
 })
 public class AllTests {
 
