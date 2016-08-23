@@ -55,7 +55,7 @@ public class SimpleConfig extends AbstractConfig implements RepositoryChangeList
   @Override
   public String getProperty(String key, String defaultValue) {
     if (m_configProperties == null) {
-      logger.error("Config initialization failed, always return default value!");
+      logger.warn("Could not load config from Apollo, always return default value!");
       return defaultValue;
     }
     return this.m_configProperties.getProperty(key, defaultValue);
