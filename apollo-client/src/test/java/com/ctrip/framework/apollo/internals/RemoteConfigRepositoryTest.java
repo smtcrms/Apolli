@@ -254,7 +254,11 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
   public static class MockHttpUtil extends HttpUtil {
     @Override
     public <T> HttpResponse<T> doGet(HttpRequest httpRequest, Class<T> responseType) {
-      return (HttpResponse<T>) someResponse;
+      if (someResponse.getStatusCode() == 200 || someResponse.getStatusCode() == 304 ) {
+        return (HttpResponse<T>) someResponse;
+      }
+      throw new ApolloConfigException(String.format("Http request failed due to status code: %d",
+          someResponse.getStatusCode()));
     }
 
     @Override
