@@ -131,6 +131,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         this.fireRepositoryChange(m_namespace, this.getConfig());
       }
 
+      if (current != null) {
+        Cat.logEvent(String.format("Apollo.Client.Configs.%s", current.getNamespaceName()),
+            current.getReleaseKey());
+      }
+
       transaction.setStatus(Message.SUCCESS);
     } catch (Throwable ex) {
       transaction.setStatus(ex);
@@ -157,7 +162,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     String appId = m_configUtil.getAppId();
     String cluster = m_configUtil.getCluster();
     String dataCenter = m_configUtil.getDataCenter();
-    Cat.logEvent("Apollo.Client.ConfigInfo", STRING_JOINER.join(appId, cluster, m_namespace));
+    Cat.logEvent("Apollo.Client.ConfigMeta", STRING_JOINER.join(appId, cluster, m_namespace));
     int maxRetries = 2;
     Throwable exception = null;
 
@@ -194,8 +199,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
           ApolloConfig result = response.getBody();
 
-          Cat.logEvent("Apollo.Client.ConfigLoaded." + result.getNamespaceName(),
-              result.getReleaseKey());
           logger.debug("Loaded config for {}: {}", m_namespace, result);
 
           return result;
