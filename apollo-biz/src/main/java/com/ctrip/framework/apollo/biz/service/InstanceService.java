@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.biz.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import com.ctrip.framework.apollo.biz.entity.Instance;
 import com.ctrip.framework.apollo.biz.entity.InstanceConfig;
@@ -8,8 +9,15 @@ import com.ctrip.framework.apollo.biz.repository.InstanceConfigRepository;
 import com.ctrip.framework.apollo.biz.repository.InstanceRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -27,6 +35,14 @@ public class InstanceService {
         dataCenter, ip);
   }
 
+  public List<Instance> findInstancesByIds(Set<Long> instanceIds) {
+    Iterable<Instance> instances = instanceRepository.findAll(instanceIds);
+    if (instances == null) {
+      return Collections.emptyList();
+    }
+    return Lists.newArrayList(instances);
+  }
+
   @Transactional
   public Instance createInstance(Instance instance) {
     instance.setId(0); //protection
@@ -38,6 +54,28 @@ public class InstanceService {
                                            String configNamespaceName) {
     return instanceConfigRepository.findByInstanceIdAndConfigAppIdAndConfigNamespaceName(
         instanceId, configAppId, configNamespaceName);
+  }
+
+  public List<InstanceConfig> findActiveInstanceConfigsByReleaseKey(String releaseKey, Pageable
+      pageable) {
+    List<InstanceConfig> instanceConfigs = instanceConfigRepository
+        .findByReleaseKeyAndDataChangeLastModifiedTimeAfter(releaseKey,
+            getValidInstanceConfigDate(), pageable);
+    if (instanceConfigs == null) {
+      return Collections.emptyList();
+    }
+    return instanceConfigs;
+  }
+
+  /**
+   * Currently the instance config is expired by 1 day, add one more hour to avoid possible time
+   * difference
+   */
+  private Date getValidInstanceConfigDate() {
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE, -1);
+    cal.add(Calendar.HOUR, -1);
+    return cal.getTime();
   }
 
   @Transactional
