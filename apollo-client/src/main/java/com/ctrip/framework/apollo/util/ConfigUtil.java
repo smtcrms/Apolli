@@ -185,8 +185,8 @@ public class ConfigUtil {
   }
 
   public String getDefaultLocalCacheDir() {
-    //TODO call Framework Foundation to get the default local cache dir
-    return String.format("/opt/data/%s", getAppId());
+    String cacheRoot = isOSWindows() ? "C:\\opt\\data\\%s" : "/opt/data/%s";
+    return String.format(cacheRoot, getAppId());
   }
 
   public boolean isInLocalMode() {
@@ -197,5 +197,13 @@ public class ConfigUtil {
       //ignore
     }
     return false;
+  }
+
+  public boolean isOSWindows() {
+    String osName = System.getProperty("os.name");
+    if (Strings.isNullOrEmpty(osName)) {
+      return false;
+    }
+    return osName.startsWith("Windows");
   }
 }
