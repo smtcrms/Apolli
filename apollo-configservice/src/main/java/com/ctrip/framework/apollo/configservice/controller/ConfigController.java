@@ -107,7 +107,8 @@ public class ConfigController {
       return null;
     }
 
-    auditReleases(appId, clusterName, dataCenter, clientIp, releases);
+    //stop auditing releases temporarily
+    //auditReleases(appId, clusterName, dataCenter, clientIp, releases);
 
     String mergedReleaseKey = FluentIterable.from(releases).transform(
         input -> input.getReleaseKey()).join(STRING_JOINER);
