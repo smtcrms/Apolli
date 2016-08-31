@@ -176,7 +176,7 @@
             </thead>
             <tbody>
 
-            <tr ng-repeat="config in namespace.items" ng-class="{warning:config.isModified}"
+            <tr ng-repeat="config in namespace.viewItems" ng-class="{warning:config.isModified}"
                 ng-if="config.item.key && !config.isDeleted">
                 <td width="20%" title="{{config.item.key}}">
                     <span ng-bind="config.item.key | limitTo: 250"></span>

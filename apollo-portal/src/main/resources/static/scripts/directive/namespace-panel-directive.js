@@ -65,7 +65,7 @@ directive_module.directive('apollonspanel',
                                        function initNamespace(namespace, viewType) {
 
                                            namespace.showSearchInput = false;
-                                           namespace.sourceItems = namespace.items;
+                                           namespace.viewItems = namespace.items; 
                                            namespace.isPropertiesFormat = namespace.format == 'properties';
                                            namespace.isTextEditing = false;
                                            namespace.instanceViewType = namespace_instance_view_type.LATEST_RELEASE;
@@ -345,7 +345,7 @@ directive_module.directive('apollonspanel',
 
                                        function parseModel2Text(namespace) {
 
-                                           if (namespace.sourceItems.length == 0) {
+                                           if (namespace.items.length == 0) {
                                                namespace.itemCnt = MIN_ROW_SIZE;
                                                return "";
                                            }
@@ -360,7 +360,7 @@ directive_module.directive('apollonspanel',
                                        }
 
                                        function parseNotPropertiesText(namespace) {
-                                           var text = namespace.sourceItems[0].item.value;
+                                           var text = namespace.items[0].item.value;
                                            var lineNum = text.split("\n").length;
                                            namespace.itemCnt = lineNum < MIN_ROW_SIZE ? MIN_ROW_SIZE : lineNum;
                                            return text;
@@ -369,7 +369,7 @@ directive_module.directive('apollonspanel',
                                        function parsePropertiesText(namespace) {
                                            var result = "";
                                            var itemCnt = 0;
-                                           namespace.sourceItems.forEach(function (item) {
+                                           namespace.items.forEach(function (item) {
                                                //deleted key
                                                if (!item.item.dataChangeLastModifiedBy) {
                                                    return;
@@ -398,13 +398,13 @@ directive_module.directive('apollonspanel',
                                        function searchItems(namespace) {
                                            var searchKey = namespace.searchKey.toLowerCase();
                                            var items = [];
-                                           namespace.sourceItems.forEach(function (item) {
+                                           namespace.items.forEach(function (item) {
                                                var key = item.item.key;
                                                if (key && key.toLowerCase().indexOf(searchKey) >= 0){
                                                    items.push(item);    
                                                }
                                            });
-                                           namespace.items = items;
+                                           namespace.viewItems = items;
                                        }
 
                                        function lockCheck(namespace) {
