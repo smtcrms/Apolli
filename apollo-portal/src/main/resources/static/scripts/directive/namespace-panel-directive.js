@@ -38,6 +38,10 @@ directive_module.directive('apollonspanel',
 
                                        scope.switchView = switchView;
 
+                                       scope.toggleItemSearchInput = toggleItemSearchInput;
+
+                                       scope.searchItems = searchItems;
+                                       
                                        scope.loadCommitHistory = loadCommitHistory;
 
                                        scope.toggleTextEditStatus = toggleTextEditStatus;
@@ -60,6 +64,8 @@ directive_module.directive('apollonspanel',
 
                                        function initNamespace(namespace, viewType) {
 
+                                           namespace.showSearchInput = false;
+                                           namespace.sourceItems = namespace.items;
                                            namespace.isPropertiesFormat = namespace.format == 'properties';
                                            namespace.isTextEditing = false;
                                            namespace.instanceViewType = namespace_instance_view_type.LATEST_RELEASE;
@@ -382,6 +388,23 @@ directive_module.directive('apollonspanel',
 
                                            namespace.itemCnt = itemCnt < MIN_ROW_SIZE ? MIN_ROW_SIZE : itemCnt;
                                            return result;
+                                       }
+
+
+                                       function toggleItemSearchInput(namespace) {
+                                           namespace.showSearchInput = !namespace.showSearchInput;
+                                       }
+
+                                       function searchItems(namespace) {
+                                           var searchKey = namespace.searchKey.toLowerCase();
+                                           var items = [];
+                                           namespace.sourceItems.forEach(function (item) {
+                                               var key = item.item.key;
+                                               if (key && key.toLowerCase().indexOf(searchKey) >= 0){
+                                                   items.push(item);    
+                                               }
+                                           });
+                                           namespace.items = items;
                                        }
 
                                        function lockCheck(namespace) {
