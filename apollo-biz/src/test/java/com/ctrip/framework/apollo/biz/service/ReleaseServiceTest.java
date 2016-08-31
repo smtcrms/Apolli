@@ -1,5 +1,8 @@
 package com.ctrip.framework.apollo.biz.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import com.ctrip.framework.apollo.biz.AbstractUnitTest;
 import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
@@ -13,9 +16,12 @@ import org.mockito.Mock;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -145,6 +151,38 @@ public class ReleaseServiceTest extends AbstractUnitTest {
     assertNull(result);
     verify(releaseRepository, times(1)).findFirstByAppIdAndClusterNameAndNamespaceNameAndIsAbandonedFalseOrderByIdDesc(
         someAppId, someClusterName, someNamespaceName);
+  }
+
+  @Test
+  public void testFindByReleaseIds() throws Exception {
+    Release someRelease = mock(Release.class);
+    Release anotherRelease = mock(Release.class);
+    long someReleaseId = 1;
+    long anotherReleaseId = 2;
+    List<Release> someReleases = Lists.newArrayList(someRelease, anotherRelease);
+    Set<Long> someReleaseIds = Sets.newHashSet(someReleaseId, anotherReleaseId);
+
+    when(releaseRepository.findAll(someReleaseIds)).thenReturn(someReleases);
+
+    List<Release> result = releaseService.findByReleaseIds(someReleaseIds);
+
+    assertEquals(someReleases, result);
+  }
+
+  @Test
+  public void testFindByReleaseKeys() throws Exception {
+    Release someRelease = mock(Release.class);
+    Release anotherRelease = mock(Release.class);
+    String someReleaseKey = "key1";
+    String anotherReleaseKey = "key2";
+    List<Release> someReleases = Lists.newArrayList(someRelease, anotherRelease);
+    Set<String> someReleaseKeys = Sets.newHashSet(someReleaseKey, anotherReleaseKey);
+
+    when(releaseRepository.findByReleaseKeyIn(someReleaseKeys)).thenReturn(someReleases);
+
+    List<Release> result = releaseService.findByReleaseKeys(someReleaseKeys);
+
+    assertEquals(someReleases, result);
   }
 
   private Release assembleRelease(long releaseId, String releaseKey, String appId,

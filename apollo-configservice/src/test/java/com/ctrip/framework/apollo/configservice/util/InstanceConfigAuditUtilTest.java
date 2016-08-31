@@ -36,6 +36,7 @@ public class InstanceConfigAuditUtilTest {
   private BlockingQueue<InstanceConfigAuditUtil.InstanceConfigAuditModel> audits;
 
   private String someAppId;
+  private String someConfigClusterName;
   private String someClusterName;
   private String someDataCenter;
   private String someIp;
@@ -59,18 +60,19 @@ public class InstanceConfigAuditUtilTest {
     someDataCenter = "someDataCenter";
     someIp = "someIp";
     someConfigAppId = "someConfigAppId";
+    someConfigClusterName= "someConfigClusterName";
     someConfigNamespace = "someConfigNamespace";
     someReleaseKey = "someReleaseKey";
 
     someAuditModel = new InstanceConfigAuditUtil.InstanceConfigAuditModel(someAppId,
-        someClusterName, someDataCenter, someIp, someConfigAppId, someConfigNamespace,
+        someClusterName, someDataCenter, someIp, someConfigAppId, someConfigClusterName, someConfigNamespace,
         someReleaseKey);
   }
 
   @Test
   public void testAudit() throws Exception {
     boolean result = instanceConfigAuditUtil.audit(someAppId, someClusterName, someDataCenter,
-        someIp, someConfigAppId, someConfigNamespace, someReleaseKey);
+        someIp, someConfigAppId, someConfigClusterName, someConfigNamespace, someReleaseKey);
 
     InstanceConfigAuditUtil.InstanceConfigAuditModel audit = audits.poll();
 
@@ -91,7 +93,7 @@ public class InstanceConfigAuditUtilTest {
     verify(instanceService, times(1)).findInstance(someAppId, someClusterName, someDataCenter,
         someIp);
     verify(instanceService, times(1)).createInstance(any(Instance.class));
-    verify(instanceService, times(1)).findInstanceConfig(someInstanceId, someConfigAppId,
+    verify(instanceService, times(1)).findInstanceConfig(someInstanceId, someConfigAppId, someConfigClusterName,
         someConfigNamespace);
     verify(instanceService, times(1)).createInstanceConfig(any(InstanceConfig.class));
   }

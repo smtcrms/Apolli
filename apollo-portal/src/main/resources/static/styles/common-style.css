@@ -33,6 +33,10 @@ table {
     border-radius: 0px;
 }
 
+.highlight {
+    background: #ffa;
+}
+
 .hide-border-top {
     border-top: 0px;
 }
@@ -56,6 +60,24 @@ table {
 .i-15 {
     height: 15px;
     width: 15px;
+}
+
+.badge{
+    padding: 1px 4px;
+}
+
+.badge-grey {
+    background: #777;
+    color: #fff;
+}
+
+.badge-white {
+    background: #ffffff;
+    color: #0f0f0f;
+}
+
+.panel-default > .panel-heading .badge{
+
 }
 
 .apollo-container {
@@ -219,12 +241,6 @@ table th {
     font-size: 18px;
 }
 
-.config-item-container .panel-heading .badge {
-    padding: 1px 4px;
-    background: #ffffff;
-    color: #0f0f0f;
-}
-
 .config-item-container .form-control[disabled] {
     background: #ffffff;
     border: 0px;
@@ -313,6 +329,16 @@ table th {
 
 }
 
+.instance-view .btn-primary .badge{
+    color: #337ab7;
+    background-color: #fff;
+}
+
+.instance-view .btn-default .badge{
+    background: #777;
+    color: #fff;
+}
+
 .line {
     width: 20px;
     border: 1px solid #ddd;
@@ -364,7 +390,6 @@ table th {
     background-position: 5% 50%;
     padding: 5px 0 5px 50px;
 }
-
 
 /*搜索框*/
 ::-webkit-scrollbar {

@@ -11,7 +11,9 @@ import com.dianping.cat.message.Transaction;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestClientException;
@@ -50,6 +52,13 @@ public class RetryableRestTemplate {
     return execute(HttpMethod.GET, env, path, null, responseType, urlVariables);
   }
 
+  public <T> ResponseEntity<T> get(Env env, String path, ParameterizedTypeReference<T> reference,
+                                   Object... uriVariables)
+      throws RestClientException {
+
+      return execute(env, path, reference, uriVariables);
+  }
+
   public <T> T post(Env env, String path, Object request, Class<T> responseType, Object... uriVariables)
       throws RestClientException {
     return execute(HttpMethod.POST, env, path, request, responseType, uriVariables);
@@ -73,14 +82,7 @@ public class RetryableRestTemplate {
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
     Transaction ct = Cat.newTransaction("AdminAPI", uri);
 
-    List<ServiceDTO> services = adminServiceAddressLocator.getServiceList(env);
-
-    if (CollectionUtils.isEmpty(services)) {
-      ServiceException e = new ServiceException("No available admin service");
-      ct.setStatus(e);
-      ct.complete();
-      throw e;
-    }
+    List<ServiceDTO> services = getAdminServices(env, ct);
 
     for (ServiceDTO serviceDTO : services) {
       try {
@@ -108,6 +110,55 @@ public class RetryableRestTemplate {
     ct.setStatus(e);
     ct.complete();
     throw e;
+  }
+
+  private <T> ResponseEntity<T> execute(Env env, String path, ParameterizedTypeReference<T> reference,
+                                   Object... uriVariables){
+    if (path.startsWith("/")) {
+      path = path.substring(1, path.length());
+    }
+
+    String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
+    Transaction ct = Cat.newTransaction("AdminAPI", uri);
+
+    List<ServiceDTO> services = getAdminServices(env, ct);
+
+    for (ServiceDTO serviceDTO : services) {
+      try {
+
+        ResponseEntity<T> result =
+            restTemplate.exchange(parseHost(serviceDTO) + path, HttpMethod.GET, null, reference, uriVariables);
+
+        ct.setStatus(Message.SUCCESS);
+        ct.complete();
+        return result;
+      } catch (Throwable t) {
+        Cat.logError(t);
+        Cat.logEvent(CatEventType.API_RETRY, uri);
+        continue;
+      }
+    }
+
+    //all admin server down
+    ServiceException e = new ServiceException("No available admin service");
+    ct.setStatus(e);
+    ct.complete();
+    throw e;
+
+  }
+
+  private List<ServiceDTO> getAdminServices( Env env, Transaction ct){
+
+    List<ServiceDTO> services = adminServiceAddressLocator.getServiceList(env);
+
+    if (CollectionUtils.isEmpty(services)) {
+      ServiceException e = new ServiceException("No available admin service");
+      ct.setStatus(e);
+      ct.complete();
+      throw e;
+    }
+
+    return services;
   }
 
   private <T> T doExecute(HttpMethod method, ServiceDTO service, String path, Object request,
@@ -143,11 +194,11 @@ public class RetryableRestTemplate {
     Throwable nestedException = e.getCause();
     if (method == HttpMethod.GET) {
       return nestedException instanceof SocketTimeoutException
-          || nestedException instanceof HttpHostConnectException
-          || nestedException instanceof ConnectTimeoutException;
+             || nestedException instanceof HttpHostConnectException
+             || nestedException instanceof ConnectTimeoutException;
     } else {
       return nestedException instanceof HttpHostConnectException
-          || nestedException instanceof ConnectTimeoutException;
+             || nestedException instanceof ConnectTimeoutException;
     }
   }
 

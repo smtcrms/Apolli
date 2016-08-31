@@ -16,7 +16,7 @@
                    title="{{namespace.comment}}"></b>
                 <span class="label label-info no-radius" ng-bind="namespace.format"></span>
                                 <span class="label label-primary no-radius" ng-show="namespace.itemModifiedCnt > 0">有修改
-                                <span class="badge label" ng-bind="namespace.itemModifiedCnt"></span></span>
+                                <span class="badge label badge-white" ng-bind="namespace.itemModifiedCnt"></span></span>
                 <span class="label label-warning no-radius"
                       ng-show="namespace.lockOwner">当前修改者:{{namespace.lockOwner}}</span>
             </div>
@@ -60,12 +60,10 @@
             </div>
         </div>
     </header>
-    <!--f1f2f7-->
-
 
     <header class="panel-heading second-panel-heading">
         <div class="row">
-            <div class="col-md-5 pull-left">
+            <div class="col-md-6 pull-left">
                 <ul class="nav nav-tabs">
                     <li role="presentation" ng-click="switchView(namespace, 'table')"
                         ng-show="namespace.isPropertiesFormat">
@@ -86,9 +84,16 @@
                             更改历史
                         </a>
                     </li>
+                    <li role="presentation" ng-click="switchView(namespace, 'instance')">
+                        <a ng-class="{node_active:namespace.viewType == 'instance'}">
+                            <img src="img/machine.png">
+                            实例列表
+                            <span class="badge badge-grey" ng-bind="namespace.instancesCount"></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
-            <div class="col-md-7 text-right">
+            <div class="col-md-6 text-right">
                 <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
                    ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
                    ng-click="toggleTextEditStatus(namespace)">
@@ -195,9 +200,8 @@
         </table>
     </div>
 
-    <!--历史修改视图-->
+    <!--history view-->
     <div class="J_historyview history-view" ng-show="namespace.viewType == 'history'">
-
         <div class="media" ng-repeat="commits in namespace.commits">
             <div class="media-body">
                 <div class="row">
@@ -321,5 +325,143 @@
                     ng-click="loadCommitHistory(namespace)">加载更多
                 <span class="glyphicon glyphicon-menu-down"></span></button>
         </div>
+    </div>
+
+    <!--instance view-->
+    <div class="panel panel-default instance-view" ng-show="namespace.viewType == 'instance'">
+        <div class="panel-heading">
+            <div class="row text-right" style="padding-right: 15px;">
+
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-default"
+                            ng-class="{'btn-primary':namespace.instanceViewType == 'latest_release'}"
+                            ng-click="switchInstanceViewType(namespace, 'latest_release')"> 使用最新配置的实例
+                        <span class="badge" ng-bind="namespace.latestReleaseInstances.total"></span>
+                    </button>
+                    <button type="button" class="btn btn-default"
+                            ng-class="{'btn-primary':namespace.instanceViewType == 'not_latest_release'}"
+                            ng-click="switchInstanceViewType(namespace, 'not_latest_release')">使用非最新配置的实例
+                        <span class="badge"
+                              ng-bind="namespace.instancesCount - namespace.latestReleaseInstances.total"></span>
+                    </button>
+                    <button type="button" class="btn btn-default"
+                            ng-class="{'btn-primary':namespace.instanceViewType == 'all'}"
+                            ng-click="switchInstanceViewType(namespace, 'all')">所有实例
+                        <span class="badge" ng-bind="namespace.instancesCount"></span>
+                    </button>
+                </div>
+                <button class="btn btn-default btn-sm"
+                        data-tooltip="tooltip" data-placement="bottom" title="刷新列表"
+                        ng-click="refreshInstancesInfo(namespace)">
+                    <img src="../../img/refresh.png"/>
+                </button>
+            </div>
+        </div>
+
+        <!--latest release instances-->
+        <div class="panel-body" ng-show="namespace.instanceViewType == 'latest_release'">
+
+            <div class="panel-default" ng-if="namespace.latestReleaseInstances.total > 0">
+                <div class="panel-heading">
+                    <a target="_blank" data-tooltip="tooltip" data-placement="bottom" title="查看配置"
+                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{namespace.latestRelease.name}}">
+                        {{namespace.latestRelease.name}}
+                    </a>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <td>App ID</td>
+                        <td>Cluster Name</td>
+                        <td>Data Center</td>
+                        <td>IP</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="instance in namespace.latestReleaseInstances.content">
+                        <td width="25%" ng-bind="instance.appId"></td>
+                        <td width="25%" ng-bind="instance.clusterName"></td>
+                        <td width="25%" ng-bind="instance.dataCenter"></td>
+                        <td width="25%" ng-bind="instance.ip"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row text-center" ng-show="namespace.latestReleaseInstances.content.length < namespace.latestReleaseInstances.total">
+                    <button class="btn btn-default" ng-click="loadInstanceInfo(namespace)">加载更多</button>
+
+                </div>
+            </div>
+
+            <div class="text-center" ng-if="namespace.latestReleaseInstances.total == 0">
+                无实例信息
+            </div>
+        </div>
+
+        <!--not latest release instances-->
+        <div class="panel-body" ng-show="namespace.instanceViewType == 'not_latest_release'">
+            <div class="panel-default" ng-if="namespace.instancesCount - namespace.latestReleaseInstances.total > 0" ng-repeat="releaseName in namespace.notLatestReleaseNames">
+                <div class="panel-heading">
+                    <a target="_blank" data-tooltip="tooltip" data-placement="bottom" title="查看配置"
+                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{releaseName}}">
+                        {{releaseName}}
+                    </a>
+
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <td>App ID</td>
+                        <td>Cluster Name</td>
+                        <td>Data Center</td>
+                        <td>IP</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="instance in namespace.notLatestReleaseInstances[releaseName]">
+                        <td width="25%" ng-bind="instance.appId"></td>
+                        <td width="25%" ng-bind="instance.clusterName"></td>
+                        <td width="25%" ng-bind="instance.dataCenter"></td>
+                        <td width="25%" ng-bind="instance.ip"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center" ng-if="namespace.instancesCount - namespace.latestReleaseInstances.total == 0">
+                无实例信息
+            </div>
+        </div>
+
+         <!--all instances-->
+        <div class="panel-body" ng-show="namespace.instanceViewType == 'all'">
+            <div class="panel-default" ng-if="namespace.instancesCount > 0">
+                <table class="table table-bordered table-striped" ng-if="namespace.allInstances">
+                    <thead>
+                    <tr>
+                        <td>App ID</td>
+                        <td>Cluster Name</td>
+                        <td>Data Center</td>
+                        <td>IP</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="instance in namespace.allInstances">
+                        <td width="25%" ng-bind="instance.appId"></td>
+                        <td width="25%" ng-bind="instance.clusterName"></td>
+                        <td width="25%" ng-bind="instance.dataCenter"></td>
+                        <td width="25%" ng-bind="instance.ip"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row text-center" ng-show="namespace.allInstances.length < namespace.instancesCount">
+                    <button class="btn btn-default" ng-click="loadInstanceInfo(namespace)">加载更多</button>
+                </div>
+            </div>
+            <div class="text-center" ng-if="namespace.instancesCount == 0">
+                无实例信息
+            </div>
+        </div>
+
+
+
     </div>
 </div>
