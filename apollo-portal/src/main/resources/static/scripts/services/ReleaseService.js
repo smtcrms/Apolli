@@ -107,7 +107,7 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
     return {
         release: createRelease,
         findAllRelease: findAllReleases,
-        findActiveRelease: findActiveReleases,
+        findActiveReleases: findActiveReleases,
         compare: compare,
         rollback: rollback
     }

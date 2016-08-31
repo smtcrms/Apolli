@@ -58,15 +58,14 @@ public class InstanceConfigAuditUtil implements InitializingBean {
   }
 
   public boolean audit(String appId, String clusterName, String dataCenter, String
-      ip, String configAppId, String configNamespace, String releaseKey) {
+      ip, String configAppId, String configClusterName, String configNamespace, String releaseKey) {
     return this.audits.offer(new InstanceConfigAuditModel(appId, clusterName, dataCenter, ip,
-        configAppId, configNamespace, releaseKey));
+        configAppId, configClusterName, configNamespace, releaseKey));
   }
 
   void doAudit(InstanceConfigAuditModel auditModel) {
     String instanceCacheKey = assembleInstanceKey(auditModel.getAppId(), auditModel
-            .getClusterName(),
-        auditModel.getIp(), auditModel.getDataCenter());
+        .getClusterName(), auditModel.getIp(), auditModel.getDataCenter());
     Long instanceId = instanceCache.getIfPresent(instanceCacheKey);
     if (instanceId == null) {
       instanceId = prepareInstanceId(auditModel);
@@ -75,7 +74,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
 
     //load instance config release key from cache, and check if release key is the same
     String instanceConfigCacheKey = assembleInstanceConfigKey(instanceId, auditModel
-        .getConfigAppId(), auditModel.getConfigNamespace());
+        .getConfigAppId(), auditModel.getConfigClusterName(), auditModel.getConfigNamespace());
     String cacheReleaseKey = instanceConfigReleaseKeyCache.getIfPresent(instanceConfigCacheKey);
 
     //if release key is the same, then skip audit
@@ -87,7 +86,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
 
     //if release key is not the same or cannot find in cache, then do audit
     InstanceConfig instanceConfig = instanceService.findInstanceConfig(instanceId, auditModel
-        .getConfigAppId(), auditModel.getConfigNamespace());
+        .getConfigAppId(), auditModel.getConfigClusterName(), auditModel.getConfigNamespace());
 
     //we need to update no matter the release key is the same or not, to ensure the
     //last modified time is updated each day
@@ -101,6 +100,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     instanceConfig = new InstanceConfig();
     instanceConfig.setInstanceId(instanceId);
     instanceConfig.setConfigAppId(auditModel.getConfigAppId());
+    instanceConfig.setConfigClusterName(auditModel.getConfigClusterName());
     instanceConfig.setConfigNamespaceName(auditModel.getConfigNamespace());
     instanceConfig.setReleaseKey(auditModel.getReleaseKey());
 
@@ -160,8 +160,9 @@ public class InstanceConfigAuditUtil implements InitializingBean {
   }
 
   private String assembleInstanceConfigKey(long instanceId, String configAppId, String
-      configNamespace) {
-    return STRING_JOINER.join(instanceId, configAppId, configNamespace);
+      configClusterName,
+                                           String configNamespace) {
+    return STRING_JOINER.join(instanceId, configAppId, configClusterName, configNamespace);
   }
 
   public static class InstanceConfigAuditModel {
@@ -170,16 +171,19 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     private String dataCenter;
     private String ip;
     private String configAppId;
+    private String configClusterName;
     private String configNamespace;
     private String releaseKey;
 
     public InstanceConfigAuditModel(String appId, String clusterName, String dataCenter, String
-        clientIp, String configAppId, String configNamespace, String releaseKey) {
+        clientIp, String configAppId, String configClusterName, String configNamespace, String
+                                        releaseKey) {
       this.appId = appId;
       this.clusterName = clusterName;
       this.dataCenter = Strings.isNullOrEmpty(dataCenter) ? "" : dataCenter;
       this.ip = clientIp;
       this.configAppId = configAppId;
+      this.configClusterName = configClusterName;
       this.configNamespace = configNamespace;
       this.releaseKey = releaseKey;
     }
@@ -212,6 +216,10 @@ public class InstanceConfigAuditUtil implements InitializingBean {
       return releaseKey;
     }
 
+    public String getConfigClusterName() {
+      return configClusterName;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -222,13 +230,15 @@ public class InstanceConfigAuditUtil implements InitializingBean {
           Objects.equals(dataCenter, model.dataCenter) &&
           Objects.equals(ip, model.ip) &&
           Objects.equals(configAppId, model.configAppId) &&
+          Objects.equals(configClusterName, model.configClusterName) &&
           Objects.equals(configNamespace, model.configNamespace) &&
           Objects.equals(releaseKey, model.releaseKey);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(appId, clusterName, dataCenter, ip, configAppId, configNamespace,
+      return Objects.hash(appId, clusterName, dataCenter, ip, configAppId, configClusterName,
+          configNamespace,
           releaseKey);
     }
   }

@@ -9,7 +9,7 @@ application_module.controller("ConfigNamespaceController",
                                    var namespace_view_type = {
                                        TEXT: 'text',
                                        TABLE: 'table',
-                                       LOG: 'log'
+                                       HISTORY: 'history'
                                    };
 
                                    var TABLE_VIEW_OPER_TYPE = {
@@ -39,8 +39,6 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.editItem = editItem;
                                    
-                                   $scope.cancelEdit = cancelEdit;
-
                                    $scope.createItem = createItem;
 
                                    $scope.doItem = doItem;
@@ -169,10 +167,10 @@ application_module.controller("ConfigNamespaceController",
                                    function preRollback(namespace) {
                                        $scope.toRollbackNamespace = namespace;
                                        //load latest two active releases
-                                       ReleaseService.findActiveRelease($rootScope.pageContext.appId,
-                                                                        $rootScope.pageContext.env,
-                                                                        $rootScope.pageContext.clusterName,
-                                                                        $scope.toRollbackNamespace.baseInfo.namespaceName, 0, 2)
+                                       ReleaseService.findActiveReleases($rootScope.pageContext.appId,
+                                                                         $rootScope.pageContext.env,
+                                                                         $rootScope.pageContext.clusterName,
+                                                                         $scope.toRollbackNamespace.baseInfo.namespaceName, 0, 2)
                                            .then(function (result) {
                                                if (result.length <= 1) {
                                                    toastr.error("没有可以回滚的发布历史");
@@ -242,28 +240,18 @@ application_module.controller("ConfigNamespaceController",
                                            });
                                    }
 
-                                   var backupItem = {};
                                    //修改配置
                                    function editItem(namespace, item) {
                                        if (!lockCheck(namespace)) {
                                            return;
                                        }
                                        switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
-                                       $scope.item = item;
-                                       backupItem.value = item.value;
-                                       backupItem.comment = item.comment;
+                                       $scope.item = _.clone(item);
                                        toOperationNamespace = namespace;
 
                                        $("#itemModal").modal("show");
                                    }
                                    
-                                   function cancelEdit() {
-                                       if($scope.tableViewOperType = TABLE_VIEW_OPER_TYPE.UPDATE){
-                                           $scope.item.value = backupItem.value;
-                                           $scope.item.comment = backupItem.comment;    
-                                       }    
-                                   }
-
                                    //新增配置
                                    function createItem(namespace) {
                                        if (!lockCheck(namespace)) {

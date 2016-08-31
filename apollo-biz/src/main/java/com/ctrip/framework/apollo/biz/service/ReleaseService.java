@@ -1,8 +1,10 @@
 package com.ctrip.framework.apollo.biz.service;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.biz.entity.Audit;
+import com.ctrip.framework.apollo.biz.entity.Instance;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.entity.NamespaceLock;
@@ -14,6 +16,8 @@ import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
+import org.apache.commons.collections.collection.UnmodifiableCollection;
+import org.apache.commons.collections.list.UnmodifiableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -46,6 +51,18 @@ public class ReleaseService {
   public Release findOne(long releaseId) {
     Release release = releaseRepository.findOne(releaseId);
     return release;
+  }
+
+  public List<Release> findByReleaseIds(Set<Long> releaseIds) {
+    Iterable<Release> releases = releaseRepository.findAll(releaseIds);
+    if (releases == null) {
+      return Collections.emptyList();
+    }
+    return Lists.newArrayList(releases);
+  }
+
+  public List<Release> findByReleaseKeys(Set<String> releaseKeys) {
+    return releaseRepository.findByReleaseKeyIn(releaseKeys);
   }
 
   public Release findLatestActiveRelease(String appId, String clusterName, String namespaceName) {

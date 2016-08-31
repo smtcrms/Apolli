@@ -29,6 +29,9 @@ public class InstanceConfig {
   @Column(name = "ConfigAppId", nullable = false)
   private String configAppId;
 
+  @Column(name = "ConfigClusterName", nullable = false)
+  private String configClusterName;
+
   @Column(name = "ConfigNamespaceName", nullable = false)
   private String configNamespaceName;
 
@@ -112,12 +115,21 @@ public class InstanceConfig {
     this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
   }
 
+  public String getConfigClusterName() {
+    return configClusterName;
+  }
+
+  public void setConfigClusterName(String configClusterName) {
+    this.configClusterName = configClusterName;
+  }
+
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .omitNullValues()
         .add("id", id)
         .add("configAppId", configAppId)
+        .add("configClusterName", configClusterName)
         .add("configNamespaceName", configNamespaceName)
         .add("releaseKey", releaseKey)
         .add("dataChangeCreatedTime", dataChangeCreatedTime)

@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -9,6 +10,7 @@ import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.service.InstanceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.common.dto.InstanceDTO;
+import com.ctrip.framework.apollo.common.dto.PageDTO;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
 
 import org.junit.Before;
@@ -16,14 +18,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,7 +72,6 @@ public class InstanceConfigControllerTest {
     String someConfigAppId = "someConfigAppId";
     String someConfigNamespace = "someNamespace";
     String someIp = "someIp";
-    boolean withReleaseDetail = true;
 
     when(releaseService.findOne(someReleaseId)).thenReturn(someRelease);
 
@@ -75,9 +81,11 @@ public class InstanceConfigControllerTest {
         someConfigAppId, someConfigNamespace, someReleaseKey);
     List<InstanceConfig> instanceConfigs = Lists.newArrayList(someInstanceConfig,
         anotherInstanceConfig);
+    Page<InstanceConfig> instanceConfigPage = new PageImpl<>(instanceConfigs, pageable,
+        instanceConfigs.size());
 
     when(instanceService.findActiveInstanceConfigsByReleaseKey(someReleaseKey, pageable))
-        .thenReturn(instanceConfigs);
+        .thenReturn(instanceConfigPage);
 
     Instance someInstance = assembleInstance(someInstanceId, someAppId,
         someCluster, someDataCenter, someIp);
@@ -89,8 +97,91 @@ public class InstanceConfigControllerTest {
     when(instanceService.findInstancesByIds(instanceIds))
         .thenReturn(instances);
 
-    List<InstanceDTO> result = instanceConfigController.getByRelease(someReleaseId,
-        withReleaseDetail, pageable);
+    PageDTO<InstanceDTO> result = instanceConfigController.getByRelease(someReleaseId, pageable);
+
+    assertEquals(2, result.getContent().size());
+    InstanceDTO someInstanceDto = null;
+    InstanceDTO anotherInstanceDto = null;
+
+    for (InstanceDTO instanceDTO : result.getContent()) {
+      if (instanceDTO.getId() == someInstanceId) {
+        someInstanceDto = instanceDTO;
+      } else if (instanceDTO.getId() == anotherInstanceId) {
+        anotherInstanceDto = instanceDTO;
+      }
+    }
+
+    verifyInstance(someInstance, someInstanceDto);
+    verifyInstance(anotherInstance, anotherInstanceDto);
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void testGetByReleaseWhenReleaseIsNotFound() throws Exception {
+    long someReleaseIdNotExists = 1;
+
+    when(releaseService.findOne(someReleaseIdNotExists)).thenReturn(null);
+
+    instanceConfigController.getByRelease(someReleaseIdNotExists, pageable);
+  }
+
+  @Test
+  public void testGetByReleasesNotIn() throws Exception {
+    String someConfigAppId = "someConfigAppId";
+    String someConfigClusterName = "someConfigClusterName";
+    String someConfigNamespaceName = "someConfigNamespaceName";
+    long someReleaseId = 1;
+    long anotherReleaseId = 2;
+    String releaseIds = Joiner.on(",").join(someReleaseId, anotherReleaseId);
+
+    Release someRelease = mock(Release.class);
+    Release anotherRelease = mock(Release.class);
+    String someReleaseKey = "someReleaseKey";
+    String anotherReleaseKey = "anotherReleaseKey";
+    when(someRelease.getReleaseKey()).thenReturn(someReleaseKey);
+    when(anotherRelease.getReleaseKey()).thenReturn(anotherReleaseKey);
+
+    when(releaseService.findByReleaseIds(Sets.newHashSet(someReleaseId, anotherReleaseId)))
+        .thenReturn(Lists.newArrayList(someRelease, anotherRelease));
+
+    long someInstanceId = 1;
+    long anotherInstanceId = 2;
+    String someInstanceConfigReleaseKey = "someInstanceConfigReleaseKey";
+    String anotherInstanceConfigReleaseKey = "anotherInstanceConfigReleaseKey";
+    InstanceConfig someInstanceConfig = mock(InstanceConfig.class);
+    InstanceConfig anotherInstanceConfig = mock(InstanceConfig.class);
+    when(someInstanceConfig.getInstanceId()).thenReturn(someInstanceId);
+    when(anotherInstanceConfig.getInstanceId()).thenReturn(anotherInstanceId);
+    when(someInstanceConfig.getReleaseKey()).thenReturn(someInstanceConfigReleaseKey);
+    when(anotherInstanceConfig.getReleaseKey()).thenReturn(anotherInstanceConfigReleaseKey);
+    when(instanceService.findInstanceConfigsByNamespaceWithReleaseKeysNotIn(someConfigAppId,
+        someConfigClusterName, someConfigNamespaceName, Sets.newHashSet(someReleaseKey,
+            anotherReleaseKey))).thenReturn(Lists.newArrayList(someInstanceConfig,
+        anotherInstanceConfig));
+
+    String someInstanceAppId = "someInstanceAppId";
+    String someInstanceClusterName = "someInstanceClusterName";
+    String someInstanceNamespaceName = "someInstanceNamespaceName";
+    String someIp = "someIp";
+    String anotherIp = "anotherIp";
+    Instance someInstance = assembleInstance(someInstanceId, someInstanceAppId,
+        someInstanceClusterName,
+        someInstanceNamespaceName, someIp);
+    Instance anotherInstance = assembleInstance(anotherInstanceId, someInstanceAppId,
+        someInstanceClusterName,
+        someInstanceNamespaceName, anotherIp);
+    when(instanceService.findInstancesByIds(Sets.newHashSet(someInstanceId, anotherInstanceId)))
+        .thenReturn(Lists.newArrayList(someInstance, anotherInstance));
+
+    Release someInstanceConfigRelease = new Release();
+    someInstanceConfigRelease.setReleaseKey(someInstanceConfigReleaseKey);
+    Release anotherInstanceConfigRelease = new Release();
+    anotherInstanceConfigRelease.setReleaseKey(anotherInstanceConfigReleaseKey);
+    when(releaseService.findByReleaseKeys(Sets.newHashSet(someInstanceConfigReleaseKey,
+        anotherInstanceConfigReleaseKey))).thenReturn(Lists.newArrayList(someInstanceConfigRelease,
+        anotherInstanceConfigRelease));
+
+    List<InstanceDTO> result = instanceConfigController.getByReleasesNotIn(someConfigAppId,
+        someConfigClusterName, someConfigNamespaceName, releaseIds);
 
     assertEquals(2, result.size());
     InstanceDTO someInstanceDto = null;
@@ -107,25 +198,67 @@ public class InstanceConfigControllerTest {
     verifyInstance(someInstance, someInstanceDto);
     verifyInstance(anotherInstance, anotherInstanceDto);
 
-    assertEquals(1, someInstanceDto.getConfigs().size());
-    assertEquals(someReleaseKey, someInstanceDto.getConfigs().get(0).getRelease().getReleaseKey());
-    assertEquals(someInstanceConfig.getDataChangeLastModifiedTime(), someInstanceDto.getConfigs()
-        .get(0).getDataChangeLastModifiedTime());
-
-    assertEquals(1, anotherInstanceDto.getConfigs().size());
-    assertEquals(someReleaseKey, anotherInstanceDto.getConfigs().get(0).getRelease().getReleaseKey());
-    assertEquals(anotherInstanceConfig.getDataChangeLastModifiedTime(), anotherInstanceDto.getConfigs()
-        .get(0).getDataChangeLastModifiedTime());
+    assertEquals(someInstanceConfigReleaseKey, someInstanceDto.getConfigs().get(0).getRelease()
+        .getReleaseKey());
+    assertEquals(anotherInstanceConfigReleaseKey, anotherInstanceDto.getConfigs().get(0)
+        .getRelease()
+        .getReleaseKey());
   }
 
-  @Test(expected = NotFoundException.class)
-  public void testGetByReleaseWhenReleaseIsNotFound() throws Exception {
-    long someReleaseIdNotExists = 1;
-    boolean withReleaseDetail = false;
+  @Test
+  public void testGetInstancesByNamespace() throws Exception {
+    String someAppId = "someAppId";
+    String someClusterName = "someClusterName";
+    String someNamespaceName = "someNamespaceName";
+    String someIp = "someIp";
+    long someInstanceId = 1;
+    long anotherInstanceId = 2;
+    Pageable pageable = mock(Pageable.class);
 
-    when(releaseService.findOne(someReleaseIdNotExists)).thenReturn(null);
+    Instance someInstance = assembleInstance(someInstanceId, someAppId, someClusterName,
+        someNamespaceName, someIp);
+    Instance anotherInstance = assembleInstance(anotherInstanceId, someAppId, someClusterName,
+        someNamespaceName, someIp);
 
-    instanceConfigController.getByRelease(someReleaseIdNotExists, withReleaseDetail, pageable);
+    Page<Instance> instances = new PageImpl<>(Lists.newArrayList(someInstance, anotherInstance),
+        pageable, 2);
+    when(instanceService.findInstancesByNamespace(someAppId, someClusterName, someNamespaceName,
+        pageable)).thenReturn(instances);
+
+    PageDTO<InstanceDTO> result = instanceConfigController.getInstancesByNamespace(someAppId,
+        someClusterName, someNamespaceName, pageable);
+
+    assertEquals(2, result.getContent().size());
+    InstanceDTO someInstanceDto = null;
+    InstanceDTO anotherInstanceDto = null;
+
+    for (InstanceDTO instanceDTO : result.getContent()) {
+      if (instanceDTO.getId() == someInstanceId) {
+        someInstanceDto = instanceDTO;
+      } else if (instanceDTO.getId() == anotherInstanceId) {
+        anotherInstanceDto = instanceDTO;
+      }
+    }
+
+    verifyInstance(someInstance, someInstanceDto);
+    verifyInstance(anotherInstance, anotherInstanceDto);
+  }
+
+  @Test
+  public void testGetInstancesCountByNamespace() throws Exception {
+    String someAppId = "someAppId";
+    String someClusterName = "someClusterName";
+    String someNamespaceName = "someNamespaceName";
+
+    Page<Instance> instances = new PageImpl<>(Collections.emptyList(), pageable, 2);
+
+    when(instanceService.findInstancesByNamespace(eq(someAppId), eq(someClusterName),
+        eq(someNamespaceName), any(Pageable.class))).thenReturn(instances);
+
+    long result = instanceConfigController.getInstancesCountByNamespace(someAppId,
+        someClusterName, someNamespaceName);
+
+    assertEquals(2, result);
   }
 
   private void verifyInstance(Instance instance, InstanceDTO instanceDTO) {
@@ -138,8 +271,7 @@ public class InstanceConfigControllerTest {
   }
 
   private Instance assembleInstance(long instanceId, String appId, String clusterName, String
-      dataCenter, String
-                                        ip) {
+      dataCenter, String ip) {
     Instance instance = new Instance();
     instance.setId(instanceId);
     instance.setAppId(appId);

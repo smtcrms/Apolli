@@ -37,7 +37,7 @@
                         <span class="label label-primary no-radius"
                               ng-if="release.active">当前生效</span>
                     </div>
-                    <div class="row">
+                    <div class="row" id="{{release.baseInfo.name}}">
                         <div class="col-md-2 user">
                             <img src="../img/user.png" class="i-20">
                             <span class="info" ng-bind="release.baseInfo.dataChangeCreatedBy"></span>
@@ -50,7 +50,8 @@
                         <div class="col-md-3 time">
                             <img src="../img/title.png" class="i-20">
                         <span class="info"
-                              ng-bind="release.baseInfo.name"></span>
+                              ng-bind="release.baseInfo.name" ng-class="{'highlight':pageContext.scrollTo == release.baseInfo.name}"></span>
+
                         </div>
                         <div class="col-md-4 comment" ng-show="release.baseInfo.comment">
                             <img src="../img/comment.png" class="i-20">
