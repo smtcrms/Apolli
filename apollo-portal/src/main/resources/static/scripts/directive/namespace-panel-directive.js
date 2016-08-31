@@ -345,7 +345,7 @@ directive_module.directive('apollonspanel',
 
                                        function parseModel2Text(namespace) {
 
-                                           if (namespace.items.length == 0) {
+                                           if (namespace.sourceItems.length == 0) {
                                                namespace.itemCnt = MIN_ROW_SIZE;
                                                return "";
                                            }
@@ -360,7 +360,7 @@ directive_module.directive('apollonspanel',
                                        }
 
                                        function parseNotPropertiesText(namespace) {
-                                           var text = namespace.items[0].item.value;
+                                           var text = namespace.sourceItems[0].item.value;
                                            var lineNum = text.split("\n").length;
                                            namespace.itemCnt = lineNum < MIN_ROW_SIZE ? MIN_ROW_SIZE : lineNum;
                                            return text;
@@ -369,7 +369,7 @@ directive_module.directive('apollonspanel',
                                        function parsePropertiesText(namespace) {
                                            var result = "";
                                            var itemCnt = 0;
-                                           namespace.items.forEach(function (item) {
+                                           namespace.sourceItems.forEach(function (item) {
                                                //deleted key
                                                if (!item.item.dataChangeLastModifiedBy) {
                                                    return;
