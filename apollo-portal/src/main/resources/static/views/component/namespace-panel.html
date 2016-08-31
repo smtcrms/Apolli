@@ -113,12 +113,20 @@
                     <img src="img/submit.png" class="ns_btn">
                 </a>
 
+                <button type="button" class="btn btn-info btn-sm"
+                        ng-show="namespace.viewType == 'table'"
+                        ng-click="toggleItemSearchInput(namespace)">
+                    <span class="glyphicon glyphicon-filter"></span>
+                    过滤配置
+                </button>
+
                 <button type="button" class="btn btn-primary btn-sm"
                         ng-show="namespace.viewType == 'table' && namespace.hasModifyPermission"
                         ng-click="createItem(namespace)">
                     <img src="img/plus.png">
                     新增配置
                 </button>
+
 
             </div>
         </div>
@@ -138,9 +146,12 @@
                                 </textarea>
 
     <!--table view-->
-    <div class="namespace-view-table">
-        <table class="table table-bordered table-striped text-center table-hover"
-               ng-show="namespace.viewType == 'table' && namespace.items.length > 0">
+    <div class="namespace-view-table" ng-show="namespace.viewType == 'table'">
+
+        <div class="col-md-8 col-lg-offset-2" style="padding-top: 15px; padding-bottom: 10px" ng-show="namespace.showSearchInput">
+            <input type="text" class="form-control" placeholder="输入key过滤" ng-model="namespace.searchKey" ng-change="searchItems(namespace)">
+        </div>
+        <table class="table table-bordered table-striped text-center table-hover">
             <thead>
             <tr>
                 <th>
