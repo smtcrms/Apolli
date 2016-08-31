@@ -246,7 +246,7 @@ directive_module.directive('apollonspanel',
                                                        }
 
                                                        var groupedInstances = {},
-                                                           notLatestReleaseNames = [];
+                                                           notLatestReleases = [];
 
                                                        result.forEach(function (instance) {
                                                            var configs = instance.configs;
@@ -255,14 +255,14 @@ directive_module.directive('apollonspanel',
                                                                    var release = instanceConfig.release;
                                                                    if (!groupedInstances[release.name]) {
                                                                        groupedInstances[release.name] = [];
-                                                                       notLatestReleaseNames.push(release.name);
+                                                                       notLatestReleases.push(release);
                                                                    }
                                                                    groupedInstances[release.name].push(instance);
                                                                })
                                                            }
                                                        });
 
-                                                       namespace.notLatestReleaseNames = notLatestReleaseNames;
+                                                       namespace.notLatestReleases = notLatestReleases;
                                                        namespace.notLatestReleaseInstances = groupedInstances;
                                                    })
 
