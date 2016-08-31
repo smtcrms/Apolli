@@ -31,8 +31,8 @@ public class InstanceController {
   private InstanceService instanceService;
 
   @RequestMapping("/envs/{env}/instances/by-release")
-  public PageDTO getByRelease(@PathVariable String env, @RequestParam long releaseId,
-                              @RequestParam int page, @RequestParam(defaultValue = "20") int size) {
+  public PageDTO<InstanceDTO> getByRelease(@PathVariable String env, @RequestParam long releaseId,
+                              @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
 
     return instanceService.getByRelease(Env.valueOf(env), releaseId, page, size);
   }
@@ -40,7 +40,7 @@ public class InstanceController {
   @RequestMapping("/envs/{env}/instances/by-namespace")
   public PageDTO<InstanceDTO> getByNamespace(@PathVariable String env, @RequestParam String appId,
                                           @RequestParam String clusterName, @RequestParam String namespaceName,
-                                          @RequestParam int page, @RequestParam(defaultValue = "20") int size) {
+                                          @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
 
     return instanceService.getByNamespace(Env.valueOf(env), appId, clusterName, namespaceName, page, size);
   }
