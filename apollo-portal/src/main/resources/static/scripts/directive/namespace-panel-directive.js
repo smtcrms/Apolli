@@ -253,11 +253,11 @@ directive_module.directive('apollonspanel',
                                                            if (configs.length > 0) {
                                                                configs.forEach(function (instanceConfig) {
                                                                    var release = instanceConfig.release;
-                                                                   if (!groupedInstances[release.name]) {
-                                                                       groupedInstances[release.name] = [];
+                                                                   if (!groupedInstances[release.id]) {
+                                                                       groupedInstances[release.id] = [];
                                                                        notLatestReleases.push(release);
                                                                    }
-                                                                   groupedInstances[release.name].push(instance);
+                                                                   groupedInstances[release.id].push(instance);
                                                                })
                                                            }
                                                        });
