@@ -212,6 +212,14 @@ table th {
     min-height: 500px;
 }
 
+#itemModal .modal-dialog{
+    width: 860px;
+}
+
+#itemModal .modal-body{
+    padding-bottom: 0;
+}
+
 #config-edit {
     border: 1px solid #ddd;
     border-radius: 3px;
