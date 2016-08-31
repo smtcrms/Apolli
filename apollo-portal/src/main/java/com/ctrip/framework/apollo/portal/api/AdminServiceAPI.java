@@ -1,27 +1,35 @@
 package com.ctrip.framework.apollo.portal.api;
 
 
+import com.google.common.base.Joiner;
+
 import com.ctrip.framework.apollo.common.dto.AppDTO;
 import com.ctrip.framework.apollo.common.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.common.dto.ClusterDTO;
 import com.ctrip.framework.apollo.common.dto.CommitDTO;
+import com.ctrip.framework.apollo.common.dto.InstanceDTO;
 import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceLockDTO;
+import com.ctrip.framework.apollo.common.dto.PageDTO;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 
 import org.springframework.boot.actuate.health.Health;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -234,6 +242,41 @@ public class AdminServiceAPI {
                               NamespaceLockDTO.class,
                               appId, clusterName, namespaceName);
 
+    }
+  }
+
+  @Service
+  public static class InstanceAPI extends API {
+    private Joiner joiner = Joiner.on(",");
+    private ParameterizedTypeReference<PageDTO<InstanceDTO>> pageInstanceDtoType = new ParameterizedTypeReference<PageDTO<InstanceDTO>>() {};
+
+    public PageDTO<InstanceDTO> getByRelease(Env env, long releaseId, int page, int size){
+      ResponseEntity<PageDTO<InstanceDTO>> entity = restTemplate.get(env, "/instances/by-release?releaseId={releaseId}&page={page}&size={size}", pageInstanceDtoType, releaseId, page, size);
+      return entity.getBody();
+
+    }
+
+    public List<InstanceDTO> getByReleasesNotIn(String appId, Env env, String clusterName, String namespaceName, Set<Long> releaseIds){
+
+      InstanceDTO[] instanceDTOs = restTemplate.get(env, "/instances/by-namespace-and-releases-not-in?appId={appId}&clusterName={clusterName}&namespaceName={namespaceName}&releaseIds={releaseIds}",
+                                                    InstanceDTO[].class, appId, clusterName, namespaceName, joiner.join(releaseIds));
+
+      return Arrays.asList(instanceDTOs);
+    }
+
+    public PageDTO<InstanceDTO> getByNamespace(String appId, Env env, String clusterName, String namespaceName, int page, int size){
+      ResponseEntity<PageDTO<InstanceDTO>> entity = restTemplate.get(env, "/instances/by-namespace?appId={appId}&clusterName={clusterName}&namespaceName={namespaceName}&page={page}&size={size}",
+                                                                     pageInstanceDtoType, appId, clusterName, namespaceName, page, size);
+      return entity.getBody();
+    }
+
+    public int getInstanceCountByNamespace(String appId, Env env, String clusterName, String namespaceName){
+      Integer count = restTemplate.get(env, "/instances/by-namespace/count?appId={appId}&clusterName={clusterName}&namespaceName={namespaceName}",
+                                       Integer.class, appId, clusterName, namespaceName);
+      if (count == null){
+        return 0;
+      }
+      return count;
     }
   }
 

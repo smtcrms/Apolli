@@ -1,6 +1,6 @@
 directive_module.directive('apollonspanel',
                            function ($compile, $window, toastr, AppUtil, PermissionService, NamespaceLockService,
-                                     UserService, CommitService) {
+                                     UserService, CommitService, ReleaseService, InstanceService) {
                                return {
                                    restrict: 'E',
                                    templateUrl: '../../views/component/namespace-panel.html',
@@ -24,13 +24,24 @@ directive_module.directive('apollonspanel',
                                        var namespace_view_type = {
                                            TEXT: 'text',
                                            TABLE: 'table',
-                                           LOG: 'log'
+                                           HISTORY: 'history',
+                                           INSTANCE: 'instance'
+                                       };
+
+                                       var namespace_instance_view_type = {
+                                           LATEST_RELEASE: 'latest_release',
+                                           NOT_LATEST_RELEASE: 'not_latest_release',
+                                           ALL: 'all'
                                        };
 
                                        var MIN_ROW_SIZE = 10;
 
                                        scope.switchView = switchView;
 
+                                       scope.toggleItemSearchInput = toggleItemSearchInput;
+
+                                       scope.searchItems = searchItems;
+                                       
                                        scope.loadCommitHistory = loadCommitHistory;
 
                                        scope.toggleTextEditStatus = toggleTextEditStatus;
@@ -41,102 +52,26 @@ directive_module.directive('apollonspanel',
 
                                        scope.goToParentAppConfigPage = goToParentAppConfigPage;
 
+                                       scope.switchInstanceViewType = switchInstanceViewType;
+
+                                       scope.loadInstanceInfo = loadInstanceInfo;
+
+                                       scope.refreshInstancesInfo = refreshInstancesInfo;
+
                                        initNamespace(scope.namespace);
 
                                        //init method
-                                       UserService.load_user().then(function (result) {
-                                           scope.currentUser = result.userId;
-                                       });
 
-                                       PermissionService.has_assign_user_permission(scope.appId)
-                                           .then(function (result) {
-                                               scope.hasAssignUserPermission = result.hasPermission;
-                                           }, function (result) {
-
-                                           });
-
-                                       //controller method
-                                       function switchView(namespace, viewType) {
-                                           namespace.viewType = viewType;
-                                           if (namespace_view_type.TEXT == viewType) {
-                                               namespace.text = parseModel2Text(namespace);
-                                           } else if (namespace_view_type.TABLE == viewType) {
-
-                                           } else {
-                                               scope.loadCommitHistory(namespace);
-                                           }
-                                       }
-
-                                       function loadCommitHistory(namespace) {
-                                           if (!namespace.commits) {
-                                               namespace.commits = [];
-                                               namespace.commitPage = 0;
-                                           }
-                                           CommitService.find_commits(scope.appId,
-                                                                      scope.env,
-                                                                      scope.cluster,
-                                                                      namespace.baseInfo.namespaceName,
-                                                                      namespace.commitPage)
-                                               .then(function (result) {
-                                                   if (result.length == 0) {
-                                                       namespace.hasLoadAllCommit = true;
-                                                   }
-                                                   for (var i = 0; i < result.length; i++) {
-                                                       //to json
-                                                       result[i].changeSets = JSON.parse(result[i].changeSets);
-                                                       namespace.commits.push(result[i]);
-                                                   }
-                                                   namespace.commitPage += 1;
-                                               }, function (result) {
-                                                   toastr.error(AppUtil.errorMsg(result), "加载修改历史记录出错");
-                                               });
-                                       }
-
-                                       function toggleTextEditStatus(namespace) {
-                                           if (!lockCheck(namespace)) {
-                                               return;
-                                           }
-                                           namespace.isTextEditing = !namespace.isTextEditing;
-                                           if (namespace.isTextEditing) {//切换为编辑状态
-                                               namespace.commited = false;
-                                               namespace.backupText = namespace.text;
-                                               namespace.editText = parseModel2Text(namespace);
-
-                                           } else {
-                                               if (!namespace.commited) {//取消编辑,则复原
-                                                   namespace.text = namespace.backupText;
-                                               }
-                                           }
-                                       }
-
-                                       function goToSyncPage(namespace) {
-                                           if (!lockCheck(namespace)) {
-                                               return false;
-                                           }
-                                           $window.location.href =
-                                               "config/sync.html?#/appid=" + scope.appId + "&env="
-                                               + scope.env + "&clusterName="
-                                               + scope.cluster
-                                               + "&namespaceName=" + namespace.baseInfo.namespaceName;
-                                       }
-
-                                       function modifyByText(namespace) {
-                                           if (scope.commitChange(namespace)){
-                                               namespace.commited = true;
-                                               toggleTextEditStatus(namespace);    
-                                           }
-                                       }
-
-                                       function goToParentAppConfigPage(namespace) {
-                                           $window.location.href = "/config.html?#/appid=" + namespace.parentAppId;
-                                           $window.location.reload();
-                                       }
-
-                                       //local method
                                        function initNamespace(namespace, viewType) {
 
+                                           namespace.showSearchInput = false;
+                                           namespace.viewItems = namespace.items; 
                                            namespace.isPropertiesFormat = namespace.format == 'properties';
                                            namespace.isTextEditing = false;
+                                           namespace.instanceViewType = namespace_instance_view_type.LATEST_RELEASE;
+                                           namespace.latestReleaseInstancesPage = 0;
+                                           namespace.allInstances = [];
+                                           namespace.allInstancesPage = 0;
 
                                            //namespace view name hide suffix
                                            namespace.viewName =
@@ -144,7 +79,7 @@ directive_module.directive('apollonspanel',
                                                    ".properties", "");
 
                                            if (!viewType) {
-                                               if (namespace.isPropertiesFormat) { 
+                                               if (namespace.isPropertiesFormat) {
                                                    switchView(namespace, namespace_view_type.TABLE);
                                                } else {
                                                    switchView(namespace, namespace_view_type.TEXT);
@@ -185,6 +120,227 @@ directive_module.directive('apollonspanel',
                                                    }
                                                });
 
+                                           //instance
+                                           getInstanceCountByNamespace(namespace);
+                                       }
+
+                                       function getInstanceCountByNamespace(namespace) {
+                                           InstanceService.getInstanceCountByNamespace(scope.appId,
+                                                                                       scope.env,
+                                                                                       scope.cluster,
+                                                                                       namespace.baseInfo.namespaceName)
+                                               .then(function (result) {
+                                                   namespace.instancesCount = result.num;
+                                               })
+                                       }
+
+                                       UserService.load_user().then(function (result) {
+                                           scope.currentUser = result.userId;
+                                       });
+
+                                       PermissionService.has_assign_user_permission(scope.appId)
+                                           .then(function (result) {
+                                               scope.hasAssignUserPermission = result.hasPermission;
+                                           }, function (result) {
+
+                                           });
+
+                                       //controller method
+                                       function switchView(namespace, viewType) {
+                                           namespace.viewType = viewType;
+                                           if (namespace_view_type.TEXT == viewType) {
+                                               namespace.text = parseModel2Text(namespace);
+                                           } else if (namespace_view_type.TABLE == viewType) {
+
+                                           } else if (namespace_view_type.HISTORY == viewType) {
+                                               loadCommitHistory(namespace);
+                                           } else {
+                                               loadInstanceInfo(namespace);
+                                           }
+                                       }
+
+                                       function loadCommitHistory(namespace) {
+                                           if (!namespace.commits) {
+                                               namespace.commits = [];
+                                               namespace.commitPage = 0;
+                                           }
+                                           CommitService.find_commits(scope.appId,
+                                                                      scope.env,
+                                                                      scope.cluster,
+                                                                      namespace.baseInfo.namespaceName,
+                                                                      namespace.commitPage)
+                                               .then(function (result) {
+                                                   if (result.length == 0) {
+                                                       namespace.hasLoadAllCommit = true;
+                                                   }
+                                                   for (var i = 0; i < result.length; i++) {
+                                                       //to json
+                                                       result[i].changeSets = JSON.parse(result[i].changeSets);
+                                                       namespace.commits.push(result[i]);
+                                                   }
+                                                   namespace.commitPage += 1;
+                                               }, function (result) {
+                                                   toastr.error(AppUtil.errorMsg(result), "加载修改历史记录出错");
+                                               });
+                                       }
+
+                                       function switchInstanceViewType(namespace, type) {
+                                           namespace.instanceViewType = type;
+                                           loadInstanceInfo(namespace);
+                                       }
+
+                                       function loadInstanceInfo(namespace) {
+
+                                           var type = namespace.instanceViewType;
+
+                                           if (namespace_instance_view_type.LATEST_RELEASE == type) {
+                                               if (!namespace.latestRelease) {
+                                                   ReleaseService.findActiveReleases(scope.appId,
+                                                                                     scope.env,
+                                                                                     scope.cluster,
+                                                                                     namespace.baseInfo.namespaceName,
+                                                                                     0, 1).then(function (result) {
+
+                                                       var latestRelease = result[0];
+                                                       if (!latestRelease) {
+                                                           namespace.latestReleaseInstances = {};
+                                                           namespace.latestReleaseInstances.total = 0;
+                                                           return;
+                                                       }
+                                                       namespace.latestRelease = latestRelease;
+                                                       InstanceService.findInstancesByRelease(scope.env,
+                                                                                              latestRelease.id,
+                                                                                              namespace.latestReleaseInstancesPage)
+                                                           .then(function (result) {
+                                                               namespace.latestReleaseInstances = result;
+                                                               namespace.latestReleaseInstancesPage++;
+                                                           })
+                                                   });
+                                               } else {
+                                                   InstanceService.findInstancesByRelease(scope.env,
+                                                                                          namespace.latestRelease.id,
+                                                                                          namespace.latestReleaseInstancesPage)
+                                                       .then(function (result) {
+                                                           if (result && result.content.length){
+                                                               namespace.latestReleaseInstancesPage++;
+                                                               result.content.forEach(function (instance) {
+                                                                   namespace.latestReleaseInstances.content.push(instance);    
+                                                               })
+                                                           }
+
+                                                       })
+                                               }
+
+                                           } else if (namespace_instance_view_type.NOT_LATEST_RELEASE == type) {
+                                               if (!namespace.latestRelease) {
+                                                   return;
+                                               }
+                                               InstanceService.findByReleasesNotIn(scope.appId,
+                                                                                   scope.env,
+                                                                                   scope.cluster,
+                                                                                   namespace.baseInfo.namespaceName,
+                                                                                   namespace.latestRelease.id)
+                                                   .then(function (result) {
+                                                       if (!result || result.length == 0) {
+                                                           return
+                                                       }
+
+                                                       var groupedInstances = {},
+                                                           notLatestReleaseNames = [];
+
+                                                       result.forEach(function (instance) {
+                                                           var configs = instance.configs;
+                                                           if (configs.length > 0) {
+                                                               configs.forEach(function (instanceConfig) {
+                                                                   var release = instanceConfig.release;
+                                                                   if (!groupedInstances[release.name]) {
+                                                                       groupedInstances[release.name] = [];
+                                                                       notLatestReleaseNames.push(release.name);
+                                                                   }
+                                                                   groupedInstances[release.name].push(instance);
+                                                               })
+                                                           }
+                                                       });
+
+                                                       namespace.notLatestReleaseNames = notLatestReleaseNames;
+                                                       namespace.notLatestReleaseInstances = groupedInstances;
+                                                   })
+
+                                           } else {
+                                               InstanceService.findInstancesByNamespace(scope.appId,
+                                                                                        scope.env,
+                                                                                        scope.cluster,
+                                                                                        namespace.baseInfo.namespaceName,
+                                               namespace.allInstancesPage)
+                                                   .then(function (result) {
+                                                       if (result && result.content.length){
+                                                           namespace.allInstancesPage++;
+                                                           result.content.forEach(function (instance) {
+                                                               namespace.allInstances.push(instance);
+                                                           })
+                                                       }
+                                                   });
+                                           }
+
+                                       }
+
+                                       function refreshInstancesInfo(namespace) {
+
+                                           namespace.instanceViewType = namespace_instance_view_type.LATEST_RELEASE;
+
+                                           namespace.latestReleaseInstancesPage = 0;
+                                           namespace.latestReleaseInstances = [];
+                                           namespace.latestRelease = undefined;
+
+                                           namespace.notLatestReleaseNames = [];
+                                           namespace.notLatestReleaseInstances = {};
+
+                                           namespace.allInstancesPage = 0;
+                                           namespace.allInstances = [];
+
+                                           getInstanceCountByNamespace(namespace);
+                                           loadInstanceInfo(namespace);
+
+                                       }
+
+                                       function toggleTextEditStatus(namespace) {
+                                           if (!lockCheck(namespace)) {
+                                               return;
+                                           }
+                                           namespace.isTextEditing = !namespace.isTextEditing;
+                                           if (namespace.isTextEditing) {//切换为编辑状态
+                                               namespace.commited = false;
+                                               namespace.backupText = namespace.text;
+                                               namespace.editText = parseModel2Text(namespace);
+
+                                           } else {
+                                               if (!namespace.commited) {//取消编辑,则复原
+                                                   namespace.text = namespace.backupText;
+                                               }
+                                           }
+                                       }
+
+                                       function goToSyncPage(namespace) {
+                                           if (!lockCheck(namespace)) {
+                                               return false;
+                                           }
+                                           $window.location.href =
+                                               "config/sync.html?#/appid=" + scope.appId + "&env="
+                                               + scope.env + "&clusterName="
+                                               + scope.cluster
+                                               + "&namespaceName=" + namespace.baseInfo.namespaceName;
+                                       }
+
+                                       function modifyByText(namespace) {
+                                           if (scope.commitChange(namespace)) {
+                                               namespace.commited = true;
+                                               toggleTextEditStatus(namespace);
+                                           }
+                                       }
+
+                                       function goToParentAppConfigPage(namespace) {
+                                           $window.location.href = "/config.html?#/appid=" + namespace.parentAppId;
+                                           $window.location.reload();
                                        }
 
                                        function parseModel2Text(namespace) {
@@ -235,6 +391,21 @@ directive_module.directive('apollonspanel',
                                        }
 
 
+                                       function toggleItemSearchInput(namespace) {
+                                           namespace.showSearchInput = !namespace.showSearchInput;
+                                       }
+
+                                       function searchItems(namespace) {
+                                           var searchKey = namespace.searchKey.toLowerCase();
+                                           var items = [];
+                                           namespace.items.forEach(function (item) {
+                                               var key = item.item.key;
+                                               if (key && key.toLowerCase().indexOf(searchKey) >= 0){
+                                                   items.push(item);    
+                                               }
+                                           });
+                                           namespace.viewItems = items;
+                                       }
 
                                        function lockCheck(namespace) {
                                            if (namespace.lockOwner && scope.currentUser != namespace.lockOwner) {

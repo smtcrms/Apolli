@@ -31,7 +31,8 @@ import javax.annotation.PostConstruct;
 public class AdminServiceAddressLocator {
 
   private static final int DEFAULT_TIMEOUT_MS = 1000;
-  private static final long REFRESH_INTERVAL = 5 * 60 * 1000;
+  private static final long NORMAL_REFRESH_INTERVAL = 5 * 60 * 1000;
+  private static final long OFFLINE_REFRESH_INTERVAL = 10 * 1000;
   private static final int RETRY_TIMES = 3;
   private static final String ADMIN_SERVICE_URL_PATH = "/services/admin";
 
@@ -65,9 +66,7 @@ public class AdminServiceAddressLocator {
 
     refreshServiceAddressService = Executors.newScheduledThreadPool(1);
 
-    refreshServiceAddressService.scheduleWithFixedDelay(
-        new RefreshAdminServerAddressTask(), 0, REFRESH_INTERVAL,
-        TimeUnit.MILLISECONDS);
+    refreshServiceAddressService.schedule(new RefreshAdminServerAddressTask(), 1, TimeUnit.MILLISECONDS);
   }
 
   public List<ServiceDTO> getServiceList(Env env) {
@@ -85,13 +84,22 @@ public class AdminServiceAddressLocator {
 
     @Override
     public void run() {
+      boolean refreshSuccess = true;
+      //refresh fail if get any env address fail
       for (Env env : allEnvs) {
-        refreshServerAddressCache(env);
+        boolean currentEnvRefreshResult = refreshServerAddressCache(env);
+        refreshSuccess = refreshSuccess && currentEnvRefreshResult;
+      }
+
+      if (refreshSuccess){
+        refreshServiceAddressService.schedule(new RefreshAdminServerAddressTask(), NORMAL_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+      } else {
+        refreshServiceAddressService.schedule(new RefreshAdminServerAddressTask(), OFFLINE_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
       }
     }
   }
 
-  private void refreshServerAddressCache(Env env) {
+  private boolean refreshServerAddressCache(Env env) {
 
     for (int i = 0; i < RETRY_TIMES; i++) {
 
@@ -101,12 +109,13 @@ public class AdminServiceAddressLocator {
           continue;
         }
         cache.put(env, Arrays.asList(services));
-        break;
+        return true;
       } catch (Throwable e) {//meta server error
         Cat.logError("get admin server address fail", e);
         continue;
       }
     }
+    return false;
   }
 
   private ServiceDTO[] getAdminServerAddress(Env env) {

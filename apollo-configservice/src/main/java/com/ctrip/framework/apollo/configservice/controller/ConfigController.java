@@ -218,7 +218,7 @@ public class ConfigController {
       return;
     }
     for (Release release : releases) {
-      instanceConfigAuditUtil.audit(appId, cluster, datacenter, clientIp, release.getAppId(),
+      instanceConfigAuditUtil.audit(appId, cluster, datacenter, clientIp, release.getAppId(), release.getClusterName(),
           release.getNamespaceName(), release.getReleaseKey());
     }
   }

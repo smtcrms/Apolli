@@ -1,14 +1,15 @@
 release_history_module.controller("ReleaseHistoryController",
-                                  ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil',
+                                  ['$scope', '$location', '$anchorScroll', '$window', 'toastr', 'AppService', 'AppUtil',
                                    'ReleaseService',
-                                   function ($scope, $location, $window, toastr, AppService, AppUtil, ReleaseService) {
+                                   function ($scope, $location, $anchorScroll, $window, toastr, AppService, AppUtil, ReleaseService) {
 
                                        var params = AppUtil.parseParams($location.$$url);
                                        $scope.pageContext = {
                                            appId: params.appid,
                                            env: params.env,
                                            clusterName: params.clusterName,
-                                           namespaceName: params.namespaceName
+                                           namespaceName: params.namespaceName,
+                                           scrollTo: params.scrollTo
                                        };
 
                                        $scope.page = 0;
@@ -49,6 +50,12 @@ release_history_module.controller("ReleaseHistoryController",
                                                        }
                                                        $scope.releases.push(release);
                                                    })
+
+
+                                                   if ($scope.pageContext.scrollTo){
+                                                       $location.hash($scope.pageContext.scrollTo);
+                                                       $anchorScroll();
+                                                   }
                                                }, function (result) {
                                                    toastr.error(AppUtil.errorMsg(result));
                                                });

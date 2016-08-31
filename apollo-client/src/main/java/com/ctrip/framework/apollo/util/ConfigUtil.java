@@ -25,8 +25,8 @@ public class ConfigUtil {
   private static final Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
   private int refreshInterval = 5;
   private TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
-  private int connectTimeout = 5000; //5 seconds
-  private int readTimeout = 10000; //10 seconds
+  private int connectTimeout = 1000; //1 second
+  private int readTimeout = 5000; //5 seconds
   private String cluster;
   private int loadConfigQPS = 2; //2 times per second
   private int longPollQPS = 2; //2 times per second
@@ -185,8 +185,8 @@ public class ConfigUtil {
   }
 
   public String getDefaultLocalCacheDir() {
-    //TODO call Framework Foundation to get the default local cache dir
-    return String.format("/opt/data/%s", getAppId());
+    String cacheRoot = isOSWindows() ? "C:\\opt\\data\\%s" : "/opt/data/%s";
+    return String.format(cacheRoot, getAppId());
   }
 
   public boolean isInLocalMode() {
@@ -197,5 +197,13 @@ public class ConfigUtil {
       //ignore
     }
     return false;
+  }
+
+  public boolean isOSWindows() {
+    String osName = System.getProperty("os.name");
+    if (Strings.isNullOrEmpty(osName)) {
+      return false;
+    }
+    return osName.startsWith("Windows");
   }
 }
