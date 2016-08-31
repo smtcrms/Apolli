@@ -375,7 +375,7 @@
             <div class="panel-default" ng-if="namespace.latestReleaseInstances.total > 0">
                 <div class="panel-heading">
                     <a target="_blank" data-tooltip="tooltip" data-placement="bottom" title="查看配置"
-                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{namespace.latestRelease.name}}">
+                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{namespace.latestRelease.id}}">
                         {{namespace.latestRelease.name}}
                     </a>
                 </div>
@@ -410,11 +410,12 @@
 
         <!--not latest release instances-->
         <div class="panel-body" ng-show="namespace.instanceViewType == 'not_latest_release'">
-            <div class="panel-default" ng-if="namespace.instancesCount - namespace.latestReleaseInstances.total > 0" ng-repeat="releaseName in namespace.notLatestReleaseNames">
+            <div class="panel-default" ng-if="namespace.instancesCount - namespace.latestReleaseInstances.total > 0"
+                 ng-repeat="release in namespace.notLatestReleases">
                 <div class="panel-heading">
                     <a target="_blank" data-tooltip="tooltip" data-placement="bottom" title="查看配置"
-                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{releaseName}}">
-                        {{releaseName}}
+                       href="/config/history.html?#/appid={{appId}}&env={{env}}&clusterName={{cluster}}&namespaceName={{namespace.baseInfo.namespaceName}}&scrollTo={{release.id}}">
+                        {{release.name}}
                     </a>
 
                 </div>
@@ -428,7 +429,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="instance in namespace.notLatestReleaseInstances[releaseName]">
+                    <tr ng-repeat="instance in namespace.notLatestReleaseInstances[release.id]">
                         <td width="25%" ng-bind="instance.appId"></td>
                         <td width="25%" ng-bind="instance.clusterName"></td>
                         <td width="25%" ng-bind="instance.dataCenter"></td>

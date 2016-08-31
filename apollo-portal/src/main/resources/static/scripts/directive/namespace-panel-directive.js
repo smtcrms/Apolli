@@ -246,23 +246,23 @@ directive_module.directive('apollonspanel',
                                                        }
 
                                                        var groupedInstances = {},
-                                                           notLatestReleaseNames = [];
+                                                           notLatestReleases = [];
 
                                                        result.forEach(function (instance) {
                                                            var configs = instance.configs;
                                                            if (configs.length > 0) {
                                                                configs.forEach(function (instanceConfig) {
                                                                    var release = instanceConfig.release;
-                                                                   if (!groupedInstances[release.name]) {
-                                                                       groupedInstances[release.name] = [];
-                                                                       notLatestReleaseNames.push(release.name);
+                                                                   if (!groupedInstances[release.id]) {
+                                                                       groupedInstances[release.id] = [];
+                                                                       notLatestReleases.push(release);
                                                                    }
-                                                                   groupedInstances[release.name].push(instance);
+                                                                   groupedInstances[release.id].push(instance);
                                                                })
                                                            }
                                                        });
 
-                                                       namespace.notLatestReleaseNames = notLatestReleaseNames;
+                                                       namespace.notLatestReleases = notLatestReleases;
                                                        namespace.notLatestReleaseInstances = groupedInstances;
                                                    })
 
