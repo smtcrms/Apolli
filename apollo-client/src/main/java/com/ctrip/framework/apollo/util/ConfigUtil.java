@@ -48,8 +48,7 @@ public class ConfigUtil {
     String appId = Foundation.app().getAppId();
     if (Strings.isNullOrEmpty(appId)) {
       appId = ConfigConsts.NO_APPID_PLACEHOLDER;
-      logger.error("app.id is not set, apollo will only load public namespace configurations!");
-      Cat.logError(new ApolloConfigException("app.id is not set"));
+      logger.warn("app.id is not set, apollo will only load public namespace configurations!");
     }
     return appId;
   }
