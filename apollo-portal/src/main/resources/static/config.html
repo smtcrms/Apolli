@@ -86,8 +86,37 @@
 
         </div>
 
+
         <!--namespaces-->
         <div class="col-md-9 col-xs-9 col-sm-9 config-item-container hide" ng-controller="ConfigNamespaceController">
+            <div class="alert alert-warning alert-dismissible" role="alert"
+                 ng-show="(!hideTip || !hideTip[pageContext.appId][pageContext.clusterName]) && envMapClusters[pageContext.env]">
+
+                <button class="btn btn-sm btn-default pull-right" style="margin-top: -7px;margin-right:-15px;"
+                        ng-click="closeTip(pageContext.clusterName)">不再提示
+                </button>
+
+                <!--default cluster tip -->
+                <div ng-show="pageContext.clusterName == 'default'">
+                    <strong>注意:</strong>所有不属于
+                    <span ng-bind="envMapClusters[pageContext.env]"></span>
+                        集群的实例会使用default集群（当前页面）的配置，属于
+                    <span ng-bind="envMapClusters[pageContext.env]"></span>
+                        的实例会使用对应集群的配置！
+                </div>
+
+                <!--custom cluster tip-->
+                <div ng-show="pageContext.clusterName != 'default'">
+                    <strong>注意:</strong>属于
+                    <span ng-bind="pageContext.clusterName"></span>
+                    集群的实例只会使用
+                    <span ng-bind="pageContext.clusterName"></span>
+                    集群（当前页面）的配置，只有当对应namespace在当前集群没有发布过配置时，才会使用default集群的配置！
+                </div>
+
+            </div>
+
+
             <div ng-repeat="namespace in namespaces">
                 <apollonspanel namespace="namespace" app-id="pageContext.appId"
                                env="pageContext.env" cluster="pageContext.clusterName"
@@ -134,10 +163,12 @@
                                 <div class="col-sm-2 control-label" ng-if="!toReleaseNamespace.isPropertiesFormat">
                                     <div class="row">
                                         <div class="btn-group btn-group-xs" style="padding-right: 10px" role="group">
-                                            <button type="button" class="btn btn-default" ng-class="{active:releaseChangeViewType=='change'}"
+                                            <button type="button" class="btn btn-default"
+                                                    ng-class="{active:releaseChangeViewType=='change'}"
                                                     ng-click="switchReleaseChangeViewType('change')">查看变更
                                             </button>
-                                            <button type="button" class="btn btn-default" ng-class="{active:releaseChangeViewType=='release'}"
+                                            <button type="button" class="btn btn-default"
+                                                    ng-class="{active:releaseChangeViewType=='release'}"
                                                     ng-click="switchReleaseChangeViewType('release')">发布的值
                                             </button>
                                         </div>
@@ -198,14 +229,16 @@
 
                                     <!--file format -->
                                     <div ng-repeat="item in toReleaseNamespace.items"
-                                         ng-if="!toReleaseNamespace.isPropertiesFormat" ng-show="releaseChangeViewType=='change'">
+                                         ng-if="!toReleaseNamespace.isPropertiesFormat"
+                                         ng-show="releaseChangeViewType=='change'">
                                         <apollodiff old-str="item.oldValue" new-str="item.newValue"
                                                     apollo-id="'releaseStrDiff'"></apollodiff>
                                     </div>
                                     <div ng-repeat="item in toReleaseNamespace.items"
-                                         ng-if="!toReleaseNamespace.isPropertiesFormat" ng-show="releaseChangeViewType=='release'">
+                                         ng-if="!toReleaseNamespace.isPropertiesFormat"
+                                         ng-show="releaseChangeViewType=='release'">
                                         <textarea class="form-control" rows="20" style="border-radius: 0px"
-                                        ng-disabled="true" ng-show="item.newValue" ng-bind="item.newValue">
+                                                  ng-disabled="true" ng-show="item.newValue" ng-bind="item.newValue">
                                         </textarea>
                                     </div>
 
@@ -309,7 +342,7 @@
                         </div>
                         <div class="modal-footer">
                             </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal" >
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
                                 关闭
                             </button>
                             <button type="submit" class="btn btn-primary"
