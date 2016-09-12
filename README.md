@@ -7,8 +7,7 @@ Apollo（配置中心）
 [![Dependency Status](https://www.versioneye.com/user/projects/56e3ce40df573d0043113a24/badge.svg)](https://www.versioneye.com/user/projects/56e3ce40df573d0043113a24) 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 <a href="https://scan.coverity.com/projects/ctripcorp-apollo">
-  <img alt="Coverity Scan Build Status"
-       src="https://img.shields.io/coverity/scan/8244.svg"/>
+  <img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/8244.svg"/>
 </a>
 [![codecov.io](https://codecov.io/github/ctripcorp/apollo/coverage.svg?branch=master)](https://codecov.io/github/ctripcorp/apollo?branch=master)
 
