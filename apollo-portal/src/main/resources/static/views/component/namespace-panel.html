@@ -94,6 +94,13 @@
                 </ul>
             </div>
             <div class="col-md-4 text-right">
+                <a class="clipboard"
+                   data-clipboard-text="{{namespace.text}}"
+                   data-tooltip="tooltip" data-placement="bottom" title="复制文本"
+                   ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission">
+                    <img src="img/copy.png" class="ns_btn">
+                </a>
+                &nbsp;
                 <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
                    ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
                    ng-click="toggleTextEditStatus(namespace)">
