@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Named(type = ConfigUtil.class)
 public class ConfigUtil {
   private static final Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
-  private static final String TOOLS_CLUSTER = "TOOLS";
+  private static final String TOOLING_CLUSTER = "TOOLING";
   private int refreshInterval = 5;
   private TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
   private int connectTimeout = 1000; //1 second
@@ -65,9 +65,9 @@ public class ConfigUtil {
     //Load data center from system property
     cluster = System.getProperty(ConfigConsts.APOLLO_CLUSTER_KEY);
 
-    //Use TOOLS cluster if tools=true in server.properties
+    //Use TOOLING cluster if tooling=true in server.properties
     if (Strings.isNullOrEmpty(cluster) && isToolingZone()) {
-      cluster = TOOLS_CLUSTER;
+      cluster = TOOLING_CLUSTER;
     }
 
     //Use data center as cluster
@@ -82,7 +82,7 @@ public class ConfigUtil {
   }
 
   private boolean isToolingZone() {
-    if ("true".equalsIgnoreCase(Foundation.server().getProperty("tools", "false").trim())) {
+    if ("true".equalsIgnoreCase(Foundation.deployment().getProperty("tooling", "false").trim())) {
       return true;
     }
     return false;
