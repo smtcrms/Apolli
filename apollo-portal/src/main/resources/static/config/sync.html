@@ -104,7 +104,7 @@
                                     <span ng-bind="item.key | limitTo: 250"></span>
                                     <span ng-bind="item.key.length > 250 ? '...' : ''"></span>
                                 </td>
-                                <td width="40%">
+                                <td class="cursor-pointer" width="40%" ng-click="showText(item.value)">
                                     <span ng-bind="item.value | limitTo: 250"></span>
                                     <span ng-bind="item.value.length > 250 ? '...' : ''"></span>
                                 </td>
@@ -196,7 +196,28 @@
 
         </div>
     </section>
+
+    <div class="modal fade" id="showText" tabindex="-1" role="dialog">
+        <div class="modal-dialog" style="width: 960px;">
+            <div class="modal-content no-radius">
+                <div class="modal-header panel-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+
+                    <button class="btn close clipboard" data-clipboard-text="{{text}}" data-tooltip="tooltip"
+                            data-placement="bottom" title="复制">
+                        <img class="i-20" src="../img/clippy.svg" style="margin-right: 5px;margin-top: -2px;">
+                    </button>
+                    <h4 class="modal-title">查看</h4>
+                </div>
+                <pre id="watchText" class="modal-body no-radius" style="margin-bottom: 0" ng-bind="text"></pre>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 <div ng-include="'../views/common/footer.html'"></div>
 
@@ -217,6 +238,7 @@
 <!--nicescroll-->
 <script src="../vendor/jquery.nicescroll.min.js"></script>
 
+<script src="../vendor/clipboard.min.js" type="text/javascript"></script>
 <!--biz-->
 <script type="application/javascript" src="../scripts/app.js"></script>
 <script type="application/javascript" src="../scripts/services/AppService.js"></script>
