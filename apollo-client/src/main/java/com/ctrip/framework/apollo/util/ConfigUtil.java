@@ -82,7 +82,7 @@ public class ConfigUtil {
   }
 
   private boolean isToolingZone() {
-    if ("true".equalsIgnoreCase(Foundation.deployment().getProperty("tooling", "false").trim())) {
+    if ("true".equalsIgnoreCase(Foundation.server().getProperty("tooling", "false").trim())) {
       return true;
     }
     return false;
