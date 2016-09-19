@@ -44,6 +44,8 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.doItem = doItem;
                                    
                                    $scope.closeTip = closeTip;
+                                   
+                                   $scope.showText = showText;
 
                                    $scope.releaseBtnDisabled = false;
                                    $scope.rollbackBtnDisabled = false;
@@ -376,6 +378,14 @@ application_module.controller("ConfigNamespaceController",
                                        localStorage.setItem("hideTip", JSON.stringify(hideTip));
                                        
                                    }
+                                   
+                                   function showText(text) {
+                                       $scope.text = text;
+                                       $('#showText').modal('show');
+                                   }
+                                   
                                    $('.config-item-container').removeClass('hide');
+
+                                   new Clipboard('.clipboard');
                                }]);
 
