@@ -26,6 +26,8 @@ sync_item_module.controller("SyncItemController",
 
                                  $scope.filter = filter;
                                  $scope.resetFilter = resetFilter;
+                                 
+                                 $scope.showText = showText;
 
                                  init();
 
@@ -221,6 +223,14 @@ sync_item_module.controller("SyncItemController",
                                      $scope.filterEndTime = null;
                                      filter();
                                  }
+
+                                 function showText(text) {
+                                     $scope.text = text;
+                                     $('#showText').modal('show');
+                                 }
+
+
+                                 new Clipboard('.clipboard');
 
                              }]);
 

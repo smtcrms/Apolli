@@ -147,6 +147,7 @@
                                  apollo-detail="'确定要回滚吗?'"
                                  apollo-show-cancel-btn="true" apollo-confirm="rollback"></apolloconfirmdialog>
 
+
             <div class="modal fade" id="showText" tabindex="-1" role="dialog">
                 <div class="modal-dialog" style="width: 960px;">
                     <div class="modal-content no-radius">
@@ -227,16 +228,13 @@
                                             <td width="20%" title="{{config.item.key}}">
                                                         <span class="label label-danger"
                                                               ng-show="config.isDeleted">deleted</span>
-                                                <span ng-bind="config.item.key | limitTo: 250"></span>
-                                                <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
+                                                <span ng-bind="config.item.key"></span>
                                             </td>
                                             <td width="25%" title="{{config.oldValue}}">
-                                                <span ng-bind="config.oldValue | limitTo: 250"></span>
-                                                <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
+                                                <span ng-bind="config.oldValue"></span>
                                             </td>
                                             <td width="25%" title="{{config.newValue}}">
-                                                <span ng-bind="config.newValue | limitTo: 250"></span>
-                                                <span ng-bind="config.newValue.length > 250 ? '...': ''"></span>
+                                                <span ng-bind="config.newValue"></span>
                                             </td>
                                             <td width="15%" ng-bind="config.item.dataChangeLastModifiedBy">
                                             </td>
