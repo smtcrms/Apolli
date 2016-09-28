@@ -73,7 +73,8 @@
             </a>
 
             <apolloentrance apollo-title="'添加集群'" apollo-img-src="'plus-orange'"
-                            apollo-href="'cluster.html?#/appid=' + pageContext.appId"></apolloentrance>
+                            apollo-href="'cluster.html?#/appid=' + pageContext.appId"
+                            ng-show="hasCreateClusterPermission"></apolloentrance>
 
             <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'plus-orange'"
                             apollo-href="'namespace.html?#/appid=' + pageContext.appId"
