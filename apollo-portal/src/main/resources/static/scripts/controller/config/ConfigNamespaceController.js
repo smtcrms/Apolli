@@ -322,6 +322,9 @@ application_module.controller("ConfigNamespaceController",
                                                                          $scope.item).then(
                                                    function (result) {
                                                        toastr.success(cluster.env + " , " + $scope.item.key, "添加成功");
+                                                       if (cluster.env == $rootScope.pageContext.env && cluster.name == $rootScope.pageContext.clusterName){
+                                                           $rootScope.refreshNamespaces(namespace_view_type.TABLE);
+                                                       }
                                                    }, function (result) {
                                                        toastr.error(AppUtil.errorMsg(result), "添加失败");
                                                    });
@@ -329,7 +332,6 @@ application_module.controller("ConfigNamespaceController",
 
                                            $scope.addItemBtnDisabled = false;
                                            itemModal.modal('hide');
-                                           $rootScope.refreshNamespaces(namespace_view_type.TABLE);
 
                                        } else {
 
