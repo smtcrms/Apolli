@@ -17,7 +17,8 @@ directive_module.directive('apollonspanel',
                                        editItem: '=',
                                        preDeleteItem: '=',
                                        commitChange: '=',
-                                       showText: '='
+                                       showText: '=',
+                                       showNoModifyPermissionDialog: '='
                                    },
                                    link: function (scope, element, attrs) {
 

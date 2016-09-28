@@ -47,6 +47,8 @@ application_module.controller("ConfigNamespaceController",
 
                                    $scope.showText = showText;
 
+                                   $scope.showNoModifyPermissionDialog = showNoModifyPermissionDialog; 
+
                                    $scope.releaseBtnDisabled = false;
                                    $scope.rollbackBtnDisabled = false;
                                    $scope.addItemBtnDisabled = false;
@@ -382,6 +384,10 @@ application_module.controller("ConfigNamespaceController",
                                    function showText(text) {
                                        $scope.text = text;
                                        $('#showText').modal('show');
+                                   }
+                                   
+                                   function showNoModifyPermissionDialog() {
+                                    $("#modifyNoPermissionDialog").modal('show');    
                                    }
 
                                    $('.config-item-container').removeClass('hide');
