@@ -75,10 +75,22 @@
             <apolloentrance apollo-title="'添加集群'" apollo-img-src="'plus-orange'"
                             apollo-href="'cluster.html?#/appid=' + pageContext.appId"
                             ng-show="hasCreateClusterPermission"></apolloentrance>
+            <span class="list-group-item cursor-pointer hover" ng-click="showMasterPermissionTips()"
+                  ng-show="!hasCreateClusterPermission">
+                <div class="row icon-text icon-plus-orange">
+                    <p class="btn-title">添加集群</p>
+                </div>
+            </span>
 
             <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'plus-orange'"
                             apollo-href="'namespace.html?#/appid=' + pageContext.appId"
                             ng-show="hasCreateNamespacePermission"></apolloentrance>
+            <span class="list-group-item cursor-pointer hover" ng-click="showMasterPermissionTips()"
+                  ng-show="!hasCreateNamespacePermission">
+                <div class="row icon-text icon-plus-orange">
+                    <p class="btn-title">添加Namespace</p>
+                </div>
+            </span>
 
             <apolloentrance apollo-title="'项目权限'" apollo-img-src="'user-manage'"
                             apollo-href="'/app/role.html?#/appid=' + pageContext.appId"
@@ -125,7 +137,8 @@
                                pre-release-ns="prepareReleaseNamespace"
                                create-item="createItem" edit-item="editItem"
                                pre-delete-item="preDeleteItem" commit-change="commitChange"
-                               pre-rollback="preRollback" show-text="showText"></apollonspanel>
+                               pre-rollback="preRollback" show-text="showText"
+                               show-no-modify-permission-dialog="showNoModifyPermissionDialog"></apollonspanel>
             </div>
 
             <!-- delete modal-->
@@ -133,7 +146,16 @@
                                  apollo-detail="'确定要删除配置吗?'" apollo-confirm="deleteItem"></apolloconfirmdialog>
 
             <apolloconfirmdialog apollo-dialog-id="'releaseNoPermissionDialog'" apollo-title="'发布'"
-                                 apollo-detail="'您没有发布权限哦~ 请找 ' + masterUsers + ' 分配权限'"
+                                 apollo-detail="'您没有发布权限哦~ 请找项目管理员 ' + masterUsers + ' 分配发布权限'"
+                                 apollo-show-cancel-btn="false"></apolloconfirmdialog>
+
+            <apolloconfirmdialog apollo-dialog-id="'modifyNoPermissionDialog'" apollo-title="'申请配置权限'"
+                                 apollo-detail="'请找项目管理员 ' + masterUsers + ' 分配编辑或发布权限'"
+                                 apollo-show-cancel-btn="false"></apolloconfirmdialog>
+
+            <apolloconfirmdialog apollo-dialog-id="'masterNoPermissionDialog'" apollo-title="'申请配置权限'"
+                                 apollo-detail="'您不是项目管理员, 只有项目管理员才有添加集群、namespace的权限。
+                                 如需管理员权限,请找项目管理员 ' + masterUsers + ' 分配管理员权限'"
                                  apollo-show-cancel-btn="false"></apolloconfirmdialog>
 
             <apolloconfirmdialog apollo-dialog-id="'namespaceLockedDialog'" apollo-title="'编辑受限'"

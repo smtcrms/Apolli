@@ -207,5 +207,9 @@ application_module.controller("ConfigBaseInfoController",
 
                                    });
 
+                                   $scope.showMasterPermissionTips = function () {
+                                       $("#masterNoPermissionDialog").modal('show');
+                                   }
+
                                }]);
 

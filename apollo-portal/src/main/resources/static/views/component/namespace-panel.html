@@ -57,6 +57,12 @@
                     <img src="img/sync.png">
                     同步配置
                 </a>
+                <a type="button" class="btn btn-danger btn-sm J_tableview_btn"
+                   data-tooltip="tooltip" data-placement="bottom" title="您没有任何配置权限,请申请"
+                   ng-click="showNoModifyPermissionDialog()"
+                   ng-show="!namespace.hasModifyPermission && !namespace.hasReleasePermission">
+                    申请配置权限
+                </a>
             </div>
         </div>
     </header>
