@@ -34,6 +34,19 @@
                 </header>
 
                 <div class="panel-body">
+
+
+                    <div class="alert alert-info" role="alert">
+                        <strong>Tips:</strong>
+                        <ul>
+                            <li>通过添加集群，可以使同一份程序在不同的集群（如不同的数据中心）使用不同的配置</li>
+                            <li>
+                                Apollo默认会读取机器上/opt/settings/server.properties(linux)或C:\opt\settings\server.properties(windows)文件中的idc属性作为集群名字，
+                                如SHAJQ（金桥数据中心）、SHAOY（欧阳数据中心)
+                            </li>
+                            <li>在这里创建的集群名字需要和机器上server.properties中的idc属性一致</li>
+                        </ul>
+                    </div>
                     <form class="form-horizontal" name="clusterForm" valdr-type="Cluster" ng-show="step == 1"
                           ng-submit="create()">
                         <div class="form-group">

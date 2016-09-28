@@ -34,6 +34,25 @@
 
                 <div class="panel-body">
 
+                    <div class="alert alert-info" role="alert" ng-show="type == 'link'">
+                        <strong>Tips:</strong>
+                        <ul>
+                            <li>公共namespace所属的应用通过关联公共namespace来配置公共部分的配置</li>
+                            <li>其它应用可以通过关联公共namespace来覆盖公共部分的配置</li>
+                            <li>如果其它应用不需要覆盖公共部分的配置，那么无需关联公共namespace</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-info" ng-show="type == 'create'">
+                        <strong>Tips:</strong>
+                        <ul>
+                            <li>
+                                通过创建一个公共的namespace可以实现公共组件的配置，或多个应用共享同一份配置的需求
+                            </li>
+                            <li>创建完公共的namespace且关联到当前应用后，就可以配置公共部分的配置了</li>
+                            <li>如果其它应用需要覆盖公共部分的配置，可以在其它应用那里关联公共的namespace，然后在关联的namespace里面配置需要覆盖的配置即可</li>
+                            <li>如果其它应用不需要覆盖公共部分的配置，那么就不需要在其它应用那里关联公共的namespace</li>
+                        </ul>
+                    </div>
                     <div class="row text-right" style="padding-right: 20px;">
                         <div class="btn-group btn-group-sm" role="group" aria-label="...">
                             <button type="button" class="btn btn-default" ng-class="{active:type=='link'}"
@@ -44,6 +63,7 @@
                             </button>
                         </div>
                     </div>
+
 
                     <form class="form-horizontal" name="namespaceForm" valdr-type="AppNamespace"
                           style="margin-top: 30px;" ng-show="step == 1" ng-submit="createNamespace()">
@@ -122,7 +142,8 @@
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-10">
                                 <button type="submit" class="btn btn-primary"
-                                        ng-disabled="(type == 'create' && namespaceForm.$invalid) || submitBtnDisabled">提交
+                                        ng-disabled="(type == 'create' && namespaceForm.$invalid) || submitBtnDisabled">
+                                    提交
                                 </button>
                             </div>
                         </div>

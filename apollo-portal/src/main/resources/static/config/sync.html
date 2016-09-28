@@ -43,6 +43,13 @@
         </header>
         <div class="panel-body">
             <div class="row" ng-show="syncItemStep == 1">
+                <div class="alert-info alert">
+                    <strong>Tips:</strong>
+                    <ul>
+                        <li>通过同步配置功能，可以使多个环境、集群间的配置保持一致</li>
+                        <li>需要注意的是，同步完之后需要发布后才会对应用生效</li>
+                    </ul>
+                </div>
                 <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">同步的Namespace</label>
