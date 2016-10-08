@@ -1,12 +1,12 @@
 package com.ctrip.framework.apollo.util;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.MetaDomainConsts;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.enums.EnvUtils;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.foundation.Foundation;
 
 import org.slf4j.Logger;
@@ -82,10 +82,8 @@ public class ConfigUtil {
   }
 
   private boolean isToolingZone() {
-    if ("true".equalsIgnoreCase(Foundation.server().getProperty("tooling", "false").trim())) {
-      return true;
-    }
-    return false;
+    //do not use the new isTooling method since it might not be available in the client side
+    return "true".equalsIgnoreCase(Foundation.server().getProperty("tooling", "false").trim());
   }
 
   /**
@@ -101,11 +99,17 @@ public class ConfigUtil {
    * Get the current environment.
    *
    * @return the env
-   * @throws IllegalStateException if env is set
+   * @throws ApolloConfigException if env is set
    */
   public Env getApolloEnv() {
     Env env = EnvUtils.transformEnv(Foundation.server().getEnvType());
-    Preconditions.checkState(env != null, "env is not set");
+    if (env == null) {
+      String path = isOSWindows() ? "C:\\opt\\settings\\server.properties" :
+          "/opt/settings/server.properties";
+      String message = String.format("env is not set, please make sure it is set in %s!", path);
+      logger.error(message);
+      throw new ApolloConfigException(message);
+    }
     return env;
   }
 
