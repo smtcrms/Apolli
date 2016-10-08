@@ -541,3 +541,8 @@ table th {
     border-color: #a94442;
 }
 
+.app-not-found {
+    padding-top: 50px;
+    font-size: 18px;
+}
+
