@@ -86,7 +86,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     }
 
     if (value == null && m_configProperties.get() == null) {
-      logger.warn("Could not load config from Apollo, always return default value!");
+      logger.warn("Could not load config from Apollo, please check whether the configs are released in Apollo! Return default value now!");
     }
 
     return value == null ? defaultValue : value;

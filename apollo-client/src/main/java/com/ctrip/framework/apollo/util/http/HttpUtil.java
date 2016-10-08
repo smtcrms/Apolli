@@ -6,6 +6,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.unidal.helper.Files;
@@ -127,8 +128,9 @@ public class HttpUtil {
         }
       }
     }
-    throw new ApolloConfigException(String.format("Get operation failed for %s, status code - %d",
-        httpRequest.getUrl(), statusCode));
+
+    throw new ApolloConfigStatusCodeException(statusCode,
+        String.format("Get operation failed for %s", httpRequest.getUrl()));
   }
 
 }
