@@ -20,61 +20,71 @@
     <!--具体配置信息-->
     <div class="row config-info-container">
 
-        <!--tag导航-->
-        <div class="col-md-3 col-xs-3 col-sm-3" ng-controller="ConfigBaseInfoController">
-            <div id="treeview"></div>
-            <!--app info-->
-            <section class="panel">
-                <header class="panel-heading">
-                    <img src="img/info.png" class="i-25-20"/> 应用信息
+        <div ng-controller="ConfigBaseInfoController">
+
+            <div class="J_appNotFound hidden row text-center app-not-found" ng-show="notFoundApp">
+                <img src="img/404.png">
+                <br>
+                <p>
+                    <span ng-bind="pageContext.appId"></span> 不存在，<a href="/app.html">点击创建</a>
+                </p>
+            </div>
+
+            <div class="J_appFound hidden col-md-3 col-xs-3 col-sm-3" ng-show="!notFoundApp">
+                <div id="treeview"></div>
+                <!--app info-->
+                <section class="panel">
+                    <header class="panel-heading">
+                        <img src="img/info.png" class="i-25-20"/> 应用信息
                             <span class="tools pull-right">
                                 <a href="javascript:;" class="icon-chevron-down"></a>
                             </span>
-                </header>
-                <div class="panel-body">
-                    <table class="project-info">
-                        <tbody class="text-left">
-                        <tr>
-                            <th>AppId:</th>
-                            <td ng-bind="appBaseInfo.appId"></td>
-                        </tr>
-                        <tr>
-                            <th>应用名:</th>
-                            <td ng-bind="appBaseInfo.name"></td>
-                        </tr>
-                        <tr>
-                            <th>部门:</th>
-                            <td ng-bind="appBaseInfo.orgInfo"></td>
-                        </tr>
-                        <tr>
-                            <th>负责人:</th>
-                            <td ng-bind="appBaseInfo.ownerName"></td>
-                        </tr>
-                        <tr>
-                            <th>负责人Email:</th>
-                            <td ng-bind="appBaseInfo.ownerEmail"></td>
-                        </tr>
-                        <tr ng-show="missEnvs.length > 0">
-                            <th>缺失的环境:</th>
-                            <td>
+                    </header>
+                    <div class="panel-body">
+                        <table class="project-info">
+                            <tbody class="text-left">
+                            <tr>
+                                <th>AppId:</th>
+                                <td ng-bind="appBaseInfo.appId"></td>
+                            </tr>
+                            <tr>
+                                <th>应用名:</th>
+                                <td ng-bind="appBaseInfo.name"></td>
+                            </tr>
+                            <tr>
+                                <th>部门:</th>
+                                <td ng-bind="appBaseInfo.orgInfo"></td>
+                            </tr>
+                            <tr>
+                                <th>负责人:</th>
+                                <td ng-bind="appBaseInfo.ownerName"></td>
+                            </tr>
+                            <tr>
+                                <th>负责人Email:</th>
+                                <td ng-bind="appBaseInfo.ownerEmail"></td>
+                            </tr>
+                            <tr ng-show="missEnvs.length > 0">
+                                <th>缺失的环境:</th>
+                                <td>
                                         <span ng-repeat="env in missEnvs" ng-bind="env">
                                         </span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
 
-                </div>
-            </section>
-            <a class="list-group-item" ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()">
-                <div class="row icon-text icon-plus-orange">
-                    <p class="btn-title ng-binding">补缺环境</p>
-                </div>
-            </a>
+                    </div>
+                </section>
 
-            <apolloentrance apollo-title="'添加集群'" apollo-img-src="'plus-orange'"
-                            apollo-href="'cluster.html?#/appid=' + pageContext.appId"
-                            ng-show="hasCreateClusterPermission"></apolloentrance>
+                <a class="list-group-item" ng-show="missEnvs.length > 0" ng-click="createAppInMissEnv()">
+                    <div class="row icon-text icon-plus-orange">
+                        <p class="btn-title ng-binding">补缺环境</p>
+                    </div>
+                </a>
+
+                <apolloentrance apollo-title="'添加集群'" apollo-img-src="'plus-orange'"
+                                apollo-href="'cluster.html?#/appid=' + pageContext.appId"
+                                ng-show="hasCreateClusterPermission"></apolloentrance>
             <span class="list-group-item cursor-pointer hover" ng-click="showMasterPermissionTips()"
                   ng-show="!hasCreateClusterPermission">
                 <div class="row icon-text icon-plus-orange">
@@ -82,9 +92,9 @@
                 </div>
             </span>
 
-            <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'plus-orange'"
-                            apollo-href="'namespace.html?#/appid=' + pageContext.appId"
-                            ng-show="hasCreateNamespacePermission"></apolloentrance>
+                <apolloentrance apollo-title="'添加Namespace'" apollo-img-src="'plus-orange'"
+                                apollo-href="'namespace.html?#/appid=' + pageContext.appId"
+                                ng-show="hasCreateNamespacePermission"></apolloentrance>
             <span class="list-group-item cursor-pointer hover" ng-click="showMasterPermissionTips()"
                   ng-show="!hasCreateNamespacePermission">
                 <div class="row icon-text icon-plus-orange">
@@ -92,14 +102,14 @@
                 </div>
             </span>
 
-            <apolloentrance apollo-title="'项目权限'" apollo-img-src="'user-manage'"
-                            apollo-href="'/app/role.html?#/appid=' + pageContext.appId"
-                            ng-show="hasAssignUserPermission"></apolloentrance>
-            </section>
+                <apolloentrance apollo-title="'项目权限'" apollo-img-src="'user-manage'"
+                                apollo-href="'/app/role.html?#/appid=' + pageContext.appId"
+                                ng-show="hasAssignUserPermission"></apolloentrance>
+                </section>
 
 
+            </div>
         </div>
-
 
         <!--namespaces-->
         <div class="col-md-9 col-xs-9 col-sm-9 config-item-container hide" ng-controller="ConfigNamespaceController">
