@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.entity.po;
 
 public class UserInfo {
+
   private String userId;
   private String name;
   private String email;
@@ -27,5 +28,21 @@ public class UserInfo {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof UserInfo) {
+
+      if (o == this){
+        return true;
+      }
+
+      UserInfo anotherUser = (UserInfo) o;
+      return userId.equals(anotherUser.userId);
+    } else {
+      return false;
+    }
+
   }
 }

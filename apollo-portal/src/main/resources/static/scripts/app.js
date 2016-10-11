@@ -9,7 +9,7 @@ var directive_module = angular.module('apollo.directive', ['app.service', 'app.u
 
 /** page module 定义*/
 // 首页
-var index_module = angular.module('index', ['toastr', 'app.service', 'app.util', 'angular-loading-bar']);
+var index_module = angular.module('index', ['toastr', 'app.service', 'apollo.directive', 'app.util', 'angular-loading-bar']);
 //项目主页
 var application_module = angular.module('application', ['app.service', 'apollo.directive', 'app.util', 'toastr', 'angular-loading-bar', 'valdr']);
 //创建项目页面

@@ -1,77 +1,138 @@
-index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppService', 'AppUtil', 'EnvService',
-        function ($scope, $window, toastr, AppService, AppUtil, EnvService) {
+index_module.controller('IndexController', ['$scope', '$window', 'toastr', 'AppUtil', 'AppService',
+                                            'UserService', 'FavoriteService',
+                                            IndexController]);
 
-            $scope.envs = [];
-            $scope.selectedEnv = '';
-            EnvService.find_all_envs().then(function (result) {
-                $scope.envs = result;
-                //default select first env
-                $scope.switchEnv($scope.envs[0]);
-            }, function (result) {
-                    toastr.error(AppUtil.errorMsg(result), "load env error");
-            });
+function IndexController($scope, $window, toastr, AppUtil, AppService, UserService, FavoriteService) {
 
+    $scope.userId = '';
 
+    $scope.getUserCreatedApps = getUserCreatedApps;
+    $scope.getUserFavorites = getUserFavorites;
 
-            $scope.switchEnv = function (env) {
-                $scope.selectedEnv = env;
-                loadApps(env);
-            };
+    $scope.goToAppHomePage = goToAppHomePage;
+    $scope.goToCreateAppPage = goToCreateAppPage;
+    $scope.toggleOperationBtn = toggleOperationBtn;
+    $scope.toTop = toTop;
+    $scope.deleteFavorite = deleteFavorite;
 
-            var sourceApps = [];
+    UserService.load_user().then(function (result) {
+        $scope.userId = result.userId;
 
-            function loadApps(env){
-                AppService.find_all_app(env).then(function (result) {
-                    sourceApps = sortApps(result);
-                    $scope.apps = sourceApps;
-                    $scope.appsCount = sourceApps.length;
-                    $scope.selectedEnv = env;
-                }, function (result) {
-                    toastr.error(AppUtil.errorMsg(result), "load apps error");
-                });
-            }
+        $scope.createdAppPage = 0;
+        $scope.createdApps = [];
+        $scope.hasMoreCreatedApps = true;
+        $scope.favoritesPage = 0;
+        $scope.favorites = [];
+        $scope.hasMoreFavorites = true;
+        $scope.visitedApps = [];
 
-            var VISITED_APPS_STORAGE_KEY = "VisitedApps";
-            //访问过的App放在列表最前面,方便用户选择
-            function sortApps(sourceApps) {
-                var visitedApps = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
-                if (!visitedApps){
-                    return sourceApps;
+        getUserCreatedApps();
+
+        getUserFavorites();
+
+        initUserVisitedApps();
+    });
+
+    function getUserCreatedApps() {
+        var size = 10;
+        AppService.find_app_by_owner($scope.userId, $scope.createdAppPage, size)
+            .then(function (result) {
+                $scope.createdAppPage += 1;
+                $scope.hasMoreCreatedApps = result.length == size;
+
+                if (!result || result.length == 0) {
+                    return;
                 }
-                var existedVisitedAppsMap = {};
-                visitedApps.forEach(function (app) {
-                    existedVisitedAppsMap[app] = true;
+                result.forEach(function (app) {
+                    $scope.createdApps.push(app);
                 });
 
-                var sortedApps = [];
-                sourceApps.forEach(function (app) {
-                    if (existedVisitedAppsMap[app.appId]){
-                        sortedApps.push(app);
-                    }
-                });
-                sourceApps.forEach(function (app) {
-                    if (!existedVisitedAppsMap[app.appId]){
-                        sortedApps.push(app);
-                    }
-                });
-                return sortedApps;
-            }
+            })
+    }
 
-            $scope.search = function () {
-                    var key = $scope.searchKey.toLocaleLowerCase();
-                    if (key == '') {
-                            $scope.apps = sourceApps;
-                            return;
-                    }
-                    var result = [];
-                    sourceApps.forEach(function (item) {
-                            if (item.appId.toLocaleLowerCase().indexOf(key) >= 0 ||
-                                item.name.toLocaleLowerCase().indexOf(key) >= 0) {
-                                    result.push(item);
-                            }
+    function getUserFavorites() {
+        var size = 11;
+        FavoriteService.findFavorites($scope.userId, '', $scope.favoritesPage, size)
+            .then(function (result) {
+                $scope.favoritesPage += 1;
+                $scope.hasMoreFavorites = result.length == size;
+
+                if (!result || result.length == 0) {
+                    return;
+                }
+                var appIds = [];
+                result.forEach(function (favorite) {
+                    appIds.push(favorite.appId);
+
+                });
+
+                AppService.find_apps(appIds.join(","))
+                    .then(function (apps) {
+                        //sort
+                        var appIdMapApp = {};
+                        apps.forEach(function (app) {
+                            appIdMapApp[app.appId] = app;
+                        });
+                        result.forEach(function (favorite) {
+                            var app = appIdMapApp[favorite.appId];
+                            app.favoriteId = favorite.id;
+                            $scope.favorites.push(app);
+                        });
                     });
+            })
+    }
 
-                    $scope.apps = result;
-            };
+    function initUserVisitedApps() {
+        var VISITED_APPS_STORAGE_KEY = "VisitedAppsV2";
+        var visitedAppsObject = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
+        if (!visitedAppsObject) {
+            visitedAppsObject = {};
+        }
 
-        }]);
+        var userVisitedApps = visitedAppsObject[$scope.userId];
+        if (userVisitedApps && userVisitedApps.length > 0) {
+            AppService.find_apps(userVisitedApps.join(","))
+                .then(function (apps) {
+                    apps.forEach(function (app) {
+                        $scope.visitedApps.push(app);
+                    });
+                });
+        }
+
+    }
+
+    function goToCreateAppPage() {
+        $window.location.href = "/app.html";
+    }
+
+    function goToAppHomePage(appId) {
+        $window.location.href = "/config.html?#/appid=" + appId;
+    }
+
+    function toggleOperationBtn(app) {
+        app.showOperationBtn = !app.showOperationBtn;
+    }
+
+    function toTop(favoriteId) {
+        FavoriteService.toTop(favoriteId).then(function () {
+            toastr.success("置顶成功");
+            reload();
+
+        })
+    }
+
+    function deleteFavorite(favoriteId) {
+        FavoriteService.deleteFavorite(favoriteId).then(function () {
+            toastr.success("取消收藏成功");
+            reload();
+        })
+    }
+
+    function reload() {
+        setTimeout(function () {
+            $window.location.reload();
+        }, 500);
+
+    }
+
+}

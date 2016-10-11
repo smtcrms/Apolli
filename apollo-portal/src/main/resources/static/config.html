@@ -31,13 +31,31 @@
             </div>
 
             <div class="J_appFound hidden col-md-3 col-xs-3 col-sm-3" ng-show="!notFoundApp">
-                <div id="treeview"></div>
+                <section class="panel">
+                    <header class="panel-heading">
+                        <img src="img/env.png" class="i-20">&nbsp;环境列表
+                        <span class="pull-right"
+                              data-tooltip="tooltip" data-placement="bottom" title="通过切换环境、集群来管理不同环境、集群的配置">
+                                    <img src="img/question.png" class="i-20"/>
+                            </span>
+                    </header>
+                    <div id="treeview" class="no-radius"></div>
+                </section>
+
+
                 <!--app info-->
                 <section class="panel">
                     <header class="panel-heading">
-                        <img src="img/info.png" class="i-25-20"/> 应用信息
-                            <span class="tools pull-right">
-                                <a href="javascript:;" class="icon-chevron-down"></a>
+                        <img src="img/info.png" class="i-25-20"/> 项目信息
+                            <span class="pull-right cursor-pointer">
+                                <a ng-if="!favoriteId" ng-click="addFavorite()"
+                                   data-tooltip="tooltip" data-placement="bottom" title="收藏">
+                                    <img src="img/unlike.png" class="i-20"/>
+                                </a>
+                                <a ng-if="favoriteId" ng-click="deleteFavorite()"
+                                   data-tooltip="tooltip" data-placement="bottom" title="取消收藏">
+                                    <img src="img/like.png" class="i-20"/>
+                                </a>
                             </span>
                     </header>
                     <div class="panel-body">
@@ -525,7 +543,6 @@
 
 <!--angular-->
 <script src="vendor/angular/angular.min.js"></script>
-<script src="vendor/angular/angular-ui-router.min.js"></script>
 <script src="vendor/angular/angular-resource.min.js"></script>
 <script src="vendor/angular/angular-toastr-1.4.1.tpls.min.js"></script>
 <script src="vendor/angular/loading-bar.min.js"></script>
@@ -556,6 +573,7 @@
 <script type="application/javascript" src="scripts/services/CommitService.js"></script>
 <script type="application/javascript" src="scripts/services/NamespaceLockService.js"></script>
 <script type="application/javascript" src="scripts/services/InstanceService.js"></script>
+<script type="application/javascript" src="scripts/services/FavoriteService.js"></script>
 
 
 <script type="application/javascript" src="scripts/AppUtils.js"></script>
