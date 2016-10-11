@@ -93,27 +93,12 @@
         <aside class="media-body">
             <div class="app-panel col-md-2 text-center"
                  ng-repeat="app in visitedApps"
-                 ng-click="goToAppHomePage(app.appId)"
-                 ng-mouseover="toggleOperationBtn(app)"
-                 ng-mouseout="toggleOperationBtn(app)">
+                 ng-click="goToAppHomePage(app.appId)">
                 <div class="thumbnail hover">
                     <h4 ng-bind="app.appId"></h4>
                     <h5 ng-bind="app.name"></h5>
-
-                    <p class="operate-panel" ng-show="app.showOperationBtn">
-                        <button class="btn btn-default btn-xs" title="收藏"
-                                ng-click="addFavorite(app.appId);$event.stopPropagation();">
-                            <img src="img/unlike.png" class="i-15">
-                        </button>
-                    </p>
                 </div>
             </div>
-            <!--<div class="col-md-2 text-center" ng-repeat="appId in visitedApps"-->
-            <!--ng-click="goToAppHomePage(appId)">-->
-                <!--<div class="thumbnail hover cursor-pointer">-->
-                    <!--<h4 ng-bind="appId"></h4>-->
-                <!--</div>-->
-            <!--</div>-->
         </aside>
     </section>
 </div>

@@ -8,7 +8,6 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
 
     $scope.getUserCreatedApps = getUserCreatedApps;
     $scope.getUserFavorites = getUserFavorites;
-    $scope.addFavorite = addFavorite;
 
     $scope.goToAppHomePage = goToAppHomePage;
     $scope.goToCreateAppPage = goToCreateAppPage;
@@ -101,22 +100,6 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
         }
 
     }
-
-    function addFavorite(appId) {
-        var favorite = {
-            userId: $scope.userId,
-            appId: appId
-        };
-
-        FavoriteService.addFavorite(favorite)
-            .then(function (result) {
-                $scope.favoriteId = result.id;
-                toastr.success("收藏成功");
-                reload();
-            }, function (result) {
-                toastr.error(AppUtil.errorMsg(result), "收藏失败");
-            })
-    };
 
     function goToCreateAppPage() {
         $window.location.href = "/app.html";
