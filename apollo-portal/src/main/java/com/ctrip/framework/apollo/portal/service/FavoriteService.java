@@ -43,7 +43,7 @@ public class FavoriteService {
 
     Favorite checkedFavorite = favoriteRepository.findByUserIdAndAppId(loginUser.getUserId(), favorite.getAppId());
     if (checkedFavorite != null) {
-      throw new BadRequestException("Duplicate add favorite");
+      return checkedFavorite;
     }
 
     favorite.setPosition(POSITION_DEFAULT);
