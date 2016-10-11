@@ -25,23 +25,27 @@ p, td, span {
     word-break: break-all;
 }
 
-
 .no-radius {
     border-radius: 0;
 }
 
-.cursor-pointer{
-    cursor: pointer;
-}
-pre {
-    white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+.no-margin {
+    margin: 0;
 }
 
-.hover:hover{
+.cursor-pointer {
+    cursor: pointer;
+}
+
+pre {
+    white-space: pre-wrap; /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.hover:hover {
     background: #f5f5f5;
     cursor: pointer
 }
@@ -75,7 +79,7 @@ pre {
     width: 15px;
 }
 
-.badge{
+.badge {
     padding: 1px 4px;
 }
 
@@ -89,7 +93,7 @@ pre {
     color: #0f0f0f;
 }
 
-.panel-default > .panel-heading .badge{
+.panel-default > .panel-heading .badge {
 
 }
 
@@ -210,6 +214,14 @@ table th {
     min-width: 405px;
 }
 
+#treeview .list-group{
+    margin: 0;
+
+}
+#treeview .list-group .list-group-item{
+    border: 0;
+    border-top: 1px solid #eff2f7;
+}
 .project-info th {
     text-align: right;
     padding: 4px 6px;
@@ -225,11 +237,11 @@ table th {
     min-height: 500px;
 }
 
-#itemModal .modal-dialog{
+#itemModal .modal-dialog {
     width: 860px;
 }
 
-#itemModal .modal-body{
+#itemModal .modal-body {
     padding-bottom: 0;
 }
 
@@ -350,12 +362,12 @@ table th {
 
 }
 
-.instance-view .btn-primary .badge{
+.instance-view .btn-primary .badge {
     color: #337ab7;
     background-color: #fff;
 }
 
-.instance-view .btn-default .badge{
+.instance-view .btn-default .badge {
     background: #777;
     color: #fff;
 }
@@ -546,3 +558,64 @@ table th {
     font-size: 18px;
 }
 
+/*index page*/
+#app-list .media-body {
+    padding-top: 15px;
+}
+
+#app-list .media {
+    background: #fff;
+    display: table;
+}
+
+#app-list .media-left {
+    width: 1000px;
+    color: #fff;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#app-list .more-img {
+    width: 30px;
+    height: 30px;
+}
+
+#app-list .app-panel {
+    position: relative;
+}
+
+#app-list .operate-panel {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+}
+
+.create-app-list .media-left {
+    background: #a9d96c;
+}
+
+.create-app-list .create-btn {
+    background: #a9d96c;
+    color: #fff
+}
+
+.create-app-list .create-btn:hover {
+    background: #81AB56;
+}
+
+.create-app-list .create-btn img {
+    width: 26px;
+    height: 26px
+}
+
+.favorites-app-list .media-left {
+    background: #57c8f2;
+}
+
+.favorites-app-list .no-favorites{
+    padding-bottom: 15px;
+}
+
+.visit-app-list .media-left {
+    background: #41cac0;
+}

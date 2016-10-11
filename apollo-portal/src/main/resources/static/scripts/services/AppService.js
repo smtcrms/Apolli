@@ -1,14 +1,19 @@
 appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
     var app_resource = $resource('/apps/:appId', {}, {
-        find_all_app:{
+        find_apps: {
             method: 'GET',
             isArray: true,
-            url:'/apps'
+            url: '/apps'
         },
-        load_navtree:{
+        find_app_by_owner: {
+            method: 'GET',
+            isArray: true,
+            url: '/apps/by-owner'
+        },
+        load_navtree: {
             methode: 'GET',
-            isArray:false,
-            url:'/apps/:appId/navtree'
+            isArray: false,
+            url: '/apps/:appId/navtree'
         },
         load_app: {
             method: 'GET',
@@ -28,24 +33,38 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         }
     });
     return {
-        find_all_app: function () {
+        find_apps: function (appIds) {
+            if (!appIds) {
+                appIds = '';
+            }
             var d = $q.defer();
-            app_resource.find_all_app({
-                                      
-                                      }, function (result) {
+            app_resource.find_apps({appIds: appIds}, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
             });
             return d.promise;
         },
-        load_nav_tree: function (appId){
+        find_app_by_owner: function (owner, page, size) {
+            var d = $q.defer();
+            app_resource.find_app_by_owner({
+                                               owner: owner,
+                                               page: page,
+                                               size: size
+                                           }, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+        load_nav_tree: function (appId) {
             var d = $q.defer();
             app_resource.load_navtree({
-                appId: appId
-            }, function(result){
+                                          appId: appId
+                                      }, function (result) {
                 d.resolve(result);
-            }, function(result){
+            }, function (result) {
                 d.reject(result);
             });
             return d.promise;
@@ -61,7 +80,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         },
         create_remote: function (env, app) {
             var d = $q.defer();
-            app_resource.create_app_remote({env:env}, app, function (result) {
+            app_resource.create_app_remote({env: env}, app, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -71,8 +90,8 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         load: function (appId) {
             var d = $q.defer();
             app_resource.load_app({
-                appId: appId
-            }, function (result) {
+                                      appId: appId
+                                  }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -82,7 +101,7 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_miss_envs: function (appId) {
             var d = $q.defer();
             app_resource.find_miss_envs({
-                appId: appId
+                                            appId: appId
                                         }, function (result) {
                 d.resolve(result);
             }, function (result) {
