@@ -14,6 +14,7 @@ import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.exceptions.ApolloConfigStatusCodeException;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
@@ -202,6 +203,20 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
           logger.debug("Loaded config for {}: {}", m_namespace, result);
 
           return result;
+        } catch (ApolloConfigStatusCodeException ex) {
+          ApolloConfigStatusCodeException statusCodeException = ex;
+          //config not found
+          if (ex.getStatusCode() == 404) {
+            String message = String.format(
+                "Could not find config for namespace - appId: %s, cluster: %s, namespace: %s, " +
+                    "please check whether the configs are released in Apollo!",
+                appId, cluster, m_namespace);
+            statusCodeException = new ApolloConfigStatusCodeException(ex.getStatusCode(),
+                message);
+          }
+          Cat.logError(statusCodeException);
+          transaction.setStatus(statusCodeException);
+          exception = statusCodeException;
         } catch (Throwable ex) {
           Cat.logError(ex);
           transaction.setStatus(ex);
@@ -219,8 +234,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       }
     }
     String message = String.format(
-        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, services: %s",
-        appId, cluster, m_namespace, configServices);
+        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s",
+        appId, cluster, m_namespace);
     throw new ApolloConfigException(message, exception);
   }
 

@@ -1,6 +1,7 @@
-package com.ctrip.framework.apollo;
+package com.ctrip.framework.apollo.portal;
 
 import com.ctrip.framework.apollo.common.ApolloCommonConfig;
+import com.ctrip.framework.apollo.openapi.PortalOpenApiConfig;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.system.ApplicationPidFileWriter;
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@ComponentScan(basePackageClasses = {ApolloCommonConfig.class, PortalApplication.class})
+@ComponentScan(basePackageClasses = {ApolloCommonConfig.class,
+    PortalApplication.class, PortalOpenApiConfig.class})
 public class PortalApplication {
 
   public static void main(String[] args) throws Exception {

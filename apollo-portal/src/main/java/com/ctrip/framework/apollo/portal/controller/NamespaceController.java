@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.google.common.collect.Sets;
+
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
@@ -10,6 +12,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.form.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceCreationEvent;
@@ -17,6 +20,8 @@ import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.AppService;
 import com.ctrip.framework.apollo.portal.service.NamespaceService;
 import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
+import com.ctrip.framework.apollo.portal.service.RolePermissionService;
+import com.ctrip.framework.apollo.portal.util.RoleUtils;
 import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
@@ -53,6 +58,8 @@ public class NamespaceController {
   private AppNamespaceService appNamespaceService;
   @Autowired
   private RoleInitializationService roleInitializationService;
+  @Autowired
+  private RolePermissionService rolePermissionService;
 
   @RequestMapping("/appnamespaces/public")
   public List<AppNamespace> findPublicAppNamespaces() {
@@ -67,9 +74,10 @@ public class NamespaceController {
     checkModel(!CollectionUtils.isEmpty(models));
     roleInitializationService.initNamespaceRoles(appId, models.get(0).getNamespace().getNamespaceName());
 
+    String namespaceName = null;
     for (NamespaceCreationModel model : models) {
       NamespaceDTO namespace = model.getNamespace();
-
+      namespaceName = namespace.getNamespaceName();
       RequestPrecondition
           .checkArgumentsNotEmpty(model.getEnv(), namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName());
 
@@ -82,6 +90,14 @@ public class NamespaceController {
             String.format("create namespace fail. (env=%s namespace=%s)", model.getEnv(), namespace.getNamespaceName()), e);
       }
     }
+
+    //default assign modify、release namespace role to namespace creator
+    String loginUser = userInfoHolder.getUser().getUserId();
+    rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE),
+                                            Sets.newHashSet(loginUser), loginUser);
+    rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE),
+                                            Sets.newHashSet(loginUser), loginUser);
+
     return ResponseEntity.ok().build();
   }
 

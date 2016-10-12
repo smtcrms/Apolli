@@ -10,7 +10,7 @@ directive_module.directive('apollonav', function ($compile, $window, toastr, App
             scope.sourceApps = [];
             scope.copyedApps = [];
 
-            AppService.find_all_app().then(function (result) {
+            AppService.find_apps().then(function (result) {
                 result.forEach(function (app) {
                     app.selected = false;
                     scope.sourceApps.push(app);
