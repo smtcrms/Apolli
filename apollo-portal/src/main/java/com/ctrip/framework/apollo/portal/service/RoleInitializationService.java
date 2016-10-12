@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.PermissionType;
+import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.po.Permission;
 import com.ctrip.framework.apollo.portal.entity.po.Role;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
@@ -36,16 +37,22 @@ public class RoleInitializationService {
     if (rolePermissionService.findRoleByRoleName(appMasterRoleName) != null) {
       return;
     }
-    String operaterUserId = userInfoHolder.getUser().getUserId();
+    String operator = userInfoHolder.getUser().getUserId();
     //create app permissions
     createAppMasterRole(appId);
 
     //assign master role to user
     rolePermissionService
         .assignRoleToUsers(RoleUtils.buildAppMasterRoleName(appId), Sets.newHashSet(app.getOwnerName()),
-            operaterUserId);
+            operator);
 
     initNamespaceRoles(appId, ConfigConsts.NAMESPACE_APPLICATION);
+
+    //assign modify、release namespace role to user
+    rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.MODIFY_NAMESPACE),
+                                            Sets.newHashSet(operator), operator);
+    rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.RELEASE_NAMESPACE),
+                                            Sets.newHashSet(operator), operator);
 
   }
 
