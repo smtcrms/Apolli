@@ -166,15 +166,19 @@ directive_module.directive('apollonspanel',
                                                namespace.commits = [];
                                                namespace.commitPage = 0;
                                            }
+
+                                           var size = 10;
                                            CommitService.find_commits(scope.appId,
                                                                       scope.env,
                                                                       scope.cluster,
                                                                       namespace.baseInfo.namespaceName,
-                                                                      namespace.commitPage)
+                                                                      namespace.commitPage,
+                                                                      size)
                                                .then(function (result) {
-                                                   if (result.length == 0) {
+                                                   if (result.length < size) {
                                                        namespace.hasLoadAllCommit = true;
                                                    }
+
                                                    for (var i = 0; i < result.length; i++) {
                                                        //to json
                                                        result[i].changeSets = JSON.parse(result[i].changeSets);
@@ -417,7 +421,6 @@ directive_module.directive('apollonspanel',
                                            }
                                            return true;
                                        }
-
 
                                    }
                                }
