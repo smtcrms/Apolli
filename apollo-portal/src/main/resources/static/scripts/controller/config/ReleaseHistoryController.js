@@ -24,15 +24,16 @@ release_history_module.controller("ReleaseHistoryController",
 
                                        var hasFindActiveRelease = false;
                                        function findReleases(page) {
+                                           var size = 10;
                                            ReleaseService.findAllRelease($scope.pageContext.appId,
                                                                          $scope.pageContext.env,
                                                                          $scope.pageContext.clusterName,
                                                                          $scope.pageContext.namespaceName,
-                                                                         page)
+                                                                         page,
+                                                                         size)
                                                .then(function (result) {
-                                                   if (!result || result.length == 0) {
+                                                   if (!result || result.length < size) {
                                                        $scope.hasLoadAll = true;
-                                                       return;
                                                    }
 
                                                    var hasParseNamespaceType = false;

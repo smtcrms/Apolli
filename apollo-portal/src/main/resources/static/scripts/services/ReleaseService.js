@@ -42,14 +42,15 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
         return d.promise;
     }
 
-    function findAllReleases(appId, env, clusterName, namespaceName, page) {
+    function findAllReleases(appId, env, clusterName, namespaceName, page, size) {
         var d = $q.defer();
         resource.find_all_releases({
                                        appId: appId,
                                        env: env,
                                        clusterName: clusterName,
                                        namespaceName: namespaceName,
-                                       page: page
+                                       page: page,
+                                       size: size
                                    }, function (result) {
             d.resolve(result);
         }, function (result) {
