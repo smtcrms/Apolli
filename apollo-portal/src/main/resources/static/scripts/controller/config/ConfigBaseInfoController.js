@@ -61,7 +61,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
             if (currentUserVisitedApps.length >= 6){
                 currentUserVisitedApps.splice(0, 1);
             }
-            visitedAppsObject[$rootScope.pageContext.userId].push($rootScope.pageContext.appId);
+            currentUserVisitedApps.push($rootScope.pageContext.appId);
 
             localStorage.setItem(VISITED_APPS_STORAGE_KEY,
                                  JSON.stringify(visitedAppsObject));
