@@ -91,7 +91,7 @@ public class FavoriteService {
     checkUserOperatePermission(favorite);
 
     String userId = favorite.getUserId();
-    Favorite firstFavorite = favoriteRepository.findFirst1ByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId);
+    Favorite firstFavorite = favoriteRepository.findFirstByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(userId);
     long minPosition = firstFavorite.getPosition();
 
     favorite.setPosition(minPosition - 1);

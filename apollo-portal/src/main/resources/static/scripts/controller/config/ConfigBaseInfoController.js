@@ -25,48 +25,13 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
 
         UserService.load_user().then(function (result) {
             $rootScope.pageContext.userId = result.userId;
+            loadAppInfo();
             handleFavorite();
-            recordVisitApp();
+        },function (result) {
+            toastr.error(AppUtil.errorMsg(result), "获取用户登录信息失败");
         });
 
-        loadAppInfo();
-
         handlePermission();
-    }
-
-    function recordVisitApp() {
-        //save user recent visited apps
-        var VISITED_APPS_STORAGE_KEY = "VisitedAppsV2";
-        var visitedAppsObject = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
-        var hasSaved = false;
-        if (visitedAppsObject) {
-            var visitedApps = visitedAppsObject[$rootScope.pageContext.userId];
-            if (visitedApps && visitedApps.length > 0){
-                visitedApps.forEach(function (app) {
-                    if (app == appId) {
-                        hasSaved = true;
-                        return;
-                    }
-                });
-            }
-
-        } else {
-            visitedAppsObject = {};
-            visitedAppsObject[$rootScope.pageContext.userId] = [];
-        }
-
-        var currentUserVisitedApps = visitedAppsObject[$rootScope.pageContext.userId];
-        if (!hasSaved) {
-            //if queue's length bigger than 6 will remove oldest app
-            if (currentUserVisitedApps.length >= 6){
-                currentUserVisitedApps.splice(0, 1);
-            }
-            currentUserVisitedApps.push($rootScope.pageContext.appId);
-
-            localStorage.setItem(VISITED_APPS_STORAGE_KEY,
-                                 JSON.stringify(visitedAppsObject));
-        }
-
     }
 
     function loadAppInfo() {
@@ -78,6 +43,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
             $scope.appBaseInfo.orgInfo = result.orgName + '(' + result.orgId + ')';
 
             loadNavTree();
+            recordVisitApp();
 
             $(".J_appFound").removeClass("hidden");
         }, function (result) {
@@ -110,6 +76,41 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
                 });
             });
         };
+    }
+
+    function recordVisitApp() {
+        //save user recent visited apps
+        var VISITED_APPS_STORAGE_KEY = "VisitedAppsV2";
+        var visitedAppsObject = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
+        var hasSaved = false;
+        if (visitedAppsObject) {
+            var visitedApps = visitedAppsObject[$rootScope.pageContext.userId];
+            if (visitedApps && visitedApps.length > 0) {
+                visitedApps.forEach(function (app) {
+                    if (app == appId) {
+                        hasSaved = true;
+                        return;
+                    }
+                });
+            }
+
+        } else {
+            visitedAppsObject = {};
+            visitedAppsObject[$rootScope.pageContext.userId] = [];
+        }
+
+        var currentUserVisitedApps = visitedAppsObject[$rootScope.pageContext.userId];
+        if (!hasSaved) {
+            //if queue's length bigger than 6 will remove oldest app
+            if (currentUserVisitedApps.length >= 6) {
+                currentUserVisitedApps.splice(0, 1);
+            }
+            currentUserVisitedApps.push($rootScope.pageContext.appId);
+
+            localStorage.setItem(VISITED_APPS_STORAGE_KEY,
+                                 JSON.stringify(visitedAppsObject));
+        }
+
     }
 
     function loadNavTree() {
@@ -152,7 +153,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
 
                         //default selection from session storage or first env & first cluster
                         if ($rootScope.pageContext.env == env.env && $rootScope.pageContext.clusterName
-                                                          == cluster.name) {
+                                                                     == cluster.name) {
                             clusterNode.state = {};
                             clusterNode.state.selected = true;
                         }
@@ -227,7 +228,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
     function handleFavorite() {
 
         FavoriteService.findFavorites($rootScope.pageContext.userId,
-                                       $rootScope.pageContext.appId)
+                                      $rootScope.pageContext.appId)
             .then(function (result) {
                 if (result && result.length) {
                     $scope.favoriteId = result[0].id;

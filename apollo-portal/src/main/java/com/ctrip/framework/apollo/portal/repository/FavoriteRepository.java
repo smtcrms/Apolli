@@ -13,7 +13,7 @@ public interface FavoriteRepository extends PagingAndSortingRepository<Favorite,
 
   List<Favorite> findByAppIdOrderByPositionAscDataChangeCreatedTimeAsc(String appId, Pageable page);
 
-  Favorite findFirst1ByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(String userId);
+  Favorite findFirstByUserIdOrderByPositionAscDataChangeCreatedTimeAsc(String userId);
 
   Favorite findByUserIdAndAppId(String userId, String appId);
 }
