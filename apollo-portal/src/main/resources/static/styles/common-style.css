@@ -262,10 +262,6 @@ table th {
     font-size: 13px;
 }
 
-.config-item-container {
-    padding-top: 19px;
-}
-
 .config-item-container .panel {
     border-radius: 0;
 }
