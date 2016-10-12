@@ -93,7 +93,14 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
         if (userVisitedApps && userVisitedApps.length > 0) {
             AppService.find_apps(userVisitedApps.join(","))
                 .then(function (apps) {
+                    //sort
+                    var appIdMapApp = {};
                     apps.forEach(function (app) {
+                        appIdMapApp[app.appId] = app;
+                    });
+
+                    userVisitedApps.forEach(function (appId) {
+                        var app = appIdMapApp[appId];
                         $scope.visitedApps.push(app);
                     });
                 });
@@ -116,7 +123,7 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
     function toTop(favoriteId) {
         FavoriteService.toTop(favoriteId).then(function () {
             toastr.success("置顶成功");
-            reload();
+            refreshFavorites();
 
         })
     }
@@ -124,15 +131,16 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
     function deleteFavorite(favoriteId) {
         FavoriteService.deleteFavorite(favoriteId).then(function () {
             toastr.success("取消收藏成功");
-            reload();
+            refreshFavorites();
         })
     }
 
-    function reload() {
-        setTimeout(function () {
-            $window.location.reload();
-        }, 500);
+    function refreshFavorites() {
+        $scope.favoritesPage = 0;
+        $scope.favorites = [];
+        $scope.hasMoreFavorites = true;
 
+        getUserFavorites();
     }
 
 }
