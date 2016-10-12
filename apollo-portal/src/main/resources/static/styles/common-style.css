@@ -59,9 +59,7 @@ pre {
 }
 
 .logo {
-    width: 150px;
-    height: 50px;
-    background: url('../img/logo.png') no-repeat
+   font-size: 25px;
 }
 
 .i-20 {
@@ -555,6 +553,10 @@ table th {
 }
 
 /*index page*/
+#app-list h5{
+    word-wrap: break-word;
+    word-break: break-all;
+}
 #app-list .media-body {
     padding-top: 15px;
 }
@@ -578,6 +580,7 @@ table th {
 
 #app-list .app-panel {
     position: relative;
+    height: 100px;
 }
 
 #app-list .operate-panel {
