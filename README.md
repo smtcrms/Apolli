@@ -20,7 +20,7 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 更多介绍参见[Apollo配置中心介绍](https://github.com/ctripcorp/apollo/wiki/Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E4%BB%8B%E7%BB%8D)
 
 #Screenshots
-![配置界面](https://github.com/ctripcorp/apollo/blob/master/doc/images/apollo-home-screenshot.png)
+![配置界面](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/apollo-home-screenshot.png)
 
 #Features
 * **集中化管理不同环境、不同集群配置**
