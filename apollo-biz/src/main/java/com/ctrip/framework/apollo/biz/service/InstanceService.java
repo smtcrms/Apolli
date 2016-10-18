@@ -127,6 +127,7 @@ public class InstanceService {
         "Instance config %d doesn't exist", instanceConfig.getId()));
 
     existedInstanceConfig.setReleaseKey(instanceConfig.getReleaseKey());
+    existedInstanceConfig.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
     existedInstanceConfig.setDataChangeLastModifiedTime(instanceConfig
         .getDataChangeLastModifiedTime());
 

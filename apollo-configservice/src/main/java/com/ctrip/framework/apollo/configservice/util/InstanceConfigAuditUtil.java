@@ -88,11 +88,14 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     InstanceConfig instanceConfig = instanceService.findInstanceConfig(instanceId, auditModel
         .getConfigAppId(), auditModel.getConfigClusterName(), auditModel.getConfigNamespace());
 
-    //we need to update no matter the release key is the same or not, to ensure the
-    //last modified time is updated each day
     if (instanceConfig != null) {
-      instanceConfig.setReleaseKey(auditModel.getReleaseKey());
-      instanceConfig.setDataChangeLastModifiedTime(new Date());
+      if (!Objects.equals(instanceConfig.getReleaseKey(), auditModel.getReleaseKey())) {
+        instanceConfig.setReleaseKey(auditModel.getReleaseKey());
+        instanceConfig.setReleaseDeliveryTime(auditModel.getOfferTime());
+      }
+      //we need to update no matter the release key is the same or not, to ensure the
+      //last modified time is updated each day
+      instanceConfig.setDataChangeLastModifiedTime(auditModel.getOfferTime());
       instanceService.updateInstanceConfig(instanceConfig);
       return;
     }
@@ -103,6 +106,8 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     instanceConfig.setConfigClusterName(auditModel.getConfigClusterName());
     instanceConfig.setConfigNamespaceName(auditModel.getConfigNamespace());
     instanceConfig.setReleaseKey(auditModel.getReleaseKey());
+    instanceConfig.setReleaseDeliveryTime(auditModel.getOfferTime());
+    instanceConfig.setDataChangeCreatedTime(auditModel.getOfferTime());
 
     try {
       instanceService.createInstanceConfig(instanceConfig);
@@ -174,10 +179,12 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     private String configClusterName;
     private String configNamespace;
     private String releaseKey;
+    private Date offerTime;
 
     public InstanceConfigAuditModel(String appId, String clusterName, String dataCenter, String
         clientIp, String configAppId, String configClusterName, String configNamespace, String
                                         releaseKey) {
+      this.offerTime = new Date();
       this.appId = appId;
       this.clusterName = clusterName;
       this.dataCenter = Strings.isNullOrEmpty(dataCenter) ? "" : dataCenter;
@@ -218,6 +225,10 @@ public class InstanceConfigAuditUtil implements InitializingBean {
 
     public String getConfigClusterName() {
       return configClusterName;
+    }
+
+    public Date getOfferTime() {
+      return offerTime;
     }
 
     @Override

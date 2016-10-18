@@ -257,7 +257,7 @@ directive_module.directive('apollonspanel',
 
                                                        result.forEach(function (instance) {
                                                            var configs = instance.configs;
-                                                           if (configs.length > 0) {
+                                                           if (configs && configs.length > 0) {
                                                                configs.forEach(function (instanceConfig) {
                                                                    var release = instanceConfig.release;
                                                                    if (!groupedInstances[release.id]) {
