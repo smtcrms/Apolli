@@ -3,8 +3,8 @@
   <groupId>com.ctrip.framework</groupId>
   <artifactId>framework-foundation</artifactId>
   <versioning>
-    <latest>1.1.6</latest>
-    <release>1.2.0</release>
+    <latest>1.2.0</latest>
+    <release>1.2.1</release>
     <versions>
       <version>0.0.1</version>
       <version>1.0.0</version>
@@ -18,7 +18,8 @@
       <version>1.1.6</version>
       <version>1.1.7</version>
       <version>1.2.0</version>
+      <version>1.2.1</version>
     </versions>
-    <lastUpdated>20160930084054</lastUpdated>
+    <lastUpdated>20161017021422</lastUpdated>
   </versioning>
 </metadata>
