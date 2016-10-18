@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class InstanceConfigDTO {
   private ReleaseDTO release;
+  private Date releaseDeliveryTime;
   private Date dataChangeLastModifiedTime;
 
   public ReleaseDTO getRelease() {
@@ -23,5 +24,13 @@ public class InstanceConfigDTO {
 
   public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
     this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
+  }
+
+  public Date getReleaseDeliveryTime() {
+    return releaseDeliveryTime;
+  }
+
+  public void setReleaseDeliveryTime(Date releaseDeliveryTime) {
+    this.releaseDeliveryTime = releaseDeliveryTime;
   }
 }
