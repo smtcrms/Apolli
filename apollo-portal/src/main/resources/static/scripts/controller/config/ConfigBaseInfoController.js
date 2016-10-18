@@ -83,20 +83,23 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
         var VISITED_APPS_STORAGE_KEY = "VisitedAppsV2";
         var visitedAppsObject = JSON.parse(localStorage.getItem(VISITED_APPS_STORAGE_KEY));
         var hasSaved = false;
-        if (visitedAppsObject) {
-            var visitedApps = visitedAppsObject[$rootScope.pageContext.userId];
-            if (visitedApps && visitedApps.length > 0) {
-                visitedApps.forEach(function (app) {
-                    if (app == appId) {
-                        hasSaved = true;
-                        return;
-                    }
-                });
-            }
 
-        } else {
+        if (!visitedAppsObject) {
             visitedAppsObject = {};
-            visitedAppsObject[$rootScope.pageContext.userId] = [];
+        }
+
+        if (!visitedAppsObject[$rootScope.pageContext.userId]) {
+           visitedAppsObject[$rootScope.pageContext.userId] = [];
+        }
+
+        var visitedApps = visitedAppsObject[$rootScope.pageContext.userId];
+        if (visitedApps && visitedApps.length > 0) {
+            visitedApps.forEach(function (app) {
+                if (app == appId) {
+                    hasSaved = true;
+                    return;
+                }
+            });
         }
 
         var currentUserVisitedApps = visitedAppsObject[$rootScope.pageContext.userId];
