@@ -260,6 +260,10 @@ directive_module.directive('apollonspanel',
                                                            if (configs && configs.length > 0) {
                                                                configs.forEach(function (instanceConfig) {
                                                                    var release = instanceConfig.release;
+                                                                   //filter dirty data
+                                                                   if (!release) {
+                                                                       return;
+                                                                   }
                                                                    if (!groupedInstances[release.id]) {
                                                                        groupedInstances[release.id] = [];
                                                                        notLatestReleases.push(release);
