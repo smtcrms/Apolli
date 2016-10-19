@@ -72,13 +72,15 @@ public class InstanceConfigControllerTest {
     String someConfigAppId = "someConfigAppId";
     String someConfigNamespace = "someNamespace";
     String someIp = "someIp";
+    Date someReleaseDeliveryTime = new Date();
+    Date anotherReleaseDeliveryTime = new Date();
 
     when(releaseService.findOne(someReleaseId)).thenReturn(someRelease);
 
     InstanceConfig someInstanceConfig = assembleInstanceConfig(someInstanceId, someConfigAppId,
-        someConfigNamespace, someReleaseKey);
+        someConfigNamespace, someReleaseKey, someReleaseDeliveryTime);
     InstanceConfig anotherInstanceConfig = assembleInstanceConfig(anotherInstanceId,
-        someConfigAppId, someConfigNamespace, someReleaseKey);
+        someConfigAppId, someConfigNamespace, someReleaseKey, anotherReleaseDeliveryTime);
     List<InstanceConfig> instanceConfigs = Lists.newArrayList(someInstanceConfig,
         anotherInstanceConfig);
     Page<InstanceConfig> instanceConfigPage = new PageImpl<>(instanceConfigs, pageable,
@@ -113,6 +115,12 @@ public class InstanceConfigControllerTest {
 
     verifyInstance(someInstance, someInstanceDto);
     verifyInstance(anotherInstance, anotherInstanceDto);
+
+    assertEquals(1, someInstanceDto.getConfigs().size());
+    assertEquals(someReleaseDeliveryTime, someInstanceDto.getConfigs().get(0).getReleaseDeliveryTime());
+
+    assertEquals(1, anotherInstanceDto.getConfigs().size());
+    assertEquals(anotherReleaseDeliveryTime, anotherInstanceDto.getConfigs().get(0).getReleaseDeliveryTime());
   }
 
   @Test(expected = NotFoundException.class)
@@ -132,6 +140,9 @@ public class InstanceConfigControllerTest {
     long someReleaseId = 1;
     long anotherReleaseId = 2;
     String releaseIds = Joiner.on(",").join(someReleaseId, anotherReleaseId);
+
+    Date someReleaseDeliveryTime = new Date();
+    Date anotherReleaseDeliveryTime = new Date();
 
     Release someRelease = mock(Release.class);
     Release anotherRelease = mock(Release.class);
@@ -153,6 +164,8 @@ public class InstanceConfigControllerTest {
     when(anotherInstanceConfig.getInstanceId()).thenReturn(anotherInstanceId);
     when(someInstanceConfig.getReleaseKey()).thenReturn(someInstanceConfigReleaseKey);
     when(anotherInstanceConfig.getReleaseKey()).thenReturn(anotherInstanceConfigReleaseKey);
+    when(someInstanceConfig.getReleaseDeliveryTime()).thenReturn(someReleaseDeliveryTime);
+    when(anotherInstanceConfig.getReleaseDeliveryTime()).thenReturn(anotherReleaseDeliveryTime);
     when(instanceService.findInstanceConfigsByNamespaceWithReleaseKeysNotIn(someConfigAppId,
         someConfigClusterName, someConfigNamespaceName, Sets.newHashSet(someReleaseKey,
             anotherReleaseKey))).thenReturn(Lists.newArrayList(someInstanceConfig,
@@ -203,6 +216,10 @@ public class InstanceConfigControllerTest {
     assertEquals(anotherInstanceConfigReleaseKey, anotherInstanceDto.getConfigs().get(0)
         .getRelease()
         .getReleaseKey());
+
+    assertEquals(someReleaseDeliveryTime, someInstanceDto.getConfigs().get(0).getReleaseDeliveryTime());
+    assertEquals(anotherReleaseDeliveryTime, anotherInstanceDto.getConfigs().get(0)
+        .getReleaseDeliveryTime());
   }
 
   @Test
@@ -284,13 +301,14 @@ public class InstanceConfigControllerTest {
   }
 
   private InstanceConfig assembleInstanceConfig(long instanceId, String configAppId, String
-      configNamespaceName, String releaseKey) {
+      configNamespaceName, String releaseKey, Date releaseDeliveryTime) {
     InstanceConfig instanceConfig = new InstanceConfig();
     instanceConfig.setInstanceId(instanceId);
     instanceConfig.setConfigAppId(configAppId);
     instanceConfig.setConfigNamespaceName(configNamespaceName);
     instanceConfig.setReleaseKey(releaseKey);
     instanceConfig.setDataChangeLastModifiedTime(new Date());
+    instanceConfig.setReleaseDeliveryTime(releaseDeliveryTime);
     return instanceConfig;
   }
 }

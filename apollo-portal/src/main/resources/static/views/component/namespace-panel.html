@@ -409,14 +409,16 @@
                         <td>Cluster Name</td>
                         <td>Data Center</td>
                         <td>IP</td>
+                        <td>配置获取时间</td>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="instance in namespace.latestReleaseInstances.content">
-                        <td width="25%" ng-bind="instance.appId"></td>
-                        <td width="25%" ng-bind="instance.clusterName"></td>
-                        <td width="25%" ng-bind="instance.dataCenter"></td>
-                        <td width="25%" ng-bind="instance.ip"></td>
+                        <td width="20%" ng-bind="instance.appId"></td>
+                        <td width="20%" ng-bind="instance.clusterName"></td>
+                        <td width="20%" ng-bind="instance.dataCenter"></td>
+                        <td width="20%" ng-bind="instance.ip"></td>
+                        <td width="20%">{{instance.configs && instance.configs.length ? (instance.configs[0].releaseDeliveryTime | date: 'yyyy-MM-dd HH:mm:ss') : ''}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -450,14 +452,16 @@
                         <td>Cluster Name</td>
                         <td>Data Center</td>
                         <td>IP</td>
+                        <td>配置获取时间</td>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="instance in namespace.notLatestReleaseInstances[release.id]">
-                        <td width="25%" ng-bind="instance.appId"></td>
-                        <td width="25%" ng-bind="instance.clusterName"></td>
-                        <td width="25%" ng-bind="instance.dataCenter"></td>
-                        <td width="25%" ng-bind="instance.ip"></td>
+                        <td width="20%" ng-bind="instance.appId"></td>
+                        <td width="20%" ng-bind="instance.clusterName"></td>
+                        <td width="20%" ng-bind="instance.dataCenter"></td>
+                        <td width="20%" ng-bind="instance.ip"></td>
+                        <td width="20%">{{instance.configs && instance.configs.length ? (instance.configs[0].releaseDeliveryTime | date: 'yyyy-MM-dd HH:mm:ss') : ''}}</td>
                     </tr>
                     </tbody>
                 </table>

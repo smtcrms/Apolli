@@ -38,6 +38,9 @@ public class InstanceConfig {
   @Column(name = "ReleaseKey", nullable = false)
   private String releaseKey;
 
+  @Column(name = "ReleaseDeliveryTime", nullable = false)
+  private Date releaseDeliveryTime;
+
   @Column(name = "DataChange_CreatedTime", nullable = false)
   private Date dataChangeCreatedTime;
 
@@ -121,6 +124,14 @@ public class InstanceConfig {
 
   public void setConfigClusterName(String configClusterName) {
     this.configClusterName = configClusterName;
+  }
+
+  public Date getReleaseDeliveryTime() {
+    return releaseDeliveryTime;
+  }
+
+  public void setReleaseDeliveryTime(Date releaseDeliveryTime) {
+    this.releaseDeliveryTime = releaseDeliveryTime;
   }
 
   @Override
