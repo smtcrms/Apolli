@@ -162,6 +162,7 @@
             <div ng-repeat="namespace in namespaces">
                 <apollonspanel namespace="namespace" app-id="pageContext.appId"
                                env="pageContext.env" cluster="pageContext.clusterName"
+                               lock-check="lockCheck"
                                pre-release-ns="prepareReleaseNamespace"
                                create-item="createItem" edit-item="editItem"
                                pre-delete-item="preDeleteItem" commit-change="commitChange"
