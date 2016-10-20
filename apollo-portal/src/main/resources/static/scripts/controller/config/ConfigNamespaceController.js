@@ -48,6 +48,8 @@ application_module.controller("ConfigNamespaceController",
                                    $scope.showText = showText;
 
                                    $scope.showNoModifyPermissionDialog = showNoModifyPermissionDialog; 
+                                   
+                                   $scope.lockCheck = lockCheck;
 
                                    $scope.releaseBtnDisabled = false;
                                    $scope.rollbackBtnDisabled = false;
