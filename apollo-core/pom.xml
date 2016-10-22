@@ -41,4 +41,19 @@
 		</dependency>
 		<!-- end of log -->
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>github</id>
+			<properties>
+				<package.environment>github</package.environment>
+			</properties>
+			<dependencies>
+				<!-- disable cat for outside use -->
+				<dependency>
+					<groupId>com.ctrip.framework.apollo</groupId>
+					<artifactId>apollo-buildtools</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

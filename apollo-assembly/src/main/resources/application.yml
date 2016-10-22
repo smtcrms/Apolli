@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ctrip
+    active: ${apollo_profile}
 
 logging:
   level:
