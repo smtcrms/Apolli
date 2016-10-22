@@ -38,7 +38,7 @@ echo "==== starting to build client ===="
 
 mvn clean install -DskipTests -pl apollo-client -am -Pgithub $META_SERVERS_OPTS
 
-echo "==== building portal finished ===="
+echo "==== building client finished ===="
 
 
 
