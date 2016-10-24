@@ -11,6 +11,7 @@ directive_module.directive('apollonspanel',
                                        appId: '=',
                                        env: '=',
                                        cluster: '=',
+                                       lockCheck: '=',
                                        preReleaseNs: '=',
                                        preRollback: '=',
                                        createItem: '=',
@@ -315,7 +316,7 @@ directive_module.directive('apollonspanel',
                                        }
 
                                        function toggleTextEditStatus(namespace) {
-                                           if (!lockCheck(namespace)) {
+                                           if (!scope.lockCheck(namespace)) {
                                                return;
                                            }
                                            namespace.isTextEditing = !namespace.isTextEditing;
@@ -332,7 +333,7 @@ directive_module.directive('apollonspanel',
                                        }
 
                                        function goToSyncPage(namespace) {
-                                           if (!lockCheck(namespace)) {
+                                           if (!scope.lockCheck(namespace)) {
                                                return false;
                                            }
                                            $window.location.href =
@@ -415,15 +416,6 @@ directive_module.directive('apollonspanel',
                                                }
                                            });
                                            namespace.viewItems = items;
-                                       }
-
-                                       function lockCheck(namespace) {
-                                           if (namespace.lockOwner && scope.currentUser != namespace.lockOwner) {
-                                               scope.lockOwner = namespace.lockOwner;
-                                               $('#namespaceLockedDialog').modal('show');
-                                               return false;
-                                           }
-                                           return true;
                                        }
 
                                    }

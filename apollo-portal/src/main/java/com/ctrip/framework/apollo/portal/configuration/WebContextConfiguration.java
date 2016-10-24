@@ -32,8 +32,8 @@ public class WebContextConfiguration {
 
       @Override
       public void onStartup(ServletContext servletContext) throws ServletException {
-        String loggingServerIP = serverConfigService.getValue("loggingServerIP");
-        String loggingServerPort = serverConfigService.getValue("loggingServerPort");
+        String loggingServerIP = serverConfigService.getValue("clogging.server.url");
+        String loggingServerPort = serverConfigService.getValue("clogging.server.port");
         String credisServiceUrl = serverConfigService.getValue("credisServiceUrl");
         servletContext.setInitParameter("loggingServerIP",
             Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);

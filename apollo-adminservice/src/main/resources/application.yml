@@ -2,7 +2,7 @@ spring:
   application:
     name: apollo-adminservice
   profiles:
-    active: ctrip
+    active: ${apollo_profile}
 
 ctrip:
   appid: 100003172
