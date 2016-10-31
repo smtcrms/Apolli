@@ -72,6 +72,9 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 #FAQ
   * [常见问题回答](https://github.com/ctripcorp/apollo/wiki/FAQ)
 
+#Support
+![tech-support-qq](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq.png)
+
 #Contribution
   * Source Code: https://github.com/ctripcorp/apollo
   * Issue Tracker: https://github.com/ctripcorp/apollo/issues
