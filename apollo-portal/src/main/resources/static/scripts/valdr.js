@@ -12,8 +12,8 @@ app_module.config(function (valdrProvider) {
                                          },
                                          'appName': {
                                              'size': {
-                                                 'max': 32,
-                                                 'message': '应用名称长度不能多于32个字符'
+                                                 'max': 128,
+                                                 'message': '应用名称长度不能多于128个字符'
                                              },
                                              'required': {
                                                  'message': '应用名称不能为空'
