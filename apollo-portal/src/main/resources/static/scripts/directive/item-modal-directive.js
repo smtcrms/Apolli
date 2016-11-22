@@ -26,11 +26,6 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
 
             function doItem() {
 
-                if (selectedClusters.length == 0) {
-                    toastr.error("请选择集群");
-                    return;
-                }
-
                 if (!scope.item.value) {
                     scope.item.value = "";
                 }
@@ -68,6 +63,11 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
                                 toastr.error(AppUtil.errorMsg(result), "添加失败");
                             });
                     } else {
+                        if (selectedClusters.length == 0) {
+                            toastr.error("请选择集群");
+                            return;
+                        }
+
                         selectedClusters.forEach(function (cluster) {
                             ConfigService.create_item(scope.appId,
                                                       cluster.env,
@@ -113,8 +113,6 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
                             AppUtil.hideModal('#itemModal');
 
                             toastr.success("更新成功, 如需生效请发布");
-                            
-                            
                         }, function (result) {
                             toastr.error(AppUtil.errorMsg(result), "更新失败");
                         });
