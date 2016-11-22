@@ -151,7 +151,7 @@ CREATE TABLE `GrayReleaseRule` (
   `DataChange_LastTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`Id`),
   KEY `DataChange_LastTime` (`DataChange_LastTime`),
-  KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`),
+  KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='灰度规则表';
 
 
