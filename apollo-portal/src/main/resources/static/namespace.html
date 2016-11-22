@@ -16,7 +16,7 @@
 
 <apollonav></apollonav>
 
-<div class="container-fluid apollo-container" ng-controller="LinkNamespaceController">
+<div class="container-fluid apollo-container hidden" ng-controller="LinkNamespaceController">
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -34,17 +34,14 @@
 
                 <div class="panel-body">
 
-                    <div class="alert alert-info" role="alert" ng-show="type == 'link'">
+                    <div class="alert alert-info no-radius">
                         <strong>Tips:</strong>
-                        <ul>
+                        <ul ng-show="type == 'link'">
                             <li>公共namespace所属的应用通过关联公共namespace来配置公共部分的配置</li>
                             <li>其它应用可以通过关联公共namespace来覆盖公共部分的配置</li>
                             <li>如果其它应用不需要覆盖公共部分的配置，那么无需关联公共namespace</li>
                         </ul>
-                    </div>
-                    <div class="alert alert-info" ng-show="type == 'create'">
-                        <strong>Tips:</strong>
-                        <ul>
+                        <ul ng-show="type == 'create'">
                             <li>
                                 通过创建一个公共的namespace可以实现公共组件的配置，或多个应用共享同一份配置的需求
                             </li>
@@ -70,13 +67,13 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">应用ID</label>
                             <div class="col-sm-6" valdr-form-group>
-                                <label ng-bind="appId"></label>
+                                <label class="form-control-static" ng-bind="appId"></label>
                             </div>
                         </div>
                         <div class="form-horizontal" ng-show="type == 'link'">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">
-                                    <apollorequiredfiled></apollorequiredfiled>
+                                    <apollorequiredfield></apollorequiredfield>
                                     选择集群</label>
                                 <div class="col-sm-6" valdr-form-group>
                                     <apolloclusterselector apollo-app-id="appId" apollo-default-all-checked="true"
@@ -86,7 +83,7 @@
                         </div>
                         <div class="form-group" ng-show="type == 'create'">
                             <label class="col-sm-3 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 名称</label>
                             <div class="col-sm-4" valdr-form-group>
                                 <div ng-class="{'input-group':appNamespace.isPublic}">
@@ -108,7 +105,7 @@
                         </div>
                         <div class="form-group" ng-show="type == 'create' && hasRootPermission">
                             <label class="col-sm-3 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 类型</label>
                             <div class="col-sm-4" valdr-form-group>
                                 <label class="radio-inline">
@@ -130,7 +127,7 @@
                         </div>
                         <div class="form-group" ng-show="type == 'link'">
                             <label class="col-sm-3 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 namespace</label>
                             <div class="col-sm-4" valdr-form-group>
                                 <select id="namespaces">

@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -159,12 +160,20 @@ public class InstanceConfigController {
   }
 
   @RequestMapping(value = "/by-namespace", method = RequestMethod.GET)
-  public PageDTO<InstanceDTO> getInstancesByNamespace(@RequestParam("appId") String appId,
-                                                   @RequestParam("clusterName") String clusterName,
-                                                   @RequestParam("namespaceName") String
-                                                       namespaceName, Pageable pageable) {
-    Page<Instance> instances = instanceService.findInstancesByNamespace(appId, clusterName,
-        namespaceName, pageable);
+  public PageDTO<InstanceDTO> getInstancesByNamespace(
+      @RequestParam("appId") String appId, @RequestParam("clusterName") String clusterName,
+      @RequestParam("namespaceName") String namespaceName,
+      @RequestParam(value = "instanceAppId", required = false) String instanceAppId,
+      Pageable pageable) {
+    Page<Instance> instances;
+    if (Strings.isNullOrEmpty(instanceAppId)) {
+      instances = instanceService.findInstancesByNamespace(appId, clusterName,
+          namespaceName, pageable);
+    } else {
+      instances = instanceService.findInstancesByNamespaceAndInstanceAppId(instanceAppId, appId,
+          clusterName, namespaceName, pageable);
+    }
+
     List<InstanceDTO> instanceDTOs = BeanUtils.batchTransform(InstanceDTO.class, instances.getContent());
     return new PageDTO<>(instanceDTOs, pageable, instances.getTotalElements());
   }

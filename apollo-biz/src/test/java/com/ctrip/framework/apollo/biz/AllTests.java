@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.biz;
 
 import com.ctrip.framework.apollo.biz.eureka.ApolloEurekaClientConfigTest;
+import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolderTest;
 import com.ctrip.framework.apollo.biz.message.DatabaseMessageSenderTest;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageScannerTest;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepositoryTest;
@@ -9,7 +10,9 @@ import com.ctrip.framework.apollo.biz.service.AdminServiceTest;
 import com.ctrip.framework.apollo.biz.service.AdminServiceTransactionTest;
 import com.ctrip.framework.apollo.biz.service.ClusterServiceTest;
 import com.ctrip.framework.apollo.biz.service.InstanceServiceTest;
+import com.ctrip.framework.apollo.biz.service.NamespaceBranchServiceTest;
 import com.ctrip.framework.apollo.biz.service.PrivilegeServiceTest;
+import com.ctrip.framework.apollo.biz.service.ReleaseCreationTest;
 import com.ctrip.framework.apollo.biz.service.ReleaseServiceTest;
 import com.ctrip.framework.apollo.biz.service.ServerConfigServiceTest;
 import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGeneratorTest;
@@ -32,7 +35,10 @@ import org.junit.runners.Suite.SuiteClasses;
     ReleaseMessageScannerTest.class,
     ClusterServiceTest.class,
     ReleaseKeyGeneratorTest.class,
-    InstanceServiceTest.class
+    InstanceServiceTest.class,
+    GrayReleaseRulesHolderTest.class,
+    NamespaceBranchServiceTest.class,
+    ReleaseCreationTest.class
 })
 public class AllTests {
 

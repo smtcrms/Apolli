@@ -48,7 +48,7 @@ sync_item_module.controller("SyncItemController",
                                              });
 
                                              $scope.viewItems = sourceItems;
-
+                                             $(".apollo-container").removeClass("hidden");
                                          }, function (result) {
                                              toastr.error(AppUtil.errorMsg(result), "加载配置出错");
                                          });
@@ -226,11 +226,9 @@ sync_item_module.controller("SyncItemController",
 
                                  function showText(text) {
                                      $scope.text = text;
-                                     $('#showText').modal('show');
+                                     AppUtil.showModal('#showTextModal');
                                  }
 
-
-                                 new Clipboard('.clipboard');
 
                              }]);
 

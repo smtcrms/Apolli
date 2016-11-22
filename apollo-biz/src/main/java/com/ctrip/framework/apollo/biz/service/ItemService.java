@@ -4,7 +4,6 @@ import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.ItemRepository;
-import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
@@ -24,7 +23,7 @@ public class ItemService {
   private ItemRepository itemRepository;
 
   @Autowired
-  private NamespaceRepository namespaceRepository;
+  private NamespaceService namespaceService;
 
   @Autowired
   private AuditService auditService;
@@ -54,8 +53,7 @@ public class ItemService {
   }
 
   public Item findOne(String appId, String clusterName, String namespaceName, String key) {
-    Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
-        clusterName, namespaceName);
+    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) {
       throw new NotFoundException(
           String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
@@ -65,14 +63,16 @@ public class ItemService {
   }
 
   public Item findLastOne(String appId, String clusterName, String namespaceName) {
-    Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId,
-                                                                                        clusterName, namespaceName);
+    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) {
       throw new NotFoundException(
           String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     }
-    Item item = itemRepository.findFirst1ByNamespaceIdOrderByLineNumDesc(namespace.getId());
-    return item;
+    return findLastOne(namespace.getId());
+  }
+
+  public Item findLastOne(long namespaceId) {
+    return itemRepository.findFirst1ByNamespaceIdOrderByLineNumDesc(namespaceId);
   }
 
   public Item findOne(long itemId) {
@@ -87,27 +87,33 @@ public class ItemService {
     }
     return items;
   }
-  
+
   public List<Item> findItems(String appId, String clusterName, String namespaceName) {
-    Namespace namespace = namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId, clusterName,
-        namespaceName);
+    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace != null) {
       return findItems(namespace.getId());
     } else {
       return Collections.emptyList();
     }
   }
-  
+
   @Transactional
   public Item save(Item entity) {
     checkItemKeyLength(entity.getKey());
     checkItemValueLength(entity.getValue());
 
     entity.setId(0);//protection
+
+    if (entity.getLineNum() == 0) {
+      Item lastItem = findLastOne(entity.getNamespaceId());
+      int lineNum = lastItem == null ? 1 : lastItem.getLineNum() + 1;
+      entity.setLineNum(lineNum);
+    }
+
     Item item = itemRepository.save(entity);
 
     auditService.audit(Item.class.getSimpleName(), item.getId(), Audit.OP.INSERT,
-        item.getDataChangeCreatedBy());
+                       item.getDataChangeCreatedBy());
 
     return item;
   }
@@ -120,22 +126,22 @@ public class ItemService {
     managedItem = itemRepository.save(managedItem);
 
     auditService.audit(Item.class.getSimpleName(), managedItem.getId(), Audit.OP.UPDATE,
-        managedItem.getDataChangeLastModifiedBy());
+                       managedItem.getDataChangeLastModifiedBy());
 
     return managedItem;
   }
 
-  private boolean checkItemValueLength(String value){
+  private boolean checkItemValueLength(String value) {
     int lengthLimit = Integer.valueOf(serverConfigService.getValue("item.value.length.limit", "20000"));
-    if (!StringUtils.isEmpty(value) && value.length() > lengthLimit){
+    if (!StringUtils.isEmpty(value) && value.length() > lengthLimit) {
       throw new BadRequestException("value too long. length limit:" + lengthLimit);
     }
     return true;
   }
 
-  private boolean checkItemKeyLength(String key){
+  private boolean checkItemKeyLength(String key) {
     int lengthLimit = Integer.valueOf(serverConfigService.getValue("item.key.length.limit", "128"));
-    if (!StringUtils.isEmpty(key) && key.length() > lengthLimit){
+    if (!StringUtils.isEmpty(key) && key.length() > lengthLimit) {
       throw new BadRequestException("key too long. length limit:" + lengthLimit);
     }
     return true;

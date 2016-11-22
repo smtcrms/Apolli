@@ -243,7 +243,7 @@ public class InstanceConfigControllerTest {
         pageable)).thenReturn(instances);
 
     PageDTO<InstanceDTO> result = instanceConfigController.getInstancesByNamespace(someAppId,
-        someClusterName, someNamespaceName, pageable);
+        someClusterName, someNamespaceName, null, pageable);
 
     assertEquals(2, result.getContent().size());
     InstanceDTO someInstanceDto = null;
@@ -260,6 +260,47 @@ public class InstanceConfigControllerTest {
     verifyInstance(someInstance, someInstanceDto);
     verifyInstance(anotherInstance, anotherInstanceDto);
   }
+
+  @Test
+  public void testGetInstancesByNamespaceAndInstanceAppId() throws Exception {
+    String someInstanceAppId = "someInstanceAppId";
+    String someAppId = "someAppId";
+    String someClusterName = "someClusterName";
+    String someNamespaceName = "someNamespaceName";
+    String someIp = "someIp";
+    long someInstanceId = 1;
+    long anotherInstanceId = 2;
+    Pageable pageable = mock(Pageable.class);
+
+    Instance someInstance = assembleInstance(someInstanceId, someAppId, someClusterName,
+        someNamespaceName, someIp);
+    Instance anotherInstance = assembleInstance(anotherInstanceId, someAppId, someClusterName,
+        someNamespaceName, someIp);
+
+    Page<Instance> instances = new PageImpl<>(Lists.newArrayList(someInstance, anotherInstance),
+        pageable, 2);
+    when(instanceService.findInstancesByNamespaceAndInstanceAppId(someInstanceAppId, someAppId,
+        someClusterName, someNamespaceName, pageable)).thenReturn(instances);
+
+    PageDTO<InstanceDTO> result = instanceConfigController.getInstancesByNamespace(someAppId,
+        someClusterName, someNamespaceName, someInstanceAppId, pageable);
+
+    assertEquals(2, result.getContent().size());
+    InstanceDTO someInstanceDto = null;
+    InstanceDTO anotherInstanceDto = null;
+
+    for (InstanceDTO instanceDTO : result.getContent()) {
+      if (instanceDTO.getId() == someInstanceId) {
+        someInstanceDto = instanceDTO;
+      } else if (instanceDTO.getId() == anotherInstanceId) {
+        anotherInstanceDto = instanceDTO;
+      }
+    }
+
+    verifyInstance(someInstance, someInstanceDto);
+    verifyInstance(anotherInstance, anotherInstanceDto);
+  }
+
 
   @Test
   public void testGetInstancesCountByNamespace() throws Exception {

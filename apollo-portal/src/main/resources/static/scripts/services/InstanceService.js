@@ -21,13 +21,17 @@ appService.service('InstanceService', ['$resource', '$q', function ($resource, $
         }
     });
 
-    return {
-        findInstancesByRelease: function (env, releaseId, page) {
+    var instanceService = {
+        findInstancesByRelease: function (env, releaseId, page, size) {
+            if (!size) {
+                size = 20;
+            }
             var d = $q.defer();
             resource.find_instances_by_release({
                                                    env: env,
                                                    releaseId: releaseId,
-                                                   page: page
+                                                   page: page,
+                                                   size: size
                                                },
                                                function (result) {
                                                    d.resolve(result);
@@ -36,18 +40,32 @@ appService.service('InstanceService', ['$resource', '$q', function ($resource, $
                 });
             return d.promise;
         },
-        findInstancesByNamespace: function (appId, env, clusterName, namespaceName, page) {
+        findInstancesByNamespace: function (appId, env, clusterName, namespaceName, instanceAppId, page, size) {
+            if (!size) {
+                size = 20;
+            }
             var d = $q.defer();
+            var instanceAppIdRequest = instanceAppId;
+            instanceService.lastInstanceAppIdRequest = instanceAppIdRequest;
             resource.find_instances_by_namespace({
                                                      env: env,
                                                      appId: appId,
                                                      clusterName: clusterName,
                                                      namespaceName: namespaceName,
-                                                     page: page
+                                                     instanceAppId: instanceAppId,
+                                                     page: page,
+                                                     size: size
                                                  },
                                                  function (result) {
+                                                     if (instanceAppIdRequest
+                                                         != instanceService.lastInstanceAppIdRequest) {
+                                                         return;
+                                                     }
                                                      d.resolve(result);
                                                  }, function (result) {
+                    if (instanceAppIdRequest != instanceService.lastInstanceAppIdRequest) {
+                        return;
+                    }
                     d.reject(result);
                 });
             return d.promise;
@@ -84,5 +102,7 @@ appService.service('InstanceService', ['$resource', '$q', function ($resource, $
             return d.promise;
         }
 
-    }
+    };
+
+    return instanceService;
 }]);

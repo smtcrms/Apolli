@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.entity.form;
+package com.ctrip.framework.apollo.portal.entity.model;
 
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 

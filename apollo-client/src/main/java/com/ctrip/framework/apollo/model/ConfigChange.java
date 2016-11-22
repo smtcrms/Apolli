@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.model;
 
 
-import com.google.common.base.Objects;
-
 import com.ctrip.framework.apollo.enums.PropertyChangeType;
 
 /**

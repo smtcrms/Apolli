@@ -5,8 +5,8 @@ import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceSyncModel;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceSyncModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.service.ItemService;
 
@@ -105,6 +105,15 @@ public class ItemController {
       });
     }
     return items;
+  }
+
+  @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches/{branchName}/items")
+  public List<ItemDTO> findBranchItems(@PathVariable("appId") String appId, @PathVariable String env,
+                                       @PathVariable("clusterName") String clusterName,
+                                       @PathVariable("namespaceName") String namespaceName,
+                                       @PathVariable("branchName") String branchName) {
+
+    return findItems(appId, env, branchName, namespaceName, "lastModifiedTime");
   }
 
   @RequestMapping(value = "/namespaces/{namespaceName}/diff", method = RequestMethod.POST, consumes = {

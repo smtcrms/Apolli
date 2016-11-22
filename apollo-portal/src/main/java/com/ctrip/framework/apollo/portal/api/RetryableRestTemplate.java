@@ -139,7 +139,14 @@ public class RetryableRestTemplate {
       } catch (Throwable t) {
         logger.error("Http request failed, uri: {}, method: {}", uri, HttpMethod.GET, t);
         Cat.logError(t);
-        Cat.logEvent(CatEventType.API_RETRY, uri);
+        if (canRetry(t, HttpMethod.GET)){
+          Cat.logEvent(CatEventType.API_RETRY, uri);
+        }else {// biz exception rethrow
+          ct.setStatus(t);
+          ct.complete();
+          throw t;
+        }
+
       }
     }
 

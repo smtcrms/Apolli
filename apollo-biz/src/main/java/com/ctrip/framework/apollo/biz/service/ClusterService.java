@@ -39,12 +39,16 @@ public class ClusterService {
     return clusterRepository.findByAppIdAndName(appId, name);
   }
 
-  public List<Cluster> findClusters(String appId) {
+  public Cluster findOne(long clusterId){
+    return clusterRepository.findOne(clusterId);
+  }
+
+  public List<Cluster> findParentClusters(String appId) {
     if (Strings.isNullOrEmpty(appId)) {
       return Collections.emptyList();
     }
 
-    List<Cluster> clusters = clusterRepository.findByAppId(appId);
+    List<Cluster> clusters = clusterRepository.findByAppIdAndParentClusterId(appId, 0L);
     if (clusters == null) {
       return Collections.emptyList();
     }
@@ -55,14 +59,23 @@ public class ClusterService {
   }
 
   @Transactional
-  public Cluster save(Cluster entity) {
+  public Cluster saveWithCreatePrivateNamespace(Cluster entity) {
+
+    Cluster savedCluster = saveWithoutCreatePrivateNamespace(entity);
+
+    namespaceService.createPrivateNamespace(savedCluster.getAppId(), savedCluster.getName(),
+                                            savedCluster.getDataChangeCreatedBy());
+
+    return savedCluster;
+  }
+
+  @Transactional
+  public Cluster saveWithoutCreatePrivateNamespace(Cluster entity){
     if (!isClusterNameUnique(entity.getAppId(), entity.getName())) {
-      throw new ServiceException("cluster not unique");
+      throw new BadRequestException("cluster not unique");
     }
     entity.setId(0);//protection
     Cluster cluster = clusterRepository.save(entity);
-
-    namespaceService.createPrivateNamespace(cluster.getAppId(), cluster.getName(), cluster.getDataChangeCreatedBy());
 
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT,
                        cluster.getDataChangeCreatedBy());
@@ -114,4 +127,14 @@ public class ClusterService {
 
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT, createBy);
   }
+
+  public List<Cluster> findChildClusters(String appId, String parentClusterName){
+    Cluster parentCluster = findOne(appId, parentClusterName);
+    if (parentCluster == null){
+      throw new BadRequestException("parent cluster not exist");
+    }
+
+    return clusterRepository.findByParentClusterId(parentCluster.getId());
+  }
+
 }

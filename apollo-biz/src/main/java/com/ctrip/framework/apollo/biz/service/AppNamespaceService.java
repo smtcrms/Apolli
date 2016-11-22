@@ -122,7 +122,7 @@ public class AppNamespaceService {
   }
 
   private void linkPrivateAppNamespaceInAllCluster(String appId, String namespaceName, String createBy) {
-    List<Cluster> clusters = clusterService.findClusters(appId);
+    List<Cluster> clusters = clusterService.findParentClusters(appId);
     for (Cluster cluster : clusters) {
       Namespace namespace = new Namespace();
       namespace.setClusterName(cluster.getName());

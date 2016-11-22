@@ -16,7 +16,8 @@ cluster_module.controller('ClusterController',
                                    result.forEach(function (env) {
                                        $scope.envs.push({name: env, checked: false});
 
-                                   })
+                                   });
+                                   $(".apollo-container").removeClass("hidden");
                                }, function (result) {
                                    toastr.error(AppUtil.errorMsg(result), "加载环境信息出错");
                                });

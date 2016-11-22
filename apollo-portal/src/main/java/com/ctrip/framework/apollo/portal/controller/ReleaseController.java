@@ -3,7 +3,7 @@ package com.ctrip.framework.apollo.portal.controller;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseVO;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
@@ -39,7 +39,7 @@ public class ReleaseController {
     model.setClusterName(clusterName);
     model.setNamespaceName(namespaceName);
 
-    return releaseService.createRelease(model);
+    return releaseService.publish(model);
   }
 
 
@@ -73,10 +73,10 @@ public class ReleaseController {
 
   @RequestMapping(value = "/envs/{env}/releases/compare")
   public ReleaseCompareResult compareRelease(@PathVariable String env,
-                                             @RequestParam long firstReleaseId,
-                                             @RequestParam long secondReleaseId) {
+                                             @RequestParam long baseReleaseId,
+                                             @RequestParam long toCompareReleaseId) {
 
-    return releaseService.compare(Env.valueOf(env), firstReleaseId, secondReleaseId);
+    return releaseService.compare(Env.valueOf(env), baseReleaseId, toCompareReleaseId);
   }
 
 

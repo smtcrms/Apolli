@@ -13,10 +13,10 @@ public class NamespaceLockService {
   @Autowired
   private NamespaceLockRepository namespaceLockRepository;
 
-
   public NamespaceLock findLock(Long namespaceId){
     return namespaceLockRepository.findByNamespaceId(namespaceId);
   }
+
 
   @Transactional
   public NamespaceLock tryLock(NamespaceLock lock){

@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.configservice.controller;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -14,6 +15,7 @@ import com.google.common.collect.Multimaps;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolder;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageListener;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
@@ -53,6 +55,8 @@ import javax.servlet.http.HttpServletResponse;
 public class ConfigFileController implements ReleaseMessageListener {
   private static final Logger logger = LoggerFactory.getLogger(ConfigFileController.class);
   private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
+  private static final Splitter X_FORWARDED_FOR_SPLITTER = Splitter.on(",").omitEmptyStrings()
+      .trimResults();
   private static final long MAX_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
   private static final long EXPIRE_AFTER_WRITE = 30;
   private final HttpHeaders propertiesResponseHeaders;
@@ -73,6 +77,9 @@ public class ConfigFileController implements ReleaseMessageListener {
 
   @Autowired
   private WatchKeysUtil watchKeysUtil;
+
+  @Autowired
+  private GrayReleaseRulesHolder grayReleaseRulesHolder;
 
   public ConfigFileController() {
     localCache = CacheBuilder.newBuilder()
@@ -157,31 +164,41 @@ public class ConfigFileController implements ReleaseMessageListener {
     //strip out .properties suffix
     namespace = namespaceUtil.filterNamespaceName(namespace);
 
-    //TODO add clientIp as key parts?
+    if (Strings.isNullOrEmpty(clientIp)) {
+      clientIp = tryToGetClientIp(request);
+    }
+
+    //1. check whether this client has gray release rules
+    boolean hasGrayReleaseRule = grayReleaseRulesHolder.hasGrayReleaseRule(appId, clientIp,
+        namespace);
+
     String cacheKey = assembleCacheKey(outputFormat, appId, clusterName, namespace, dataCenter);
 
+    //2. try to load gray release and return
+    if (hasGrayReleaseRule) {
+      Cat.logEvent("ConfigFile.Cache.GrayRelease", cacheKey);
+      return loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
+          request, response);
+    }
+
+    //3. if not gray release, check weather cache exists, if exists, return
     String result = localCache.getIfPresent(cacheKey);
 
+    //4. if not exists, load from ConfigController
     if (Strings.isNullOrEmpty(result)) {
       Cat.logEvent("ConfigFile.Cache.Miss", cacheKey);
-      ApolloConfig apolloConfig =
-          configController
-              .queryConfig(appId, clusterName, namespace, dataCenter, "-1", clientIp, request,
-                  response);
+      result = loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
+          request, response);
 
-      if (apolloConfig == null || apolloConfig.getConfigurations() == null) {
+      if (result == null) {
         return null;
       }
-
-      switch (outputFormat) {
-        case PROPERTIES:
-          Properties properties = new Properties();
-          properties.putAll(apolloConfig.getConfigurations());
-          result = PropertiesUtil.toString(properties);
-          break;
-        case JSON:
-          result = gson.toJson(apolloConfig.getConfigurations());
-          break;
+      //5. Double check if this client needs to load gray release, if yes, load from db again
+      //This step is mainly to avoid cache pollution
+      if (grayReleaseRulesHolder.hasGrayReleaseRule(appId, clientIp, namespace)) {
+        Cat.logEvent("ConfigFile.Cache.GrayReleaseConflict", cacheKey);
+        return loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
+            request, response);
       }
 
       localCache.put(cacheKey, result);
@@ -198,6 +215,33 @@ public class ConfigFileController implements ReleaseMessageListener {
       logger.debug("added cache for key: {}", cacheKey);
     } else {
       Cat.logEvent("ConfigFile.Cache.Hit", cacheKey);
+    }
+
+    return result;
+  }
+
+  private String loadConfig(ConfigFileOutputFormat outputFormat, String appId, String clusterName,
+                            String namespace, String dataCenter, String clientIp,
+                            HttpServletRequest request,
+                            HttpServletResponse response) throws IOException {
+    ApolloConfig apolloConfig = configController.queryConfig(appId, clusterName, namespace,
+        dataCenter, "-1", clientIp, request, response);
+
+    if (apolloConfig == null || apolloConfig.getConfigurations() == null) {
+      return null;
+    }
+
+    String result = null;
+
+    switch (outputFormat) {
+      case PROPERTIES:
+        Properties properties = new Properties();
+        properties.putAll(apolloConfig.getConfigurations());
+        result = PropertiesUtil.toString(properties);
+        break;
+      case JSON:
+        result = gson.toJson(apolloConfig.getConfigurations());
+        break;
     }
 
     return result;
@@ -248,5 +292,13 @@ public class ConfigFileController implements ReleaseMessageListener {
     public String getValue() {
       return value;
     }
+  }
+
+  private String tryToGetClientIp(HttpServletRequest request) {
+    String forwardedFor = request.getHeader("X-FORWARDED-FOR");
+    if (!Strings.isNullOrEmpty(forwardedFor)) {
+      return X_FORWARDED_FOR_SPLITTER.splitToList(forwardedFor).get(0);
+    }
+    return request.getRemoteAddr();
   }
 }

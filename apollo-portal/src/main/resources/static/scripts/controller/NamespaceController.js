@@ -29,6 +29,7 @@ namespace_module.controller("LinkNamespaceController",
                                                                   width: '100%',
                                                                   data: publicNamespaces
                                                               });
+                                     $(".apollo-container").removeClass("hidden");
                                  }, function (result) {
                                      toastr.error(AppUtil.errorMsg(result), "load public namespace error");
                                  });
@@ -110,11 +111,20 @@ namespace_module.controller("LinkNamespaceController",
                                              });
                                      } else {
 
+                                         var namespaceNameLength = $scope.concatNamespace().length;
+                                         if (namespaceNameLength > 32){
+                                             toastr.error("namespace名称不能大于32个字符. 部门前缀"
+                                                          + (namespaceNameLength - $scope.appNamespace.name.length)
+                                                          + "个字符, 名称" + $scope.appNamespace.name.length + "个字符"
+                                             );
+                                             return;
+                                         }
+                                         
                                          $scope.submitBtnDisabled = true;
                                          NamespaceService.createAppNamespace($scope.appId, $scope.appNamespace).then(
                                              function (result) {
                                                  $scope.step = 2;
-                                                 setInterval(function () {
+                                                 setTimeout(function () {
                                                      $scope.submitBtnDisabled = false;
                                                      if ($scope.appNamespace.isPublic) {
                                                          $window.location.reload();

@@ -1,4 +1,3 @@
-
 INSERT INTO AppNamespace (AppId, Name, IsPublic) VALUES ('100003171', 'application', false);
 INSERT INTO AppNamespace (AppId, Name, IsPublic) VALUES ('100003171', 'fx.apollo.config', true);
 INSERT INTO AppNamespace (AppId, Name, IsPublic) VALUES ('100003172', 'application', false);

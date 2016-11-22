@@ -1,22 +1,24 @@
-package com.ctrip.framework.apollo.portal.entity.form;
+package com.ctrip.framework.apollo.portal.entity.model;
 
 
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
-public class NamespaceReleaseModel implements Verifiable {
+public class NamespaceTextModel implements Verifiable {
 
   private String appId;
   private String env;
   private String clusterName;
   private String namespaceName;
-  private String releaseTitle;
-  private String releaseComment;
-  private String releasedBy;
+  private int namespaceId;
+  private String format;
+  private String configText;
+
 
   @Override
   public boolean isInvalid() {
-    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, releaseTitle);
+    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName) || namespaceId <= 0;
   }
 
   public String getAppId() {
@@ -51,27 +53,27 @@ public class NamespaceReleaseModel implements Verifiable {
     this.namespaceName = namespaceName;
   }
 
-  public String getReleaseTitle() {
-    return releaseTitle;
+  public int getNamespaceId() {
+    return namespaceId;
   }
 
-  public void setReleaseTitle(String releaseTitle) {
-    this.releaseTitle = releaseTitle;
+  public void setNamespaceId(int namespaceId) {
+    this.namespaceId = namespaceId;
   }
 
-  public String getReleaseComment() {
-    return releaseComment;
+  public String getConfigText() {
+    return configText;
   }
 
-  public void setReleaseComment(String releaseComment) {
-    this.releaseComment = releaseComment;
+  public void setConfigText(String configText) {
+    this.configText = configText;
   }
 
-  public String getReleasedBy() {
-    return releasedBy;
+  public ConfigFileFormat getFormat() {
+    return ConfigFileFormat.fromString(this.format);
   }
 
-  public void setReleasedBy(String releasedBy) {
-    this.releasedBy = releasedBy;
+  public void setFormat(String format) {
+    this.format = format;
   }
 }

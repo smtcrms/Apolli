@@ -1,16 +1,16 @@
 package com.ctrip.framework.apollo.ds;
 
+import com.ctrip.framework.apollo.ConfigFile;
+import com.ctrip.framework.apollo.ConfigService;
+import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.foundation.Foundation;
+
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.dal.jdbc.datasource.DataSourceProvider;
 import org.unidal.dal.jdbc.datasource.model.entity.DataSourcesDef;
 import org.unidal.dal.jdbc.datasource.model.transform.DefaultSaxParser;
 import org.unidal.lookup.annotation.Named;
-
-import com.ctrip.framework.apollo.ConfigFile;
-import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
-import com.ctrip.framework.foundation.Foundation;
 
 /**
  * Data source provider based on Apollo configuration service.

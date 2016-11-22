@@ -1,24 +1,22 @@
-package com.ctrip.framework.apollo.portal.entity.form;
+package com.ctrip.framework.apollo.portal.entity.model;
 
 
-import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
-public class NamespaceTextModel implements Verifiable {
+public class NamespaceReleaseModel implements Verifiable {
 
   private String appId;
   private String env;
   private String clusterName;
   private String namespaceName;
-  private int namespaceId;
-  private String format;
-  private String configText;
-
+  private String releaseTitle;
+  private String releaseComment;
+  private String releasedBy;
 
   @Override
   public boolean isInvalid() {
-    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName) || namespaceId <= 0;
+    return StringUtils.isContainEmpty(appId, env, clusterName, namespaceName, releaseTitle);
   }
 
   public String getAppId() {
@@ -53,27 +51,27 @@ public class NamespaceTextModel implements Verifiable {
     this.namespaceName = namespaceName;
   }
 
-  public int getNamespaceId() {
-    return namespaceId;
+  public String getReleaseTitle() {
+    return releaseTitle;
   }
 
-  public void setNamespaceId(int namespaceId) {
-    this.namespaceId = namespaceId;
+  public void setReleaseTitle(String releaseTitle) {
+    this.releaseTitle = releaseTitle;
   }
 
-  public String getConfigText() {
-    return configText;
+  public String getReleaseComment() {
+    return releaseComment;
   }
 
-  public void setConfigText(String configText) {
-    this.configText = configText;
+  public void setReleaseComment(String releaseComment) {
+    this.releaseComment = releaseComment;
   }
 
-  public ConfigFileFormat getFormat() {
-    return ConfigFileFormat.fromString(this.format);
+  public String getReleasedBy() {
+    return releasedBy;
   }
 
-  public void setFormat(String format) {
-    this.format = format;
+  public void setReleasedBy(String releasedBy) {
+    this.releasedBy = releasedBy;
   }
 }
