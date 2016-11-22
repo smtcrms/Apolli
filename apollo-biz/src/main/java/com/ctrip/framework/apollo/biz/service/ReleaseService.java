@@ -220,11 +220,12 @@ public class ReleaseService {
     Map<String, String> parentConfigurations = parentLatestRelease != null ?
                                                gson.fromJson(parentLatestRelease.getConfigurations(),
                                                              configurationTypeReference) : new HashMap<>();
+    long baseReleaseId = parentLatestRelease == null ? 0 : parentLatestRelease.getId();
 
     Map<String, String> childNamespaceToPublishConfigs = mergeConfiguration(parentConfigurations, childNamespaceItems);
     Release release =
         branchRelease(parentNamespace, childNamespace, releaseName, releaseComment,
-                      childNamespaceToPublishConfigs, parentLatestRelease.getId(), operator,
+                      childNamespaceToPublishConfigs, baseReleaseId, operator,
                       ReleaseOperation.GRAY_RELEASE);
 
     return release;
