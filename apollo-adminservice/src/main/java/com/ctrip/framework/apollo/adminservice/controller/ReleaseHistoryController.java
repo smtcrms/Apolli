@@ -122,7 +122,7 @@ public class ReleaseHistoryController {
         releaseHistories.add(releaseHistory);
 
         //rollback
-        if (release.isAbandoned()) {
+        if (release.isAbandoned() && previousRelease != null) {
           releaseHistory.setDataChangeLastModifiedTime(release.getDataChangeCreatedTime());
           ReleaseHistory rollBackReleaseHistory = assembleReleaseHistory(previousRelease,
               ReleaseOperation.ROLLBACK, release.getId());
