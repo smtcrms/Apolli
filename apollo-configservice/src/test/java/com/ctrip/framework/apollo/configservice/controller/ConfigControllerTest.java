@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolder;
 import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.biz.entity.Release;
@@ -63,6 +64,8 @@ public class ConfigControllerTest {
   @Mock
   private InstanceConfigAuditUtil instanceConfigAuditUtil;
   @Mock
+  private GrayReleaseRulesHolder grayReleaseRulesHolder;
+  @Mock
   private HttpServletRequest someRequest;
 
   @Before
@@ -72,6 +75,7 @@ public class ConfigControllerTest {
     ReflectionTestUtils.setField(configController, "appNamespaceService", appNamespaceService);
     ReflectionTestUtils.setField(configController, "namespaceUtil", namespaceUtil);
     ReflectionTestUtils.setField(configController, "instanceConfigAuditUtil", instanceConfigAuditUtil);
+    ReflectionTestUtils.setField(configController, "grayReleaseRulesHolder", grayReleaseRulesHolder);
 
     someAppId = "1";
     someClusterName = "someClusterName";
@@ -90,6 +94,8 @@ public class ConfigControllerTest {
     when(namespaceUtil.filterNamespaceName(defaultNamespaceName)).thenReturn(defaultNamespaceName);
     when(namespaceUtil.filterNamespaceName(somePublicNamespaceName))
         .thenReturn(somePublicNamespaceName);
+    when(grayReleaseRulesHolder.findReleaseIdFromGrayReleaseRule(anyString(), anyString(),
+        anyString(), anyString(), anyString())).thenReturn(null);
   }
 
   @Test
@@ -114,6 +120,45 @@ public class ConfigControllerTest {
     assertEquals(someServerSideNewReleaseKey, result.getReleaseKey());
     verify(instanceConfigAuditUtil, times(1)).audit(someAppId, someClusterName, someDataCenter,
         someClientIp, someAppId, someClusterName, defaultNamespaceName, someServerSideNewReleaseKey);
+  }
+
+  @Test
+  public void testQueryConfigWithGrayRelease() throws Exception {
+    String someClientSideReleaseKey = "1";
+    String someServerSideNewReleaseKey = "2";
+    String someServerSideGrayReleaseKey = "3";
+    HttpServletResponse someResponse = mock(HttpServletResponse.class);
+    Release grayRelease = mock(Release.class);
+    long grayReleaseId = 999;
+    String someGrayConfiguration = "{\"apollo.bar\": \"foo_gray\"}";
+
+    when(grayReleaseRulesHolder.findReleaseIdFromGrayReleaseRule(someAppId, someClientIp,
+        someAppId, someClusterName, defaultNamespaceName)).thenReturn(grayReleaseId);
+    when(releaseService.findActiveOne(grayReleaseId)).thenReturn(grayRelease);
+    when(releaseService.findLatestActiveRelease(someAppId, someClusterName, defaultNamespaceName))
+        .thenReturn(someRelease);
+
+    when(someRelease.getReleaseKey()).thenReturn(someServerSideNewReleaseKey);
+
+    when(grayRelease.getAppId()).thenReturn(someAppId);
+    when(grayRelease.getClusterName()).thenReturn(someClusterName);
+    when(grayRelease.getReleaseKey()).thenReturn(someServerSideGrayReleaseKey);
+    when(grayRelease.getNamespaceName()).thenReturn(defaultNamespaceName);
+    when(grayRelease.getConfigurations()).thenReturn(someGrayConfiguration);
+
+    ApolloConfig result = configController.queryConfig(someAppId, someClusterName,
+        defaultNamespaceName, someDataCenter, someClientSideReleaseKey,
+        someClientIp, someRequest, someResponse);
+
+    verify(releaseService, times(1)).findActiveOne(grayReleaseId);
+    verify(releaseService, never()).findLatestActiveRelease(someAppId, someClusterName, defaultNamespaceName);
+
+    assertEquals(someAppId, result.getAppId());
+    assertEquals(someClusterName, result.getCluster());
+    assertEquals(defaultNamespaceName, result.getNamespaceName());
+    assertEquals(someServerSideGrayReleaseKey, result.getReleaseKey());
+    verify(instanceConfigAuditUtil, times(1)).audit(someAppId, someClusterName, someDataCenter,
+        someClientIp, someAppId, someClusterName, defaultNamespaceName, someServerSideGrayReleaseKey);
   }
 
   @Test

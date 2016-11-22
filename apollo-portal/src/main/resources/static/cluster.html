@@ -15,7 +15,7 @@
 <body>
 
 <apollonav></apollonav>
-<div class="container-fluid apollo-container" ng-controller="ClusterController">
+<div class="container-fluid apollo-container hidden" ng-controller="ClusterController">
 
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -36,7 +36,7 @@
                 <div class="panel-body">
 
 
-                    <div class="alert alert-info" role="alert">
+                    <div class="alert alert-info no-radius" role="alert">
                         <strong>Tips:</strong>
                         <ul>
                             <li>通过添加集群，可以使同一份程序在不同的集群（如不同的数据中心）使用不同的配置</li>
@@ -51,14 +51,15 @@
                           ng-submit="create()">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 应用AppId</label>
-                            <div class="col-sm-6" ng-bind="appId">
+                            <div class="col-sm-6">
+                                <label class="form-control-static" ng-bind="appId"></label>
                             </div>
                         </div>
                         <div class="form-group" valdr-form-group>
                             <label class="col-sm-2 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 集群名称</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="clusterName" ng-model="clusterName">
@@ -67,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label">
-                                <apollorequiredfiled></apollorequiredfiled>
+                                <apollorequiredfield></apollorequiredfield>
                                 选择环境</label>
                             <div class="col-sm-5">
                                 <table class="table table-hover" style="width: 100px">

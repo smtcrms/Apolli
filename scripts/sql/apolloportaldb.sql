@@ -15,9 +15,9 @@ Use ApolloPortalDB;
 # Dump of table app
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `app`;
+DROP TABLE IF EXISTS `App`;
 
-CREATE TABLE `app` (
+CREATE TABLE `App` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
   `Name` varchar(500) NOT NULL DEFAULT 'default' COMMENT '应用名',
@@ -41,9 +41,9 @@ CREATE TABLE `app` (
 # Dump of table appnamespace
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `appnamespace`;
+DROP TABLE IF EXISTS `AppNamespace`;
 
-CREATE TABLE `appnamespace` (
+CREATE TABLE `AppNamespace` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `Name` varchar(32) NOT NULL DEFAULT '' COMMENT 'namespace名字，注意，需要全局唯一',
   `AppId` varchar(32) NOT NULL DEFAULT '' COMMENT 'app id',
@@ -65,9 +65,9 @@ CREATE TABLE `appnamespace` (
 # Dump of table consumer
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `consumer`;
+DROP TABLE IF EXISTS `Consumer`;
 
-CREATE TABLE `consumer` (
+CREATE TABLE `Consumer` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
   `Name` varchar(500) NOT NULL DEFAULT 'default' COMMENT '应用名',
@@ -90,9 +90,9 @@ CREATE TABLE `consumer` (
 # Dump of table consumeraudit
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `consumeraudit`;
+DROP TABLE IF EXISTS `ConsumerAudit`;
 
-CREATE TABLE `consumeraudit` (
+CREATE TABLE `ConsumerAudit` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `ConsumerId` int(11) unsigned DEFAULT NULL COMMENT 'Consumer Id',
   `Uri` varchar(1024) NOT NULL DEFAULT '' COMMENT '访问的Uri',
@@ -109,9 +109,9 @@ CREATE TABLE `consumeraudit` (
 # Dump of table consumerrole
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `consumerrole`;
+DROP TABLE IF EXISTS `ConsumerRole`;
 
-CREATE TABLE `consumerrole` (
+CREATE TABLE `ConsumerRole` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `ConsumerId` int(11) unsigned DEFAULT NULL COMMENT 'Consumer Id',
   `RoleId` int(10) unsigned DEFAULT NULL COMMENT 'Role Id',
@@ -131,9 +131,9 @@ CREATE TABLE `consumerrole` (
 # Dump of table consumertoken
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `consumertoken`;
+DROP TABLE IF EXISTS `ConsumerToken`;
 
-CREATE TABLE `consumertoken` (
+CREATE TABLE `ConsumerToken` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `ConsumerId` int(11) unsigned DEFAULT NULL COMMENT 'ConsumerId',
   `Token` varchar(128) NOT NULL DEFAULT '' COMMENT 'token',
@@ -151,9 +151,9 @@ CREATE TABLE `consumertoken` (
 # Dump of table favorite
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `favorite`;
+DROP TABLE IF EXISTS `Favorite`;
 
-CREATE TABLE `favorite` (
+CREATE TABLE `Favorite` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `UserId` varchar(32) NOT NULL DEFAULT 'default' COMMENT '收藏的用户',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
@@ -172,9 +172,9 @@ CREATE TABLE `favorite` (
 # Dump of table permission
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `permission`;
+DROP TABLE IF EXISTS `Permission`;
 
-CREATE TABLE `permission` (
+CREATE TABLE `Permission` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `PermissionType` varchar(32) NOT NULL DEFAULT '' COMMENT '权限类型',
   `TargetId` varchar(256) NOT NULL DEFAULT '' COMMENT '权限对象类型',
@@ -193,9 +193,9 @@ CREATE TABLE `permission` (
 # Dump of table role
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `role`;
+DROP TABLE IF EXISTS `Role`;
 
-CREATE TABLE `role` (
+CREATE TABLE `Role` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `RoleName` varchar(256) NOT NULL DEFAULT '' COMMENT 'Role name',
   `IsDeleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
@@ -213,9 +213,9 @@ CREATE TABLE `role` (
 # Dump of table rolepermission
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `rolepermission`;
+DROP TABLE IF EXISTS `RolePermission`;
 
-CREATE TABLE `rolepermission` (
+CREATE TABLE `RolePermission` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `RoleId` int(10) unsigned DEFAULT NULL COMMENT 'Role Id',
   `PermissionId` int(10) unsigned DEFAULT NULL COMMENT 'Permission Id',
@@ -235,9 +235,9 @@ CREATE TABLE `rolepermission` (
 # Dump of table serverconfig
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `serverconfig`;
+DROP TABLE IF EXISTS `ServerConfig`;
 
-CREATE TABLE `serverconfig` (
+CREATE TABLE `ServerConfig` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `Key` varchar(64) NOT NULL DEFAULT 'default' COMMENT '配置项Key',
   `Value` varchar(2048) NOT NULL DEFAULT 'default' COMMENT '配置项值',
@@ -257,9 +257,9 @@ CREATE TABLE `serverconfig` (
 # Dump of table userrole
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `userrole`;
+DROP TABLE IF EXISTS `UserRole`;
 
-CREATE TABLE `userrole` (
+CREATE TABLE `UserRole` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `UserId` varchar(128) DEFAULT '' COMMENT '用户身份标识',
   `RoleId` int(10) unsigned DEFAULT NULL COMMENT 'Role Id',
@@ -276,7 +276,7 @@ CREATE TABLE `userrole` (
 
 # Config
 # ------------------------------------------------------------
-INSERT INTO `serverconfig` (`Key`, `Value`, `Comment`)
+INSERT INTO `ServerConfig` (`Key`, `Value`, `Comment`)
 VALUES
     ('apollo.portal.envs', 'dev', '可支持的环境列表'),
     ('organizations', '[{\"orgId\":\"TEST1\",\"orgName\":\"样例部门1\"},{\"orgId\":\"TEST2\",\"orgName\":\"样例部门2\"}]', '部门列表'),

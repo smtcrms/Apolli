@@ -40,4 +40,8 @@ public class ClusterService {
     clusterAPI.delete(env, appId, clusterName, userInfoHolder.getUser().getUserId());
   }
 
+  public ClusterDTO loadCluster(String appId, Env env, String clusterName){
+    return clusterAPI.loadCluster(appId, env, clusterName);
+  }
+
 }

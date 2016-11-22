@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.configservice.integration;
 
+import com.google.common.base.Joiner;
+
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 
@@ -10,6 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -17,20 +24,26 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest {
   private String someAppId;
+  private String somePublicAppId;
   private String someCluster;
   private String someNamespace;
   private String somePublicNamespace;
   private String someDC;
   private String someDefaultCluster;
+  private String someClientIp;
+  private ExecutorService executorService;
 
   @Before
   public void setUp() throws Exception {
     someAppId = "someAppId";
     someCluster = "someCluster";
     someNamespace = "someNamespace";
+    somePublicAppId = "somePublicAppId";
     somePublicNamespace = "somePublicNamespace";
     someDC = "someDC";
     someDefaultCluster = ConfigConsts.CLUSTER_NAME_DEFAULT;
+    someClientIp = "1.1.1.1";
+    executorService = Executors.newSingleThreadExecutor();
   }
 
   @Test
@@ -45,6 +58,29 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("TEST-RELEASE-KEY1", result.getReleaseKey());
     assertEquals("v1", result.getConfigurations().get("k1"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-gray-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryGrayConfigWithDefaultClusterAndDefaultNamespaceOK() throws Exception {
+    AtomicBoolean stop = new AtomicBoolean();
+    periodicSendMessage(executorService, assembleKey(someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, ConfigConsts.NAMESPACE_APPLICATION),
+        stop);
+
+    TimeUnit.MILLISECONDS.sleep(500);
+
+    stop.set(true);
+
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?ip={clientIp}", ApolloConfig.class,
+            getHostUrl(), someAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, ConfigConsts.NAMESPACE_APPLICATION, someClientIp);
+    ApolloConfig result = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("TEST-GRAY-RELEASE-KEY1", result.getReleaseKey());
+    assertEquals("v1-gray", result.getConfigurations().get("k1"));
   }
 
   @Test
@@ -117,6 +153,30 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
             getHostUrl(), someAppId, someCluster, someNamespace, releaseKey);
 
     assertEquals(HttpStatus.NOT_MODIFIED, response.getStatusCode());
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-gray-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicGrayConfigWithNoOverride() throws Exception {
+    AtomicBoolean stop = new AtomicBoolean();
+    periodicSendMessage(executorService, assembleKey(somePublicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace),
+        stop);
+
+    TimeUnit.MILLISECONDS.sleep(500);
+
+    stop.set(true);
+
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?ip={clientIp}", ApolloConfig.class,
+            getHostUrl(), someAppId, someCluster, somePublicNamespace, someClientIp);
+    ApolloConfig result = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("TEST-GRAY-RELEASE-KEY2", result.getReleaseKey());
+    assertEquals("gray-v1", result.getConfigurations().get("k1"));
+    assertEquals("gray-v2", result.getConfigurations().get("k2"));
   }
 
   @Test
@@ -201,6 +261,33 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
 
   @Test
   @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-release-public-default-override.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/test-gray-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+  @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void testQueryPublicGrayConfigWithOverride() throws Exception {
+    AtomicBoolean stop = new AtomicBoolean();
+    periodicSendMessage(executorService, assembleKey(somePublicAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, somePublicNamespace),
+        stop);
+
+    TimeUnit.MILLISECONDS.sleep(500);
+
+    stop.set(true);
+
+    ResponseEntity<ApolloConfig> response = restTemplate
+        .getForEntity("{baseurl}/configs/{appId}/{clusterName}/{namespace}?ip={clientIp}", ApolloConfig.class,
+            getHostUrl(), someAppId, someDefaultCluster, somePublicNamespace, someClientIp);
+    ApolloConfig result = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(
+        "TEST-RELEASE-KEY5" + ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR + "TEST-GRAY-RELEASE-KEY2",
+        result.getReleaseKey());
+    assertEquals("override-v1", result.getConfigurations().get("k1"));
+    assertEquals("gray-v2", result.getConfigurations().get("k2"));
+  }
+
+  @Test
+  @Sql(scripts = "/integration-test/test-release.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
   @Sql(scripts = "/integration-test/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void testQueryPrivateConfigFileWithPublicNamespaceExists() throws Exception {
     String namespaceName = "anotherNamespace";
@@ -249,5 +336,9 @@ public class ConfigControllerIntegrationTest extends AbstractBaseIntegrationTest
     assertEquals(somePublicNamespace, result.getNamespaceName());
     assertEquals("someDC-v1", result.getConfigurations().get("k1"));
     assertEquals("someDC-v2", result.getConfigurations().get("k2"));
+  }
+
+  private String assembleKey(String appId, String cluster, String namespace) {
+    return Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR).join(appId, cluster, namespace);
   }
 }

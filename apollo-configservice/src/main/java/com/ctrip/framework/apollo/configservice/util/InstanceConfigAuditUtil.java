@@ -74,7 +74,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
 
     //load instance config release key from cache, and check if release key is the same
     String instanceConfigCacheKey = assembleInstanceConfigKey(instanceId, auditModel
-        .getConfigAppId(), auditModel.getConfigClusterName(), auditModel.getConfigNamespace());
+        .getConfigAppId(), auditModel.getConfigNamespace());
     String cacheReleaseKey = instanceConfigReleaseKeyCache.getIfPresent(instanceConfigCacheKey);
 
     //if release key is the same, then skip audit
@@ -86,10 +86,11 @@ public class InstanceConfigAuditUtil implements InitializingBean {
 
     //if release key is not the same or cannot find in cache, then do audit
     InstanceConfig instanceConfig = instanceService.findInstanceConfig(instanceId, auditModel
-        .getConfigAppId(), auditModel.getConfigClusterName(), auditModel.getConfigNamespace());
+        .getConfigAppId(), auditModel.getConfigNamespace());
 
     if (instanceConfig != null) {
       if (!Objects.equals(instanceConfig.getReleaseKey(), auditModel.getReleaseKey())) {
+        instanceConfig.setConfigClusterName(auditModel.getConfigClusterName());
         instanceConfig.setReleaseKey(auditModel.getReleaseKey());
         instanceConfig.setReleaseDeliveryTime(auditModel.getOfferTime());
       }
@@ -164,10 +165,8 @@ public class InstanceConfigAuditUtil implements InitializingBean {
     return STRING_JOINER.join(keyParts);
   }
 
-  private String assembleInstanceConfigKey(long instanceId, String configAppId, String
-      configClusterName,
-                                           String configNamespace) {
-    return STRING_JOINER.join(instanceId, configAppId, configClusterName, configNamespace);
+  private String assembleInstanceConfigKey(long instanceId, String configAppId, String configNamespace) {
+    return STRING_JOINER.join(instanceId, configAppId, configNamespace);
   }
 
   public static class InstanceConfigAuditModel {

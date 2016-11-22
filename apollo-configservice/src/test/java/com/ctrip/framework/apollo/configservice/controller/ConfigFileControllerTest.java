@@ -9,6 +9,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolder;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,6 +51,8 @@ public class ConfigFileControllerTest {
   private WatchKeysUtil watchKeysUtil;
   @Mock
   private NamespaceUtil namespaceUtil;
+  @Mock
+  private GrayReleaseRulesHolder grayReleaseRulesHolder;
   private ConfigFileController configFileController;
   private String someAppId;
   private String someClusterName;
@@ -68,6 +72,7 @@ public class ConfigFileControllerTest {
     ReflectionTestUtils.setField(configFileController, "configController", configController);
     ReflectionTestUtils.setField(configFileController, "watchKeysUtil", watchKeysUtil);
     ReflectionTestUtils.setField(configFileController, "namespaceUtil", namespaceUtil);
+    ReflectionTestUtils.setField(configFileController, "grayReleaseRulesHolder", grayReleaseRulesHolder);
 
     someAppId = "someAppId";
     someClusterName = "someClusterName";
@@ -76,6 +81,8 @@ public class ConfigFileControllerTest {
     someClientIp = "10.1.1.1";
 
     when(namespaceUtil.filterNamespaceName(someNamespace)).thenReturn(someNamespace);
+    when(grayReleaseRulesHolder.hasGrayReleaseRule(anyString(), anyString(), anyString()))
+        .thenReturn(false);
 
     watchedKeys2CacheKey =
         (Multimap<String, String>) ReflectionTestUtils
@@ -167,6 +174,45 @@ public class ConfigFileControllerTest {
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(configurations, gson.fromJson(response.getBody(), responseType));
+  }
+
+  @Test
+  public void testQueryConfigWithGrayRelease() throws Exception {
+    String someKey = "someKey";
+    String someValue = "someValue";
+    Gson gson = new Gson();
+    Type responseType = new TypeToken<Map<String, String>>(){}.getType();
+
+    Map<String, String> configurations =
+        ImmutableMap.of(someKey, someValue);
+
+    when(grayReleaseRulesHolder.hasGrayReleaseRule(someAppId, someClientIp, someNamespace))
+        .thenReturn(true);
+
+    ApolloConfig someApolloConfig = mock(ApolloConfig.class);
+    when(someApolloConfig.getConfigurations()).thenReturn(configurations);
+    when(configController
+        .queryConfig(someAppId, someClusterName, someNamespace, someDataCenter, "-1", someClientIp,
+            someRequest, someResponse)).thenReturn(someApolloConfig);
+
+    ResponseEntity<String> response =
+        configFileController
+            .queryConfigAsJson(someAppId, someClusterName, someNamespace, someDataCenter,
+                someClientIp, someRequest, someResponse);
+
+    ResponseEntity<String> anotherResponse =
+        configFileController
+            .queryConfigAsJson(someAppId, someClusterName, someNamespace, someDataCenter,
+                someClientIp, someRequest, someResponse);
+
+    verify(configController, times(2))
+        .queryConfig(someAppId, someClusterName, someNamespace, someDataCenter, "-1", someClientIp,
+            someRequest, someResponse);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(configurations, gson.fromJson(response.getBody(), responseType));
+    assertTrue(watchedKeys2CacheKey.isEmpty());
+    assertTrue(cacheKey2WatchedKeys.isEmpty());
   }
 
   @Test

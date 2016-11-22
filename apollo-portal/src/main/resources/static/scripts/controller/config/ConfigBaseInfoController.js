@@ -1,10 +1,12 @@
 application_module.controller("ConfigBaseInfoController",
-                              ['$rootScope', '$scope', '$location', 'toastr', 'UserService', 'AppService',
+                              ['$rootScope', '$scope', '$location', 'toastr', 'EventManager', 'UserService',
+                               'AppService',
                                'FavoriteService',
                                'PermissionService',
                                'AppUtil', ConfigBaseInfoController]);
 
-function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserService, AppService, FavoriteService,
+function ConfigBaseInfoController($rootScope, $scope, $location, toastr, EventManager, UserService, AppService,
+                                  FavoriteService,
                                   PermissionService,
                                   AppUtil) {
 
@@ -27,7 +29,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
             $rootScope.pageContext.userId = result.userId;
             loadAppInfo();
             handleFavorite();
-        },function (result) {
+        }, function (result) {
             toastr.error(AppUtil.errorMsg(result), "获取用户登录信息失败");
         });
 
@@ -89,7 +91,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
         }
 
         if (!visitedAppsObject[$rootScope.pageContext.userId]) {
-           visitedAppsObject[$rootScope.pageContext.userId] = [];
+            visitedAppsObject[$rootScope.pageContext.userId] = [];
         }
 
         var visitedApps = visitedAppsObject[$rootScope.pageContext.userId];
@@ -129,7 +131,8 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
             if (!$rootScope.pageContext.env) {
                 $rootScope.pageContext.env = nodes[0].env;
             }
-            $rootScope.refreshNamespaces();
+
+            EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE);
 
             nodes.forEach(function (env) {
                 if (!env.clusters || env.clusters.length == 0) {
@@ -200,7 +203,7 @@ function ConfigBaseInfoController($rootScope, $scope, $location, toastr, UserSer
                                                                    cluster: $rootScope.pageContext.clusterName
                                                                }));
 
-                                            $rootScope.refreshNamespaces();
+                                            EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE);
                                         }
                                     });
 

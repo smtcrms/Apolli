@@ -57,14 +57,18 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
                 $scope.favoritesPage += 1;
                 $scope.hasMoreFavorites = result.length == size;
 
+                if ($scope.favoritesPage == 1){
+                    $("#app-list").removeClass("hidden");
+                }
+
                 if (!result || result.length == 0) {
                     return;
                 }
                 var appIds = [];
                 result.forEach(function (favorite) {
                     appIds.push(favorite.appId);
-
                 });
+
 
                 AppService.find_apps(appIds.join(","))
                     .then(function (apps) {
@@ -78,6 +82,7 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
                             app.favoriteId = favorite.id;
                             $scope.favorites.push(app);
                         });
+
                     });
             })
     }

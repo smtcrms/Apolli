@@ -28,7 +28,7 @@ public class AdminServiceTest extends AbstractIntegrationTest{
   private AppRepository appRepository;
 
   @Autowired
-  private ClusterService clsuterService;
+  private ClusterService clusterService;
 
   @Autowired
   private NamespaceService namespaceService;
@@ -49,7 +49,7 @@ public class AdminServiceTest extends AbstractIntegrationTest{
     app = adminService.createNewApp(app);
     Assert.assertEquals(appId, app.getAppId());
 
-    List<Cluster> clusters = clsuterService.findClusters(app.getAppId());
+    List<Cluster> clusters = clusterService.findParentClusters(app.getAppId());
     Assert.assertEquals(1, clusters.size());
     Assert.assertEquals(ConfigConsts.CLUSTER_NAME_DEFAULT, clusters.get(0).getName());
 

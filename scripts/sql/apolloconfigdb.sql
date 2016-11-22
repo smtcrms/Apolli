@@ -15,9 +15,9 @@ Use ApolloConfigDB;
 # Dump of table app
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `app`;
+DROP TABLE IF EXISTS `App`;
 
-CREATE TABLE `app` (
+CREATE TABLE `App` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
   `Name` varchar(500) NOT NULL DEFAULT 'default' COMMENT '应用名',
@@ -41,9 +41,9 @@ CREATE TABLE `app` (
 # Dump of table appnamespace
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `appnamespace`;
+DROP TABLE IF EXISTS `AppNamespace`;
 
-CREATE TABLE `appnamespace` (
+CREATE TABLE `AppNamespace` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `Name` varchar(32) NOT NULL DEFAULT '' COMMENT 'namespace名字，注意，需要全局唯一',
   `AppId` varchar(32) NOT NULL DEFAULT '' COMMENT 'app id',
@@ -65,9 +65,9 @@ CREATE TABLE `appnamespace` (
 # Dump of table audit
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `audit`;
+DROP TABLE IF EXISTS `Audit`;
 
-CREATE TABLE `audit` (
+CREATE TABLE `Audit` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `EntityName` varchar(50) NOT NULL DEFAULT 'default' COMMENT '表名',
   `EntityId` int(10) unsigned DEFAULT NULL COMMENT '记录ID',
@@ -87,12 +87,13 @@ CREATE TABLE `audit` (
 # Dump of table cluster
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `cluster`;
+DROP TABLE IF EXISTS `Cluster`;
 
-CREATE TABLE `cluster` (
+CREATE TABLE `Cluster` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `Name` varchar(32) NOT NULL DEFAULT '' COMMENT '集群名字',
   `AppId` varchar(32) NOT NULL DEFAULT '' COMMENT 'App id',
+  `ParentClusterId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '父cluster',
   `IsDeleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
   `DataChange_CreatedBy` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人邮箱前缀',
   `DataChange_CreatedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -108,9 +109,9 @@ CREATE TABLE `cluster` (
 # Dump of table commit
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `commit`;
+DROP TABLE IF EXISTS `Commit`;
 
-CREATE TABLE `commit` (
+CREATE TABLE `Commit` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `ChangeSets` longtext NOT NULL COMMENT '修改变更集',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
@@ -129,14 +130,37 @@ CREATE TABLE `commit` (
   KEY `NamespaceName` (`NamespaceName`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='commit 历史表';
 
+# Dump of table grayreleaserule
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `GrayReleaseRule`;
+
+CREATE TABLE `GrayReleaseRule` (
+  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `AppId` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'AppID',
+  `ClusterName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'Cluster Name',
+  `NamespaceName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'Namespace Name',
+  `BranchName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'branch name',
+  `Rules` varchar(16000) DEFAULT '[]' COMMENT '灰度规则',
+  `ReleaseId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '灰度对应的release',
+  `BranchStatus` tinyint(2) DEFAULT '1' COMMENT '灰度分支状态: 0:删除分支,1:正在使用的规则 2：全量发布',
+  `IsDeleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `DataChange_CreatedBy` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
+  `DataChange_CreatedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `DataChange_LastModifiedBy` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `DataChange_LastTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`Id`),
+  KEY `DataChange_LastTime` (`DataChange_LastTime`),
+  KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='灰度规则表';
 
 
 # Dump of table instance
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `instance`;
+DROP TABLE IF EXISTS `Instance`;
 
-CREATE TABLE `instance` (
+CREATE TABLE `Instance` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `AppId` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'AppID',
   `ClusterName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'ClusterName',
@@ -155,9 +179,9 @@ CREATE TABLE `instance` (
 # Dump of table instanceconfig
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `instanceconfig`;
+DROP TABLE IF EXISTS `InstanceConfig`;
 
-CREATE TABLE `instanceconfig` (
+CREATE TABLE `InstanceConfig` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `InstanceId` int(11) unsigned DEFAULT NULL COMMENT 'Instance Id',
   `ConfigAppId` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'Config App Id',
@@ -168,7 +192,7 @@ CREATE TABLE `instanceconfig` (
   `DataChange_CreatedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `DataChange_LastTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`Id`),
-  UNIQUE KEY `IX_UNIQUE_KEY` (`InstanceId`,`ConfigAppId`,`ConfigClusterName`,`ConfigNamespaceName`),
+  UNIQUE KEY `IX_UNIQUE_KEY` (`InstanceId`,`ConfigAppId`,`ConfigNamespaceName`),
   KEY `IX_ReleaseKey` (`ReleaseKey`),
   KEY `IX_DataChange_LastTime` (`DataChange_LastTime`),
   KEY `IX_Valid_Namespace` (`ConfigAppId`,`ConfigClusterName`,`ConfigNamespaceName`,`DataChange_LastTime`)
@@ -179,9 +203,9 @@ CREATE TABLE `instanceconfig` (
 # Dump of table item
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `Item`;
 
-CREATE TABLE `item` (
+CREATE TABLE `Item` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `NamespaceId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '集群NamespaceId',
   `Key` varchar(128) NOT NULL DEFAULT 'default' COMMENT '配置项Key',
@@ -203,9 +227,9 @@ CREATE TABLE `item` (
 # Dump of table namespace
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `namespace`;
+DROP TABLE IF EXISTS `Namespace`;
 
-CREATE TABLE `namespace` (
+CREATE TABLE `Namespace` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `AppId` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'AppID',
   `ClusterName` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'Cluster Name',
@@ -225,9 +249,9 @@ CREATE TABLE `namespace` (
 # Dump of table namespacelock
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `namespacelock`;
+DROP TABLE IF EXISTS `NamespaceLock`;
 
-CREATE TABLE `namespacelock` (
+CREATE TABLE `NamespaceLock` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `NamespaceId` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '集群NamespaceId',
   `DataChange_CreatedBy` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
@@ -245,9 +269,9 @@ CREATE TABLE `namespacelock` (
 # Dump of table privilege
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `privilege`;
+DROP TABLE IF EXISTS `Privilege`;
 
-CREATE TABLE `privilege` (
+CREATE TABLE `Privilege` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `Name` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'Name',
   `PrivilType` varchar(50) NOT NULL DEFAULT 'default' COMMENT 'PrivilType',
@@ -267,9 +291,9 @@ CREATE TABLE `privilege` (
 # Dump of table release
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `release`;
+DROP TABLE IF EXISTS `Release`;
 
-CREATE TABLE `release` (
+CREATE TABLE `Release` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `ReleaseKey` varchar(64) NOT NULL DEFAULT '' COMMENT '发布的Key',
   `Name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '发布名字',
@@ -292,13 +316,39 @@ CREATE TABLE `release` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布';
 
 
+# Dump of table releasehistory
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `ReleaseHistory`;
+
+CREATE TABLE `ReleaseHistory` (
+  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `AppId` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'AppID',
+  `ClusterName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'ClusterName',
+  `NamespaceName` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
+  `BranchName` varchar(32) NOT NULL DEFAULT 'default' COMMENT '发布分支名',
+  `ReleaseId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '关联的Release Id',
+  `PreviousReleaseId` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '前一次发布的ReleaseId',
+  `Operation` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '发布类型，0: 普通发布，1: 回滚，2: 灰度发布，3: 灰度规则更新，4: 灰度合并回主分支发布，5: 主分支发布灰度自动发布，6: 主分支回滚灰度自动发布，7: 放弃灰度',
+  `OperationContext` longtext NOT NULL COMMENT '发布上下文信息',
+  `IsDeleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `DataChange_CreatedBy` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
+  `DataChange_CreatedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `DataChange_LastModifiedBy` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `DataChange_LastTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`Id`),
+  KEY `IX_Namespace` (`AppId`,`ClusterName`,`NamespaceName`,`BranchName`),
+  KEY `IX_ReleaseId` (`ReleaseId`),
+  KEY `IX_DataChange_LastTime` (`DataChange_LastTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布历史';
+
 
 # Dump of table releasemessage
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `releasemessage`;
+DROP TABLE IF EXISTS `ReleaseMessage`;
 
-CREATE TABLE `releasemessage` (
+CREATE TABLE `ReleaseMessage` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `Message` varchar(1024) NOT NULL DEFAULT '' COMMENT '发布的消息内容',
   `DataChange_LastTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -312,9 +362,9 @@ CREATE TABLE `releasemessage` (
 # Dump of table serverconfig
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `serverconfig`;
+DROP TABLE IF EXISTS `ServerConfig`;
 
-CREATE TABLE `serverconfig` (
+CREATE TABLE `ServerConfig` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `Key` varchar(64) NOT NULL DEFAULT 'default' COMMENT '配置项Key',
   `Cluster` varchar(32) NOT NULL DEFAULT 'default' COMMENT '配置对应的集群，default为不针对特定的集群',
@@ -332,7 +382,7 @@ CREATE TABLE `serverconfig` (
 
 # Config
 # ------------------------------------------------------------
-INSERT INTO `serverconfig` (`Key`, `Cluster`, `Value`, `Comment`)
+INSERT INTO `ServerConfig` (`Key`, `Cluster`, `Value`, `Comment`)
 VALUES
     ('eureka.service.url', 'default', 'http://localhost:8080/eureka/', 'Eureka服务Url'),
     ('namespace.lock.switch', 'default', 'false', '一次发布只能有一个人修改开关'),

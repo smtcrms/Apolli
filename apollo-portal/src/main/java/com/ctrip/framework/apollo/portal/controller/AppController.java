@@ -60,7 +60,6 @@ public class AppController {
 
   }
 
-
   @RequestMapping("/by-owner")
   public List<App> findAppsByOwner(@RequestParam("owner") String owner, Pageable page){
     return appService.findByOwnerName(owner, page);

@@ -14,11 +14,16 @@ $(document).ready(function () {
 
     // bootstrap tooltip & textarea scroll
     setInterval(function () {
-        $('[data-tooltip="tooltip"]').tooltip();
+        $('[data-tooltip="tooltip"]').tooltip({
+                                                  trigger : 'hover'
+                                              });
+    }, 2500);
 
-        $("textarea").niceScroll({styler: "fb", cursorcolor: "#fff"});
-        $("pre").niceScroll({styler: "fb", cursorcolor: "#fff"});
-
+    setTimeout(function () {
+        $("textarea").niceScroll({cursoropacitymax: 0});
+        $("pre").niceScroll({cursoropacitymax: 0});
+        $(".release-history-list").niceScroll({cursoropacitymax: 0});
+        $(".release-info .config").niceScroll({cursoropacitymax: 0});
     }, 2500);
 });
 

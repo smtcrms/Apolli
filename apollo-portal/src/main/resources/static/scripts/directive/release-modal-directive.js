@@ -1,0 +1,135 @@
+directive_module.directive('releasemodal', releaseModalDirective);
+
+function releaseModalDirective(toastr, AppUtil, EventManager, ReleaseService, NamespaceBranchService) {
+    return {
+        restrict: 'E',
+        templateUrl: '../../views/component/release-modal.html',
+        transclude: true,
+        replace: true,
+        scope: {
+            appId: '=',
+            env: '=',
+            cluster: '='
+        },
+        link: function (scope) {
+
+            scope.switchReleaseChangeViewType = switchReleaseChangeViewType;
+            scope.release = release;
+
+            scope.releaseBtnDisabled = false;
+            scope.releaseChangeViewType = 'change';
+            scope.releaseComment = '';
+
+            EventManager.subscribe(EventManager.EventType.PUBLISH_NAMESPACE,
+                                   function (context) {
+
+                                       var namespace = context.namespace;
+                                       scope.toReleaseNamespace = context.namespace;
+
+                                       var date = new Date().Format("yyyyMMddhhmmss");
+                                       if (namespace.mergeAndPublish) {
+                                           namespace.releaseTitle = date + "-gray-release-merge-to-master";
+                                       } else if (namespace.isBranch) {
+                                           namespace.releaseTitle = date + "-gray";
+                                       } else {
+                                           namespace.releaseTitle = date + "-release";
+                                       }
+
+                                       AppUtil.showModal('#releaseModal');
+                                   });
+
+            function release() {
+                if (scope.toReleaseNamespace.mergeAndPublish) {
+                    mergeAndPublish();
+                } else {
+                    publish();
+                }
+
+            }
+
+            function publish() {
+                scope.releaseBtnDisabled = true;
+                ReleaseService.release(scope.appId, scope.env,
+                                       scope.toReleaseNamespace.baseInfo.clusterName,
+                                       scope.toReleaseNamespace.baseInfo.namespaceName,
+                                       scope.toReleaseNamespace.releaseTitle,
+                                       scope.releaseComment).then(
+                    function (result) {
+                        AppUtil.hideModal('#releaseModal');
+                        toastr.success("发布成功");
+                        //refresh all namespace items
+                        scope.releaseBtnDisabled = false;
+
+                        //gray release
+                        if (scope.toReleaseNamespace.isBranch
+                            && !scope.toReleaseNamespace.mergeAndPublish) {
+
+                            //refresh item status
+                            scope.toReleaseNamespace.branchItems.forEach(function (item, index) {
+                                if (item.isDeleted) {
+                                    scope.toReleaseNamespace.branchItems.splice(index, 1);
+                                } else {
+                                    item.isModified = false;
+                                }
+                            });
+                            scope.toReleaseNamespace.itemModifiedCnt = 0;
+
+                            //check rules
+                            if (!scope.toReleaseNamespace.rules
+                                || !scope.toReleaseNamespace.rules.ruleItems
+                                || !scope.toReleaseNamespace.rules.ruleItems.length) {
+
+                                scope.toReleaseNamespace.viewType = 'rule';
+                                AppUtil.showModal('#grayReleaseWithoutRulesTips');
+                            }
+
+                        } else {
+                            EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                              {
+                                                  namespace: scope.toReleaseNamespace
+                                              })
+                        }
+
+                    }, function (result) {
+                        scope.releaseBtnDisabled = false;
+                        toastr.error(AppUtil.errorMsg(result), "发布失败");
+
+                    }
+                );
+
+            }
+
+            function mergeAndPublish() {
+
+                NamespaceBranchService.mergeAndReleaseBranch(scope.appId,
+                                                             scope.env,
+                                                             scope.cluster,
+                                                             scope.toReleaseNamespace.baseInfo.namespaceName,
+                                                             scope.toReleaseNamespace.baseInfo.clusterName,
+                                                             scope.toReleaseNamespace.releaseTitle,
+                                                             scope.releaseComment,
+                                                             scope.toReleaseNamespace.mergeAfterDeleteBranch)
+                    .then(function (result) {
+
+                        toastr.success("全量发布成功");
+
+                        EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                          {
+                                              namespace: scope.toReleaseNamespace
+                                          })
+
+                    }, function (result) {
+                        toastr.error(AppUtil.errorMsg(result), "全量发布失败");
+                    });
+
+                AppUtil.hideModal('#releaseModal');
+            }
+
+            function switchReleaseChangeViewType(type) {
+                scope.releaseChangeViewType = type;
+            }
+        }
+    }
+}
+
+

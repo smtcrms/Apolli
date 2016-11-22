@@ -86,7 +86,7 @@ public class InstanceServiceTest extends AbstractIntegrationTest {
     String anotherReleaseKey = "anotherReleaseKey";
 
     InstanceConfig instanceConfig = instanceService.findInstanceConfig(someInstanceId,
-        someConfigAppId, someConfigClusterName, someConfigNamespaceName);
+        someConfigAppId, someConfigNamespaceName);
 
     assertNull(instanceConfig);
 
@@ -94,7 +94,7 @@ public class InstanceServiceTest extends AbstractIntegrationTest {
         someConfigClusterName, someConfigNamespaceName, someReleaseKey));
 
     instanceConfig = instanceService.findInstanceConfig(someInstanceId, someConfigAppId,
-        someConfigClusterName, someConfigNamespaceName);
+        someConfigNamespaceName);
 
     assertNotEquals(0, instanceConfig.getId());
     assertEquals(someReleaseKey, instanceConfig.getReleaseKey());
@@ -104,7 +104,7 @@ public class InstanceServiceTest extends AbstractIntegrationTest {
     instanceService.updateInstanceConfig(instanceConfig);
 
     InstanceConfig updated = instanceService.findInstanceConfig(someInstanceId, someConfigAppId,
-        someConfigClusterName, someConfigNamespaceName);
+        someConfigNamespaceName);
 
     assertEquals(instanceConfig.getId(), updated.getId());
     assertEquals(anotherReleaseKey, updated.getReleaseKey());
@@ -169,6 +169,42 @@ public class InstanceServiceTest extends AbstractIntegrationTest {
 
     assertEquals(Lists.newArrayList(someInstance, anotherInstance), result.getContent());
   }
+
+  @Test
+  @Rollback
+  public void testFindInstancesByNamespaceAndInstanceAppId() throws Exception {
+    String someConfigAppId = "someConfigAppId";
+    String someConfigClusterName = "someConfigClusterName";
+    String someConfigNamespaceName = "someConfigNamespaceName";
+    String someReleaseKey = "someReleaseKey";
+    Date someValidDate = new Date();
+
+    String someAppId = "someAppId";
+    String anotherAppId = "anotherAppId";
+    String someClusterName = "someClusterName";
+    String someDataCenter = "someDataCenter";
+    String someIp = "someIp";
+
+    Instance someInstance = instanceService.createInstance(assembleInstance(someAppId,
+        someClusterName, someDataCenter, someIp));
+    Instance anotherInstance = instanceService.createInstance(assembleInstance(anotherAppId,
+        someClusterName, someDataCenter, someIp));
+
+    prepareInstanceConfigForInstance(someInstance.getId(), someConfigAppId, someConfigClusterName,
+        someConfigNamespaceName, someReleaseKey, someValidDate);
+    prepareInstanceConfigForInstance(anotherInstance.getId(), someConfigAppId,
+        someConfigClusterName,
+        someConfigNamespaceName, someReleaseKey, someValidDate);
+
+    Page<Instance> result = instanceService.findInstancesByNamespaceAndInstanceAppId(someAppId,
+        someConfigAppId, someConfigClusterName, someConfigNamespaceName, new PageRequest(0, 10));
+    Page<Instance> anotherResult = instanceService.findInstancesByNamespaceAndInstanceAppId(anotherAppId,
+        someConfigAppId, someConfigClusterName, someConfigNamespaceName, new PageRequest(0, 10));
+
+    assertEquals(Lists.newArrayList(someInstance), result.getContent());
+    assertEquals(Lists.newArrayList(anotherInstance), anotherResult.getContent());
+  }
+
 
   @Test
   @Rollback

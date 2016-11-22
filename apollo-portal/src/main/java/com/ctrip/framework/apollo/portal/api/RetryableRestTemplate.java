@@ -10,6 +10,8 @@ import com.dianping.cat.message.Transaction;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -31,6 +33,8 @@ import javax.annotation.PostConstruct;
  */
 @Component
 public class RetryableRestTemplate {
+
+  private Logger logger = LoggerFactory.getLogger(RetryableRestTemplate.class);
 
   private UriTemplateHandler uriTemplateHandler = new DefaultUriTemplateHandler();
 
@@ -56,7 +60,7 @@ public class RetryableRestTemplate {
                                    Object... uriVariables)
       throws RestClientException {
 
-      return execute(env, path, reference, uriVariables);
+    return exchangeGet(env, path, reference, uriVariables);
   }
 
   public <T> T post(Env env, String path, Object request, Class<T> responseType, Object... uriVariables)
@@ -93,10 +97,10 @@ public class RetryableRestTemplate {
         ct.complete();
         return result;
       } catch (Throwable t) {
+        logger.error("Http request failed, uri: {}, method: {}", uri, method, t);
         Cat.logError(t);
         if (canRetry(t, method)) {
           Cat.logEvent(CatEventType.API_RETRY, uri);
-          continue;
         } else {//biz exception rethrow
           ct.setStatus(t);
           ct.complete();
@@ -112,8 +116,8 @@ public class RetryableRestTemplate {
     throw e;
   }
 
-  private <T> ResponseEntity<T> execute(Env env, String path, ParameterizedTypeReference<T> reference,
-                                   Object... uriVariables){
+  private <T> ResponseEntity<T> exchangeGet(Env env, String path, ParameterizedTypeReference<T> reference,
+                                            Object... uriVariables) {
     if (path.startsWith("/")) {
       path = path.substring(1, path.length());
     }
@@ -133,9 +137,16 @@ public class RetryableRestTemplate {
         ct.complete();
         return result;
       } catch (Throwable t) {
+        logger.error("Http request failed, uri: {}, method: {}", uri, HttpMethod.GET, t);
         Cat.logError(t);
-        Cat.logEvent(CatEventType.API_RETRY, uri);
-        continue;
+        if (canRetry(t, HttpMethod.GET)){
+          Cat.logEvent(CatEventType.API_RETRY, uri);
+        }else {// biz exception rethrow
+          ct.setStatus(t);
+          ct.complete();
+          throw t;
+        }
+
       }
     }
 
@@ -147,7 +158,7 @@ public class RetryableRestTemplate {
 
   }
 
-  private List<ServiceDTO> getAdminServices( Env env, Transaction ct){
+  private List<ServiceDTO> getAdminServices(Env env, Transaction ct) {
 
     List<ServiceDTO> services = adminServiceAddressLocator.getServiceList(env);
 
@@ -180,7 +191,7 @@ public class RetryableRestTemplate {
         restTemplate.delete(parseHost(service) + path, uriVariables);
         break;
       default:
-        throw new UnsupportedOperationException(String.format("not supported http method(method=%s)", method));
+        throw new UnsupportedOperationException(String.format("unsupported http method(method=%s)", method));
     }
     return result;
   }

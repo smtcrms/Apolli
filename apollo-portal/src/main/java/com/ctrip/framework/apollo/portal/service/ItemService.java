@@ -12,7 +12,7 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
 import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
@@ -71,11 +71,15 @@ public class ItemService {
     }
 
     changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
-    itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
+    updateItems(appId, env, clusterName, namespaceName, changeSets);
 
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT,
         String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+  }
+
+  public void updateItems(String appId, Env env, String clusterName, String namespaceName, ItemChangeSets changeSets){
+    itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
   }
 
 

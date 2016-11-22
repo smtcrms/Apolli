@@ -37,3 +37,7 @@ INSERT INTO RELEASE (id, ReleaseKey, Name, Comment, AppId, ClusterName, Namespac
  VALUES (988, 'TEST-RELEASE-KEY6', 'INTEGRATION-TEST-PRIVATE-CONFIG-FILE','First Release','someAppId', 'default', 'anotherNamespace', '{"k1":"v1-file"}');
 INSERT INTO RELEASE (id, ReleaseKey, Name, Comment, AppId, ClusterName, NamespaceName, Configurations)
  VALUES (987, 'TEST-RELEASE-KEY7', 'INTEGRATION-TEST-PUBLIC-CONFIG-FILE','First Release','somePublicAppId', 'default', 'anotherNamespace', '{"k2":"v2-file"}');
+INSERT INTO RELEASE (id, ReleaseKey, Name, Comment, AppId, ClusterName, NamespaceName, Configurations)
+  VALUES (986, 'TEST-GRAY-RELEASE-KEY1', 'INTEGRATION-TEST-DEFAULT','Gray Release','someAppId', 'gray-branch-1', 'application', '{"k1":"v1-gray"}');
+INSERT INTO RELEASE (id, ReleaseKey, Name, Comment, AppId, ClusterName, NamespaceName, Configurations)
+  VALUES (985, 'TEST-GRAY-RELEASE-KEY2', 'INTEGRATION-TEST-NAMESPACE','Gray Release','somePublicAppId', 'gray-branch-2', 'somePublicNamespace', '{"k1":"gray-v1", "k2":"gray-v2"}');

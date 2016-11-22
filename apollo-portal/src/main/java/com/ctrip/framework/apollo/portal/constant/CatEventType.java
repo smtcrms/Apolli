@@ -20,4 +20,11 @@ public interface CatEventType {
 
   String USER_ACCESS = "User.Access";
 
+  String CREATE_GRAY_RELEASE = "GrayRelease.Create";
+
+  String DELETE_GRAY_RELEASE = "GrayRelease.Delete";
+
+  String MERGE_GRAY_RELEASE = "GrayRelease.Merge";
+
+  String UPDATE_GRAY_RELEASE_RULE = "GrayReleaseRule.Update";
 }

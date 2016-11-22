@@ -8,6 +8,8 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.PortalSettings;
 import com.dianping.cat.Cat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -35,6 +37,7 @@ public class AdminServiceAddressLocator {
   private static final long OFFLINE_REFRESH_INTERVAL = 10 * 1000;
   private static final int RETRY_TIMES = 3;
   private static final String ADMIN_SERVICE_URL_PATH = "/services/admin";
+  private static final Logger logger = LoggerFactory.getLogger(AdminServiceAddressLocator.class);
 
   private ScheduledExecutorService refreshServiceAddressService;
   private RestTemplate restTemplate;
@@ -91,10 +94,12 @@ public class AdminServiceAddressLocator {
         refreshSuccess = refreshSuccess && currentEnvRefreshResult;
       }
 
-      if (refreshSuccess){
-        refreshServiceAddressService.schedule(new RefreshAdminServerAddressTask(), NORMAL_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+      if (refreshSuccess) {
+        refreshServiceAddressService
+            .schedule(new RefreshAdminServerAddressTask(), NORMAL_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
       } else {
-        refreshServiceAddressService.schedule(new RefreshAdminServerAddressTask(), OFFLINE_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+        refreshServiceAddressService
+            .schedule(new RefreshAdminServerAddressTask(), OFFLINE_REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
       }
     }
   }
@@ -110,9 +115,11 @@ public class AdminServiceAddressLocator {
         }
         cache.put(env, Arrays.asList(services));
         return true;
-      } catch (Throwable e) {//meta server error
-        Cat.logError("get admin server address fail", e);
-        continue;
+      } catch (Throwable e) {
+        logger.error(String.format("Get admin server address from meta server failed. env: %s, meta server address:%s",
+                                   env, MetaDomainConsts.getDomain(env)), e);
+        Cat.logError(String.format("Get admin server address from meta server failed. env: %s, meta server address:%s",
+                                   env, MetaDomainConsts.getDomain(env)), e);
       }
     }
     return false;

@@ -1,403 +1,278 @@
 application_module.controller("ConfigNamespaceController",
-                              ['$rootScope', '$scope', '$window', '$location', 'toastr', 'AppUtil', 'ConfigService',
-                               'PermissionService',
-                               'CommitService', 'NamespaceLockService', 'UserService', 'ReleaseService',
-                               function ($rootScope, $scope, $window, $location, toastr, AppUtil, ConfigService,
-                                         PermissionService,
-                                         CommitService, NamespaceLockService, UserService, ReleaseService) {
-
-                                   var namespace_view_type = {
-                                       TEXT: 'text',
-                                       TABLE: 'table',
-                                       HISTORY: 'history'
-                                   };
-
-                                   var TABLE_VIEW_OPER_TYPE = {
-                                       CREATE: 'create',
-                                       UPDATE: 'update'
-                                   };
-
-                                   $rootScope.refreshNamespaces = refreshNamespaces;
-
-                                   $scope.commitChange = commitChange;
-
-                                   $scope.prepareReleaseNamespace = prepareReleaseNamespace;
-
-                                   $scope.release = release;
-
-                                   $scope.switchReleaseChangeViewType = switchReleaseChangeViewType;
-
-                                   $scope.showRollbackAlertDialog = showRollbackAlertDialog;
-
-                                   $scope.preRollback = preRollback;
-
-                                   $scope.rollback = rollback;
-
-                                   $scope.preDeleteItem = preDeleteItem;
-
-                                   $scope.deleteItem = deleteItem;
-
-                                   $scope.editItem = editItem;
-
-                                   $scope.createItem = createItem;
-
-                                   $scope.doItem = doItem;
-
-                                   $scope.closeTip = closeTip;
-
-                                   $scope.showText = showText;
-
-                                   $scope.showNoModifyPermissionDialog = showNoModifyPermissionDialog; 
-                                   
-                                   $scope.lockCheck = lockCheck;
-
-                                   $scope.releaseBtnDisabled = false;
-                                   $scope.rollbackBtnDisabled = false;
-                                   $scope.addItemBtnDisabled = false;
-                                   $scope.commitChangeBtnDisabled = false;
-
-                                   init();
-
-                                   function init() {
-                                       PermissionService.get_app_role_users($rootScope.pageContext.appId)
-                                           .then(function (result) {
-                                               var masterUsers = '';
-                                               result.masterUsers.forEach(function (user) {
-                                                   masterUsers += user.userId + ',';
-                                               });
-                                               $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
-                                           }, function (result) {
-
-                                           });
-
-                                       UserService.load_user().then(function (result) {
-                                           $scope.currentUser = result.userId;
-                                       });
-
-                                   }
-
-                                   function refreshNamespaces(viewType) {
-                                       if ($rootScope.pageContext.env == '') {
-                                           return;
-                                       }
-                                       ConfigService.load_all_namespaces($rootScope.pageContext.appId,
-                                                                         $rootScope.pageContext.env,
-                                                                         $rootScope.pageContext.clusterName,
-                                                                         viewType).then(
-                                           function (result) {
-
-                                               $scope.namespaces = result;
-
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
-                                           });
-                                   }
-
-                                   function commitChange(namespace) {
-                                       var model = {
-                                           configText: namespace.editText,
-                                           namespaceId: namespace.baseInfo.id,
-                                           format: namespace.format
-                                       };
-
-                                       //prevent repeat submit
-                                       if ($scope.commitChangeBtnDisabled) {
-                                           return;
-                                       }
-                                       $scope.commitChangeBtnDisabled = true;
-                                       ConfigService.modify_items($rootScope.pageContext.appId,
-                                                                  $rootScope.pageContext.env,
-                                                                  $rootScope.pageContext.clusterName,
-                                                                  namespace.baseInfo.namespaceName,
-                                                                  model).then(
-                                           function (result) {
-                                               toastr.success("更新成功, 如需生效请发布");
-                                               //refresh all namespace items
-                                               $rootScope.refreshNamespaces();
-                                               $scope.commitChangeBtnDisabled = false;
-                                               return true;
-
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "更新失败");
-                                               $scope.commitChangeBtnDisabled = false;
-                                               return false;
-                                           }
-                                       );
-                                   }
-
-                                   var releaseModal = $('#releaseModal');
-                                   $scope.toReleaseNamespace = {};
-                                   function prepareReleaseNamespace(namespace) {
-                                       if (!namespace.hasReleasePermission) {
-                                           $('#releaseNoPermissionDialog').modal('show');
-                                           return;
-                                       } else if (namespace.lockOwner && $scope.currentUser == namespace.lockOwner) {
-                                           //自己修改不能自己发布
-                                           $('#releaseDenyDialog').modal('show');
-                                       } else {
-                                           $('#releaseModal').modal('show');
-                                       }
-                                       $scope.releaseTitle = new Date().Format("yyyyMMddhhmmss") + "-release";
-                                       $scope.toReleaseNamespace = namespace;
-                                   }
-
-                                   $scope.releaseComment = '';
-                                   function release() {
-
-                                       $scope.releaseBtnDisabled = true;
-                                       ReleaseService.release($rootScope.pageContext.appId, $rootScope.pageContext.env,
-                                                              $rootScope.pageContext.clusterName,
-                                                              $scope.toReleaseNamespace.baseInfo.namespaceName,
-                                                              $scope.releaseTitle,
-                                                              $scope.releaseComment).then(
-                                           function (result) {
-                                               releaseModal.modal('hide');
-                                               toastr.success("发布成功");
-                                               //refresh all namespace items
-                                               $scope.releaseBtnDisabled = false;
-                                               $rootScope.refreshNamespaces();
-
-                                           }, function (result) {
-                                               $scope.releaseBtnDisabled = false;
-                                               toastr.error(AppUtil.errorMsg(result), "发布失败");
-
-                                           }
-                                       );
-                                   }
-
-                                   $scope.releaseChangeViewType = 'change';
-                                   function switchReleaseChangeViewType(type) {
-                                       $scope.releaseChangeViewType = type;
-                                   }
-
-                                   function showRollbackAlertDialog() {
-                                       $("#rollbackModal").modal('hide');
-                                       $("#rollbackAlertDialog").modal('show');
-                                   }
-
-                                   $scope.toRollbackNamespace = {};
-                                   function preRollback(namespace) {
-                                       $scope.toRollbackNamespace = namespace;
-                                       //load latest two active releases
-                                       ReleaseService.findActiveReleases($rootScope.pageContext.appId,
-                                                                         $rootScope.pageContext.env,
-                                                                         $rootScope.pageContext.clusterName,
-                                                                         $scope.toRollbackNamespace.baseInfo.namespaceName,
-                                                                         0, 2)
-                                           .then(function (result) {
-                                               if (result.length <= 1) {
-                                                   toastr.error("没有可以回滚的发布历史");
-                                                   return;
-                                               }
-                                               $scope.firstRelease = result[0];
-                                               $scope.secondRelease = result[1];
-
-                                               ReleaseService.compare($rootScope.pageContext.env,
-                                                                      $scope.firstRelease.id,
-                                                                      $scope.secondRelease.id)
-                                                   .then(function (result) {
-                                                       $scope.releaseCompareResult = result.changes;
-
-                                                       $("#rollbackModal").modal('show');
-                                                   }, function (result) {
-                                                       toastr.error(AppUtil.errorMsg(result), "对比失败");
-                                                   })
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "加载最近两次发布失败");
-                                           });
-                                   }
-
-                                   function rollback() {
-                                       $scope.rollbackBtnDisabled = true;
-                                       ReleaseService.rollback(
-                                           $rootScope.pageContext.env,
-                                           $scope.firstRelease.id)
-                                           .then(function (result) {
-                                               toastr.success("回滚成功");
-                                               $scope.rollbackBtnDisabled = false;
-                                               $("#rollbackModal").modal("hide");
-                                               $rootScope.refreshNamespaces();
-                                           }, function (result) {
-                                               $scope.rollbackBtnDisabled = false;
-                                               toastr.error(AppUtil.errorMsg(result), "回滚失败");
-                                           })
-                                   }
-
-                                   $scope.tableViewOperType = '', $scope.item = {};
-                                   var toOperationNamespace;
-
-                                   var toDeleteItemId = 0;
-
-                                   function preDeleteItem(namespace, itemId) {
-                                       if (!lockCheck(namespace)) {
-                                           return;
-                                       }
-
-                                       toOperationNamespace = namespace;
-                                       toDeleteItemId = itemId;
-
-                                       $("#deleteConfirmDialog").modal("show");
-                                   }
-
-                                   function deleteItem() {
-                                       ConfigService.delete_item($rootScope.pageContext.appId,
-                                                                 $rootScope.pageContext.env,
-                                                                 $rootScope.pageContext.clusterName,
-                                                                 toOperationNamespace.baseInfo.namespaceName,
-                                                                 toDeleteItemId).then(
-                                           function (result) {
-                                               toastr.success("删除成功!");
-                                               $rootScope.refreshNamespaces();
-                                           }, function (result) {
-                                               toastr.error(AppUtil.errorMsg(result), "删除失败");
-                                           });
-                                   }
-
-                                   //修改配置
-                                   function editItem(namespace, item) {
-                                       if (!lockCheck(namespace)) {
-                                           return;
-                                       }
-                                       switchTableViewOperType(TABLE_VIEW_OPER_TYPE.UPDATE);
-                                       $scope.item = _.clone(item);
-                                       toOperationNamespace = namespace;
-
-                                       $("#itemModal").modal("show");
-                                   }
-
-                                   //新增配置
-                                   function createItem(namespace) {
-                                       if (!lockCheck(namespace)) {
-                                           return;
-                                       }
-
-                                       switchTableViewOperType(TABLE_VIEW_OPER_TYPE.CREATE);
-                                       $scope.item = {};
-                                       toOperationNamespace = namespace;
-                                       $('#itemModal').modal('show');
-                                   }
-
-                                   var selectedClusters = [];
-                                   $scope.collectSelectedClusters = function (data) {
-                                       selectedClusters = data;
-                                   };
-
-                                   function switchTableViewOperType(type) {
-                                       $scope.tableViewOperType = type;
-                                   }
-
-                                   var itemModal = $("#itemModal");
-
-                                   function doItem() {
-
-                                       if (selectedClusters.length == 0) {
-                                           toastr.error("请选择集群");
-                                           return;
-                                       }
-
-                                       if (!$scope.item.value) {
-                                           $scope.item.value = "";
-                                       }
-
-                                       if ($scope.tableViewOperType == TABLE_VIEW_OPER_TYPE.CREATE) {
-
-                                           //check key unique
-                                           var hasRepeatKey = false;
-                                           toOperationNamespace.items.forEach(function (item) {
-                                               if (!item.isDeleted && $scope.item.key == item.item.key) {
-                                                   toastr.error("key=" + $scope.item.key + " 已存在");
-                                                   hasRepeatKey = true;
-                                                   return;
-                                               }
-                                           });
-                                           if (hasRepeatKey) {
-                                               return;
-                                           }
-
-                                           $scope.addItemBtnDisabled = true;
-
-                                           selectedClusters.forEach(function (cluster) {
-                                               ConfigService.create_item($rootScope.pageContext.appId,
-                                                                         cluster.env,
-                                                                         cluster.name,
-                                                                         toOperationNamespace.baseInfo.namespaceName,
-                                                                         $scope.item).then(
-                                                   function (result) {
-                                                       toastr.success(cluster.env + " , " + $scope.item.key, "添加成功");
-                                                       if (cluster.env == $rootScope.pageContext.env && cluster.name == $rootScope.pageContext.clusterName){
-                                                           $rootScope.refreshNamespaces(namespace_view_type.TABLE);
-                                                       }
-                                                   }, function (result) {
-                                                       toastr.error(AppUtil.errorMsg(result), "添加失败");
-                                                   });
-                                           });
-
-                                           $scope.addItemBtnDisabled = false;
-                                           itemModal.modal('hide');
-
-                                       } else {
-
-                                           if (!$scope.item.comment) {
-                                               $scope.item.comment = "";
-                                           }
-
-                                           ConfigService.update_item($rootScope.pageContext.appId,
-                                                                     $rootScope.pageContext.env,
-                                                                     $rootScope.pageContext.clusterName,
-                                                                     toOperationNamespace.baseInfo.namespaceName,
-                                                                     $scope.item).then(
-                                               function (result) {
-                                                   toastr.success("更新成功, 如需生效请发布");
-                                                   itemModal.modal('hide');
-                                                   $rootScope.refreshNamespaces(namespace_view_type.TABLE);
-                                               }, function (result) {
-                                                   toastr.error(AppUtil.errorMsg(result), "更新失败");
-                                               });
-                                       }
-
-                                   }
-
-                                   function lockCheck(namespace) {
-                                       if (namespace.lockOwner && $scope.currentUser != namespace.lockOwner) {
-                                           $scope.lockOwner = namespace.lockOwner;
-                                           $('#namespaceLockedDialog').modal('show');
-                                           return false;
-                                       }
-                                       return true;
-                                   }
-
-                                   function closeTip(clusterName) {
-                                       var hideTip = JSON.parse(localStorage.getItem("hideTip"));
-                                       if (!hideTip) {
-                                           hideTip = {};
-                                           hideTip[$rootScope.pageContext.appId] = {};
-                                       }
-
-                                       if (!hideTip[$rootScope.pageContext.appId]) {
-                                           hideTip[$rootScope.pageContext.appId] = {};
-                                       }
-
-                                       hideTip[$rootScope.pageContext.appId][clusterName] = true;
-
-                                       $rootScope.hideTip = hideTip;
-
-                                       localStorage.setItem("hideTip", JSON.stringify(hideTip));
-
-                                   }
-
-                                   function showText(text) {
-                                       $scope.text = text;
-                                       $('#showText').modal('show');
-                                   }
-                                   
-                                   function showNoModifyPermissionDialog() {
-                                    $("#modifyNoPermissionDialog").modal('show');    
-                                   }
-
-                                   $('.config-item-container').removeClass('hide');
-
-                                   new Clipboard('.clipboard');
+                              ['$rootScope', '$scope', 'toastr', 'AppUtil', 'EventManager', 'ConfigService',
+                               'PermissionService', 'UserService', 'NamespaceBranchService',
+                               controller]);
+
+function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigService,
+                    PermissionService, UserService, NamespaceBranchService) {
+
+    $scope.rollback = rollback;
+    $scope.preDeleteItem = preDeleteItem;
+    $scope.deleteItem = deleteItem;
+    $scope.editItem = editItem;
+    $scope.createItem = createItem;
+    $scope.closeTip = closeTip;
+    $scope.showText = showText;
+    $scope.createBranch = createBranch;
+    $scope.preCreateBranch = preCreateBranch;
+    $scope.preDeleteBranch = preDeleteBranch;
+    $scope.deleteBranch = deleteBranch;
+    $scope.showNoModifyPermissionDialog = showNoModifyPermissionDialog;
+    $scope.lockCheck = lockCheck;
+
+    init();
+    
+
+    function init() {
+        PermissionService.get_app_role_users($rootScope.pageContext.appId)
+            .then(function (result) {
+                var masterUsers = '';
+                result.masterUsers.forEach(function (user) {
+                    masterUsers += user.userId + ',';
+                });
+                $scope.masterUsers = masterUsers.substring(0, masterUsers.length - 1);
+            }, function (result) {
+
+            });
+
+        UserService.load_user().then(function (result) {
+            $scope.currentUser = result.userId;
+        });
+
+    }
+
+    EventManager.subscribe(EventManager.EventType.REFRESH_NAMESPACE,
+                           function (context) {
+                               if (context.namespace){
+                                   refreshSingleNamespace(context.namespace);
+                               }else {
+                                   refreshAllNamespaces();
                                }
 
-                              ]);
+                           });
+
+    function refreshAllNamespaces() {
+        if ($rootScope.pageContext.env == '') {
+            return;
+        }
+
+        ConfigService.load_all_namespaces($rootScope.pageContext.appId,
+                                     $rootScope.pageContext.env,
+                                     $rootScope.pageContext.clusterName).then(
+            function (result) {
+
+                $scope.namespaces = result;
+
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
+            });
+    }
+
+
+
+    function refreshSingleNamespace(namespace) {
+        if ($rootScope.pageContext.env == '') {
+            return;
+        }
+
+        ConfigService.load_namespace($rootScope.pageContext.appId,
+                                     $rootScope.pageContext.env,
+                                     $rootScope.pageContext.clusterName,
+                                     namespace.baseInfo.namespaceName).then(
+            function (result) {
+
+                $scope.namespaces.forEach(function (namespace, index) {
+                    if (namespace.baseInfo.namespaceName == result.baseInfo.namespaceName){
+                        $scope.namespaces[index] = result;
+                    }    
+                })
+
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
+            });
+    }
+
+
+    function rollback() {
+        EventManager.emit(EventManager.EventType.ROLLBACK_NAMESPACE);
+    }
+
+    $scope.tableViewOperType = '', $scope.item = {};
+    $scope.toOperationNamespace;
+
+    var toDeleteItemId = 0;
+
+    function preDeleteItem(namespace, itemId) {
+        if (!lockCheck(namespace)) {
+            return;
+        }
+
+        $scope.toOperationNamespace = namespace;
+        toDeleteItemId = itemId;
+
+        $("#deleteConfirmDialog").modal("show");
+    }
+
+    function deleteItem() {
+        ConfigService.delete_item($rootScope.pageContext.appId,
+                                  $rootScope.pageContext.env,
+                                  $rootScope.pageContext.clusterName,
+                                  $scope.toOperationNamespace.baseInfo.namespaceName,
+                                  toDeleteItemId).then(
+            function (result) {
+                toastr.success("删除成功!");
+                EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                  {
+                                      namespace: $scope.toOperationNamespace
+                                  });
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "删除失败");
+            });
+    }
+
+    //修改配置
+    function editItem(namespace, toEditItem) {
+        if (!lockCheck(namespace)) {
+            return;
+        }
+
+        $scope.item = _.clone(toEditItem);
+
+        if (namespace.isBranch) {
+            var existedItem = false;
+            namespace.items.forEach(function (item) {
+                //branch items contain the item
+                if (!item.isDeleted && item.item.key == toEditItem.key) {
+                    existedItem = true;
+                }
+            });
+            if (!existedItem) {
+                $scope.item.lineNum = 0;
+                $scope.item.tableViewOperType = 'create';
+            } else {
+                $scope.item.tableViewOperType = 'update';
+            }
+
+        } else {
+            $scope.item.tableViewOperType = 'update';
+        }
+
+        $scope.toOperationNamespace = namespace;
+
+        AppUtil.showModal('#itemModal');
+    }
+
+    //新增配置
+    function createItem(namespace) {
+        if (!lockCheck(namespace)) {
+            return;
+        }
+
+        $scope.item = {
+            tableViewOperType: 'create'
+        };
+
+        $scope.toOperationNamespace = namespace;
+        AppUtil.showModal('#itemModal');
+    }
+
+    var selectedClusters = [];
+    $scope.collectSelectedClusters = function (data) {
+        selectedClusters = data;
+    };
+
+    function lockCheck(namespace) {
+        if (namespace.lockOwner && $scope.currentUser != namespace.lockOwner) {
+            $scope.lockOwner = namespace.lockOwner;
+            $('#namespaceLockedDialog').modal('show');
+            return false;
+        }
+        return true;
+    }
+
+    function closeTip(clusterName) {
+        var hideTip = JSON.parse(localStorage.getItem("hideTip"));
+        if (!hideTip) {
+            hideTip = {};
+            hideTip[$rootScope.pageContext.appId] = {};
+        }
+
+        if (!hideTip[$rootScope.pageContext.appId]) {
+            hideTip[$rootScope.pageContext.appId] = {};
+        }
+
+        hideTip[$rootScope.pageContext.appId][clusterName] = true;
+
+        $rootScope.hideTip = hideTip;
+
+        localStorage.setItem("hideTip", JSON.stringify(hideTip));
+
+    }
+
+    function showText(text) {
+        $scope.text = text;
+        $('#showTextModal').modal('show');
+    }
+
+    function showNoModifyPermissionDialog() {
+        $("#modifyNoPermissionDialog").modal('show');
+    }
+
+    var toCreateBranchNamespace = {};
+
+    function preCreateBranch(namespace) {
+        toCreateBranchNamespace = namespace;
+        AppUtil.showModal("#createBranchTips");
+    }
+
+    function createBranch() {
+        NamespaceBranchService.createBranch($rootScope.pageContext.appId,
+                                            $rootScope.pageContext.env,
+                                            $rootScope.pageContext.clusterName,
+                                            toCreateBranchNamespace.baseInfo.namespaceName)
+            .then(function (result) {
+                toastr.success("创建灰度成功");
+                EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                  {
+                                      namespace: toCreateBranchNamespace
+                                  });
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "创建灰度失败");
+            })
+
+    }
+
+    function preDeleteBranch(branch) {
+        //normal delete
+        branch.branchStatus = 0;
+        $scope.toDeleteBranch = branch;
+        AppUtil.showModal('#deleteBranchDialog');
+    }
+
+    function deleteBranch() {
+        NamespaceBranchService.deleteBranch($rootScope.pageContext.appId,
+                                            $rootScope.pageContext.env,
+                                            $rootScope.pageContext.clusterName,
+                                            $scope.toDeleteBranch.baseInfo.namespaceName,
+                                            $scope.toDeleteBranch.baseInfo.clusterName
+            )
+            .then(function (result) {
+                toastr.success("删除成功");
+                EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                  {
+                                      namespace: $scope.toDeleteBranch.parentNamespace
+                                  });
+            }, function (result) {
+                toastr.error(AppUtil.errorMsg(result), "删除分支失败");
+            })
+
+    }
+
+    
+
+    $('.config-item-container').removeClass('hide');
+
+    new Clipboard('.clipboard');
+}
+
 

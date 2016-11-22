@@ -11,7 +11,7 @@ import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceTextModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Assert;
