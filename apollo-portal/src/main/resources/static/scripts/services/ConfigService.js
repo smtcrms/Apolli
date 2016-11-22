@@ -1,5 +1,10 @@
 appService.service("ConfigService", ['$resource', '$q', function ($resource, $q) {
     var config_source = $resource("", {}, {
+        load_namespace: {
+            method: 'GET',
+            isArray: false,
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName'
+        },
         load_all_namespaces: {
             method: 'GET',
             isArray: true,
@@ -39,6 +44,20 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
     });
 
     return {
+        load_namespace: function (appId, env, clusterName, namespaceName) {
+            var d = $q.defer();
+            config_source.load_namespace({
+                                                  appId: appId,
+                                                  env: env,
+                                                  clusterName: clusterName,
+                                                  namespaceName: namespaceName
+                                              }, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
         load_all_namespaces: function (appId, env, clusterName) {
             var d = $q.defer();
             config_source.load_all_namespaces({

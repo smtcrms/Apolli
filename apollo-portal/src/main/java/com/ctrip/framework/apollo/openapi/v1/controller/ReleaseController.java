@@ -8,7 +8,7 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.openapi.dto.OpenReleaseDTO;
 import com.ctrip.framework.apollo.openapi.util.OpenApiBeanUtils;
-import com.ctrip.framework.apollo.portal.entity.form.NamespaceReleaseModel;
+import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
 import com.ctrip.framework.apollo.portal.service.UserService;
 
@@ -55,7 +55,7 @@ public class ReleaseController {
     model.setClusterName(clusterName);
     model.setNamespaceName(namespaceName);
 
-    return OpenApiBeanUtils.transformFromReleaseDTO(releaseService.createRelease(model));
+    return OpenApiBeanUtils.transformFromReleaseDTO(releaseService.publish(model));
   }
 
   @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest", method = RequestMethod.GET)

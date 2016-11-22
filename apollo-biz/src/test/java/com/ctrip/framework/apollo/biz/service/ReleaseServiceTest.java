@@ -32,6 +32,10 @@ public class ReleaseServiceTest extends AbstractUnitTest {
   private ReleaseRepository releaseRepository;
   @Mock
   private NamespaceService namespaceService;
+  @Mock
+  private ReleaseHistoryService releaseHistoryService;
+  @Mock
+  private ItemSetService itemSetService;
   @InjectMocks
   private ReleaseService releaseService;
 

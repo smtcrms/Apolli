@@ -29,12 +29,37 @@ p, td, span {
     border-radius: 0;
 }
 
+.no-border {
+    border: 0;
+}
+
 .no-margin {
     margin: 0;
 }
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+.word-break {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.border {
+    border: solid 1px #c3c3c3;
+}
+
+.active {
+    background: #f5f5f5;
+}
+
+.label-default-light {
+    background: #A4A4A4
+}
+
+.panel-default .panel-heading {
+    color: #797979;
 }
 
 pre {
@@ -59,7 +84,7 @@ pre {
 }
 
 .logo {
-   font-size: 25px;
+    font-size: 25px;
 }
 
 .i-20 {
@@ -88,11 +113,11 @@ pre {
 
 .badge-white {
     background: #ffffff;
-    color: #0f0f0f;
+    color: #6c6c6c;
 }
 
-.panel-default > .panel-heading .badge {
-
+.modal-dialog {
+    width: 960px;
 }
 
 .apollo-container {
@@ -208,18 +233,20 @@ table th {
 }
 
 .panel-heading .header-buttons {
-    float: right;
+    /*float: right;*/
     min-width: 405px;
 }
 
-#treeview .list-group{
+#treeview .list-group {
     margin: 0;
 
 }
-#treeview .list-group .list-group-item{
+
+#treeview .list-group .list-group-item {
     border: 0;
     border-top: 1px solid #eff2f7;
 }
+
 .project-info th {
     text-align: right;
     padding: 4px 6px;
@@ -233,14 +260,6 @@ table th {
 
 #config-info {
     min-height: 500px;
-}
-
-#itemModal .modal-dialog {
-    width: 860px;
-}
-
-#itemModal .modal-body {
-    padding-bottom: 0;
 }
 
 #config-edit {
@@ -315,55 +334,77 @@ table th {
     margin-bottom: 2px;
 }
 
-.namespace-attribute-panel {
+.namespace-panel {
+    border-top: 0;
+}
+
+.namespace-panel .namespace-name {
+    font-size: 20px;
+}
+
+.namespace-panel .namespace-label {
+    margin-left: 5px;
+}
+
+.namespace-panel .namespace-attribute-panel {
     margin-left: 0;
     color: #fff;
     border-top: 0;
     background: #f1f2f7;
 }
 
-.namespace-attribute-public {
+.namespace-panel .namespace-attribute-public {
     background: #31708f;
     width: 40px;
     cursor: pointer;
 }
 
-.second-panel-heading .nav-tabs {
+.namespace-panel .second-panel-heading .nav-tabs {
     border-bottom: 0;
 }
 
-.namespace-view-table td img {
+.namespace-panel .namespace-view-table td img {
     cursor: pointer;
     width: 23px;
     height: 23px;
 
 }
 
-.namespace-view-table table {
+.namespace-panel .namespace-view-table table {
     table-layout: inherit;
 }
 
-.namespace-view-table td {
+.namespace-panel .namespace-view-table td {
     word-wrap: break-word;
 }
 
-.namespace-view-table .glyphicon {
+.namespace-panel .namespace-view-table .glyphicon {
     cursor: pointer;
 }
 
-.history-view {
+.namespace-panel .namespace-view-table .search-input {
+    padding-top: 15px;
+    padding-bottom: 10px;
+
+}
+
+.namespace-panel .history-view {
     padding: 10px 20px;
 
 }
 
-.instance-view .btn-primary .badge {
+.namespace-panel .instance-view .btn-primary .badge {
     color: #337ab7;
     background-color: #fff;
 }
 
-.instance-view .btn-default .badge {
+.namespace-panel .instance-view .btn-default .badge {
     background: #777;
     color: #fff;
+}
+
+.namespace-panel .rules-manage-view {
+    padding: 45px 20px;
 }
 
 .line {
@@ -399,8 +440,7 @@ table th {
 
 .list-group-item .btn-title {
     color: gray;
-    font-family: "Apple Color Emoji";
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
 }
 
@@ -462,12 +502,13 @@ table th {
     background: #c3c3c3;
 }
 
-.user-container {
+.item-container {
+    border: solid 1px #f1f2f7;
     margin-top: 15px;
     padding: 20px 15px
 }
 
-.user-container .user-info {
+.item-container .item-info {
     margin-left: 5px;
 }
 
@@ -488,50 +529,97 @@ table th {
     margin-top: 10px;
 }
 
-.release-history .icon {
-    font-size: 13px;
+.release-history .release-history-container {
+    padding: 0;
 }
 
-.release-history .info {
-    font-size: 13px;
-    margin-left: 5px;
-    margin-top: 2px;
+.release-history .release-history-list {
+    max-height: 750px;
+    padding: 0;
+    border-right: solid 1px #eff2f7;
+    overflow: scroll;
 }
 
-.release-history .user .info {
-    font-size: 22px;
+.release-history .release-history-list .media {
+    position: relative;
+    margin: 0;
+    padding: 10px;
+    border-bottom: solid 1px #eff2f7;
 }
 
-.release-history .time {
-    padding-top: 8px;
+.release-history .release-history-list .release-operation {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 5px;
+    height: 100%;
 }
 
-.release-history .comment {
+.release-history .release-history-list .media .media-left {
     padding-top: 10px;
 }
 
-.release-history .table {
-    margin-top: 15px;
+.release-history .release-history-list .media .media-body .release-title {
+    padding: 0;
 }
 
-.release-history .badge-0 {
-    background: #f0ad4e;
+.release-history .release-history-list .load-more {
+    height: 45px;
+    background: #f5f5f5;
 }
 
-.release-history .badge-1 {
-    background: #c3c3c3;
+.release-history .release-operation-normal {
+    background: #316510;
 }
 
-.release-history .badge-2 {
-    background: #27AE60;
+.release-history .release-operation-rollback {
+    background: #997f1c;
 }
 
-.release-history .badge-3 {
-    background: #3478a8;
+.release-history .release-operation-gray {
+    background: #999999;
 }
 
-.release-history .label {
-    margin-right: 15px;
+.release-history .operation-caption-container {
+    position: relative;
+}
+
+.release-history .section-title {
+    padding: 15px 10px 0 10px;
+}
+
+.release-history .operation-caption {
+    position: absolute;
+    top: 45px;
+    width: 75px;
+    height: 18px;
+    color: #fff;
+    font-size: 12px;
+}
+
+.release-history .panel-heading .back-btn {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+}
+
+.release-history .release-info {
+    padding: 0;
+    border: 0;
+}
+
+.release-history .panel-heading {
+    padding: 15px;
+}
+
+.release-history .panel-body {
+    max-height: 750px;
+    padding: 0;
+    overflow: scroll;
+}
+
+.release-history .empty-container {
+    padding: 15px;
 }
 
 .valdr-message {
@@ -553,10 +641,11 @@ table th {
 }
 
 /*index page*/
-#app-list h5{
+#app-list h5 {
     word-wrap: break-word;
     word-break: break-all;
 }
+
 #app-list .media-body {
     padding-top: 15px;
 }
@@ -611,10 +700,34 @@ table th {
     background: #57c8f2;
 }
 
-.favorites-app-list .no-favorites{
+.favorites-app-list .no-favorites {
     padding-bottom: 15px;
 }
 
 .visit-app-list .media-left {
     background: #41cac0;
 }
+
+#rulesModal .rules-ip-selector {
+    width: 500px;
+    height: 50px;
+}
+
+#rulesModal textarea {
+    width: 500px;
+    margin-bottom: 5px;
+}
+
+#rulesModal .rule-edit-panel {
+    padding: 15px 0;
+}
+
+#rulesModal .add-rule {
+    margin-left: 15px;
+}
+
+#rulesModal .select2-container .select2-search__field:not([placeholder='']) {
+    width: auto !important;
+}
+
+

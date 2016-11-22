@@ -40,7 +40,7 @@ public class PrivilegeServiceTest extends AbstractIntegrationTest {
     app.setDataChangeCreatedTime(new Date());
     App newApp = adminService.createNewApp(app);
 
-    List<Cluster> clusters = clusterService.findClusters(newApp.getAppId());
+    List<Cluster> clusters = clusterService.findParentClusters(newApp.getAppId());
     List<Namespace> namespaces =
         namespaceService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
     Namespace namespace = namespaces.get(0);
@@ -70,7 +70,7 @@ public class PrivilegeServiceTest extends AbstractIntegrationTest {
     app.setDataChangeLastModifiedBy(owner);
     app.setDataChangeCreatedTime(new Date());
     App newApp = adminService.createNewApp(app);
-    List<Cluster> clusters = clusterService.findClusters(newApp.getAppId());
+    List<Cluster> clusters = clusterService.findParentClusters(newApp.getAppId());
     List<Namespace> namespaces =
         namespaceService.findNamespaces(newApp.getAppId(), clusters.get(0).getName());
     Namespace namespace = namespaces.get(0);

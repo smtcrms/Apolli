@@ -45,13 +45,6 @@ public class ItemController {
     if (managedEntity != null) {
       throw new BadRequestException("item already exist");
     } else {
-      Item lastItem = itemService.findLastOne(appId, clusterName, namespaceName);
-      int lineNum = 1;
-      if (lastItem != null) {
-        Integer lastItemNum = lastItem.getLineNum();
-        lineNum = lastItemNum == null ? 1 : lastItemNum + 1;
-      }
-      entity.setLineNum(lineNum);
       entity = itemService.save(entity);
       builder.createItem(entity);
     }
@@ -157,4 +150,6 @@ public class ItemController {
     }
     return BeanUtils.transfrom(ItemDTO.class, item);
   }
+
+
 }

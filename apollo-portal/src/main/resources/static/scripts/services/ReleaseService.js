@@ -76,12 +76,12 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
         return d.promise;
     }
 
-    function compare(env, firstReleaseId, secondReleaseId) {
+    function compare(env, baseReleaseId, toCompareReleaseId) {
         var d = $q.defer();
         resource.compare({
                              env: env,
-                             firstReleaseId: firstReleaseId,
-                             secondReleaseId: secondReleaseId
+                             baseReleaseId: baseReleaseId,
+                             toCompareReleaseId: toCompareReleaseId
                          }, function (result) {
             d.resolve(result);
         }, function (result) {

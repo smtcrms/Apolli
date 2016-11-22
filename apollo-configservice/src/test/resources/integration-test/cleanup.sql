@@ -4,4 +4,6 @@ DELETE FROM AppNamespace;
 DELETE FROM Cluster;
 DELETE FROM App;
 DELETE FROM ReleaseMessage;
+DELETE FROM GrayReleaseRule;
+
 

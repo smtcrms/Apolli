@@ -13,12 +13,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
-import java.util.function.ObjDoubleConsumer;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -60,13 +57,13 @@ public class InstanceConfigAuditUtilTest {
     someDataCenter = "someDataCenter";
     someIp = "someIp";
     someConfigAppId = "someConfigAppId";
-    someConfigClusterName= "someConfigClusterName";
+    someConfigClusterName = "someConfigClusterName";
     someConfigNamespace = "someConfigNamespace";
     someReleaseKey = "someReleaseKey";
 
     someAuditModel = new InstanceConfigAuditUtil.InstanceConfigAuditModel(someAppId,
-        someClusterName, someDataCenter, someIp, someConfigAppId, someConfigClusterName, someConfigNamespace,
-        someReleaseKey);
+        someClusterName, someDataCenter, someIp, someConfigAppId, someConfigClusterName,
+        someConfigNamespace, someReleaseKey);
   }
 
   @Test
@@ -93,7 +90,7 @@ public class InstanceConfigAuditUtilTest {
     verify(instanceService, times(1)).findInstance(someAppId, someClusterName, someDataCenter,
         someIp);
     verify(instanceService, times(1)).createInstance(any(Instance.class));
-    verify(instanceService, times(1)).findInstanceConfig(someInstanceId, someConfigAppId, someConfigClusterName,
+    verify(instanceService, times(1)).findInstanceConfig(someInstanceId, someConfigAppId,
         someConfigNamespace);
     verify(instanceService, times(1)).createInstanceConfig(any(InstanceConfig.class));
   }

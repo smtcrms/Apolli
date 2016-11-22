@@ -22,8 +22,9 @@ public class InstanceService {
     return instanceAPI.getByRelease(env, releaseId, page, size);
   }
 
-  public PageDTO<InstanceDTO> getByNamespace(Env env, String appId, String clusterName, String namespaceName, int page, int size){
-    return instanceAPI.getByNamespace(appId, env, clusterName, namespaceName, page, size);
+  public PageDTO<InstanceDTO> getByNamespace(Env env, String appId, String clusterName, String namespaceName,
+                                             String instanceAppId, int page, int size){
+    return instanceAPI.getByNamespace(appId, env, clusterName, namespaceName, instanceAppId, page, size);
   }
 
   public int getInstanceCountByNamepsace(String appId, Env env, String clusterName, String namespaceName){

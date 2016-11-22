@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.entity.Item;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
@@ -27,6 +28,10 @@ public class ItemSetService {
   @Autowired
   private ItemService itemService;
 
+  @Transactional
+  public ItemChangeSets updateSet(Namespace namespace, ItemChangeSets changeSets){
+    return updateSet(namespace.getAppId(), namespace.getClusterName(), namespace.getNamespaceName(), changeSets);
+  }
 
   @Transactional
   public ItemChangeSets updateSet(String appId, String clusterName,
