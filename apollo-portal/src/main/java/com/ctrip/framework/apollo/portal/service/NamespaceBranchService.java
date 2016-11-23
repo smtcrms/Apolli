@@ -68,8 +68,7 @@ public class NamespaceBranchService {
     namespaceBranchAPI.updateBranchGrayRules(appId, env, clusterName, namespaceName, branchName, rules);
 
     Cat.logEvent(CatEventType.UPDATE_GRAY_RELEASE_RULE,
-                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName),
-                 "success", String.valueOf(rules.getRuleItems()));
+                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
   public void deleteBranch(String appId, Env env, String clusterName, String namespaceName,
