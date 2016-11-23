@@ -52,6 +52,8 @@ public class ItemController {
     toCreate.setLineNum(0);
     toCreate.setId(0);
     toCreate.setDataChangeLastModifiedBy(toCreate.getDataChangeCreatedBy());
+    toCreate.setDataChangeLastModifiedTime(null);
+    toCreate.setDataChangeCreatedTime(null);
 
     ItemDTO createdItem = itemService.createItem(appId, Env.fromString(env),
         clusterName, namespaceName, toCreate);

@@ -58,6 +58,15 @@ public class ItemController {
                             @RequestBody ItemDTO item) {
     checkModel(isValidItem(item));
 
+    //protect
+    item.setLineNum(0);
+    item.setId(0);
+    String userId = userInfoHolder.getUser().getUserId();
+    item.setDataChangeCreatedBy(userId);
+    item.setDataChangeLastModifiedBy(userId);
+    item.setDataChangeCreatedTime(null);
+    item.setDataChangeLastModifiedTime(null);
+
     return configService.createItem(appId, Env.valueOf(env), clusterName, namespaceName, item);
   }
 
