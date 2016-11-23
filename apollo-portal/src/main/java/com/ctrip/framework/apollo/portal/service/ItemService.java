@@ -91,12 +91,6 @@ public class ItemService {
     }
     item.setNamespaceId(namespace.getId());
 
-    if (StringUtils.isEmpty(item.getDataChangeCreatedBy())) {
-      String username = userInfoHolder.getUser().getUserId();
-      item.setDataChangeCreatedBy(username);
-      item.setDataChangeLastModifiedBy(username);
-    }
-
     ItemDTO itemDTO = itemAPI.createItem(appId, env, clusterName, namespaceName, item);
     Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     return itemDTO;
