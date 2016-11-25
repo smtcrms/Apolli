@@ -76,16 +76,6 @@ public class NamespaceBranchService {
 
     String operator = userInfoHolder.getUser().getUserId();
 
-    //Refusing request if user has not release permission and branch has been released
-    if (!permissionValidator.hasReleaseNamespacePermission(appId, namespaceName)
-        && (!permissionValidator.hasModifyNamespacePermission(appId, namespaceName) ||
-            releaseService.loadLatestRelease(appId, env, branchName, namespaceName) != null)) {
-      throw new BadRequestException("Forbidden operation. "
-                                    + "Cause by: you has not release permission "
-                                    + "or you has not modify permission "
-                                    + "or you has modify permission but branch has been released");
-    }
-
     namespaceBranchAPI.deleteBranch(appId, env, clusterName, namespaceName, branchName, operator);
 
     Cat.logEvent(CatEventType.DELETE_GRAY_RELEASE,
