@@ -30,6 +30,10 @@ public class PermissionValidator {
 
   }
 
+  public boolean hasOperateNamespacePermission(String appId, String namespaceName){
+    return hasModifyNamespacePermission(appId, namespaceName) || hasReleaseNamespacePermission(appId, namespaceName);
+  }
+
   public boolean hasAssignRolePermission(String appId) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
         PermissionType.ASSIGN_ROLE,
