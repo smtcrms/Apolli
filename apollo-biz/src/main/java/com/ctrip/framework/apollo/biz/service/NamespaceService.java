@@ -1,8 +1,6 @@
 package com.ctrip.framework.apollo.biz.service;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -17,6 +15,7 @@ import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Cluster;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
+import com.ctrip.framework.apollo.common.constants.NamespaceBranchStatus;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
@@ -38,6 +37,15 @@ public class NamespaceService {
   private ReleaseService releaseService;
   @Autowired
   private ClusterService clusterService;
+  @Autowired
+  private NamespaceBranchService namespaceBranchService;
+  @Autowired
+  private ReleaseHistoryService releaseHistoryService;
+  @Autowired
+  private NamespaceLockService namespaceLockService;
+  @Autowired
+  private InstanceService instanceService;
+
 
 
   public Namespace findOne(Long namespaceId) {
@@ -57,25 +65,25 @@ public class NamespaceService {
     return namespaces;
   }
 
-  public List<Namespace> findByAppIdAndNamespaceName(String appId, String namespaceName){
+  public List<Namespace> findByAppIdAndNamespaceName(String appId, String namespaceName) {
     return namespaceRepository.findByAppIdAndNamespaceName(appId, namespaceName);
   }
 
-  public Namespace findChildNamespace(String appId, String parentClusterName, String namespaceName){
+  public Namespace findChildNamespace(String appId, String parentClusterName, String namespaceName) {
     List<Namespace> namespaces = findByAppIdAndNamespaceName(appId, namespaceName);
-    if (CollectionUtils.isEmpty(namespaces) || namespaces.size() == 1){
+    if (CollectionUtils.isEmpty(namespaces) || namespaces.size() == 1) {
       return null;
     }
 
     List<Cluster> childClusters = clusterService.findChildClusters(appId, parentClusterName);
-    if (CollectionUtils.isEmpty(childClusters)){
+    if (CollectionUtils.isEmpty(childClusters)) {
       return null;
     }
 
     Set<String> childClusterNames = childClusters.stream().map(Cluster::getName).collect(Collectors.toSet());
     //the child namespace is the intersection of the child clusters and child namespaces
-    for (Namespace namespace: namespaces){
-      if (childClusterNames.contains(namespace.getClusterName())){
+    for (Namespace namespace : namespaces) {
+      if (childClusterNames.contains(namespace.getClusterName())) {
         return namespace;
       }
     }
@@ -83,7 +91,7 @@ public class NamespaceService {
     return null;
   }
 
-  public Namespace findChildNamespace(Namespace parentNamespace){
+  public Namespace findChildNamespace(Namespace parentNamespace) {
     String appId = parentNamespace.getAppId();
     String parentClusterName = parentNamespace.getClusterName();
     String namespaceName = parentNamespace.getNamespaceName();
@@ -92,12 +100,12 @@ public class NamespaceService {
 
   }
 
-  public Namespace findParentNamespace(Namespace namespace){
+  public Namespace findParentNamespace(Namespace namespace) {
     String appId = namespace.getAppId();
     String namespaceName = namespace.getNamespaceName();
 
     Cluster cluster = clusterService.findOne(appId, namespace.getClusterName());
-    if (cluster != null && cluster.getParentClusterId() > 0){
+    if (cluster != null && cluster.getParentClusterId() > 0) {
       Cluster parentCluster = clusterService.findOne(cluster.getParentClusterId());
       return findOne(appId, parentCluster.getName(), namespaceName);
     }
@@ -105,7 +113,7 @@ public class NamespaceService {
     return null;
   }
 
-  public boolean isChildNamespace(Namespace namespace){
+  public boolean isChildNamespace(Namespace namespace) {
     return findParentNamespace(namespace) != null;
   }
 
@@ -118,11 +126,11 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void deleteByAppIdAndClusterName(String appId, String clusterName, String operator){
+  public void deleteByAppIdAndClusterName(String appId, String clusterName, String operator) {
 
     List<Namespace> toDeleteNamespaces = findNamespaces(appId, clusterName);
 
-    for (Namespace namespace: toDeleteNamespaces){
+    for (Namespace namespace : toDeleteNamespaces) {
 
       deleteNamespace(namespace, operator);
 
@@ -130,16 +138,32 @@ public class NamespaceService {
   }
 
   @Transactional
-  public Namespace deleteNamespace(Namespace namespace, String operator){
+  public Namespace deleteNamespace(Namespace namespace, String operator) {
     String appId = namespace.getAppId();
     String clusterName = namespace.getClusterName();
+    String namespaceName = namespace.getNamespaceName();
 
     itemService.batchDelete(namespace.getId(), operator);
     commitService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
 
-    if (!isChildNamespace(namespace)){
+    if (!isChildNamespace(namespace)) {
       releaseService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
     }
+
+    //delete child namespace
+    Namespace childNamespace = findChildNamespace(namespace);
+    if (childNamespace != null) {
+      namespaceBranchService.deleteBranch(appId, clusterName, namespaceName,
+                                          childNamespace.getClusterName(), NamespaceBranchStatus.DELETED, operator);
+      //delete child namespace's releases. Notice: delete child namespace will not delete child namespace's releases
+      releaseService.batchDelete(appId, childNamespace.getClusterName(), namespaceName, operator);
+    }
+
+    releaseHistoryService.batchDelete(appId, clusterName, namespaceName, operator);
+
+    instanceService.batchDeleteInstanceConfig(appId, clusterName, namespaceName);
+
+    namespaceLockService.unlock(namespace.getId());
 
     namespace.setDeleted(true);
     namespace.setDataChangeLastModifiedBy(operator);
@@ -158,7 +182,7 @@ public class NamespaceService {
     Namespace namespace = namespaceRepository.save(entity);
 
     auditService.audit(Namespace.class.getSimpleName(), namespace.getId(), Audit.OP.INSERT,
-        namespace.getDataChangeCreatedBy());
+                       namespace.getDataChangeCreatedBy());
 
     return namespace;
   }
@@ -171,7 +195,7 @@ public class NamespaceService {
     managedNamespace = namespaceRepository.save(managedNamespace);
 
     auditService.audit(Namespace.class.getSimpleName(), managedNamespace.getId(), Audit.OP.UPDATE,
-        managedNamespace.getDataChangeLastModifiedBy());
+                       managedNamespace.getDataChangeLastModifiedBy());
 
     return managedNamespace;
   }
@@ -182,7 +206,7 @@ public class NamespaceService {
     //load all private app namespace
     List<AppNamespace> privateAppNamespaces = appNamespaceService.findPrivateAppNamespace(appId);
     //create all private namespace
-    for (AppNamespace appNamespace: privateAppNamespaces){
+    for (AppNamespace appNamespace : privateAppNamespaces) {
       Namespace ns = new Namespace();
       ns.setAppId(appId);
       ns.setClusterName(clusterName);

@@ -16,4 +16,5 @@ public interface RolePermissionRepository extends PagingAndSortingRepository<Rol
    * find role permissions by role ids
    */
   List<RolePermission> findByRoleIdIn(Collection<Long> roleId);
+
 }

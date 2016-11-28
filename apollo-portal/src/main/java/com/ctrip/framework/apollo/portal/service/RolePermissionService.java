@@ -36,20 +36,18 @@ import java.util.Set;
  */
 @Service
 public class RolePermissionService implements InitializingBean {
+
   @Autowired
   private RoleRepository roleRepository;
-
   @Autowired
   private RolePermissionRepository rolePermissionRepository;
-
   @Autowired
   private UserRoleRepository userRoleRepository;
-
   @Autowired
   private PermissionRepository permissionRepository;
-
   @Autowired
   private ServerConfigService serverConfigService;
+
 
   private List<String> superAdminUsers;
   private Splitter configSplitter;

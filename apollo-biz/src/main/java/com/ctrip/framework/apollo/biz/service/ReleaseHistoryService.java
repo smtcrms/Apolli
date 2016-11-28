@@ -25,9 +25,6 @@ public class ReleaseHistoryService {
   private ReleaseHistoryRepository releaseHistoryRepository;
 
   @Autowired
-  private ReleaseService releaseService;
-
-  @Autowired
   private AuditService auditService;
 
   private Gson gson = new Gson();
@@ -72,4 +69,8 @@ public class ReleaseHistoryService {
     return releaseHistory;
   }
 
+  @Transactional
+  public int batchDelete(String appId, String clusterName, String namespaceName, String operator){
+    return releaseHistoryRepository.batchDelete(appId, clusterName, namespaceName, operator);
+  }
 }

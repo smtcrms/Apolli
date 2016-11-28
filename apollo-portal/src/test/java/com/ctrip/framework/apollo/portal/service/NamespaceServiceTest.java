@@ -41,6 +41,7 @@ public class NamespaceServiceTest {
   @InjectMocks
   private NamespaceService namespaceService;
 
+
   @Before
   public void setup() {
   }
@@ -97,6 +98,5 @@ public class NamespaceServiceTest {
     assertEquals(namespaceName, namespaceVO.getBaseInfo().getNamespaceName());
 
   }
-
 
 }

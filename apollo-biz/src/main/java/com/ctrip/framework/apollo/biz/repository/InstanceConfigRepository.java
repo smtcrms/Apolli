@@ -4,6 +4,7 @@ import com.ctrip.framework.apollo.biz.entity.InstanceConfig;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +26,10 @@ public interface InstanceConfigRepository extends PagingAndSortingRepository<Ins
 
   List<InstanceConfig> findByConfigAppIdAndConfigClusterNameAndConfigNamespaceNameAndDataChangeLastModifiedTimeAfterAndReleaseKeyNotIn(
       String appId, String clusterName, String namespaceName, Date validDate, Set<String> releaseKey);
+
+  @Modifying
+  @Query("delete from InstanceConfig  where ConfigAppId=?1 and ConfigClusterName=?2 and ConfigNamespaceName = ?3")
+  int batchDelete(String appId, String clusterName, String namespaceName);
 
   @Query(
       value = "select b.Id from `InstanceConfig` a inner join `Instance` b on b.Id =" +
