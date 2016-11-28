@@ -34,9 +34,7 @@ public class AppNamespaceService {
   private ClusterService clusterService;
   @Autowired
   private AuditService auditService;
-  @Autowired
-  private ServerConfigService serverConfigService;
-  
+
   public boolean isAppNamespaceNameUnique(String appId, String namespaceName) {
     Objects.requireNonNull(appId, "AppId must not be null");
     Objects.requireNonNull(namespaceName, "Namespace must not be null");

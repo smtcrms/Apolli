@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -57,14 +58,25 @@ public class NamespaceService {
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
     Cat.logEvent(CatEventType.CREATE_NAMESPACE,
-        String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
-            namespace.getNamespaceName()));
+                 String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
+                               namespace.getNamespaceName()));
     return createdNamespace;
   }
 
-  public void deleteNamespace(String appId, Env env,  String clusterName, String namespaceName){
-    namespaceAPI.deleteNamespace(env, appId, clusterName, namespaceName, userInfoHolder.getUser().getUserId());
+
+  @Transactional
+  public void deleteNamespace(String appId, Env env, String clusterName, String namespaceName) {
+
+    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(appId, namespaceName);
+    if (appNamespace != null && !appNamespace.isPublic()){
+      throw new BadRequestException("private namespace can not be deleted");
+    }
+
+    String operator = userInfoHolder.getUser().getUserId();
+
+    namespaceAPI.deleteNamespace(env, appId, clusterName, namespaceName, operator);
   }
+
 
   public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
@@ -93,7 +105,7 @@ public class NamespaceService {
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-            appId, env, clusterName, namespace.getNamespaceName(), e);
+                     appId, env, clusterName, namespace.getNamespaceName(), e);
         throw e;
       }
     }

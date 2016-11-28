@@ -172,4 +172,9 @@ public class InstanceService {
 
     return instanceConfigRepository.save(existedInstanceConfig);
   }
+
+  @Transactional
+  public int batchDeleteInstanceConfig(String configAppId, String configClusterName, String configNamespaceName){
+    return instanceConfigRepository.batchDelete(configAppId, configClusterName, configNamespaceName);
+  }
 }
