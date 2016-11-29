@@ -10,12 +10,12 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
-import com.ctrip.framework.apollo.portal.service.txtresolver.ConfigTextResolver;
+import com.ctrip.framework.apollo.portal.components.txtresolver.ConfigTextResolver;
 import com.dianping.cat.Cat;
 
 import org.springframework.beans.factory.annotation.Autowired;

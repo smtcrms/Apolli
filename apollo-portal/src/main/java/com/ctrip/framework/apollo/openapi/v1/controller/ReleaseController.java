@@ -10,7 +10,7 @@ import com.ctrip.framework.apollo.openapi.dto.OpenReleaseDTO;
 import com.ctrip.framework.apollo.openapi.util.OpenApiBeanUtils;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
-import com.ctrip.framework.apollo.portal.service.UserService;
+import com.ctrip.framework.apollo.portal.extend.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

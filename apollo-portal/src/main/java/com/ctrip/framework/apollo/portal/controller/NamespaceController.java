@@ -11,7 +11,7 @@ import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;

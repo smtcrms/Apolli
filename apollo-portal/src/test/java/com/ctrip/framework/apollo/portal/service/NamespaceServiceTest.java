@@ -8,7 +8,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
+import com.ctrip.framework.apollo.portal.components.txtresolver.PropertyResolver;
 
 import org.junit.Before;
 import org.junit.Test;

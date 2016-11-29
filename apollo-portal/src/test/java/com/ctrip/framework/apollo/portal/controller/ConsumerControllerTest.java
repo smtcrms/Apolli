@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.openapi.entity.ConsumerToken;
 import com.ctrip.framework.apollo.openapi.service.ConsumerService;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 
 import org.junit.Before;

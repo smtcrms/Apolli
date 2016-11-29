@@ -5,7 +5,7 @@ import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 
 import org.springframework.beans.factory.annotation.Autowired;

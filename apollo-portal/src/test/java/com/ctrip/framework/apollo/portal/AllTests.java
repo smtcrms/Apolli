@@ -12,8 +12,8 @@ import com.ctrip.framework.apollo.portal.service.ConfigServiceTest;
 import com.ctrip.framework.apollo.portal.service.NamespaceServiceTest;
 import com.ctrip.framework.apollo.portal.service.RoleInitializationServiceTest;
 import com.ctrip.framework.apollo.portal.service.RolePermissionServiceTest;
-import com.ctrip.framework.apollo.portal.service.txtresolver.FileTextResolverTest;
-import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolverTest;
+import com.ctrip.framework.apollo.portal.components.txtresolver.FileTextResolverTest;
+import com.ctrip.framework.apollo.portal.components.txtresolver.PropertyResolverTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

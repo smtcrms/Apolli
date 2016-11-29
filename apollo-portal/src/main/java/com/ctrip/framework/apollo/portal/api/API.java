@@ -1,9 +1,11 @@
 package com.ctrip.framework.apollo.portal.api;
 
 
+import com.ctrip.framework.apollo.portal.components.RetryableRestTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class API {
+public abstract class API {
 
   @Autowired
   protected RetryableRestTemplate restTemplate;
