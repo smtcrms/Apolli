@@ -1,6 +1,6 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
-import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 
 import java.lang.reflect.Method;

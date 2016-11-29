@@ -1,6 +1,6 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
-import com.ctrip.framework.apollo.portal.extend.SsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.spi.SsoHeartbeatHandler;
 
 import java.io.IOException;
 

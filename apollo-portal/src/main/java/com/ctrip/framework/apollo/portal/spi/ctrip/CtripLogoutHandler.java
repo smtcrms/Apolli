@@ -1,6 +1,6 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
-import com.ctrip.framework.apollo.portal.extend.LogoutHandler;
+import com.ctrip.framework.apollo.portal.spi.LogoutHandler;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;

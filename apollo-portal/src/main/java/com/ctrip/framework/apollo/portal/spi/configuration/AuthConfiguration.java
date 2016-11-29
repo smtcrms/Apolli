@@ -1,23 +1,23 @@
-package com.ctrip.framework.apollo.portal.extend.configuration;
+package com.ctrip.framework.apollo.portal.spi.configuration;
 
 import com.google.common.collect.Maps;
 
 import com.ctrip.framework.apollo.openapi.filter.ConsumerAuthenticationFilter;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuditUtil;
 import com.ctrip.framework.apollo.openapi.util.ConsumerAuthUtil;
-import com.ctrip.framework.apollo.portal.extend.LogoutHandler;
-import com.ctrip.framework.apollo.portal.extend.SsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.extend.ctrip.CtripLogoutHandler;
-import com.ctrip.framework.apollo.portal.extend.ctrip.CtripSsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.extend.ctrip.CtripUserInfoHolder;
-import com.ctrip.framework.apollo.portal.extend.ctrip.CtripUserService;
-import com.ctrip.framework.apollo.portal.extend.defaultimpl.DefaultLogoutHandler;
-import com.ctrip.framework.apollo.portal.extend.defaultimpl.DefaultSsoHeartbeatHandler;
-import com.ctrip.framework.apollo.portal.extend.defaultimpl.DefaultUserInfoHolder;
-import com.ctrip.framework.apollo.portal.extend.defaultimpl.DefaultUserService;
+import com.ctrip.framework.apollo.portal.spi.LogoutHandler;
+import com.ctrip.framework.apollo.portal.spi.SsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.ctrip.CtripLogoutHandler;
+import com.ctrip.framework.apollo.portal.spi.ctrip.CtripSsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.spi.ctrip.CtripUserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.ctrip.CtripUserService;
+import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultLogoutHandler;
+import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultSsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserService;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
-import com.ctrip.framework.apollo.portal.extend.UserService;
+import com.ctrip.framework.apollo.portal.spi.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

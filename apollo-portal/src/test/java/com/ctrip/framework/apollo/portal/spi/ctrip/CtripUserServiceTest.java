@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
