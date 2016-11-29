@@ -1,6 +1,6 @@
-package com.ctrip.framework.apollo.portal.extend.defaultimpl;
+package com.ctrip.framework.apollo.portal.spi.defaultimpl;
 
-import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 
 /**

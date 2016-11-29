@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
-import com.ctrip.framework.apollo.portal.extend.UserService;
+import com.ctrip.framework.apollo.portal.spi.UserService;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;

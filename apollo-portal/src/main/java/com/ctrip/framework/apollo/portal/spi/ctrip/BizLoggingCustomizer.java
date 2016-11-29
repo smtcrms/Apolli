@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip;
+package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.ctrip.framework.apollo.common.customize.LoggingCustomizer;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;

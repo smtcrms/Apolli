@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.portal.AbstractUnitTest;
-import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.PermissionType;
 import com.ctrip.framework.apollo.portal.entity.po.Permission;
 import com.ctrip.framework.apollo.portal.entity.po.Role;

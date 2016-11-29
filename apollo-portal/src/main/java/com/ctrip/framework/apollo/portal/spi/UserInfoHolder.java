@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.extend;
+package com.ctrip.framework.apollo.portal.spi;
 
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 

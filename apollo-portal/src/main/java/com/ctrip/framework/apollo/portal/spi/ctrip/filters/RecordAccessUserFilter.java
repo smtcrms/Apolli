@@ -1,6 +1,6 @@
-package com.ctrip.framework.apollo.portal.extend.ctrip.filters;
+package com.ctrip.framework.apollo.portal.spi.ctrip.filters;
 
-import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.dianping.cat.Cat;
 
