@@ -21,7 +21,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.controller.AppController;
-import com.ctrip.framework.apollo.portal.service.UserService;
+import com.ctrip.framework.apollo.portal.extend.UserService;
 
 import com.google.gson.Gson;
 

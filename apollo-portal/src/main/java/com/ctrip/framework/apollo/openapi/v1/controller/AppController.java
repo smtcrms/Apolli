@@ -4,7 +4,7 @@ import com.ctrip.framework.apollo.common.dto.ClusterDTO;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.openapi.dto.OpenEnvClusterDTO;
-import com.ctrip.framework.apollo.portal.PortalSettings;
+import com.ctrip.framework.apollo.portal.components.PortalSettings;
 import com.ctrip.framework.apollo.portal.service.ClusterService;
 
 import org.springframework.beans.factory.annotation.Autowired;

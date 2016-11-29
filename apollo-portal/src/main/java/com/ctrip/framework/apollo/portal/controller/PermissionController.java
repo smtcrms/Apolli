@@ -4,14 +4,14 @@ import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.extend.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.AppRolesAssignedUsers;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceRolesAssignedUsers;
 import com.ctrip.framework.apollo.portal.entity.vo.PermissionCondition;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
-import com.ctrip.framework.apollo.portal.service.UserService;
+import com.ctrip.framework.apollo.portal.extend.UserService;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
