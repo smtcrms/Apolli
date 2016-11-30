@@ -65,6 +65,7 @@ public class AuthConfiguration {
       FilterRegistrationBean singleSignOutFilter = new FilterRegistrationBean();
       singleSignOutFilter.setFilter(filter("org.jasig.cas.client.session.SingleSignOutFilter"));
       singleSignOutFilter.addUrlPatterns("/*");
+      singleSignOutFilter.setOrder(1);
       return singleSignOutFilter;
     }
 
@@ -83,6 +84,7 @@ public class AuthConfiguration {
       casFilter.setInitParameters(filterInitParam);
       casFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAuthenticationFilter"));
       casFilter.addUrlPatterns("/*");
+      casFilter.setOrder(2);
 
       return casFilter;
     }
@@ -102,6 +104,7 @@ public class AuthConfiguration {
       casValidationFilter.setFilter(filter("org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"));
       casValidationFilter.setInitParameters(filterInitParam);
       casValidationFilter.addUrlPatterns("/*");
+      casValidationFilter.setOrder(3);
 
       return casValidationFilter;
 
@@ -119,6 +122,7 @@ public class AuthConfiguration {
 
       assertionHolderFilter.setFilter(filter("com.ctrip.framework.apollo.sso.filter.ApolloAssertionThreadLocalFilter"));
       assertionHolderFilter.addUrlPatterns("/*");
+      assertionHolderFilter.setOrder(4);
 
       return assertionHolderFilter;
     }
