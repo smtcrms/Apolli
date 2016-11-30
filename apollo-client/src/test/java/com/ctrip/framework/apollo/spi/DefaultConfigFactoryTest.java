@@ -5,9 +5,12 @@ import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.internals.DefaultConfig;
+import com.ctrip.framework.apollo.internals.JsonConfigFile;
 import com.ctrip.framework.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.framework.apollo.internals.PropertiesConfigFile;
 import com.ctrip.framework.apollo.internals.XmlConfigFile;
+import com.ctrip.framework.apollo.internals.YamlConfigFile;
+import com.ctrip.framework.apollo.internals.YmlConfigFile;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.junit.Before;
@@ -79,6 +82,7 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
   public void testCreateConfigFile() throws Exception {
     String someNamespace = "someName";
     String anotherNamespace = "anotherName";
+    String yetAnotherNamespace = "yetAnotherNamespace";
     Properties someProperties = new Properties();
 
     LocalFileConfigRepository someLocalConfigRepo = mock(LocalFileConfigRepository.class);
@@ -86,11 +90,18 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
 
     doReturn(someLocalConfigRepo).when(defaultConfigFactory).createLocalConfigRepository(someNamespace);
     doReturn(someLocalConfigRepo).when(defaultConfigFactory).createLocalConfigRepository(anotherNamespace);
+    doReturn(someLocalConfigRepo).when(defaultConfigFactory).createLocalConfigRepository(yetAnotherNamespace);
 
     ConfigFile propertyConfigFile =
         defaultConfigFactory.createConfigFile(someNamespace, ConfigFileFormat.Properties);
     ConfigFile xmlConfigFile =
         defaultConfigFactory.createConfigFile(anotherNamespace, ConfigFileFormat.XML);
+    ConfigFile jsonConfigFile =
+        defaultConfigFactory.createConfigFile(yetAnotherNamespace, ConfigFileFormat.JSON);
+    ConfigFile ymlConfigFile = defaultConfigFactory.createConfigFile(someNamespace,
+        ConfigFileFormat.YML);
+    ConfigFile yamlConfigFile = defaultConfigFactory.createConfigFile(someNamespace,
+        ConfigFileFormat.YAML);
 
     assertThat("Should create PropertiesConfigFile for properties format", propertyConfigFile, is(instanceOf(
         PropertiesConfigFile.class)));
@@ -99,6 +110,19 @@ public class DefaultConfigFactoryTest extends ComponentTestCase {
     assertThat("Should create XmlConfigFile for xml format", xmlConfigFile, is(instanceOf(
         XmlConfigFile.class)));
     assertEquals(anotherNamespace, xmlConfigFile.getNamespace());
+
+    assertThat("Should create JsonConfigFile for json format", jsonConfigFile, is(instanceOf(
+        JsonConfigFile.class)));
+    assertEquals(yetAnotherNamespace, jsonConfigFile.getNamespace());
+
+    assertThat("Should create YmlConfigFile for yml format", ymlConfigFile, is(instanceOf(
+        YmlConfigFile.class)));
+    assertEquals(someNamespace, ymlConfigFile.getNamespace());
+
+    assertThat("Should create YamlConfigFile for yaml format", yamlConfigFile, is(instanceOf(
+        YamlConfigFile.class)));
+    assertEquals(someNamespace, yamlConfigFile.getNamespace());
+
   }
 
   public static class MockConfigUtil extends ConfigUtil {
