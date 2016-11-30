@@ -5,10 +5,13 @@ import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.internals.ConfigRepository;
 import com.ctrip.framework.apollo.internals.DefaultConfig;
+import com.ctrip.framework.apollo.internals.JsonConfigFile;
 import com.ctrip.framework.apollo.internals.LocalFileConfigRepository;
 import com.ctrip.framework.apollo.internals.PropertiesConfigFile;
 import com.ctrip.framework.apollo.internals.RemoteConfigRepository;
 import com.ctrip.framework.apollo.internals.XmlConfigFile;
+import com.ctrip.framework.apollo.internals.YamlConfigFile;
+import com.ctrip.framework.apollo.internals.YmlConfigFile;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 
 import org.slf4j.Logger;
@@ -40,6 +43,12 @@ public class DefaultConfigFactory implements ConfigFactory {
         return new PropertiesConfigFile(namespace, configRepository);
       case XML:
         return new XmlConfigFile(namespace, configRepository);
+      case JSON:
+        return new JsonConfigFile(namespace, configRepository);
+      case YAML:
+        return new YamlConfigFile(namespace, configRepository);
+      case YML:
+        return new YmlConfigFile(namespace, configRepository);
     }
 
     return null;
