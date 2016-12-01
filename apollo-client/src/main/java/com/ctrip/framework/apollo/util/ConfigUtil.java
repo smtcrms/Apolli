@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Named(type = ConfigUtil.class)
 public class ConfigUtil {
   private static final Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
-  private static final String TOOLING_CLUSTER = "TOOLING";
+  private static final String TOOLING_CLUSTER = "tooling";
   private int refreshInterval = 5;
   private TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
   private int connectTimeout = 1000; //1 second
