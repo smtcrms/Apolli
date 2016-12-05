@@ -21,14 +21,13 @@ import com.ctrip.framework.apollo.core.schedule.ExponentialSchedulePolicy;
 import com.ctrip.framework.apollo.core.schedule.SchedulePolicy;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
 import com.ctrip.framework.apollo.util.http.HttpUtil;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -123,7 +122,7 @@ public class RemoteConfigLongPollService implements Initializable {
       m_longPollStarted.set(false);
       ApolloConfigException exception =
           new ApolloConfigException("Schedule long polling refresh failed", ex);
-      Cat.logError(exception);
+      Tracer.logError(exception);
       logger.warn(ExceptionUtil.getDetailMessage(exception));
     }
   }
@@ -143,7 +142,7 @@ public class RemoteConfigLongPollService implements Initializable {
         } catch (InterruptedException e) {
         }
       }
-      Transaction transaction = Cat.newTransaction("Apollo.ConfigService", "pollNotification");
+      Transaction transaction = Tracer.newTransaction("Apollo.ConfigService", "pollNotification");
       try {
         if (lastServiceDto == null) {
           List<ServiceDTO> configServices = getConfigServices();
@@ -178,10 +177,10 @@ public class RemoteConfigLongPollService implements Initializable {
 
         m_longPollFailSchedulePolicyInSecond.success();
         transaction.addData("StatusCode", response.getStatusCode());
-        transaction.setStatus(Message.SUCCESS);
+        transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         lastServiceDto = null;
-        Cat.logError(ex);
+        Tracer.logError(ex);
         transaction.setStatus(ex);
         long sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();
         logger.warn(
@@ -215,7 +214,7 @@ public class RemoteConfigLongPollService implements Initializable {
         try {
           remoteConfigRepository.onLongPollNotified(lastServiceDto);
         } catch (Throwable ex) {
-          Cat.logError(ex);
+          Tracer.logError(ex);
         }
       }
     }

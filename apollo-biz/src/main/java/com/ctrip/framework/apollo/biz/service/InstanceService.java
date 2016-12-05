@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.biz.service;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Interner;
 import com.google.common.collect.Lists;
 
 import com.ctrip.framework.apollo.biz.entity.Instance;

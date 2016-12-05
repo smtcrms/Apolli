@@ -2,6 +2,10 @@ package com.ctrip.framework.apollo.common.utils;
 
 import com.ctrip.framework.apollo.common.exception.BeanUtilsException;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.util.CollectionUtils;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -11,10 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.util.CollectionUtils;
 
 
 public class BeanUtils {

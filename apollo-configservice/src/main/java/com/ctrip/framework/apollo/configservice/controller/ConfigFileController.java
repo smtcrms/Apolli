@@ -23,7 +23,7 @@ import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.core.utils.PropertiesUtil;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +176,7 @@ public class ConfigFileController implements ReleaseMessageListener {
 
     //2. try to load gray release and return
     if (hasGrayReleaseRule) {
-      Cat.logEvent("ConfigFile.Cache.GrayRelease", cacheKey);
+      Tracer.logEvent("ConfigFile.Cache.GrayRelease", cacheKey);
       return loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
           request, response);
     }
@@ -186,7 +186,7 @@ public class ConfigFileController implements ReleaseMessageListener {
 
     //4. if not exists, load from ConfigController
     if (Strings.isNullOrEmpty(result)) {
-      Cat.logEvent("ConfigFile.Cache.Miss", cacheKey);
+      Tracer.logEvent("ConfigFile.Cache.Miss", cacheKey);
       result = loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
           request, response);
 
@@ -196,7 +196,7 @@ public class ConfigFileController implements ReleaseMessageListener {
       //5. Double check if this client needs to load gray release, if yes, load from db again
       //This step is mainly to avoid cache pollution
       if (grayReleaseRulesHolder.hasGrayReleaseRule(appId, clientIp, namespace)) {
-        Cat.logEvent("ConfigFile.Cache.GrayReleaseConflict", cacheKey);
+        Tracer.logEvent("ConfigFile.Cache.GrayReleaseConflict", cacheKey);
         return loadConfig(outputFormat, appId, clusterName, namespace, dataCenter, clientIp,
             request, response);
       }
@@ -214,7 +214,7 @@ public class ConfigFileController implements ReleaseMessageListener {
       cacheKey2WatchedKeys.putAll(cacheKey, watchedKeys);
       logger.debug("added cache for key: {}", cacheKey);
     } else {
-      Cat.logEvent("ConfigFile.Cache.Hit", cacheKey);
+      Tracer.logEvent("ConfigFile.Cache.Hit", cacheKey);
     }
 
     return result;

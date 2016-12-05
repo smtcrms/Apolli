@@ -1,8 +1,7 @@
 package com.ctrip.framework.apollo.common.aop;
 
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -23,10 +22,10 @@ public class RepositoryAspect {
     String name =
         joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + joinPoint.getSignature()
             .getName();
-    Transaction catTransaction = Cat.newTransaction("SQL", name);
+    Transaction catTransaction = Tracer.newTransaction("SQL", name);
     try {
       Object result = joinPoint.proceed();
-      catTransaction.setStatus(Message.SUCCESS);
+      catTransaction.setStatus(Transaction.SUCCESS);
       return result;
     } catch (Throwable ex) {
       catTransaction.setStatus(ex);

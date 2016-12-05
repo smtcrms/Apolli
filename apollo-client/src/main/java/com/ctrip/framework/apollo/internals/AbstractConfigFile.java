@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.internals;
 
 import com.ctrip.framework.apollo.ConfigFile;
+import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
-import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
     try {
       m_configProperties.set(m_configRepository.getConfig());
     } catch (Throwable ex) {
-      Cat.logError(ex);
+      Tracer.logError(ex);
       logger.warn("Init Apollo Config File failed - namespace: {}, reason: {}.",
           m_namespace, ExceptionUtil.getDetailMessage(ex));
     } finally {
@@ -55,7 +55,7 @@ public abstract class AbstractConfigFile implements ConfigFile, RepositoryChange
 
     m_configProperties.set(newConfigProperties);
 
-    Cat.logEvent("Apollo.Client.ConfigChanges", m_namespace);
+    Tracer.logEvent("Apollo.Client.ConfigChanges", m_namespace);
   }
 
 }

@@ -4,9 +4,9 @@ import com.ctrip.framework.apollo.common.dto.AppDTO;
 import com.ctrip.framework.apollo.common.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.components.PortalSettings;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.components.PortalSettings;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class CreationListener {
         appAPI.createApp(env, appDTO);
       } catch (Throwable e) {
         logger.error("call appAPI.createApp error.(appId={appId}, env={env})", appDTO.getAppId(), env, e);
-        Cat.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appDTO.getAppId(), env), e);
+        Tracer.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appDTO.getAppId(), env), e);
       }
     }
   }
@@ -51,7 +51,7 @@ public class CreationListener {
         namespaceAPI.createAppNamespace(env, appNamespace);
       } catch (Throwable e) {
         logger.error("call appAPI.createApp error.(appId={appId}, env={env})", appNamespace.getAppId(), env, e);
-        Cat.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appNamespace.getAppId(), env), e);
+        Tracer.logError(String.format("call appAPI.createApp error. (appId=%s, env=%s)", appNamespace.getAppId(), env), e);
       }
     }
   }

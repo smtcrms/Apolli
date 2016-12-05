@@ -1,10 +1,7 @@
 package com.ctrip.framework.apollo.common.dto;
 
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.Set;
 
 import static com.google.common.base.MoreObjects.toStringHelper;

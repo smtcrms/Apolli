@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.portal;
 
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.portal.components.AdminServiceAddressLocator;
 import com.ctrip.framework.apollo.portal.components.RetryableRestTemplate;
 

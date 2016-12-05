@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.biz.repository;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 import java.util.Set;

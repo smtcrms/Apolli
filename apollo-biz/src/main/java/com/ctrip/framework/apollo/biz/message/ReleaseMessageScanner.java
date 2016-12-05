@@ -5,9 +5,8 @@ import com.google.common.collect.Lists;
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +47,10 @@ public class ReleaseMessageScanner implements InitializingBean {
     populateDataBaseInterval();
     maxIdScanned = loadLargestMessageId();
     executorService.scheduleWithFixedDelay((Runnable) () -> {
-      Transaction transaction = Cat.newTransaction("Apollo.ReleaseMessageScanner", "scanMessage");
+      Transaction transaction = Tracer.newTransaction("Apollo.ReleaseMessageScanner", "scanMessage");
       try {
         scanMessages();
-        transaction.setStatus(Message.SUCCESS);
+        transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         transaction.setStatus(ex);
         logger.error("Scan and send message failed", ex);
@@ -119,7 +118,7 @@ public class ReleaseMessageScanner implements InitializingBean {
         try {
           listener.handleMessage(message, Topics.APOLLO_RELEASE_TOPIC);
         } catch (Throwable ex) {
-          Cat.logError(ex);
+          Tracer.logError(ex);
           logger.error("Failed to invoke message listener {}", listener.getClass(), ex);
         }
       }
@@ -134,7 +133,7 @@ public class ReleaseMessageScanner implements InitializingBean {
         databaseScanInterval = Integer.parseInt(interval);
       }
     } catch (Throwable ex) {
-      Cat.logError(ex);
+      Tracer.logError(ex);
       logger.error("Load apollo message scan interval from system property failed", ex);
     }
   }

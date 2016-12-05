@@ -20,9 +20,8 @@ import com.ctrip.framework.apollo.common.dto.GrayReleaseRuleItemDTO;
 import com.ctrip.framework.apollo.common.utils.GrayReleaseRuleItemTransformer;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,12 +101,12 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
   }
 
   private void periodicScanRules() {
-    Transaction transaction = Cat.newTransaction("Apollo.GrayReleaseRulesScanner",
+    Transaction transaction = Tracer.newTransaction("Apollo.GrayReleaseRulesScanner",
         "scanGrayReleaseRules");
     try {
       loadVersion.incrementAndGet();
       scanGrayReleaseRules();
-      transaction.setStatus(Message.SUCCESS);
+      transaction.setStatus(Transaction.SUCCESS);
     } catch (Throwable ex) {
       transaction.setStatus(ex);
       logger.error("Scan gray release rule failed", ex);
@@ -238,7 +237,7 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
       ruleItems = GrayReleaseRuleItemTransformer.batchTransformFromJSON(grayReleaseRule.getRules());
     } catch (Throwable ex) {
       ruleItems = Sets.newHashSet();
-      Cat.logError(ex);
+      Tracer.logError(ex);
       logger.error("parse rule for gray release rule {} failed", grayReleaseRule.getId(), ex);
     }
 
@@ -257,7 +256,7 @@ public class GrayReleaseRulesHolder implements ReleaseMessageListener, Initializ
         databaseScanInterval = Integer.parseInt(interval);
       }
     } catch (Throwable ex) {
-      Cat.logError(ex);
+      Tracer.logError(ex);
       logger.error("Load apollo gray release rule scan interval from server config failed", ex);
     }
   }

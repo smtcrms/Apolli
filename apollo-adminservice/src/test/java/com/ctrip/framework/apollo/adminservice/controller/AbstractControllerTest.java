@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import javax.annotation.PostConstruct;
+import com.ctrip.framework.apollo.AdminServiceTestConfiguration;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import com.ctrip.framework.apollo.AdminServiceTestConfiguration;
+import javax.annotation.PostConstruct;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = AdminServiceTestConfiguration.class)

@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.portal.spi.ctrip.filters;
 
-import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ public class RecordAccessUserFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
-    Cat.logEvent(CatEventType.USER_ACCESS, userInfoHolder.getUser().getUserId());
+    Tracer.logEvent(CatEventType.USER_ACCESS, userInfoHolder.getUser().getUserId());
 
     chain.doFilter(request, response);
   }

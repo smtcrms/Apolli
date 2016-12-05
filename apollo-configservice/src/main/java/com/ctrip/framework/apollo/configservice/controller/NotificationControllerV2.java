@@ -17,12 +17,12 @@ import com.ctrip.framework.apollo.biz.message.ReleaseMessageListener;
 import com.ctrip.framework.apollo.biz.message.Topics;
 import com.ctrip.framework.apollo.biz.service.ReleaseMessageService;
 import com.ctrip.framework.apollo.biz.utils.EntityManagerUtil;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.configservice.util.WatchKeysUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class NotificationControllerV2 implements ReleaseMessageListener {
       notifications =
           gson.fromJson(notificationsAsString, notificationsTypeReference);
     } catch (Throwable ex) {
-      Cat.logError(ex);
+      Tracer.logError(ex);
     }
 
     if (CollectionUtils.isEmpty(notifications)) {
@@ -197,7 +197,7 @@ public class NotificationControllerV2 implements ReleaseMessageListener {
     logger.info("message received - channel: {}, message: {}", channel, message);
 
     String content = message.getMessage();
-    Cat.logEvent("Apollo.LongPoll.Messages", content);
+    Tracer.logEvent("Apollo.LongPoll.Messages", content);
     if (!Topics.APOLLO_RELEASE_TOPIC.equals(channel) || Strings.isNullOrEmpty(content)) {
       return;
     }
@@ -244,7 +244,7 @@ public class NotificationControllerV2 implements ReleaseMessageListener {
 
   private void logWatchedKeysToCat(Set<String> watchedKeys, String eventName) {
     for (String watchedKey : watchedKeys) {
-      Cat.logEvent(eventName, watchedKey);
+      Tracer.logEvent(eventName, watchedKey);
     }
   }
 }
