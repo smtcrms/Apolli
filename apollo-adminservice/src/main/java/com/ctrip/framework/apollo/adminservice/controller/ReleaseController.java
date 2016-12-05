@@ -13,9 +13,9 @@ import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.biz.utils.ReleaseMessageKeyGenerator;
 import com.ctrip.framework.apollo.common.constants.NamespaceBranchStatus;
 import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

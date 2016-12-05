@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolder;
+import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.biz.service.ReleaseService;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.biz.entity.Release;
-import com.ctrip.framework.apollo.biz.service.AppNamespaceService;
 import com.ctrip.framework.apollo.configservice.util.InstanceConfigAuditUtil;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;

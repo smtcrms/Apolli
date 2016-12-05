@@ -2,7 +2,6 @@ package com.ctrip.framework.apollo.common.utils;
 
 import com.google.common.base.Joiner;
 
-import com.ctrip.framework.apollo.common.dto.ClusterDTO;
 import com.ctrip.framework.apollo.core.utils.ByteUtil;
 import com.ctrip.framework.apollo.core.utils.MachineUtil;
 

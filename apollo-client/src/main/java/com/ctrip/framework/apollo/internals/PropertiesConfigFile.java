@@ -3,8 +3,8 @@ package com.ctrip.framework.apollo.internals;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.utils.PropertiesUtil;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
-import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class PropertiesConfigFile extends AbstractConfigFile {
           new ApolloConfigException(String
               .format("Parse properties file content failed for namespace: %s, cause: %s",
                   m_namespace, ExceptionUtil.getDetailMessage(ex)));
-      Cat.logError(exception);
+      Tracer.logError(exception);
       throw exception;
     }
   }

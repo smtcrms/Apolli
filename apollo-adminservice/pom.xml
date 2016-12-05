@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.3.0</version>
+		<version>0.4.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -18,11 +18,6 @@
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-biz</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ctrip.framework.apollo</groupId>
-			<artifactId>apollo-buildtools</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<!-- end of apollo -->
 		<dependency>
@@ -108,11 +103,6 @@
 				<package.environment>github</package.environment>
 			</properties>
 			<dependencies>
-				<!-- disable cat for outside use -->
-				<dependency>
-					<groupId>com.ctrip.framework.apollo</groupId>
-					<artifactId>apollo-buildtools</artifactId>
-				</dependency>
 			</dependencies>
 		</profile>
 	</profiles>

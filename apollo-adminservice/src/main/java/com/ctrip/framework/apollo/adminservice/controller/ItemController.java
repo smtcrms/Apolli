@@ -1,6 +1,17 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import java.util.List;
+import com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock;
+import com.ctrip.framework.apollo.biz.entity.Commit;
+import com.ctrip.framework.apollo.biz.entity.Item;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.ctrip.framework.apollo.biz.service.CommitService;
+import com.ctrip.framework.apollo.biz.service.ItemService;
+import com.ctrip.framework.apollo.biz.service.NamespaceService;
+import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
+import com.ctrip.framework.apollo.common.dto.ItemDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
+import com.ctrip.framework.apollo.common.exception.NotFoundException;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,18 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock;
-import com.ctrip.framework.apollo.biz.entity.Commit;
-import com.ctrip.framework.apollo.biz.entity.Item;
-import com.ctrip.framework.apollo.biz.entity.Namespace;
-import com.ctrip.framework.apollo.biz.service.CommitService;
-import com.ctrip.framework.apollo.biz.service.ItemService;
-import com.ctrip.framework.apollo.biz.service.NamespaceService;
-import com.ctrip.framework.apollo.biz.utils.ConfigChangeContentBuilder;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.dto.ItemDTO;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
-import com.ctrip.framework.apollo.common.exception.NotFoundException;
+import java.util.List;
 
 @RestController
 public class ItemController {

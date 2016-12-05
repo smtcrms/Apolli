@@ -2,8 +2,8 @@ package com.ctrip.framework.apollo.adminservice.controller;
 
 import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.service.CommitService;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.dto.CommitDTO;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

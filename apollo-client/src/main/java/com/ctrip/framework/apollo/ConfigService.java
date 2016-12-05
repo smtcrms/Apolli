@@ -6,7 +6,7 @@ import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.internals.ConfigManager;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigRegistry;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -51,7 +51,7 @@ public class ConfigService {
       return s_instance.m_container.lookup(ConfigManager.class);
     } catch (ComponentLookupException ex) {
       ApolloConfigException exception = new ApolloConfigException("Unable to load ConfigManager!", ex);
-      Cat.logError(exception);
+      Tracer.logError(exception);
       throw exception;
     }
   }
@@ -61,7 +61,7 @@ public class ConfigService {
       return s_instance.m_container.lookup(ConfigRegistry.class);
     } catch (ComponentLookupException ex) {
       ApolloConfigException exception = new ApolloConfigException("Unable to load ConfigRegistry!", ex);
-      Cat.logError(exception);
+      Tracer.logError(exception);
       throw exception;
     }
   }

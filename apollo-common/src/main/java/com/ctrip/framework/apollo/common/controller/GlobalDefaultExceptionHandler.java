@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import com.ctrip.framework.apollo.common.exception.AbstractApolloHttpException;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class GlobalDefaultExceptionHandler {
     String message = ex.getMessage();
 
     logger.error(message, ex);
-    Cat.logError(ex);
+    Tracer.logError(ex);
 
 
     Map<String, Object> errorAttributes = new HashMap<>();

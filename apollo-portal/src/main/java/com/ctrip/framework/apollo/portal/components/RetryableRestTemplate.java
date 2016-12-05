@@ -4,9 +4,8 @@ import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
@@ -84,7 +83,7 @@ public class RetryableRestTemplate {
     }
 
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
-    Transaction ct = Cat.newTransaction("AdminAPI", uri);
+    Transaction ct = Tracer.newTransaction("AdminAPI", uri);
 
     List<ServiceDTO> services = getAdminServices(env, ct);
 
@@ -93,14 +92,14 @@ public class RetryableRestTemplate {
 
         T result = doExecute(method, serviceDTO, path, request, responseType, uriVariables);
 
-        ct.setStatus(Message.SUCCESS);
+        ct.setStatus(Transaction.SUCCESS);
         ct.complete();
         return result;
       } catch (Throwable t) {
         logger.error("Http request failed, uri: {}, method: {}", uri, method, t);
-        Cat.logError(t);
+        Tracer.logError(t);
         if (canRetry(t, method)) {
-          Cat.logEvent(CatEventType.API_RETRY, uri);
+          Tracer.logEvent(CatEventType.API_RETRY, uri);
         } else {//biz exception rethrow
           ct.setStatus(t);
           ct.complete();
@@ -123,7 +122,7 @@ public class RetryableRestTemplate {
     }
 
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
-    Transaction ct = Cat.newTransaction("AdminAPI", uri);
+    Transaction ct = Tracer.newTransaction("AdminAPI", uri);
 
     List<ServiceDTO> services = getAdminServices(env, ct);
 
@@ -133,14 +132,14 @@ public class RetryableRestTemplate {
         ResponseEntity<T> result =
             restTemplate.exchange(parseHost(serviceDTO) + path, HttpMethod.GET, null, reference, uriVariables);
 
-        ct.setStatus(Message.SUCCESS);
+        ct.setStatus(Transaction.SUCCESS);
         ct.complete();
         return result;
       } catch (Throwable t) {
         logger.error("Http request failed, uri: {}, method: {}", uri, HttpMethod.GET, t);
-        Cat.logError(t);
+        Tracer.logError(t);
         if (canRetry(t, HttpMethod.GET)){
-          Cat.logEvent(CatEventType.API_RETRY, uri);
+          Tracer.logEvent(CatEventType.API_RETRY, uri);
         }else {// biz exception rethrow
           ct.setStatus(t);
           ct.complete();

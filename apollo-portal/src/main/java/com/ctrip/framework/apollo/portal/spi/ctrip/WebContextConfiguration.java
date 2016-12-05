@@ -2,9 +2,9 @@ package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.google.common.base.Strings;
 
+import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.spi.ctrip.filters.RecordAccessUserFilter;
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;

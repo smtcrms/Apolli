@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.3.0</version>
+		<version>0.4.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -20,16 +20,11 @@
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.ctrip.framework.apollo</groupId>
-			<artifactId>apollo-buildtools</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<!-- end of apollo -->
 		<!-- foundation service -->
 		<dependency>
-			<groupId>com.ctrip.framework</groupId>
-			<artifactId>framework-foundation</artifactId>
+			<groupId>org.unidal.framework</groupId>
+			<artifactId>foundation-service</artifactId>
 		</dependency>
 		<!-- end of foundation service -->
 		<!-- log -->
@@ -37,27 +32,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- end of log -->
 		<!-- test -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -69,13 +43,29 @@
 			<artifactId>commons-logging</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- end of test -->
 		<!-- dal-jdbc -->
 		<dependency>
 			<groupId>org.unidal.framework</groupId>
 			<artifactId>dal-jdbc</artifactId>
 			<version>2.4.0</version>
-			<scope>provided</scope>
+            <optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>com.dianping.cat</groupId>
+					<artifactId>cat-client</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- end of dal-jdbc -->
 	</dependencies>

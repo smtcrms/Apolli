@@ -18,7 +18,7 @@ import com.ctrip.framework.apollo.configservice.util.InstanceConfigAuditUtil;
 import com.ctrip.framework.apollo.configservice.util.NamespaceUtil;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,7 +107,7 @@ public class ConfigController {
           String.format(
               "Could not load configurations with appId: %s, clusterName: %s, namespace: %s",
               appId, clusterName, originalNamespace));
-      Cat.logEvent("Apollo.Config.NotFound",
+      Tracer.logEvent("Apollo.Config.NotFound",
           assembleKey(appId, clusterName, originalNamespace, dataCenter));
       return null;
     }
@@ -120,7 +120,7 @@ public class ConfigController {
     if (mergedReleaseKey.equals(clientSideReleaseKey)) {
       // Client side configuration is the same with server side, return 304
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-      Cat.logEvent("Apollo.Config.NotModified",
+      Tracer.logEvent("Apollo.Config.NotModified",
           assembleKey(appId, appClusterNameLoaded, originalNamespace, dataCenter));
       return null;
     }
@@ -129,7 +129,7 @@ public class ConfigController {
         mergedReleaseKey);
     apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));
 
-    Cat.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded,
+    Tracer.logEvent("Apollo.Config.Found", assembleKey(appId, appClusterNameLoaded,
         originalNamespace, dataCenter));
     return apolloConfig;
   }

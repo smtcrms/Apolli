@@ -2,15 +2,14 @@ package com.ctrip.framework.apollo.common.customize;
 
 import com.google.common.base.Strings;
 
+import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.foundation.Foundation;
-import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
-
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Appender;
@@ -36,7 +35,7 @@ public abstract class LoggingCustomizer implements InitializingBean {
       tryConfigCLogging();
     } catch (Throwable ex) {
       logger.error("Config CLogging failed", ex);
-      Cat.logError(ex);
+      Tracer.logError(ex);
     }
 
   }

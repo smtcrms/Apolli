@@ -1,5 +1,10 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
+import com.ctrip.framework.apollo.biz.repository.AppRepository;
+import com.ctrip.framework.apollo.common.dto.AppDTO;
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.web.client.HttpClientErrorException;
-
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.biz.repository.AppRepository;
-import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.dto.AppDTO;
 
 public class AppControllerTest extends AbstractControllerTest {
 

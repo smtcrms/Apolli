@@ -2,9 +2,8 @@ package com.ctrip.framework.apollo.biz.message;
 
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +30,11 @@ public class DatabaseMessageSender implements MessageSender {
       return;
     }
 
-    Cat.logEvent("Apollo.AdminService.ReleaseMessage", message);
-    Transaction transaction = Cat.newTransaction("Apollo.AdminService", "sendMessage");
+    Tracer.logEvent("Apollo.AdminService.ReleaseMessage", message);
+    Transaction transaction = Tracer.newTransaction("Apollo.AdminService", "sendMessage");
     try {
       releaseMessageRepository.save(new ReleaseMessage(message));
-      transaction.setStatus(Message.SUCCESS);
+      transaction.setStatus(Transaction.SUCCESS);
     } catch (Throwable ex) {
       logger.error("Sending message to database failed", ex);
       transaction.setStatus(ex);

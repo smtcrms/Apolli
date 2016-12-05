@@ -12,7 +12,7 @@ import com.ctrip.framework.apollo.biz.entity.InstanceConfig;
 import com.ctrip.framework.apollo.biz.service.InstanceService;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +151,7 @@ public class InstanceConfigAuditUtil implements InitializingBean {
           }
           doAudit(model);
         } catch (Throwable ex) {
-          Cat.logError(ex);
+          Tracer.logError(ex);
         }
       }
     });

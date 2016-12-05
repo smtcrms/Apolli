@@ -5,7 +5,6 @@ import com.ctrip.framework.apollo.ConfigFile;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.spi.ConfigFactory;
 import com.ctrip.framework.apollo.spi.ConfigFactoryManager;
-import com.ctrip.framework.apollo.spi.ConfigRegistry;
 
 import org.junit.Before;
 import org.junit.Test;

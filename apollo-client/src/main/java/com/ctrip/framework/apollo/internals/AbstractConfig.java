@@ -11,10 +11,9 @@ import com.ctrip.framework.apollo.enums.PropertyChangeType;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.parser.Parsers;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +62,7 @@ public abstract class AbstractConfig implements Config {
         return Integer.parseInt(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getIntProperty for %s failed, return default value %d", key,
               defaultValue), ex));
     }
@@ -79,7 +78,7 @@ public abstract class AbstractConfig implements Config {
         return Long.parseLong(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getLongProperty for %s failed, return default value %d", key,
               defaultValue), ex));
     }
@@ -95,7 +94,7 @@ public abstract class AbstractConfig implements Config {
         return Short.parseShort(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getShortProperty for %s failed, return default value %d", key,
               defaultValue), ex));
     }
@@ -111,7 +110,7 @@ public abstract class AbstractConfig implements Config {
         return Float.parseFloat(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getFloatProperty for %s failed, return default value %f", key,
               defaultValue), ex));
     }
@@ -127,7 +126,7 @@ public abstract class AbstractConfig implements Config {
         return Double.parseDouble(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getDoubleProperty for %s failed, return default value %f", key,
               defaultValue), ex));
     }
@@ -143,7 +142,7 @@ public abstract class AbstractConfig implements Config {
         return Byte.parseByte(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getByteProperty for %s failed, return default value %d", key,
               defaultValue), ex));
     }
@@ -159,7 +158,7 @@ public abstract class AbstractConfig implements Config {
         return Boolean.parseBoolean(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getBooleanProperty for %s failed, return default value %b", key,
               defaultValue), ex));
     }
@@ -175,7 +174,7 @@ public abstract class AbstractConfig implements Config {
         return value.split(delimiter);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getArrayProperty for %s failed, return default value", key), ex));
     }
     return defaultValue;
@@ -190,7 +189,7 @@ public abstract class AbstractConfig implements Config {
         return Enum.valueOf(enumType, value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getEnumProperty for %s failed, return default value %s", key,
               defaultValue), ex));
     }
@@ -207,7 +206,7 @@ public abstract class AbstractConfig implements Config {
         return Parsers.forDate().parse(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getDateProperty for %s failed, return default value %s", key,
               defaultValue), ex));
     }
@@ -224,7 +223,7 @@ public abstract class AbstractConfig implements Config {
         return Parsers.forDate().parse(value, format);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getDateProperty for %s failed, return default value %s", key,
               defaultValue), ex));
     }
@@ -241,7 +240,7 @@ public abstract class AbstractConfig implements Config {
         return Parsers.forDate().parse(value, format, locale);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getDateProperty for %s failed, return default value %s", key,
               defaultValue), ex));
     }
@@ -258,7 +257,7 @@ public abstract class AbstractConfig implements Config {
         return Parsers.forDuration().parseToMillis(value);
       }
     } catch (Throwable ex) {
-      Cat.logError(new ApolloConfigException(
+      Tracer.logError(new ApolloConfigException(
           String.format("getDurationProperty for %s failed, return default value %d", key,
               defaultValue), ex));
     }
@@ -272,13 +271,13 @@ public abstract class AbstractConfig implements Config {
         @Override
         public void run() {
           String listenerName = listener.getClass().getName();
-          Transaction transaction = Cat.newTransaction("Apollo.ConfigChangeListener", listenerName);
+          Transaction transaction = Tracer.newTransaction("Apollo.ConfigChangeListener", listenerName);
           try {
             listener.onChange(changeEvent);
-            transaction.setStatus(Message.SUCCESS);
+            transaction.setStatus(Transaction.SUCCESS);
           } catch (Throwable ex) {
             transaction.setStatus(ex);
-            Cat.logError(ex);
+            Tracer.logError(ex);
             logger.error("Failed to invoke config change listener {}", listenerName, ex);
           } finally {
             transaction.complete();

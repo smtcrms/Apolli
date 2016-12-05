@@ -1,12 +1,12 @@
 package com.ctrip.framework.apollo.biz.repository;
 
-import java.util.List;
+import com.ctrip.framework.apollo.biz.entity.Audit;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.ctrip.framework.apollo.biz.entity.Audit;
+import java.util.List;
 
 public interface AuditRepository extends PagingAndSortingRepository<Audit, Long> {
 

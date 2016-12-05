@@ -10,13 +10,13 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.portal.components.txtresolver.ConfigTextResolver;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceTextModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ItemDiffs;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceIdentifier;
-import com.ctrip.framework.apollo.portal.components.txtresolver.ConfigTextResolver;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -73,9 +73,9 @@ public class ItemService {
     changeSets.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     updateItems(appId, env, clusterName, namespaceName, changeSets);
 
-    Cat.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT,
+    Tracer.logEvent(CatEventType.MODIFY_NAMESPACE_BY_TEXT,
         String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
-    Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    Tracer.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
   public void updateItems(String appId, Env env, String clusterName, String namespaceName, ItemChangeSets changeSets){
@@ -92,7 +92,7 @@ public class ItemService {
     item.setNamespaceId(namespace.getId());
 
     ItemDTO itemDTO = itemAPI.createItem(appId, env, clusterName, namespaceName, item);
-    Cat.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    Tracer.logEvent(CatEventType.MODIFY_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     return itemDTO;
   }
 
@@ -126,7 +126,7 @@ public class ItemService {
 
       itemAPI.updateItemsByChangeSet(appId, env, clusterName, namespaceName, changeSets);
 
-      Cat.logEvent(CatEventType.SYNC_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+      Tracer.logEvent(CatEventType.SYNC_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     }
   }
 
