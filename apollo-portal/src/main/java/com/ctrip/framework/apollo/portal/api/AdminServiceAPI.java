@@ -388,6 +388,17 @@ public class AdminServiceAPI {
                               type, appId, clusterName, namespaceName, page, size).getBody();
     }
 
+    public PageDTO<ReleaseHistoryDTO> findByReleaseIdAndOperation(Env env, long releaseId, int operation, int page, int size) {
+      return restTemplate.get(env,
+                              "/releases/histories/by_release_id_and_operation?releaseId={releaseId}&operation={operation}&page={page}&size={size}",
+                              type, releaseId, operation, page, size).getBody();
+    }
+
+    public PageDTO<ReleaseHistoryDTO> findByPreviousReleaseIdAndOperation(Env env, long previousReleaseId, int operation, int page, int size) {
+      return restTemplate.get(env,
+                              "/releases/histories/by_previous_release_id_and_operation?previousReleaseId={releaseId}&operation={operation}&page={page}&size={size}",
+                              type, previousReleaseId, operation, page, size).getBody();
+    }
 
   }
 

@@ -7,10 +7,12 @@ import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.components.PermissionValidator;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
+import com.ctrip.framework.apollo.portal.listener.ConfigPublishEvent;
 import com.ctrip.framework.apollo.portal.service.NamespaceBranchService;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,8 @@ public class NamespaceBranchController {
   private ReleaseService releaseService;
   @Autowired
   private NamespaceBranchService namespaceBranchService;
+  @Autowired
+  private ApplicationEventPublisher publisher;
 
   @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/branches")
   public NamespaceVO findBranch(@PathVariable String appId,
@@ -80,9 +84,20 @@ public class NamespaceBranchController {
                           @PathVariable String branchName, @RequestParam(value = "deleteBranch", defaultValue = "true") boolean deleteBranch,
                           @RequestBody NamespaceReleaseModel model) {
 
-    return namespaceBranchService.merge(appId, Env.valueOf(env), clusterName, namespaceName, branchName,
+    ReleaseDTO createdRelease = namespaceBranchService.merge(appId, Env.valueOf(env), clusterName, namespaceName, branchName,
                                                              model.getReleaseTitle(), model.getReleaseComment(), deleteBranch);
 
+    ConfigPublishEvent event = ConfigPublishEvent.instance();
+    event.withAppId(appId)
+        .withCluster(clusterName)
+        .withNamespace(namespaceName)
+        .withReleaseId(createdRelease.getId())
+        .setMergeEvent(true)
+        .setEnv(Env.valueOf(env));
+
+    publisher.publishEvent(event);
+
+    return createdRelease;
   }
 
 

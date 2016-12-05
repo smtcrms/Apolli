@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.spi;
 
-import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
+import com.ctrip.framework.apollo.portal.entity.bo.UserInfo;
 
 /**
  * Get access to the user's information,

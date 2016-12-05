@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.entity.po;
+package com.ctrip.framework.apollo.portal.entity.bo;
 
 public class UserInfo {
 

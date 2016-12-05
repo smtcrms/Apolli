@@ -16,7 +16,11 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
         },
         release: {
             method: 'POST',
-            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/release'
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/releases'
+        },
+        gray_release: {
+            method: 'POST',
+            url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName/branches/:branchName/releases'
         },
         rollback: {
             method: 'PUT',
@@ -31,6 +35,25 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
                              env: env,
                              clusterName: clusterName,
                              namespaceName: namespaceName
+                         }, {
+                             releaseTitle: releaseTitle,
+                             releaseComment: comment
+                         }, function (result) {
+            d.resolve(result);
+        }, function (result) {
+            d.reject(result);
+        });
+        return d.promise;
+    }
+
+    function createGrayRelease(appId, env, clusterName, namespaceName, branchName, releaseTitle, comment) {
+        var d = $q.defer();
+        resource.gray_release({
+                             appId: appId,
+                             env: env,
+                             clusterName: clusterName,
+                             namespaceName: namespaceName,
+                             branchName:branchName
                          }, {
                              releaseTitle: releaseTitle,
                              releaseComment: comment
@@ -106,7 +129,8 @@ appService.service('ReleaseService', ['$resource', '$q', function ($resource, $q
     }
 
     return {
-        release: createRelease,
+        publish: createRelease,
+        grayPublish: createGrayRelease,
         findAllRelease: findAllReleases,
         findActiveReleases: findActiveReleases,
         compare: compare,
