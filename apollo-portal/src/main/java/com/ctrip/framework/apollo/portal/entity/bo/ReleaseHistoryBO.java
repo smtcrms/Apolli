@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.entity.vo;
+package com.ctrip.framework.apollo.portal.entity.bo;
 
 import com.ctrip.framework.apollo.common.entity.EntityPair;
 
@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ReleaseHistoryVO {
+public class ReleaseHistoryBO {
 
   private long id;
 

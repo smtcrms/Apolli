@@ -8,11 +8,8 @@ spring:
 logging:
   level:
     org.springframework.cloud: 'DEBUG'
-  file: /opt/logs/${ctrip.appid}/apollo-portal.log
+  file: /opt/logs/100003173/apollo-portal.log
   
-ctrip:
-  appid: 100003173
-
 apollo:
   portal:
     envs: local

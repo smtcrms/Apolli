@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,13 +20,13 @@ import java.util.Map;
  */
 @Service
 public class ReleaseHistoryService {
+  private Gson gson = new Gson();
+
   @Autowired
   private ReleaseHistoryRepository releaseHistoryRepository;
-
   @Autowired
   private AuditService auditService;
 
-  private Gson gson = new Gson();
 
   public Page<ReleaseHistory> findReleaseHistoriesByNamespace(String appId, String clusterName,
                                                               String namespaceName, Pageable
@@ -36,14 +35,18 @@ public class ReleaseHistoryService {
                                                                                            namespaceName, pageable);
   }
 
-  public List<ReleaseHistory> findReleaseHistoriesByReleaseId(long releaseId) {
-    return releaseHistoryRepository.findByReleaseId(releaseId);
+  public Page<ReleaseHistory> findByReleaseIdAndOperation(long releaseId, int operation, Pageable page) {
+    return releaseHistoryRepository.findByReleaseIdAndOperationOrderByIdDesc(releaseId, operation, page);
+  }
+
+  public Page<ReleaseHistory> findByPreviousReleaseIdAndOperation(long previousReleaseId, int operation, Pageable page) {
+    return releaseHistoryRepository.findByPreviousReleaseIdAndOperationOrderByIdDesc(previousReleaseId, operation, page);
   }
 
   @Transactional
   public ReleaseHistory createReleaseHistory(String appId, String clusterName, String
       namespaceName, String branchName, long releaseId, long previousReleaseId, int operation,
-      Map<String, Object> operationContext, String operator) {
+                                             Map<String, Object> operationContext, String operator) {
     ReleaseHistory releaseHistory = new ReleaseHistory();
     releaseHistory.setAppId(appId);
     releaseHistory.setClusterName(clusterName);
@@ -64,13 +67,13 @@ public class ReleaseHistoryService {
     releaseHistoryRepository.save(releaseHistory);
 
     auditService.audit(ReleaseHistory.class.getSimpleName(), releaseHistory.getId(),
-        Audit.OP.INSERT, releaseHistory.getDataChangeCreatedBy());
+                       Audit.OP.INSERT, releaseHistory.getDataChangeCreatedBy());
 
     return releaseHistory;
   }
 
   @Transactional
-  public int batchDelete(String appId, String clusterName, String namespaceName, String operator){
+  public int batchDelete(String appId, String clusterName, String namespaceName, String operator) {
     return releaseHistoryRepository.batchDelete(appId, clusterName, namespaceName, operator);
   }
 }

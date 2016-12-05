@@ -14,6 +14,10 @@ public class ReleaseCompareResult {
     changes.add(new Change(type, new EntityPair<>(firstEntity, secondEntity)));
   }
 
+  public boolean hasContent(){
+    return !changes.isEmpty();
+  }
+
   public List<Change> getChanges() {
     return changes;
   }

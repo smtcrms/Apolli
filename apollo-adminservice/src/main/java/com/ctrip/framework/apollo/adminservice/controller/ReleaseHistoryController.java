@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
@@ -39,25 +40,58 @@ public class ReleaseHistoryController {
       method = RequestMethod.GET)
   public PageDTO<ReleaseHistoryDTO> findReleaseHistoriesByNamespace(
       @PathVariable String appId, @PathVariable String clusterName,
-      @PathVariable String namespaceName, Pageable pageable) {
-    Page<ReleaseHistory> result = releaseHistoryService.findReleaseHistoriesByNamespace(appId,
-        clusterName, namespaceName, pageable);
+      @PathVariable String namespaceName,
+      Pageable pageable) {
 
-    if (!result.hasContent()) {
+    Page<ReleaseHistory> result = releaseHistoryService.findReleaseHistoriesByNamespace(appId, clusterName,
+                                                                                        namespaceName, pageable);
+    return transform2PageDTO(result, pageable);
+  }
+
+
+  @RequestMapping(value = "/releases/histories/by_release_id_and_operation", method = RequestMethod.GET)
+  public PageDTO<ReleaseHistoryDTO> findReleaseHistoryByReleaseIdAndOperation(
+      @RequestParam("releaseId") long releaseId,
+      @RequestParam("operation") int operation,
+      Pageable pageable) {
+
+    Page<ReleaseHistory> result = releaseHistoryService.findByReleaseIdAndOperation(releaseId, operation, pageable);
+
+    return transform2PageDTO(result, pageable);
+  }
+
+  @RequestMapping(value = "/releases/histories/by_previous_release_id_and_operation", method = RequestMethod.GET)
+  public PageDTO<ReleaseHistoryDTO> findReleaseHistoryByPreviousReleaseIdAndOperation(
+      @RequestParam("previousReleaseId") long previousReleaseId,
+      @RequestParam("operation") int operation,
+      Pageable pageable) {
+
+    Page<ReleaseHistory> result = releaseHistoryService.findByPreviousReleaseIdAndOperation(previousReleaseId, operation, pageable);
+
+    return transform2PageDTO(result, pageable);
+
+  }
+
+  private PageDTO<ReleaseHistoryDTO> transform2PageDTO(Page<ReleaseHistory> releaseHistoriesPage, Pageable pageable){
+    if (!releaseHistoriesPage.hasContent()) {
       return null;
     }
 
-    List<ReleaseHistory> releaseHistories = result.getContent();
+    List<ReleaseHistory> releaseHistories = releaseHistoriesPage.getContent();
     List<ReleaseHistoryDTO> releaseHistoryDTOs = new ArrayList<>(releaseHistories.size());
     for (ReleaseHistory releaseHistory : releaseHistories) {
-      ReleaseHistoryDTO dto = new ReleaseHistoryDTO();
-      BeanUtils.copyProperties(releaseHistory, dto, "operationContext");
-      dto.setOperationContext(gson.fromJson(releaseHistory.getOperationContext(),
-          configurationTypeReference));
-
-      releaseHistoryDTOs.add(dto);
+      releaseHistoryDTOs.add(transformReleaseHistory2DTO(releaseHistory));
     }
 
-    return new PageDTO<>(releaseHistoryDTOs, pageable, result.getTotalElements());
+    return new PageDTO<>(releaseHistoryDTOs, pageable, releaseHistoriesPage.getTotalElements());
+  }
+
+  private ReleaseHistoryDTO transformReleaseHistory2DTO(ReleaseHistory releaseHistory) {
+    ReleaseHistoryDTO dto = new ReleaseHistoryDTO();
+    BeanUtils.copyProperties(releaseHistory, dto, "operationContext");
+    dto.setOperationContext(gson.fromJson(releaseHistory.getOperationContext(),
+                                          configurationTypeReference));
+
+    return dto;
   }
 }

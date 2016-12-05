@@ -100,6 +100,10 @@ public class NamespaceService {
 
   }
 
+  public Namespace findParentNamespace(String appId, String clusterName, String namespaceName){
+    return findParentNamespace(new Namespace(appId, clusterName, namespaceName));
+  }
+
   public Namespace findParentNamespace(Namespace namespace) {
     String appId = namespace.getAppId();
     String namespaceName = namespace.getNamespaceName();
@@ -111,6 +115,10 @@ public class NamespaceService {
     }
 
     return null;
+  }
+
+  public boolean isChildNamespace(String appId, String clusterName, String namespaceName){
+    return isChildNamespace(new Namespace(appId, clusterName, namespaceName));
   }
 
   public boolean isChildNamespace(Namespace namespace) {

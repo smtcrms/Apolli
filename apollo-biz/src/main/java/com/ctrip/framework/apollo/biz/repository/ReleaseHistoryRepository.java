@@ -17,7 +17,9 @@ public interface ReleaseHistoryRepository extends PagingAndSortingRepository<Rel
   Page<ReleaseHistory> findByAppIdAndClusterNameAndNamespaceNameOrderByIdDesc(String appId, String
       clusterName, String namespaceName, Pageable pageable);
 
-  List<ReleaseHistory> findByReleaseId(long releaseId);
+  Page<ReleaseHistory> findByReleaseIdAndOperationOrderByIdDesc(long releaseId, int operation, Pageable pageable);
+
+  Page<ReleaseHistory> findByPreviousReleaseIdAndOperationOrderByIdDesc(long previousReleaseId, int operation, Pageable pageable);
 
   @Modifying
   @Query("update ReleaseHistory set isdeleted=1,DataChange_LastModifiedBy = ?4 where appId=?1 and clusterName=?2 and namespaceName = ?3")

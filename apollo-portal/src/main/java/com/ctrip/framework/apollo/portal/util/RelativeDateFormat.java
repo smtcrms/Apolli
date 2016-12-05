@@ -19,7 +19,7 @@ public class RelativeDateFormat {
 
   public static String format(Date date) {
     if (date.after(new Date())) {
-      throw new IllegalArgumentException("To format date can not after now");
+      return "now";
     }
 
     long delta = new Date().getTime() - date.getTime();

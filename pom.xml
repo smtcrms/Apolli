@@ -186,6 +186,11 @@
 				<artifactId>apollo-sso-ctrip</artifactId>
 				<version>1.1.0</version>
 			</dependency>
+			<dependency>
+				<groupId>com.ctrip.framework.apollo-ctrip-service</groupId>
+				<artifactId>apollo-email-service</artifactId>
+				<version>1.0.0</version>
+			</dependency>
 			<!--third party -->
 			<dependency>
 				<groupId>mysql</groupId>

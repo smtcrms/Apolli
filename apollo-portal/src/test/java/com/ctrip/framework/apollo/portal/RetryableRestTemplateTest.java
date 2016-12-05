@@ -52,8 +52,9 @@ public class RetryableRestTemplateTest extends AbstractUnitTest {
   @Before
   public void init() {
     socketTimeoutException.initCause(new SocketTimeoutException());
+
     httpHostConnectException
-        .initCause(new HttpHostConnectException(new HttpHost(serviceOne, 80), new ConnectException()));
+        .initCause(new HttpHostConnectException(new ConnectTimeoutException(), new HttpHost(serviceOne, 80)));
     connectTimeoutException.initCause(new ConnectTimeoutException());
   }
 
