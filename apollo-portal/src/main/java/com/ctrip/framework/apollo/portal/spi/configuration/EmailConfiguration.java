@@ -14,9 +14,12 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class EmailConfiguration {
 
+  /**
+   * spring.profiles.active = ctrip
+   */
   @Configuration
   @Profile("ctrip")
-  public static class CtripEmailConfiguration{
+  public static class CtripEmailConfiguration {
 
     @Bean
     public EmailService ctripEmailService() {
@@ -24,16 +27,25 @@ public class EmailConfiguration {
     }
 
     @Bean
-    public CtripEmailRequestBuilder emailRequestBuilder(){
+    public CtripEmailRequestBuilder emailRequestBuilder() {
       return new CtripEmailRequestBuilder();
     }
   }
 
-
-  @Bean
-  @ConditionalOnMissingBean(EmailService.class)
-  public EmailService defaultEmailService() {
-    return new DefaultEmailService();
+  /**
+   * spring.profiles.active != ctrip
+   */
+  @Configuration
+  @Profile({"!ctrip"})
+  public static class DefaultEmailConfiguration {
+    @Bean
+    @ConditionalOnMissingBean(EmailService.class)
+    public EmailService defaultEmailService() {
+      return new DefaultEmailService();
+    }
   }
+
+
+
 }
 
