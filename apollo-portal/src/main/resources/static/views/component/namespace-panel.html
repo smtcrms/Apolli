@@ -295,13 +295,15 @@
             </div>
             <!--text view-->
             <!--只读模式下的文本内容,不替换换行符-->
-        <textarea class="form-control no-radius" rows="{{namespace.itemCnt}}"
+        <textarea class="form-control no-radius"
+                  rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
                   ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
                   ng-disabled="!namespace.isTextEditing"
                   ng-bind="namespace.text">
             </textarea>
             <!--编辑状态下的文本内容,会过滤掉换行符-->
-        <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
+        <textarea class="form-control no-radius"
+                  rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
                   ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
                   ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText">
             </textarea>
@@ -874,7 +876,8 @@
             <!--gray rules-->
             <div class="rules-manage-view row" ng-show="namespace.branch.viewType == 'rule'">
 
-                <div class="alert alert-warning no-radius" ng-show="!namespace.hasModifyPermission && !namespace.hasReleasePermission">
+                <div class="alert alert-warning no-radius"
+                     ng-show="!namespace.hasModifyPermission && !namespace.hasReleasePermission">
                     <strong>Tips:</strong>
                     您没有权限编辑灰度规则, 具有namespace修改权或者发布权的人员才可以编辑灰度规则. 如需要编辑灰度规则,请找项目管理员申请权限.
                 </div>

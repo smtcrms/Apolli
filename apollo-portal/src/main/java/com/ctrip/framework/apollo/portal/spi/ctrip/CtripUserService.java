@@ -18,8 +18,10 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +32,7 @@ public class CtripUserService implements UserService {
   private RestTemplate restTemplate;
   private List<String> searchUserMatchFields;
   private ParameterizedTypeReference<Map<String, List<UserServiceResponse>>> responseType;
+
 
   public CtripUserService(ServerConfigService serverConfigService) {
     this.serverConfigService = serverConfigService;
