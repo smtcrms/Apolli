@@ -56,7 +56,8 @@ public class AuthConfiguration {
     @Bean
     public ServletListenerRegistrationBean singleSignOutHttpSessionListener() {
       ServletListenerRegistrationBean singleSignOutHttpSessionListener = new ServletListenerRegistrationBean();
-      singleSignOutHttpSessionListener.setListener(listener("org.jasig.cas.client.session.SingleSignOutHttpSessionListener"));
+      singleSignOutHttpSessionListener
+          .setListener(listener("org.jasig.cas.client.session.SingleSignOutHttpSessionListener"));
       return singleSignOutHttpSessionListener;
     }
 
@@ -101,7 +102,8 @@ public class AuthConfiguration {
       filterInitParam.put("useRedis", "true");
       filterInitParam.put("redisClusterName", "casClientPrincipal");
 
-      casValidationFilter.setFilter(filter("org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"));
+      casValidationFilter
+          .setFilter(filter("org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"));
       casValidationFilter.setInitParameters(filterInitParam);
       casValidationFilter.addUrlPatterns("/*");
       casValidationFilter.setOrder(3);
@@ -171,22 +173,13 @@ public class AuthConfiguration {
     }
   }
 
+
   /**
-   * 默认实现
+   * spring.profiles.active != ctrip
    */
   @Configuration
+  @Profile({"!ctrip"})
   static class DefaultAuthAutoConfiguration {
-
-    @Bean
-    public FilterRegistrationBean openApiAuthenticationFilter(ConsumerAuthUtil consumerAuthUtil,
-                                                              ConsumerAuditUtil consumerAuditUtil) {
-      FilterRegistrationBean openApiFilter = new FilterRegistrationBean();
-
-      openApiFilter.setFilter(new ConsumerAuthenticationFilter(consumerAuthUtil, consumerAuditUtil));
-      openApiFilter.addUrlPatterns("/openapi/*");
-
-      return openApiFilter;
-    }
 
     @Bean
     @ConditionalOnMissingBean(SsoHeartbeatHandler.class)
