@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 @Component
 public class GrayPublishEmailBuilder extends ConfigPublishEmailBuilder {
@@ -59,7 +60,7 @@ public class GrayPublishEmailBuilder extends ConfigPublishEmailBuilder {
       }
     }
 
-    return result.replaceAll(EMAIL_CONTENT_FIELD_RULE, rulesHtmlBuilder.toString());
+    return result.replaceAll(EMAIL_CONTENT_FIELD_RULE, Matcher.quoteReplacement(rulesHtmlBuilder.toString()));
 
   }
 }

@@ -1,9 +1,12 @@
 package com.ctrip.framework.apollo.portal.components.emailbuilder;
 
 
+import com.google.common.collect.Lists;
+
 import com.ctrip.framework.apollo.common.constants.ReleaseOperation;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
@@ -16,15 +19,20 @@ import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
 import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+import com.ctrip.framework.apollo.portal.spi.UserService;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
 
 import org.apache.commons.lang.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import javax.annotation.PostConstruct;
 
@@ -62,7 +70,6 @@ public abstract class ConfigPublishEmailBuilder {
   private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd hh:mm:ss");
 
 
-  private String emailAddressSuffix;
   private String emailSender;
 
   @Autowired
@@ -73,10 +80,11 @@ public abstract class ConfigPublishEmailBuilder {
   private ReleaseService releaseService;
   @Autowired
   private AppNamespaceService appNamespaceService;
+  @Autowired
+  private UserService userService;
 
   @PostConstruct
   public void init() {
-    emailAddressSuffix = serverConfigService.getValue("email.address.suffix");
     emailSender = serverConfigService.getValue("email.sender");
   }
 
@@ -103,15 +111,31 @@ public abstract class ConfigPublishEmailBuilder {
     Set<UserInfo> releaseRoleUsers =
         rolePermissionService
             .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE));
+    Set<UserInfo> owners = rolePermissionService.queryUsersWithRole(RoleUtils.buildAppMasterRoleName(appId));
 
-    List<String> recipients = new ArrayList<>(modifyRoleUsers.size() + releaseRoleUsers.size());
+    Set<String> userIds = new HashSet<>(modifyRoleUsers.size() + releaseRoleUsers.size() + owners.size());
 
     for (UserInfo userInfo : modifyRoleUsers) {
-      recipients.add(userInfo.getUserId() + emailAddressSuffix);
+      userIds.add(userInfo.getUserId());
     }
 
     for (UserInfo userInfo : releaseRoleUsers) {
-      recipients.add(userInfo.getUserId() + emailAddressSuffix);
+      userIds.add(userInfo.getUserId());
+    }
+
+    for (UserInfo userInfo : owners) {
+      userIds.add(userInfo.getUserId());
+    }
+
+    List<UserInfo> userInfos = userService.findByUserIds(Lists.newArrayList(userIds));
+
+    if (CollectionUtils.isEmpty(userInfos)){
+      return Collections.emptyList();
+    }
+
+    List<String> recipients = new ArrayList<>(userInfos.size());
+    for (UserInfo userInfo: userInfos){
+      recipients.add(userInfo.getEmail());
     }
 
     return recipients;
@@ -124,15 +148,15 @@ public abstract class ConfigPublishEmailBuilder {
   }
 
   private String renderReleaseBasicInfo(String template, Env env, ReleaseHistoryBO releaseHistory) {
-    String renderResult = template.replaceAll(EMAIL_CONTENT_FIELD_APPID, releaseHistory.getAppId());
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_ENV, env.toString());
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_CLUSTER, releaseHistory.getClusterName());
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_NAMESPACE, releaseHistory.getNamespaceName());
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_OPERATOR, releaseHistory.getOperator());
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TITLE, releaseHistory.getReleaseTitle());
+    String renderResult = template.replaceAll(EMAIL_CONTENT_FIELD_APPID, Matcher.quoteReplacement(releaseHistory.getAppId()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_ENV, Matcher.quoteReplacement(env.toString()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_CLUSTER, Matcher.quoteReplacement(releaseHistory.getClusterName()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_NAMESPACE, Matcher.quoteReplacement(releaseHistory.getNamespaceName()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_OPERATOR, Matcher.quoteReplacement(releaseHistory.getOperator()));
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TITLE, Matcher.quoteReplacement(releaseHistory.getReleaseTitle()));
     renderResult =
         renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_ID, String.valueOf(releaseHistory.getReleaseId()));
-    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_COMMENT, releaseHistory.getReleaseComment());
+    renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_RELEASE_COMMENT, Matcher.quoteReplacement(releaseHistory.getReleaseComment()));
     renderResult = renderResult.replaceAll(EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS, getApolloPortalAddress());
     return renderResult
         .replaceAll(EMAIL_CONTENT_FIELD_RELEASE_TIME, dateFormat.format(releaseHistory.getReleaseTime()));
@@ -150,7 +174,8 @@ public abstract class ConfigPublishEmailBuilder {
     //don't show diff content if namespace's format is file
     if (appNamespace == null ||
         !appNamespace.getFormat().equals(ConfigFileFormat.Properties.getValue())) {
-      return template;
+
+      return template.replaceAll(EMAIL_CONTENT_FIELD_DIFF, "请点击链接到Apollo上查看");
     }
 
     ReleaseCompareResult result = getReleaseCompareResult(env, releaseHistory);
@@ -177,7 +202,8 @@ public abstract class ConfigPublishEmailBuilder {
       changesHtmlBuilder.append("</tr>");
     }
 
-    String renderResult = template.replaceAll(EMAIL_CONTENT_FIELD_DIFF, changesHtmlBuilder.toString());
+    String diffContent = Matcher.quoteReplacement(changesHtmlBuilder.toString());
+    String renderResult = template.replaceAll(EMAIL_CONTENT_FIELD_DIFF, diffContent);
     return renderResult.replaceAll(EMAIL_CONTENT_DIFF_HAS_CONTENT_SWITCH, "");
   }
 
@@ -213,6 +239,5 @@ public abstract class ConfigPublishEmailBuilder {
     }
     return source;
   }
-
 
 }

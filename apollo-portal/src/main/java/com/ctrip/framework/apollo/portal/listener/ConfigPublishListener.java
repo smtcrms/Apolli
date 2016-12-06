@@ -13,6 +13,8 @@ import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.spi.EmailService;
 import com.ctrip.framework.apollo.tracer.Tracer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -24,6 +26,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class ConfigPublishListener {
+  private static final Logger logger = LoggerFactory.getLogger(ConfigPublishListener.class);
 
   @Autowired
   private ServerConfigService serverConfigService;
@@ -53,6 +56,7 @@ public class ConfigPublishListener {
         emailSupportedEnvs.add(Env.fromString(env.trim()));
       }
     } catch (Exception e) {
+      logger.error("init email supported envs failed.", e);
       Tracer.logError("init email supported envs failed.", e);
     }
 
@@ -75,12 +79,16 @@ public class ConfigPublishListener {
 
     int realOperation = releaseHistory.getOperation();
 
-    Email email = buildEmail(env, releaseHistory, realOperation);
+    Email email = null;
+    try {
+      email = buildEmail(env, releaseHistory, realOperation);
+    } catch (Throwable e) {
+      Tracer.logError("build email failed.", e);
+    }
 
     if (email != null) {
       emailService.send(email);
     }
-
   }
 
   private ReleaseHistoryBO getReleaseHistory(ConfigPublishEvent event) {
@@ -99,7 +107,7 @@ public class ConfigPublishListener {
     if (info.isRollbackEvent()) {
       return releaseHistoryService
           .findLatestByPreviousReleaseIdAndOperation(env, info.getPreviousReleaseId(), operation);
-    }else {
+    } else {
       return releaseHistoryService.findLatestByReleaseIdAndOperation(env, info.getReleaseId(), operation);
     }
 
