@@ -3,7 +3,7 @@ package com.ctrip.framework.apollo.configservice.util;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Jason Song(song_s@ctrip.com)

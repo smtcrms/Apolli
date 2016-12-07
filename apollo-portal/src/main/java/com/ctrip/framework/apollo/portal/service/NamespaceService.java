@@ -13,15 +13,16 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -56,15 +57,26 @@ public class NamespaceService {
     namespace.setDataChangeLastModifiedBy(userInfoHolder.getUser().getUserId());
     NamespaceDTO createdNamespace = namespaceAPI.createNamespace(env, namespace);
 
-    Cat.logEvent(CatEventType.CREATE_NAMESPACE,
-        String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
-            namespace.getNamespaceName()));
+    Tracer.logEvent(CatEventType.CREATE_NAMESPACE,
+                 String.format("%s+%s+%s+%s", namespace.getAppId(), env, namespace.getClusterName(),
+                               namespace.getNamespaceName()));
     return createdNamespace;
   }
 
-  public void deleteNamespace(String appId, Env env,  String clusterName, String namespaceName){
-    namespaceAPI.deleteNamespace(env, appId, clusterName, namespaceName, userInfoHolder.getUser().getUserId());
+
+  @Transactional
+  public void deleteNamespace(String appId, Env env, String clusterName, String namespaceName) {
+
+    AppNamespace appNamespace = appNamespaceService.findByAppIdAndName(appId, namespaceName);
+    if (appNamespace != null && !appNamespace.isPublic()){
+      throw new BadRequestException("private namespace can not be deleted");
+    }
+
+    String operator = userInfoHolder.getUser().getUserId();
+
+    namespaceAPI.deleteNamespace(env, appId, clusterName, namespaceName, operator);
   }
+
 
   public NamespaceDTO loadNamespaceBaseInfo(String appId, Env env, String clusterName, String namespaceName) {
     NamespaceDTO namespace = namespaceAPI.loadNamespace(appId, env, clusterName, namespaceName);
@@ -93,7 +105,7 @@ public class NamespaceService {
         namespaceVOs.add(namespaceVO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
-            appId, env, clusterName, namespace.getNamespaceName(), e);
+                     appId, env, clusterName, namespace.getNamespaceName(), e);
         throw e;
       }
     }

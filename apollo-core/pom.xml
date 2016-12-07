@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.2.0</version>
+		<version>0.4.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -16,12 +16,12 @@
 		<github.path>${project.artifactId}</github.path>
 	</properties>
 	<dependencies>
-		<!-- cat -->
+		<!-- framework foundation -->
 		<dependency>
-			<groupId>com.dianping.cat</groupId>
-			<artifactId>cat-client</artifactId>
+			<groupId>com.ctrip.framework</groupId>
+			<artifactId>framework-foundation</artifactId>
 		</dependency>
-		<!-- end of cat -->
+		<!-- end of framework foundation -->
 		<!-- json -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -40,5 +40,17 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<!-- end of log -->
+		<!-- test -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- end of test -->
 	</dependencies>
 </project>

@@ -1,13 +1,13 @@
 package com.ctrip.framework.apollo.biz.service;
 
-import java.util.Date;
+import com.ctrip.framework.apollo.biz.AbstractIntegrationTest;
+import com.ctrip.framework.apollo.common.entity.App;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ctrip.framework.apollo.biz.AbstractIntegrationTest;
-import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.common.exception.ServiceException;
+import java.util.Date;
 
 public class ClusterServiceTest extends AbstractIntegrationTest {
 

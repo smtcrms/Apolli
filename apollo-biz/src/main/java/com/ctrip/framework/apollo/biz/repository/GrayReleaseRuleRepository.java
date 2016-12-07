@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.biz.repository;
+
 import com.ctrip.framework.apollo.biz.entity.GrayReleaseRule;
-import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

@@ -40,7 +40,6 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 ALL: 'all'
             };
 
-            var MIN_ROW_SIZE = 10;
 
             var operate_branch_storage_key = 'OperateBranch';
 
@@ -226,7 +225,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     //namespace view name hide suffix
                     namespace.viewName =
                         namespace.baseInfo.namespaceName.replace(".xml", "").replace(
-                            ".properties", "");
+                            ".properties", "").replace(".json", "").replace(".yml", "")
+                            .replace(".yaml", "");
 
                     if (!viewType) {
                         if (namespace.isPropertiesFormat) {
@@ -641,7 +641,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             function parseModel2Text(namespace) {
 
                 if (namespace.items.length == 0) {
-                    namespace.itemCnt = MIN_ROW_SIZE;
+                    namespace.itemCnt = 0;
                     return "";
                 }
 
@@ -657,7 +657,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             function parseNotPropertiesText(namespace) {
                 var text = namespace.items[0].item.value;
                 var lineNum = text.split("\n").length;
-                namespace.itemCnt = lineNum < MIN_ROW_SIZE ? MIN_ROW_SIZE : lineNum;
+                namespace.itemCnt = lineNum;
                 return text;
             }
 
@@ -681,10 +681,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     itemCnt++;
                 });
 
-                namespace.itemCnt = itemCnt < MIN_ROW_SIZE ? MIN_ROW_SIZE : itemCnt;
+                namespace.itemCnt = itemCnt;
                 return result;
             }
-
+            
             function toggleItemSearchInput(namespace) {
                 namespace.showSearchInput = !namespace.showSearchInput;
             }

@@ -1,14 +1,14 @@
 package com.ctrip.framework.apollo.portal.service;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.dto.ItemDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.components.txtresolver.PropertyResolver;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.ctrip.framework.apollo.portal.service.txtresolver.PropertyResolver;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +40,7 @@ public class NamespaceServiceTest {
 
   @InjectMocks
   private NamespaceService namespaceService;
+
 
   @Before
   public void setup() {
@@ -97,6 +98,5 @@ public class NamespaceServiceTest {
     assertEquals(namespaceName, namespaceVO.getBaseInfo().getNamespaceName());
 
   }
-
 
 }

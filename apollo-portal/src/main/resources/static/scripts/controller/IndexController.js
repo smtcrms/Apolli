@@ -79,6 +79,9 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
                         });
                         result.forEach(function (favorite) {
                             var app = appIdMapApp[favorite.appId];
+                            if (!app){
+                                return;
+                            }
                             app.favoriteId = favorite.id;
                             $scope.favorites.push(app);
                         });
@@ -106,7 +109,9 @@ function IndexController($scope, $window, toastr, AppUtil, AppService, UserServi
 
                     userVisitedApps.forEach(function (appId) {
                         var app = appIdMapApp[appId];
-                        $scope.visitedApps.push(app);
+                        if (app){
+                            $scope.visitedApps.push(app);
+                        }
                     });
                 });
         }

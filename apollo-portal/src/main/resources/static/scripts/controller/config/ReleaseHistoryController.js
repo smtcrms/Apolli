@@ -50,6 +50,10 @@ function releaseHistoryController($scope, $location, AppUtil,
                                                             $scope.pageContext.namespaceName,
                                                             $scope.page, PAGE_SIZE)
             .then(function (result) {
+                if ($scope.page == 0){
+                    $(".release-history").removeClass('hidden');
+                }
+
                 if (!result || result.length < PAGE_SIZE) {
                     $scope.hasLoadAll = true;
                 }
@@ -75,9 +79,6 @@ function releaseHistoryController($scope, $location, AppUtil,
 
                 $scope.page = $scope.page + 1;
 
-                if ($scope.page == 1){
-                    $(".release-history").removeClass('hidden');
-                }
             }, function (result) {
                 AppUtil.showErrorMsg(result, "加载发布历史信息出错");
             });

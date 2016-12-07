@@ -11,13 +11,12 @@ import com.google.gson.reflect.TypeToken;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.exceptions.ApolloConfigException;
+import com.ctrip.framework.apollo.tracer.Tracer;
+import com.ctrip.framework.apollo.tracer.spi.Transaction;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.ctrip.framework.apollo.util.http.HttpRequest;
 import com.ctrip.framework.apollo.util.http.HttpResponse;
 import com.ctrip.framework.apollo.util.http.HttpUtil;
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -94,7 +93,7 @@ public class ConfigServiceLocator implements Initializable {
           @Override
           public void run() {
             logger.debug("refresh config services");
-            Cat.logEvent("Apollo.MetaService", "periodicRefresh");
+            Tracer.logEvent("Apollo.MetaService", "periodicRefresh");
             tryUpdateConfigServices();
           }
         }, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),
@@ -109,11 +108,11 @@ public class ConfigServiceLocator implements Initializable {
     Throwable exception = null;
 
     for (int i = 0; i < maxRetries; i++) {
-      Transaction transaction = Cat.newTransaction("Apollo.MetaService", "getConfigService");
+      Transaction transaction = Tracer.newTransaction("Apollo.MetaService", "getConfigService");
       transaction.addData("Url", url);
       try {
         HttpResponse<List<ServiceDTO>> response = m_httpUtil.doGet(request, m_responseType);
-        transaction.setStatus(Message.SUCCESS);
+        transaction.setStatus(Transaction.SUCCESS);
         List<ServiceDTO> services = response.getBody();
         if (services == null || services.isEmpty()) {
           logConfigServiceToCat("Empty response!");
@@ -123,7 +122,7 @@ public class ConfigServiceLocator implements Initializable {
         logConfigServicesToCat(services);
         return;
       } catch (Throwable ex) {
-        Cat.logError(ex);
+        Tracer.logError(ex);
         transaction.setStatus(ex);
         exception = ex;
       } finally {
@@ -162,6 +161,6 @@ public class ConfigServiceLocator implements Initializable {
   }
 
   private void logConfigServiceToCat(String serviceUrl) {
-    Cat.logEvent("Apollo.Config.Services", serviceUrl);
+    Tracer.logEvent("Apollo.Config.Services", serviceUrl);
   }
 }

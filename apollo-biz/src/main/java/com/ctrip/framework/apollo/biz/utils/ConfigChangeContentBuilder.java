@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;

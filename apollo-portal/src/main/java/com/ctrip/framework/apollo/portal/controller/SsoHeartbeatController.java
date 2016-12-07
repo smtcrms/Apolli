@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.controller;
 
-import com.ctrip.framework.apollo.portal.auth.SsoHeartbeatHandler;
+import com.ctrip.framework.apollo.portal.spi.SsoHeartbeatHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
 import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -43,7 +42,7 @@ public class ReleaseMessageService {
         releaseMessage.setId((Long) o[1]);
         releaseMessages.add(releaseMessage);
       } catch (Exception ex) {
-        Cat.logError("Parsing LatestReleaseMessagesGroupByMessages failed", ex);
+        Tracer.logError("Parsing LatestReleaseMessagesGroupByMessages failed", ex);
       }
     }
     return releaseMessages;

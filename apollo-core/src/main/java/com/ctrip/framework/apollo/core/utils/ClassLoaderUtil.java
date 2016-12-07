@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -49,5 +48,14 @@ public class ClassLoaderUtil {
 
   public static String getClassPath() {
     return classPath;
+  }
+
+  public static boolean isClassPresent(String className) {
+    try {
+      Class.forName(className);
+      return true;
+    } catch (ClassNotFoundException ex) {
+      return false;
+    }
   }
 }

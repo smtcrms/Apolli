@@ -6,7 +6,7 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
  * @author Jason Song(song_s@ctrip.com)
  */
 public enum ConfigFileFormat {
-  Properties("properties"), XML("xml");
+  Properties("properties"), XML("xml"), JSON("json"), YML("yml"), YAML("yaml");
 
   private String value;
 
@@ -27,6 +27,12 @@ public enum ConfigFileFormat {
         return Properties;
       case "xml":
         return XML;
+      case "json":
+        return JSON;
+      case "yml":
+        return YML;
+      case "yaml":
+        return YAML;
     }
     throw new IllegalArgumentException(value + " can not map enum");
   }

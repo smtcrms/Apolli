@@ -6,8 +6,8 @@ import com.ctrip.framework.apollo.core.utils.ClassLoaderUtil;
 import com.ctrip.framework.apollo.enums.PropertyChangeType;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
+import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
-import com.dianping.cat.Cat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     try {
       m_configProperties.set(m_configRepository.getConfig());
     } catch (Throwable ex) {
-      Cat.logError(ex);
+      Tracer.logError(ex);
       logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.",
           m_namespace, ExceptionUtil.getDetailMessage(ex));
     } finally {
@@ -119,7 +119,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
 
     this.fireConfigChange(new ConfigChangeEvent(m_namespace, actualChanges));
 
-    Cat.logEvent("Apollo.Client.ConfigChanges", m_namespace);
+    Tracer.logEvent("Apollo.Client.ConfigChanges", m_namespace);
   }
 
   private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties) {
@@ -185,7 +185,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
       try {
         properties.load(in);
       } catch (IOException ex) {
-        Cat.logError(ex);
+        Tracer.logError(ex);
         logger.error("Load resource config for namespace {} failed", namespace, ex);
       } finally {
         try {

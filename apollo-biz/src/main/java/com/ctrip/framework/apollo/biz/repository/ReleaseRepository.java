@@ -1,7 +1,6 @@
 package com.ctrip.framework.apollo.biz.repository;
 
-import java.util.List;
-import java.util.Set;
+import com.ctrip.framework.apollo.biz.entity.Release;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,7 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.ctrip.framework.apollo.biz.entity.Release;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jason Song(song_s@ctrip.com)

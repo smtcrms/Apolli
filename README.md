@@ -15,7 +15,7 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 
 服务端基于Spring Boot和Spring Cloud开发，打包后可以直接运行，不需要额外安装Tomcat等应用容器。
 
-客户端不依赖任何框架，能够运行于所有Java运行时环境。
+客户端不依赖任何框架，能够运行于所有Java运行时环境。（.Net客户端即将开源）
 
 更多产品介绍参见[Apollo配置中心介绍](https://github.com/ctripcorp/apollo/wiki/Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E4%BB%8B%E7%BB%8D)
 
@@ -46,8 +46,9 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 * **客户端配置信息监控**
   * 可以方便的看到配置在被哪些实例使用
 
-* **提供Java原生客户端**
-  * 提供了Java的原生客户端，方便应用集成
+* **提供Java和.Net原生客户端**
+  
+  * 提供了Java和.Net的原生客户端，方便应用集成（.Net客户端即将开源）
   * 同时提供了Http接口，非Java应用也可以方便的使用
 
 * **提供开放平台API**
@@ -57,6 +58,11 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
   * 还有一些使用方如DAL，不仅有特定的格式，而且对输入的值也需要进行校验后方可保存，如检查数据库、用户名和密码是否匹配。
   * 对于这类应用，Apollo支持应用方通过开放接口在Apollo进行配置的修改和发布，并且具备完善的授权和权限控制
 
+* **部署简单**
+  * 配置中心作为基础服务，可用性要求非常高，这就要求Apollo对外部依赖尽可能地少
+  * 目前唯一的外部依赖是MySQL，所以部署非常简单，只要安装好Java和MySQL就可以让Apollo跑起来
+  * Apollo还提供了打包脚本，一键就可以生成所有需要的安装包，并且支持自定义运行时参数
+
 #Usage
   1. [应用接入指南](https://github.com/ctripcorp/apollo/wiki/%E5%BA%94%E7%94%A8%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97)
   2. [Java客户端使用指南](https://github.com/ctripcorp/apollo/wiki/Java%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
@@ -64,6 +70,12 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 
 #Design
   * [Apollo配置中心设计](https://github.com/ctripcorp/apollo/wiki/Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E8%AE%BE%E8%AE%A1)
+
+#Development
+  * [Apollo开发指南](https://github.com/ctripcorp/apollo/wiki/Apollo%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97)
+  * Code Styles
+    * [Eclipse Code Style](https://github.com/ctripcorp/apollo/blob/master/apollo-buildtools/style/eclipse-java-google-style.xml)
+    * [Intellij Code Style](https://github.com/ctripcorp/apollo/blob/master/apollo-buildtools/style/intellij-java-google-style.xml)
 
 #Deployment
   * [Quick Start](https://github.com/ctripcorp/apollo/wiki/Quick-Start)

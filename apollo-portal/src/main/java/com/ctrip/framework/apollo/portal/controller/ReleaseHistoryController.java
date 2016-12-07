@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.controller;
 
 
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.entity.vo.ReleaseHistoryVO;
+import com.ctrip.framework.apollo.portal.entity.bo.ReleaseHistoryBO;
 import com.ctrip.framework.apollo.portal.service.ReleaseHistoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class ReleaseHistoryController {
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/histories",
       method = RequestMethod.GET)
-  public List<ReleaseHistoryVO> findReleaseHistoriesByNamespace(@PathVariable String appId,
+  public List<ReleaseHistoryBO> findReleaseHistoriesByNamespace(@PathVariable String appId,
                                                                 @PathVariable String env,
                                                                 @PathVariable String clusterName,
                                                                 @PathVariable String namespaceName,

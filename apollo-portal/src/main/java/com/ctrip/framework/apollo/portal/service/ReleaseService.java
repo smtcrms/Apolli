@@ -2,29 +2,29 @@ package com.ctrip.framework.apollo.portal.service;
 
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
+import com.ctrip.framework.apollo.common.constants.GsonType;
 import com.ctrip.framework.apollo.common.dto.ItemChangeSets;
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.KVEntity;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseVO;
 import com.ctrip.framework.apollo.portal.enums.ChangeType;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,10 +33,8 @@ import java.util.Set;
 
 @Service
 public class ReleaseService {
+
   private static final Gson gson = new Gson();
-  private static final Type configurationTypeReference =
-      new TypeToken<Map<String, String>>() {
-      }.getType();
 
   @Autowired
   private UserInfoHolder userInfoHolder;
@@ -55,14 +53,16 @@ public class ReleaseService {
         .createRelease(appId, env, clusterName, namespaceName, model.getReleaseTitle(), model.getReleaseComment()
             , releaseBy);
 
-    Cat.logEvent(CatEventType.RELEASE_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
+    Tracer.logEvent(CatEventType.RELEASE_NAMESPACE, String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
     return releaseDTO;
   }
 
   public ReleaseDTO updateAndPublish(String appId, Env env, String clusterName, String namespaceName,
-                                     String releaseTitle, String releaseComment, String branchName, boolean deleteBranch, ItemChangeSets changeSets){
+                                     String releaseTitle, String releaseComment, String branchName,
+                                     boolean deleteBranch, ItemChangeSets changeSets) {
 
-    return releaseAPI.updateAndPublish(appId, env, clusterName, namespaceName, releaseTitle, releaseComment, branchName, deleteBranch, changeSets);
+    return releaseAPI.updateAndPublish(appId, env, clusterName, namespaceName, releaseTitle, releaseComment, branchName,
+                                       deleteBranch, changeSets);
   }
 
   public List<ReleaseVO> findAllReleases(String appId, Env env, String clusterName, String namespaceName, int page,
@@ -79,7 +79,7 @@ public class ReleaseService {
       release.setBaseInfo(releaseDTO);
 
       Set<KVEntity> kvEntities = new LinkedHashSet<>();
-      Map<String, String> configurations = gson.fromJson(releaseDTO.getConfigurations(), configurationTypeReference);
+      Map<String, String> configurations = gson.fromJson(releaseDTO.getConfigurations(), GsonType.CONFIG);
       Set<Map.Entry<String, String>> entries = configurations.entrySet();
       for (Map.Entry<String, String> entry : entries) {
         kvEntities.add(new KVEntity(entry.getKey(), entry.getValue()));
@@ -98,7 +98,19 @@ public class ReleaseService {
     return releaseAPI.findActiveReleases(appId, env, clusterName, namespaceName, page, size);
   }
 
-  public List<ReleaseDTO> findReleaseByIds(Env env, Set<Long> releaseIds){
+  public ReleaseDTO findReleaseById(Env env, long releaseId) {
+    Set<Long> releaseIds = new HashSet<>(1);
+    releaseIds.add(releaseId);
+    List<ReleaseDTO> releases = findReleaseByIds(env, releaseIds);
+    if (CollectionUtils.isEmpty(releases)) {
+      return null;
+    } else {
+      return releases.get(0);
+    }
+
+  }
+
+  public List<ReleaseDTO> findReleaseByIds(Env env, Set<Long> releaseIds) {
     return releaseAPI.findReleaseByIds(env, releaseIds);
   }
 
@@ -111,18 +123,26 @@ public class ReleaseService {
   }
 
   public ReleaseCompareResult compare(Env env, long baseReleaseId, long toCompareReleaseId) {
-    Map<String, String> baseReleaseConfiguration = new HashMap<>();
-    Map<String, String> toCompareReleaseConfiguration = new HashMap<>();
 
-    if (baseReleaseId != 0){
-      ReleaseDTO baseRelease = releaseAPI.loadRelease(env, baseReleaseId);
-      baseReleaseConfiguration = gson.fromJson(baseRelease.getConfigurations(), configurationTypeReference);
+    ReleaseDTO baseRelease = null;
+    ReleaseDTO toCompareRelease = null;
+    if (baseReleaseId != 0) {
+      baseRelease = releaseAPI.loadRelease(env, baseReleaseId);
     }
 
-    if (toCompareReleaseId != 0){
-      ReleaseDTO toCompareRelease = releaseAPI.loadRelease(env, toCompareReleaseId);
-      toCompareReleaseConfiguration = gson.fromJson(toCompareRelease.getConfigurations(), configurationTypeReference);
+    if (toCompareReleaseId != 0) {
+      toCompareRelease = releaseAPI.loadRelease(env, toCompareReleaseId);
     }
+
+    return compare(baseRelease, toCompareRelease);
+  }
+
+  public ReleaseCompareResult compare(ReleaseDTO baseRelease, ReleaseDTO toCompareRelease) {
+    Map<String, String> baseReleaseConfiguration = baseRelease == null ? new HashMap<>() :
+                                                   gson.fromJson(baseRelease.getConfigurations(), GsonType.CONFIG);
+    Map<String, String> toCompareReleaseConfiguration = toCompareRelease == null ? new HashMap<>() :
+                                                        gson.fromJson(toCompareRelease.getConfigurations(),
+                                                                      GsonType.CONFIG);
 
     ReleaseCompareResult compareResult = new ReleaseCompareResult();
 
@@ -134,10 +154,10 @@ public class ReleaseService {
       //added
       if (secondValue == null) {
         compareResult.addEntityPair(ChangeType.DELETED, new KVEntity(key, firstValue),
-            new KVEntity(key, null));
+                                    new KVEntity(key, null));
       } else if (!Objects.equal(firstValue, secondValue)) {
         compareResult.addEntityPair(ChangeType.MODIFIED, new KVEntity(key, firstValue),
-            new KVEntity(key, secondValue));
+                                    new KVEntity(key, secondValue));
       }
 
     }

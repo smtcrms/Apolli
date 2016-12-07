@@ -1,5 +1,4 @@
 <section class="panel namespace-panel">
-
     <!--public or link label-->
     <header class="row namespace-attribute-panel">
         <div class="text-center namespace-attribute-public">
@@ -296,13 +295,15 @@
             </div>
             <!--text view-->
             <!--只读模式下的文本内容,不替换换行符-->
-        <textarea class="form-control no-radius" rows="{{namespace.itemCnt}}"
+        <textarea class="form-control no-radius"
+                  rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
                   ng-show="namespace.viewType == 'text' && !namespace.isTextEditing"
                   ng-disabled="!namespace.isTextEditing"
                   ng-bind="namespace.text">
             </textarea>
             <!--编辑状态下的文本内容,会过滤掉换行符-->
-        <textarea class="form-control" rows="{{namespace.itemCnt}}" style="border-radius: 0px"
+        <textarea class="form-control no-radius"
+                  rows="{{namespace.itemCnt < 10 ? 10: namespace.itemCnt>20 ? 20:namespace.itemCnt}}"
                   ng-show="namespace.viewType == 'text' && namespace.isTextEditing"
                   ng-disabled="!namespace.isTextEditing" ng-model="namespace.editText">
             </textarea>
@@ -875,6 +876,12 @@
             <!--gray rules-->
             <div class="rules-manage-view row" ng-show="namespace.branch.viewType == 'rule'">
 
+                <div class="alert alert-warning no-radius"
+                     ng-show="!namespace.hasModifyPermission && !namespace.hasReleasePermission">
+                    <strong>Tips:</strong>
+                    您没有权限编辑灰度规则, 具有namespace修改权或者发布权的人员才可以编辑灰度规则. 如需要编辑灰度规则,请找项目管理员申请权限.
+                </div>
+
                 <table class="table table-bordered table-hover">
                     <thead>
                     <tr>
@@ -892,9 +899,11 @@
                         <td class="text-center" width="10%">
                             <img src="img/edit.png" class="i-20 hover"
                                  data-tooltip="tooltip" data-placement="bottom" title="修改"
+                                 ng-show="namespace.hasModifyPermission || namespace.hasReleasePermission"
                                  ng-click="editRuleItem(namespace.branch, ruleItem)">
                             <img src="img/cancel.png" class="i-20 hover" style="margin-left: 5px;"
                                  data-tooltip="tooltip" data-placement="bottom" title="删除"
+                                 ng-show="namespace.hasModifyPermission || namespace.hasReleasePermission"
                                  ng-click="deleteRuleItem(namespace.branch, ruleItem)">
                         </td>
                     </tr>
@@ -902,6 +911,7 @@
                     </tbody>
                 </table>
                 <button class="btn btn-primary"
+                        ng-if="namespace.hasModifyPermission || namespace.hasReleasePermission"
                         ng-show="(namespace.isPublic && !namespace.isLinkedNamespace) ||
                         ((!namespace.isPublic || namespace.isLinkedNamespace)
                         && (!namespace.branch.rules
@@ -909,7 +919,11 @@
                             || !namespace.branch.rules.ruleItems.length))"
                         ng-click="addRuleItem(namespace.branch)">新增规则
                 </button>
+
+
             </div>
+
+
             <!--instances -->
             <div class="panel panel-default" ng-show="namespace.branch.viewType == 'instance'">
                 <div class="panel-heading text-right">

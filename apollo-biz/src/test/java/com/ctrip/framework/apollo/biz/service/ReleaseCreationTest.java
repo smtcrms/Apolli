@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
 
 public class ReleaseCreationTest extends AbstractIntegrationTest {

@@ -12,7 +12,7 @@ import com.google.common.collect.Sets;
 import com.ctrip.framework.apollo.portal.entity.po.Permission;
 import com.ctrip.framework.apollo.portal.entity.po.Role;
 import com.ctrip.framework.apollo.portal.entity.po.RolePermission;
-import com.ctrip.framework.apollo.portal.entity.po.UserInfo;
+import com.ctrip.framework.apollo.portal.entity.bo.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.po.UserRole;
 import com.ctrip.framework.apollo.portal.repository.PermissionRepository;
 import com.ctrip.framework.apollo.portal.repository.RolePermissionRepository;
@@ -36,20 +36,18 @@ import java.util.Set;
  */
 @Service
 public class RolePermissionService implements InitializingBean {
+
   @Autowired
   private RoleRepository roleRepository;
-
   @Autowired
   private RolePermissionRepository rolePermissionRepository;
-
   @Autowired
   private UserRoleRepository userRoleRepository;
-
   @Autowired
   private PermissionRepository permissionRepository;
-
   @Autowired
   private ServerConfigService serverConfigService;
+
 
   private List<String> superAdminUsers;
   private Splitter configSplitter;

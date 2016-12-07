@@ -53,14 +53,18 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
                                                   scope.toOperationNamespace.baseInfo.namespaceName,
                                                   scope.item).then(
                             function (result) {
-                                
+                                toastr.success("添加成功,如需生效请发布");
+                                scope.item.addItemBtnDisabled = false;
+                                AppUtil.hideModal('#itemModal');
                                 EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
                                                   {
                                                       namespace: scope.toOperationNamespace
                                                   });
-                                toastr.success("添加成功,如需生效请发布");
+
+
                             }, function (result) {
                                 toastr.error(AppUtil.errorMsg(result), "添加失败");
+                                scope.item.addItemBtnDisabled = false;
                             });
                     } else {
                         if (selectedClusters.length == 0) {
@@ -75,6 +79,8 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
                                                       scope.toOperationNamespace.baseInfo.namespaceName,
                                                       scope.item).then(
                                 function (result) {
+                                    scope.item.addItemBtnDisabled = false;
+                                    AppUtil.hideModal('#itemModal');
                                     toastr.success(cluster.env + " , " + scope.item.key, "添加成功,如需生效请发布");
                                     if (cluster.env == scope.env &&
                                         cluster.name == scope.cluster) {
@@ -86,12 +92,11 @@ function itemModalDirective(toastr, AppUtil, EventManager, ConfigService) {
                                     }
                                 }, function (result) {
                                     toastr.error(AppUtil.errorMsg(result), "添加失败");
+                                    scope.item.addItemBtnDisabled = false;
                                 });
                         });
                     }
 
-                    scope.item.addItemBtnDisabled = false;
-                    AppUtil.hideModal('#itemModal');
 
                 } else {
 

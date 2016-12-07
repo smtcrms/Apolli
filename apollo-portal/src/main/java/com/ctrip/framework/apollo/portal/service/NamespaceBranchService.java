@@ -8,12 +8,12 @@ import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.auth.PermissionValidator;
-import com.ctrip.framework.apollo.portal.auth.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.components.ItemsComparator;
+import com.ctrip.framework.apollo.portal.components.PermissionValidator;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.vo.NamespaceVO;
-import com.dianping.cat.Cat;
+import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
+import com.ctrip.framework.apollo.tracer.Tracer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class NamespaceBranchService {
     NamespaceDTO createdBranch = namespaceBranchAPI.createBranch(appId, env, parentClusterName, namespaceName,
                                                                  userInfoHolder.getUser().getUserId());
 
-    Cat.logEvent(CatEventType.CREATE_GRAY_RELEASE, String.format("%s+%s+%s+%s", appId, env, parentClusterName,
+    Tracer.logEvent(CatEventType.CREATE_GRAY_RELEASE, String.format("%s+%s+%s+%s", appId, env, parentClusterName,
                                                                  namespaceName));
     return createdBranch;
 
@@ -67,9 +67,8 @@ public class NamespaceBranchService {
 
     namespaceBranchAPI.updateBranchGrayRules(appId, env, clusterName, namespaceName, branchName, rules);
 
-    Cat.logEvent(CatEventType.UPDATE_GRAY_RELEASE_RULE,
-                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName),
-                 "success", String.valueOf(rules.getRuleItems()));
+    Tracer.logEvent(CatEventType.UPDATE_GRAY_RELEASE_RULE,
+                 String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
   public void deleteBranch(String appId, Env env, String clusterName, String namespaceName,
@@ -77,19 +76,9 @@ public class NamespaceBranchService {
 
     String operator = userInfoHolder.getUser().getUserId();
 
-    //Refusing request if user has not release permission and branch has been released
-    if (!permissionValidator.hasReleaseNamespacePermission(appId, namespaceName)
-        && (!permissionValidator.hasModifyNamespacePermission(appId, namespaceName) ||
-            releaseService.loadLatestRelease(appId, env, branchName, namespaceName) != null)) {
-      throw new BadRequestException("Forbidden operation. "
-                                    + "Cause by: you has not release permission "
-                                    + "or you has not modify permission "
-                                    + "or you has modify permission but branch has been released");
-    }
-
     namespaceBranchAPI.deleteBranch(appId, env, clusterName, namespaceName, branchName, operator);
 
-    Cat.logEvent(CatEventType.DELETE_GRAY_RELEASE,
+    Tracer.logEvent(CatEventType.DELETE_GRAY_RELEASE,
                  String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
   }
 
@@ -103,7 +92,7 @@ public class NamespaceBranchService {
         mergedResult =
         releaseService.updateAndPublish(appId, env, clusterName, namespaceName, title, comment, branchName, deleteBranch, changeSets);
 
-    Cat.logEvent(CatEventType.MERGE_GRAY_RELEASE,
+    Tracer.logEvent(CatEventType.MERGE_GRAY_RELEASE,
                  String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));
 
     return mergedResult;

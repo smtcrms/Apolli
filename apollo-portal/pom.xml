@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ctrip.framework.apollo</groupId>
 		<artifactId>apollo</artifactId>
-		<version>0.2.0</version>
+		<version>0.4.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -17,11 +17,6 @@
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ctrip.framework.apollo</groupId>
-			<artifactId>apollo-buildtools</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -69,6 +64,10 @@
 					<groupId>com.ctrip.framework.apollo-sso</groupId>
 					<artifactId>apollo-sso-ctrip</artifactId>
 				</dependency>
+				<dependency>
+					<groupId>com.ctrip.framework.apollo-ctrip-service</groupId>
+					<artifactId>apollo-email-service</artifactId>
+				</dependency>
 			</dependencies>
 		</profile>
         <profile>
@@ -77,11 +76,6 @@
                 <package.environment>github</package.environment>
             </properties>
             <dependencies>
-                <!-- disable cat for outside use -->
-                <dependency>
-                    <groupId>com.ctrip.framework.apollo</groupId>
-                    <artifactId>apollo-buildtools</artifactId>
-                </dependency>
             </dependencies>
         </profile>
 	</profiles>
