@@ -42,7 +42,6 @@ public class CtripEmailRequestBuilder {
   @Value("${ctrip.email.survival.duration}")
   private int survivalDuration;
 
-  private Calendar expiredTime;
 
   @PostConstruct
   public void init() {
@@ -59,8 +58,6 @@ public class CtripEmailRequestBuilder {
       setCharset = sendEmailRequestClazz.getMethod("setCharset", String.class);
       setExpiredTime = sendEmailRequestClazz.getMethod("setExpiredTime", Calendar.class);
       setAppID = sendEmailRequestClazz.getMethod("setAppID", Integer.class);
-
-      expiredTime = calExpiredTime();
 
     } catch (Throwable e) {
       logger.error("init email request build failed", e);
@@ -88,7 +85,7 @@ public class CtripEmailRequestBuilder {
     setBodyTemplateID.invoke(request, templateId);
     setIsBodyHtml.invoke(request, true);
     setCharset.invoke(request, "UTF-8");
-    setExpiredTime.invoke(request, expiredTime);
+    setExpiredTime.invoke(request, calExpiredTime());
     setAppID.invoke(request, appId);
 
     return request;
