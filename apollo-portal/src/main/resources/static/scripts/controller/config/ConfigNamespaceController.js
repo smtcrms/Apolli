@@ -62,6 +62,7 @@ function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigSer
             function (result) {
 
                 $scope.namespaces = result;
+                $('.config-item-container').removeClass('hide');
 
             }, function (result) {
                 toastr.error(AppUtil.errorMsg(result), "加载配置信息出错");
@@ -138,10 +139,9 @@ function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigSer
 
         $scope.item = _.clone(toEditItem);
 
-        if (namespace.isBranch) {
+        if (namespace.isBranch || namespace.isLinkedNamespace) {
             var existedItem = false;
             namespace.items.forEach(function (item) {
-                //branch items contain the item
                 if (!item.isDeleted && item.item.key == toEditItem.key) {
                     existedItem = true;
                 }
@@ -270,7 +270,7 @@ function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigSer
 
     
 
-    $('.config-item-container').removeClass('hide');
+
 
     new Clipboard('.clipboard');
 }

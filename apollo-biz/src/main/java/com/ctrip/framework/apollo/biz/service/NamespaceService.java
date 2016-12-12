@@ -6,8 +6,10 @@ import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
 import com.ctrip.framework.apollo.common.constants.NamespaceBranchStatus;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.core.ConfigConsts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,23 @@ public class NamespaceService {
   public Namespace findOne(String appId, String clusterName, String namespaceName) {
     return namespaceRepository.findByAppIdAndClusterNameAndNamespaceName(appId, clusterName,
                                                                          namespaceName);
+  }
+
+  public Namespace findPublicNamespace(String clusterName, String namespaceName) {
+    AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespaceName);
+    if (appNamespace == null) {
+      throw new BadRequestException("namespace not exist");
+    }
+
+    String appId = appNamespace.getAppId();
+
+    Namespace namespace = findOne(appId, clusterName, namespaceName);
+
+    if (namespace == null) {
+      namespace = findOne(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespaceName);
+    }
+
+    return namespace;
   }
 
   public List<Namespace> findNamespaces(String appId, String clusterName) {

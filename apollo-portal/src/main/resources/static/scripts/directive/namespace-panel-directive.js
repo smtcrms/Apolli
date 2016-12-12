@@ -40,7 +40,6 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 ALL: 'all'
             };
 
-
             var operate_branch_storage_key = 'OperateBranch';
 
             scope.switchView = switchView;
@@ -101,6 +100,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 initNamespaceLock(namespace);
                 initNamespaceInstancesCount(namespace);
                 initPermission(namespace);
+                initLinkedNamespace(namespace);
 
                 function initNamespaceBranch(namespace) {
                     NamespaceBranchService.findNamespaceBranch(scope.appId, scope.env,
@@ -221,6 +221,44 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         });
                 }
 
+                function initLinkedNamespace(namespace) {
+                    if (!namespace.isPublic || !namespace.isLinkedNamespace) {
+                        return;
+                    }
+                    //load public namespace
+                    ConfigService.load_public_namespace(scope.env, scope.cluster, namespace.baseInfo.namespaceName)
+                        .then(function (result) {
+                            var publicNamespace = result;
+                            namespace.publicNamespace = publicNamespace;
+
+                            var linkNamespaceItemKeys = [];
+                            namespace.items.forEach(function (item) {
+                                var key = item.item.key;
+                                linkNamespaceItemKeys.push(key);
+                            });
+
+
+                            publicNamespace.viewItems = [];
+                            publicNamespace.items.forEach(function (item) {
+                                var key = item.item.key;
+
+                                if (key){
+                                    publicNamespace.viewItems.push(item);
+                                }
+
+                                item.covered = linkNamespaceItemKeys.indexOf(key) >= 0;
+
+                                if (item.isModified || item.isDeleted) {
+                                    publicNamespace.isModified = true;
+                                } else if (key){
+                                    publicNamespace.hasPublishedItem = true;
+                                }
+                            });
+
+                        });
+
+                }
+
                 function initNamespaceViewName(namespace) {
                     //namespace view name hide suffix
                     namespace.viewName =
@@ -270,7 +308,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     switchBranch(operateBranchStorage[namespaceId]);
 
                 }
-                
+
             }
 
             function initNamespaceInstancesCount(namespace) {
@@ -497,11 +535,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                                                            scope.namespace.baseInfo.namespaceName,
                                                            branch.baseInfo.clusterName)
                     .then(function (result) {
-                        
+
                         if (result.appId) {
                             branch.rules = result;
                         }
-                        
+
                     }, function (result) {
                         toastr.error(AppUtil.errorMsg(result), "加载灰度规则出错");
                     });
@@ -684,7 +722,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 namespace.itemCnt = itemCnt;
                 return result;
             }
-            
+
             function toggleItemSearchInput(namespace) {
                 namespace.showSearchInput = !namespace.showSearchInput;
             }
@@ -727,7 +765,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 var parentNamespace = branch.parentNamespace;
                 if (!parentNamespace.hasReleasePermission) {
                     AppUtil.showModal('#releaseNoPermissionDialog');
-                }else if (branch.lockOwner && scope.user == branch.lockOwner) {
+                } else if (branch.lockOwner && scope.user == branch.lockOwner) {
                     AppUtil.showModal('#releaseDenyDialog');
                 } else if (parentNamespace.itemModifiedCnt > 0) {
                     AppUtil.showModal('#mergeAndReleaseDenyDialog');
@@ -740,6 +778,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             function rollback(namespace) {
                 EventManager.emit(EventManager.EventType.PRE_ROLLBACK_NAMESPACE, {namespace: namespace});
             }
+
+            setTimeout(function () {
+                scope.namespace.show = true;
+            }, 200);
 
         }
     }

@@ -5,6 +5,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
             isArray: false,
             url: '/apps/:appId/envs/:env/clusters/:clusterName/namespaces/:namespaceName'
         },
+        load_public_namespace: {
+            method: 'GET',
+            isArray: false,
+            url: '/envs/:env/clusters/:clusterName/namespaces/:namespaceName/public'
+        },
         load_all_namespaces: {
             method: 'GET',
             isArray: true,
@@ -52,6 +57,19 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
                                                   clusterName: clusterName,
                                                   namespaceName: namespaceName
                                               }, function (result) {
+                d.resolve(result);
+            }, function (result) {
+                d.reject(result);
+            });
+            return d.promise;
+        },
+        load_public_namespace: function (env, clusterName, namespaceName) {
+            var d = $q.defer();
+            config_source.load_public_namespace({
+                                             env: env,
+                                             clusterName: clusterName,
+                                             namespaceName: namespaceName
+                                         }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
