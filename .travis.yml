@@ -4,7 +4,7 @@ jdk:
 notification:
   email:
     recipients:
-      - nobodyiam@gmail.com,lepdou@gmail.com
+      - song_s@ctrip.com,zhanglea@ctrip.com
     on_success: always
     on_failure: always
 
@@ -32,9 +32,9 @@ addons:
     project:
       name: "ctripcorp/apollo"
       description: "Build submitted via Travis CI"
-    notification_email: nobodyiam@gmail.com,lepdou@gmail.com
+    notification_email: song_s@ctrip.com,zhanglea@ctrip.com
     build_command_prepend: "mvn clean"
-    build_command:   "mvn -DskipTests=true compile"
+    build_command: "mvn -DskipTests=true compile"
     branch_pattern: master
 
 cache:
