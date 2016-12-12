@@ -71,12 +71,16 @@ public class AdminServiceAPI {
 
     public NamespaceDTO loadNamespace(String appId, Env env, String clusterName,
                                       String namespaceName) {
-      NamespaceDTO dto =
+      return
           restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}",
                            NamespaceDTO.class, appId, clusterName, namespaceName);
-      return dto;
     }
 
+    public NamespaceDTO loadPublicNamespace(Env env, String clusterName, String namespaceName) {
+      return
+          restTemplate.get(env, "/clusters/{clusterName}/namespaces/{namespaceName}/public",
+                           NamespaceDTO.class, clusterName, namespaceName);
+    }
 
     public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
       return restTemplate
@@ -378,23 +382,26 @@ public class AdminServiceAPI {
   public static class ReleaseHistoryAPI extends API {
 
     private ParameterizedTypeReference<PageDTO<ReleaseHistoryDTO>> type =
-        new ParameterizedTypeReference<PageDTO<ReleaseHistoryDTO>>() {};
+        new ParameterizedTypeReference<PageDTO<ReleaseHistoryDTO>>() {
+        };
 
 
     public PageDTO<ReleaseHistoryDTO> findReleaseHistoriesByNamespace(String appId, Env env, String clusterName,
-                                                                   String namespaceName, int page, int size) {
+                                                                      String namespaceName, int page, int size) {
       return restTemplate.get(env,
                               "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/histories?page={page}&size={size}",
                               type, appId, clusterName, namespaceName, page, size).getBody();
     }
 
-    public PageDTO<ReleaseHistoryDTO> findByReleaseIdAndOperation(Env env, long releaseId, int operation, int page, int size) {
+    public PageDTO<ReleaseHistoryDTO> findByReleaseIdAndOperation(Env env, long releaseId, int operation, int page,
+                                                                  int size) {
       return restTemplate.get(env,
                               "/releases/histories/by_release_id_and_operation?releaseId={releaseId}&operation={operation}&page={page}&size={size}",
                               type, releaseId, operation, page, size).getBody();
     }
 
-    public PageDTO<ReleaseHistoryDTO> findByPreviousReleaseIdAndOperation(Env env, long previousReleaseId, int operation, int page, int size) {
+    public PageDTO<ReleaseHistoryDTO> findByPreviousReleaseIdAndOperation(Env env, long previousReleaseId,
+                                                                          int operation, int page, int size) {
       return restTemplate.get(env,
                               "/releases/histories/by_previous_release_id_and_operation?previousReleaseId={releaseId}&operation={operation}&page={page}&size={size}",
                               type, previousReleaseId, operation, page, size).getBody();

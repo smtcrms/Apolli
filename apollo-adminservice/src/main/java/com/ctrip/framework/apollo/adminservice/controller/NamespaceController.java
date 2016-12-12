@@ -78,4 +78,15 @@ public class NamespaceController {
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
 
+  @RequestMapping("/clusters/{clusterName}/namespaces/{namespaceName}/public")
+  public NamespaceDTO findPublicNamespace(@PathVariable String clusterName,
+                                          @PathVariable String namespaceName) {
+    Namespace namespace = namespaceService.findPublicNamespace(clusterName, namespaceName);
+
+    if (namespace == null) {
+      throw new NotFoundException(String.format("public namespace not found. namespace:%s", namespaceName));
+    }
+
+    return BeanUtils.transfrom(NamespaceDTO.class, namespace);
+  }
 }
