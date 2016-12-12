@@ -9,7 +9,7 @@ notification:
     on_failure: always
 
 before_script:
-  - echo "MAVEN_OPTS='-Xmx2g -XX:MaxPermSize=512m'" > ~/.mavenrc
+  - echo "MAVEN_OPTS='-Xms1024m -Xmx3072m -XX:PermSize=512m'" > ~/.mavenrc
   
 before_install:
   - pip install --user codecov
