@@ -373,53 +373,129 @@
             </div>
 
             <!--link namespace's public namespace-->
-            <div class="panel panel-default" ng-if="namespace.isLinkedNamespace">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="padding-top-5 col-md-4">
-                            公共的配置
-                            <a href="/config.html?#/appid={{namespace.publicNamespace.baseInfo.appId}}" target="_blank">
-                                <small>
-                                    (AppId:{{namespace.publicNamespace.baseInfo.appId}},
-                                    Cluster:{{namespace.publicNamespace.baseInfo.clusterName}})
-                                </small>
-                            </a>
-                        </div>
-
-                        <div class="col-md-4 text-center">
-                            <div class="btn-group btn-group-sm" role="group"  ng-show="namespace.publicNamespace.isModified">
-                                <button type="button" class="btn btn-default"
-                                        ng-class="{'active':namespace.publicNamespaceViewType == 'RELEASE'
-                                        || !namespace.publicNamespaceViewType}"
-                                        ng-click="namespace.publicNamespaceViewType = 'RELEASE'">
-                                    已发布的配置
-                                </button>
-                                <button type="button" class="btn btn-default"
-                                        ng-class="{'active':namespace.publicNamespaceViewType == 'NOT_RELEASE'}"
-                                        ng-click="namespace.publicNamespaceViewType = 'NOT_RELEASE'">
-                                    未发布的配置
-                                </button>
+            <div ng-if="namespace.isLinkedNamespace">
+                <div class="panel panel-default" ng-if="namespace.publicNamespace">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="padding-top-5 col-md-4">
+                                公共的配置
+                                <a href="/config.html?#/appid={{namespace.publicNamespace.baseInfo.appId}}" target="_blank">
+                                    <small>
+                                        (AppId:{{namespace.publicNamespace.baseInfo.appId}},
+                                        Cluster:{{namespace.publicNamespace.baseInfo.clusterName}})
+                                    </small>
+                                </a>
                             </div>
-                        </div>
 
-                        <div class="col-md-2 col-lg-offset-2 text-right">
-                            <input type="text" class="form-control" placeholder="filter by key ..."
-                                   ng-class="{'search-onblur': namespace.publicNamespace.searchStatus == 'OFF'
+                            <div class="col-md-4 text-center">
+                                <div class="btn-group btn-group-sm" role="group"  ng-show="namespace.publicNamespace.isModified">
+                                    <button type="button" class="btn btn-default"
+                                            ng-class="{'active':namespace.publicNamespaceViewType == 'RELEASE'
+                                        || !namespace.publicNamespaceViewType}"
+                                            ng-click="namespace.publicNamespaceViewType = 'RELEASE'">
+                                        已发布的配置
+                                    </button>
+                                    <button type="button" class="btn btn-default"
+                                            ng-class="{'active':namespace.publicNamespaceViewType == 'NOT_RELEASE'}"
+                                            ng-click="namespace.publicNamespaceViewType = 'NOT_RELEASE'">
+                                        未发布的配置
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-offset-2 text-right">
+                                <input type="text" class="form-control" placeholder="filter by key ..."
+                                       ng-class="{'search-onblur': namespace.publicNamespace.searchStatus == 'OFF'
                                    || !namespace.publicNamespace.searchStatus,
                                     'search-focus': namespace.publicNamespace.searchStatus == 'ON'}"
-                                   ng-model="namespace.publicNamespace.searchKey"
-                                   ng-change="searchItems(namespace.publicNamespace)"
-                                   ng-blur="namespace.publicNamespace.searchStatus='OFF'"
-                                   ng-focus="namespace.publicNamespace.searchStatus='ON'"/>
+                                       ng-model="namespace.publicNamespace.searchKey"
+                                       ng-change="searchItems(namespace.publicNamespace)"
+                                       ng-blur="namespace.publicNamespace.searchStatus='OFF'"
+                                       ng-focus="namespace.publicNamespace.searchStatus='ON'"/>
+                            </div>
                         </div>
                     </div>
-                </div>
 
 
-                <!--published items-->
-                <div ng-show="!namespace.publicNamespaceViewType || namespace.publicNamespaceViewType == 'RELEASE'">
+                    <!--published items-->
+                    <div ng-show="!namespace.publicNamespaceViewType || namespace.publicNamespaceViewType == 'RELEASE'">
+                        <table class="table table-bordered table-striped table-hover"
+                               ng-show="namespace.publicNamespace.hasPublishedItem">
+                            <thead>
+                            <tr>
+                                <th class="hover" title="排序"
+                                    ng-click="col='item.key';desc=!desc;">
+                                    Key&nbsp;
+                                    <span class="glyphicon glyphicon-sort"></span>
+
+                                </th>
+                                <th>
+                                    Value
+                                </th>
+                                <th>
+                                    备注
+                                </th>
+                                <th class="hover" title="排序"
+                                    ng-click="col='item.dataChangeLastModifiedBy';desc=!desc;">
+                                    最后修改人
+                                    <span class="glyphicon glyphicon-sort"></span>
+
+                                </th>
+                                <th class="hover" title="排序"
+                                    ng-click="col='item.dataChangeLastModifiedTime';desc=!desc;">
+                                    最后修改时间
+                                    <span class="glyphicon glyphicon-sort"></span>
+                                </th>
+
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="config in namespace.publicNamespace.viewItems |orderBy:col:desc"
+                                ng-if="config.item.key && !config.isModified && !config.isDeleted">
+                                <td width="15%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
+                                    <span ng-bind="config.item.key | limitTo: 250"></span>
+                                    <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
+                                </td>
+                                <td width="35%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
+                                    <span ng-bind="config.item.value | limitTo: 250"></span>
+                                    <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
+                                </td>
+                                <td width="15%" title="{{config.item.comment}}">
+                                    <span ng-bind="config.item.comment | limitTo: 250"></span>
+                                    <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
+                                </td>
+                                <td width="10%" ng-bind="config.item.dataChangeLastModifiedBy">
+                                </td>
+                                <td width="15%"
+                                    ng-bind="config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                                </td>
+
+                                <td width="10%" class="text-center" ng-if="!config.isDeleted">
+                                    <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom" title="覆盖此配置"
+                                         ng-click="editItem(namespace, config.item)"
+                                         ng-show="namespace.hasModifyPermission && !config.covered">
+                                </td>
+                                <td width="6%" class="text-center" ng-if="config.isDeleted">
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-center no-config-panel"
+                             ng-if="namespace.publicNamespace.viewItems
+                     && namespace.publicNamespace.viewItems.length
+                     && !namespace.publicNamespace.hasPublishedItem">
+                            <h5>无发布的配置</h5>
+                        </div>
+                    </div>
+
+                    <!--not published items-->
                     <table class="table table-bordered table-striped table-hover"
-                           ng-show="namespace.publicNamespace.hasPublishedItem">
+                           ng-show="namespace.publicNamespaceViewType == 'NOT_RELEASE'">
                         <thead>
                         <tr>
                             <th class="hover" title="排序"
@@ -429,16 +505,13 @@
 
                             </th>
                             <th>
-                                Value
+                                Old Value
+                            </th>
+                            <th>
+                                New Value
                             </th>
                             <th>
                                 备注
-                            </th>
-                            <th class="hover" title="排序"
-                                ng-click="col='item.dataChangeLastModifiedBy';desc=!desc;">
-                                最后修改人
-                                <span class="glyphicon glyphicon-sort"></span>
-
                             </th>
                             <th class="hover" title="排序"
                                 ng-click="col='item.dataChangeLastModifiedTime';desc=!desc;">
@@ -453,82 +526,10 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="config in namespace.publicNamespace.viewItems |orderBy:col:desc"
-                            ng-if="config.item.key && !config.isModified && !config.isDeleted">
-                            <td width="15%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
+                            ng-if="config.item.key && (config.isModified || config.isDeleted)">
+                            <td width="20%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
                                 <span ng-bind="config.item.key | limitTo: 250"></span>
                                 <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
-                            </td>
-                            <td width="35%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
-                                <span ng-bind="config.item.value | limitTo: 250"></span>
-                                <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
-                            </td>
-                            <td width="15%" title="{{config.item.comment}}">
-                                <span ng-bind="config.item.comment | limitTo: 250"></span>
-                                <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
-                            </td>
-                            <td width="10%" ng-bind="config.item.dataChangeLastModifiedBy">
-                            </td>
-                            <td width="15%"
-                                ng-bind="config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
-                            </td>
-
-                            <td width="10%" class="text-center" ng-if="!config.isDeleted">
-                                <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom" title="覆盖此配置"
-                                     ng-click="editItem(namespace, config.item)"
-                                     ng-show="namespace.hasModifyPermission && !config.covered">
-                            </td>
-                            <td width="6%" class="text-center" ng-if="config.isDeleted">
-                            </td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="text-center no-config-panel"
-                         ng-if="namespace.publicNamespace.viewItems
-                     && namespace.publicNamespace.viewItems.length
-                     && !namespace.publicNamespace.hasPublishedItem">
-                        <h5>无发布的配置</h5>
-                    </div>
-                </div>
-
-                <!--not published items-->
-                <table class="table table-bordered table-striped table-hover"
-                       ng-show="namespace.publicNamespaceViewType == 'NOT_RELEASE'">
-                    <thead>
-                    <tr>
-                        <th class="hover" title="排序"
-                            ng-click="col='item.key';desc=!desc;">
-                            Key&nbsp;
-                            <span class="glyphicon glyphicon-sort"></span>
-
-                        </th>
-                        <th>
-                            Old Value
-                        </th>
-                        <th>
-                            New Value
-                        </th>
-                        <th>
-                            备注
-                        </th>
-                        <th class="hover" title="排序"
-                            ng-click="col='item.dataChangeLastModifiedTime';desc=!desc;">
-                            最后修改时间
-                            <span class="glyphicon glyphicon-sort"></span>
-                        </th>
-
-                        <th>
-                            操作
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="config in namespace.publicNamespace.viewItems |orderBy:col:desc"
-                        ng-if="config.item.key && (config.isModified || config.isDeleted)">
-                        <td width="20%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
-                            <span ng-bind="config.item.key | limitTo: 250"></span>
-                            <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                             <span class="label label-success" ng-if="config.isModified && !config.oldValue"
                                   data-tooltip="tooltip" data-placement="bottom" title="新增的配置">新</span>
                             <span class="label label-info"
@@ -536,37 +537,49 @@
                                   data-tooltip="tooltip" data-placement="bottom" title="修改的配置">改</span>
                             <span class="label label-danger" ng-if="config.isDeleted"
                                   data-tooltip="tooltip" data-placement="bottom" title="删除的配置">删</span>
-                        </td>
-                        <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.oldValue)">
-                            <span ng-bind="config.oldValue | limitTo: 250"></span>
-                            <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
-                        </td>
-                        <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
-                            <span ng-bind="config.item.value | limitTo: 250"></span>
-                            <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
-                        </td>
-                        <td width="10%" title="{{config.item.comment}}">
-                            <span ng-bind="config.item.comment | limitTo: 250"></span>
-                            <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
-                        </td>
-                        <td width="15%"
-                            ng-bind="config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
-                        </td>
+                            </td>
+                            <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.oldValue)">
+                                <span ng-bind="config.oldValue | limitTo: 250"></span>
+                                <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
+                            </td>
+                            <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
+                                <span ng-bind="config.item.value | limitTo: 250"></span>
+                                <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
+                            </td>
+                            <td width="10%" title="{{config.item.comment}}">
+                                <span ng-bind="config.item.comment | limitTo: 250"></span>
+                                <span ng-bind="config.item.comment.length > 250 ?'...' : ''"></span>
+                            </td>
+                            <td width="15%"
+                                ng-bind="config.item.dataChangeLastModifiedTime | date: 'yyyy-MM-dd HH:mm:ss'">
+                            </td>
 
-                        <td width="5%" class="text-center" ng-if="!config.isDeleted">
-                            <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom" title="覆盖此配置"
-                                 ng-click="editItem(namespace, config.item)"
-                                 ng-show="namespace.hasModifyPermission && !config.covered">
-                        </td>
+                            <td width="5%" class="text-center" ng-if="!config.isDeleted">
+                                <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom" title="覆盖此配置"
+                                     ng-click="editItem(namespace, config.item)"
+                                     ng-show="namespace.hasModifyPermission && !config.covered">
+                            </td>
 
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="text-center no-config-panel"
-                     ng-if="!namespace.publicNamespace.viewItems || !namespace.publicNamespace.viewItems.length">
-                    <h5>无公共的配置</h5>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center no-config-panel"
+                         ng-if="!namespace.publicNamespace.viewItems || !namespace.publicNamespace.viewItems.length">
+                        <h5>无公共的配置</h5>
+                    </div>
+                </div>
+                <div class="panel panel-default" ng-if="!namespace.publicNamespace">
+                    <div class="panel-heading">
+                        公共的配置
+                    </div>
+                    <div class="panel-body text-center">
+                        当前公共namespace的所有者
+                        <a href="/config.html?#/appid={{namespace.parentAppId}}" target="_blank">{{namespace.parentAppId}}</a>
+                        没有关联此namespace,请联系{{namespace.parentAppId}}的所有者在{{namespace.parentAppId}}项目里关联此namespace
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <!--text view-->
