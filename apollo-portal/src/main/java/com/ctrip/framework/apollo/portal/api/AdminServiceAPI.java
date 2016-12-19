@@ -32,6 +32,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -61,6 +62,10 @@ public class AdminServiceAPI {
 
   @Service
   public static class NamespaceAPI extends API {
+
+    private ParameterizedTypeReference<Map<String, Boolean>>
+        typeReference = new ParameterizedTypeReference<Map<String, Boolean>>() {
+    };
 
     public List<NamespaceDTO> findNamespaceByCluster(String appId, Env env, String clusterName) {
       NamespaceDTO[] namespaceDTOs = restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces",
@@ -98,6 +103,10 @@ public class AdminServiceAPI {
           .delete(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}?operator={operator}", appId,
                   clusterName,
                   namespaceName, operator);
+    }
+
+    public Map<String, Boolean> getNamespacePublishInfo(Env env, String appId) {
+      return restTemplate.get(env, "apps/{appId}/namespaces/publish_info", typeReference, appId).getBody();
     }
 
   }

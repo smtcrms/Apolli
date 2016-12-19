@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
 import com.ctrip.framework.apollo.common.constants.GsonType;
@@ -14,6 +15,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
+import com.ctrip.framework.apollo.portal.components.PortalSettings;
 import com.ctrip.framework.apollo.portal.constant.CatEventType;
 import com.ctrip.framework.apollo.portal.entity.bo.ItemBO;
 import com.ctrip.framework.apollo.portal.entity.bo.NamespaceBO;
@@ -39,6 +41,8 @@ public class NamespaceService {
   private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
   private Gson gson = new Gson();
 
+  @Autowired
+  private PortalSettings portalSettings;
   @Autowired
   private UserInfoHolder userInfoHolder;
   @Autowired
@@ -100,10 +104,10 @@ public class NamespaceService {
     List<NamespaceBO> namespaceBOs = new LinkedList<>();
     for (NamespaceDTO namespace : namespaces) {
 
-      NamespaceBO namesapceBO = null;
+      NamespaceBO namespaceBO = null;
       try {
-        namesapceBO = transformNamespace2BO(appId, env, clusterName, namespace);
-        namespaceBOs.add(namesapceBO);
+        namespaceBO = transformNamespace2BO(appId, env, clusterName, namespace);
+        namespaceBOs.add(namespaceBO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
                      appId, env, clusterName, namespace.getNamespaceName(), e);
@@ -129,6 +133,17 @@ public class NamespaceService {
     String actualClusterName = namespace.getClusterName();
 
     return transformNamespace2BO(appId, env, actualClusterName, namespace);
+  }
+
+  public Map<String, Map<String, Boolean>> getNamespacesPublishInfo(String appId) {
+    Map<String, Map<String, Boolean>> result = Maps.newHashMap();
+
+    List<Env> envs = portalSettings.getActiveEnvs();
+    for (Env env: envs) {
+      result.put(env.toString(), namespaceAPI.getNamespacePublishInfo(env, appId));
+    }
+
+    return result;
   }
 
   private NamespaceBO transformNamespace2BO(String appId, Env env, String clusterName, NamespaceDTO namespace) {

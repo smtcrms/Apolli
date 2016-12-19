@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -166,6 +167,10 @@ public class ItemService implements InitializingBean {
     } else {
       return Collections.emptyList();
     }
+  }
+
+  public List<Item> findItemsModifiedAfterDate(long namespaceId, Date date) {
+    return itemRepository.findByNamespaceIdAndDataChangeLastModifiedTimeGreaterThan(namespaceId, date);
   }
 
   @Transactional
