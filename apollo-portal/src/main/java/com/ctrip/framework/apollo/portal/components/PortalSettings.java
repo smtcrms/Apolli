@@ -5,7 +5,7 @@ import com.ctrip.framework.apollo.core.MetaDomainConsts;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.portal.api.AdminServiceAPI;
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,14 +31,12 @@ public class PortalSettings {
 
   private static final Logger logger = LoggerFactory.getLogger(PortalSettings.class);
   private static final int HEALTH_CHECK_INTERVAL = 10 * 1000;
-  private static final String DEFAULT_SUPPORT_ENV_LIST = "FAT,UAT,PRO";
-
 
   @Autowired
   ApplicationContext applicationContext;
 
   @Autowired
-  private ServerConfigService serverConfigService;
+  private PortalConfig portalConfig;
 
   private List<Env> allEnvs = new ArrayList<>();
 
@@ -49,12 +46,7 @@ public class PortalSettings {
   @PostConstruct
   private void postConstruct() {
 
-    String serverConfig = serverConfigService.getValue("apollo.portal.envs", DEFAULT_SUPPORT_ENV_LIST);
-    String[] configedEnvs = serverConfig.split(",");
-    List<String> allStrEnvs = Arrays.asList(configedEnvs);
-    for (String e : allStrEnvs) {
-      allEnvs.add(Env.valueOf(e.toUpperCase()));
-    }
+    allEnvs = portalConfig.portalSupportedEnvs();
 
     for (Env env : allEnvs) {
       envStatusMark.put(env, true);

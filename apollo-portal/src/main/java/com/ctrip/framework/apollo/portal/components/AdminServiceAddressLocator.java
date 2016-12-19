@@ -83,7 +83,7 @@ public class AdminServiceAddressLocator {
     return randomConfigServices;
   }
 
-  //Maintain admin server address
+  //maintain admin server address
   private class RefreshAdminServerAddressTask implements Runnable {
 
     @Override

@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.bo.Email;
 import com.ctrip.framework.apollo.portal.entity.bo.ReleaseHistoryBO;
@@ -17,7 +18,6 @@ import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.service.AppNamespaceService;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.spi.UserService;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
 
@@ -31,8 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
-
-import javax.annotation.PostConstruct;
 
 
 public abstract class ConfigPublishEmailBuilder {
@@ -62,17 +60,9 @@ public abstract class ConfigPublishEmailBuilder {
   //set config's value max length to protect email.
   protected static final int VALUE_MAX_LENGTH = 100;
 
-  //email body template. config in db, so we can dynamic reject email content.
-  private static final String EMAIL_TEMPLATE__RELEASE = "email.template.release";
-  private static final String EMAIL_TEMPLATE__ROLLBACK = "email.template.rollback";
-
   private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd hh:mm:ss");
 
 
-  private String emailSender;
-
-  @Autowired
-  private ServerConfigService serverConfigService;
   @Autowired
   private RolePermissionService rolePermissionService;
   @Autowired
@@ -81,18 +71,16 @@ public abstract class ConfigPublishEmailBuilder {
   private AppNamespaceService appNamespaceService;
   @Autowired
   private UserService userService;
+  @Autowired
+  private PortalConfig portalConfig;
 
-  @PostConstruct
-  public void init() {
-    emailSender = serverConfigService.getValue("email.sender");
-  }
 
   public Email build(Env env, ReleaseHistoryBO releaseHistory) {
 
     Email email = new Email();
 
     email.setSubject(subject());
-    email.setSenderEmailAddress(emailSender);
+    email.setSenderEmailAddress(portalConfig.emailSender());
     email.setBody(emailContent(env, releaseHistory));
     email.setRecipients(recipients(releaseHistory.getAppId(), releaseHistory.getNamespaceName()));
 
@@ -223,15 +211,15 @@ public abstract class ConfigPublishEmailBuilder {
 
 
   protected String getReleaseTemplate() {
-    return serverConfigService.getValue(EMAIL_TEMPLATE__RELEASE);
+    return portalConfig.publishEmailBodyTemplate();
   }
 
   protected String getRollbackTemplate() {
-    return serverConfigService.getValue(EMAIL_TEMPLATE__ROLLBACK);
+    return portalConfig.rollbackEmailBodyTemplate();
   }
 
   protected String getApolloPortalAddress() {
-    return serverConfigService.getValue("apollo.portal.address");
+    return portalConfig.portalAddress();
   }
 
   private String cutOffString(String source) {
