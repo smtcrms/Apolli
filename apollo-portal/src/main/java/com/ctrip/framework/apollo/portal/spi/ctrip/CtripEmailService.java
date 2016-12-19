@@ -1,7 +1,7 @@
 package com.ctrip.framework.apollo.portal.spi.ctrip;
 
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.entity.bo.Email;
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
 import com.ctrip.framework.apollo.portal.spi.EmailService;
 import com.ctrip.framework.apollo.tracer.Tracer;
 
@@ -25,7 +25,7 @@ public class CtripEmailService implements EmailService {
   @Autowired
   private CtripEmailRequestBuilder emailRequestBuilder;
   @Autowired
-  private ServerConfigService serverConfigService;
+  private PortalConfig portalConfig;
 
   @PostConstruct
   public void init() {
@@ -52,8 +52,7 @@ public class CtripEmailService implements EmailService {
     Object serviceClientConfig = serviceClientConfigClazz.newInstance();
     Method setFxConfigServiceUrlMethod = serviceClientConfigClazz.getMethod("setFxConfigServiceUrl", String.class);
 
-    String soaServerAddress = serverConfigService.getValue("soa.server.address");
-    setFxConfigServiceUrlMethod.invoke(serviceClientConfig, soaServerAddress);
+    setFxConfigServiceUrlMethod.invoke(serviceClientConfig, portalConfig.soaServerAddress());
 
     Class serviceClientBaseClazz = Class.forName("com.ctriposs.baiji.rpc.client.ServiceClientBase");
     Method initializeMethod = serviceClientBaseClazz.getMethod("initialize", serviceClientConfigClazz);

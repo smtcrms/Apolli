@@ -2,7 +2,7 @@ package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.google.common.base.Strings;
 
-import com.ctrip.framework.apollo.portal.service.ServerConfigService;
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.spi.ctrip.filters.RecordAccessUserFilter;
 
@@ -21,7 +21,7 @@ import javax.servlet.ServletException;
 public class WebContextConfiguration {
 
   @Autowired
-  private ServerConfigService serverConfigService;
+  private PortalConfig portalConfig;
   @Autowired
   private UserInfoHolder userInfoHolder;
 
@@ -32,9 +32,10 @@ public class WebContextConfiguration {
 
       @Override
       public void onStartup(ServletContext servletContext) throws ServletException {
-        String loggingServerIP = serverConfigService.getValue("clogging.server.url");
-        String loggingServerPort = serverConfigService.getValue("clogging.server.port");
-        String credisServiceUrl = serverConfigService.getValue("credisServiceUrl");
+        String loggingServerIP = portalConfig.cloggingUrl();
+        String loggingServerPort = portalConfig.cloggingUrl();
+        String credisServiceUrl = portalConfig.credisServiceUrl();
+
         servletContext.setInitParameter("loggingServerIP",
             Strings.isNullOrEmpty(loggingServerIP) ? "" : loggingServerIP);
         servletContext.setInitParameter("loggingServerPort",
