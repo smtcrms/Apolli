@@ -20,9 +20,11 @@ $(document).ready(function () {
     }, 2500);
 
     setTimeout(function () {
+        
         $("textarea").niceScroll({cursoropacitymax: 0});
         $("pre").niceScroll({cursoropacitymax: 0});
         $(".release-history-list").niceScroll({cursoropacitymax: 0});
+
     }, 2500);
 });
 

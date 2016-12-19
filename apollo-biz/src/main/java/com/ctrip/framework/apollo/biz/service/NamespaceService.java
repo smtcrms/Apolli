@@ -1,9 +1,15 @@
 package com.ctrip.framework.apollo.biz.service;
 
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+
 import com.ctrip.framework.apollo.biz.entity.Audit;
 import com.ctrip.framework.apollo.biz.entity.Cluster;
+import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.ctrip.framework.apollo.biz.entity.Release;
 import com.ctrip.framework.apollo.biz.repository.NamespaceRepository;
+import com.ctrip.framework.apollo.common.constants.GsonType;
 import com.ctrip.framework.apollo.common.constants.NamespaceBranchStatus;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
@@ -17,13 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class NamespaceService {
+
+  private Gson gson = new Gson();
 
   @Autowired
   private NamespaceRepository namespaceRepository;
@@ -244,6 +254,60 @@ public class NamespaceService {
       auditService.audit(Namespace.class.getSimpleName(), ns.getId(), Audit.OP.INSERT, createBy);
     }
 
+  }
+
+  public Map<String, Boolean> namespacePublishInfo(String appId) {
+    List<Cluster> clusters = clusterService.findParentClusters(appId);
+    if (CollectionUtils.isEmpty(clusters)) {
+      throw new BadRequestException("app not exist");
+    }
+
+    Map<String, Boolean> clusterHasNotPublishedItems = Maps.newHashMap();
+
+    for (Cluster cluster : clusters) {
+      String clusterName = cluster.getName();
+      List<Namespace> namespaces = findNamespaces(appId, clusterName);
+
+      for (Namespace namespace: namespaces) {
+        boolean isNamespaceNotPublished = isNamespaceNotPublished(namespace);
+
+        if (isNamespaceNotPublished){
+          clusterHasNotPublishedItems.put(clusterName, true);
+          break;
+        }
+      }
+
+      clusterHasNotPublishedItems.putIfAbsent(clusterName, false);
+    }
+
+    return clusterHasNotPublishedItems;
+  }
+
+  private boolean isNamespaceNotPublished(Namespace namespace) {
+
+    Release latestRelease = releaseService.findLatestActiveRelease(namespace);
+    long namespaceId = namespace.getId();
+
+    if (latestRelease == null) {
+      Item lastItem = itemService.findLastOne(namespaceId);
+      return lastItem != null;
+    }
+
+    Date lastPublishTime = latestRelease.getDataChangeLastModifiedTime();
+    List<Item> itemsModifiedAfterLastPublish = itemService.findItemsModifiedAfterDate(namespaceId, lastPublishTime);
+
+    if (CollectionUtils.isEmpty(itemsModifiedAfterLastPublish)) {
+      return false;
+    }
+
+    Map<String, String> publishedConfiguration = gson.fromJson(latestRelease.getConfigurations(), GsonType.CONFIG);
+    for (Item item: itemsModifiedAfterLastPublish) {
+      if (!Objects.equals(item.getValue(), publishedConfiguration.get(item.getKey()))){
+        return true;
+      }
+    }
+
+    return false;
   }
 
 

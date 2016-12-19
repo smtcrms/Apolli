@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.ctrip.framework.apollo.common.utils.RequestPrecondition.checkModel;
 
@@ -167,6 +167,20 @@ public class NamespaceController {
         publisher.publishEvent(new AppNamespaceCreationEvent(createdAppNamespace));
 
         return createdAppNamespace;
+    }
+
+
+    /**
+     *  env -> cluster -> cluster has not published namespace?
+     *  Example:
+     *      dev ->
+     *              default -> true   (default cluster has not published namespace)
+     *              customCluster -> false (customCluster cluster's all namespaces had published)
+     *
+     */
+    @RequestMapping("/apps/{appId}/namespaces/publish_info")
+    public Map<String, Map<String, Boolean>> getNamespacesPublishInfo(@PathVariable String appId) {
+        return namespaceService.getNamespacesPublishInfo(appId);
     }
 
 }

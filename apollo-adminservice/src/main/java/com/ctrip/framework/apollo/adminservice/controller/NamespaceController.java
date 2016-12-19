@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class NamespaceController {
@@ -89,4 +90,14 @@ public class NamespaceController {
 
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
+
+  /**
+   * cluster -> cluster has not published namespaces?
+   */
+  @RequestMapping("/apps/{appId}/namespaces/publish_info")
+  public Map<String, Boolean> namespacePublishInfo(@PathVariable String appId){
+    return namespaceService.namespacePublishInfo(appId);
+  }
+
+
 }

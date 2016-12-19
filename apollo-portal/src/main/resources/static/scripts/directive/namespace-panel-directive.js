@@ -101,6 +101,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 initNamespaceInstancesCount(namespace);
                 initPermission(namespace);
                 initLinkedNamespace(namespace);
+                loadInstanceInfo(namespace);
 
                 function initNamespaceBranch(namespace) {
                     NamespaceBranchService.findNamespaceBranch(scope.appId, scope.env,
@@ -237,12 +238,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                                 linkNamespaceItemKeys.push(key);
                             });
 
-
                             publicNamespace.viewItems = [];
                             publicNamespace.items.forEach(function (item) {
                                 var key = item.item.key;
 
-                                if (key){
+                                if (key) {
                                     publicNamespace.viewItems.push(item);
                                 }
 
@@ -250,7 +250,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                                 if (item.isModified || item.isDeleted) {
                                     publicNamespace.isModified = true;
-                                } else if (key){
+                                } else if (key) {
                                     publicNamespace.hasPublishedItem = true;
                                 }
                             });
@@ -410,28 +410,26 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                 if (namespace_instance_view_type.LATEST_RELEASE == type) {
                     if (!namespace.latestRelease) {
-                        ReleaseService.findActiveReleases(scope.appId,
-                                                          scope.env,
-                                                          namespace.baseInfo.clusterName,
-                                                          namespace.baseInfo.namespaceName,
-                                                          0, 1).then(function (result) {
-
-                            var latestRelease = result[0];
-                            if (!latestRelease) {
-                                namespace.latestReleaseInstances = {};
-                                namespace.latestReleaseInstances.total = 0;
-                                return;
-                            }
-                            namespace.latestRelease = latestRelease;
-                            InstanceService.findInstancesByRelease(scope.env,
-                                                                   latestRelease.id,
-                                                                   namespace.latestReleaseInstancesPage,
-                                                                   size)
-                                .then(function (result) {
-                                    namespace.latestReleaseInstances = result;
-                                    namespace.latestReleaseInstancesPage++;
-                                })
-                        });
+                        ReleaseService.findLatestActiveRelease(scope.appId,
+                                                               scope.env,
+                                                               namespace.baseInfo.clusterName,
+                                                               namespace.baseInfo.namespaceName)
+                            .then(function (result) {
+                                if (!result) {
+                                    namespace.latestReleaseInstances = {};
+                                    namespace.latestReleaseInstances.total = 0;
+                                    return;
+                                }
+                                namespace.latestRelease = result;
+                                InstanceService.findInstancesByRelease(scope.env,
+                                                                       namespace.latestRelease.id,
+                                                                       namespace.latestReleaseInstancesPage,
+                                                                       size)
+                                    .then(function (result) {
+                                        namespace.latestReleaseInstances = result;
+                                        namespace.latestReleaseInstancesPage++;
+                                    })
+                            });
                     } else {
                         InstanceService.findInstancesByRelease(scope.env,
                                                                namespace.latestRelease.id,
@@ -781,8 +779,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             setTimeout(function () {
                 scope.namespace.show = true;
-            }, 200);
-
+            }, 70);
         }
     }
 }
