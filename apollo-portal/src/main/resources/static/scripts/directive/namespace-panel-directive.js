@@ -222,7 +222,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 }
 
                 function initLinkedNamespace(namespace) {
-                    if (!namespace.isPublic || !namespace.isLinkedNamespace) {
+                    if (!namespace.isPublic || !namespace.isLinkedNamespace || namespace.format != 'properties') {
                         return;
                     }
                     //load public namespace
@@ -237,12 +237,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                                 linkNamespaceItemKeys.push(key);
                             });
 
-
                             publicNamespace.viewItems = [];
                             publicNamespace.items.forEach(function (item) {
                                 var key = item.item.key;
 
-                                if (key){
+                                if (key) {
                                     publicNamespace.viewItems.push(item);
                                 }
 
@@ -250,7 +249,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
                                 if (item.isModified || item.isDeleted) {
                                     publicNamespace.isModified = true;
-                                } else if (key){
+                                } else if (key) {
                                     publicNamespace.hasPublishedItem = true;
                                 }
                             });
