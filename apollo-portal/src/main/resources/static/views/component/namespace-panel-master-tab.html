@@ -163,7 +163,7 @@
         <!--table view-->
         <div class="namespace-view-table" ng-show="namespace.viewType == 'table'">
 
-            <div class="well well-sm no-radius text-center" ng-show="!namespace.latestRelease">
+            <div class="well well-sm no-radius text-center" ng-show="!namespace.isLinkedNamespace && !namespace.latestRelease">
                 <span style="color: red"> Tips: 此namespace从来没有发布过，Apollo客户端将获取不到配置并记录404日志信息，请及时发布。</span>
             </div>
             <!--not link namespace-->
@@ -510,10 +510,10 @@
 
                             </th>
                             <th>
-                                Old Value
+                                已发布的值
                             </th>
                             <th>
-                                New Value
+                                未发布的值
                             </th>
                             <th>
                                 备注
