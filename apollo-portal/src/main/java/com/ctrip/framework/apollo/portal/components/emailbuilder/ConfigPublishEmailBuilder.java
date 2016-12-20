@@ -36,21 +36,21 @@ import java.util.regex.Matcher;
 public abstract class ConfigPublishEmailBuilder {
 
   //email content common field placeholder
-  private static final String EMAIL_CONTENT_FIELD_APPID = "\\$\\{appId\\}";
-  private static final String EMAIL_CONTENT_FIELD_ENV = "\\$\\{env}";
-  private static final String EMAIL_CONTENT_FIELD_CLUSTER = "\\$\\{clusterName}";
-  private static final String EMAIL_CONTENT_FIELD_NAMESPACE = "\\$\\{namespaceName}";
-  private static final String EMAIL_CONTENT_FIELD_OPERATOR = "\\$\\{operator}";
-  private static final String EMAIL_CONTENT_FIELD_RELEASE_TIME = "\\$\\{releaseTime}";
-  private static final String EMAIL_CONTENT_FIELD_RELEASE_ID = "\\$\\{releaseId}";
-  private static final String EMAIL_CONTENT_FIELD_RELEASE_HISTORY_ID = "\\$\\{releaseHistoryId}";
-  private static final String EMAIL_CONTENT_FIELD_RELEASE_TITLE = "\\$\\{releaseTitle}";
-  private static final String EMAIL_CONTENT_FIELD_RELEASE_COMMENT = "\\$\\{releaseComment}";
-  private static final String EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS = "\\$\\{apollo.portal.address}";
-  private static final String EMAIL_CONTENT_FIELD_DIFF = "\\$\\{diff}";
+  private static final String EMAIL_CONTENT_FIELD_APPID = "#\\{appId\\}";
+  private static final String EMAIL_CONTENT_FIELD_ENV = "#\\{env}";
+  private static final String EMAIL_CONTENT_FIELD_CLUSTER = "#\\{clusterName}";
+  private static final String EMAIL_CONTENT_FIELD_NAMESPACE = "#\\{namespaceName}";
+  private static final String EMAIL_CONTENT_FIELD_OPERATOR = "#\\{operator}";
+  private static final String EMAIL_CONTENT_FIELD_RELEASE_TIME = "#\\{releaseTime}";
+  private static final String EMAIL_CONTENT_FIELD_RELEASE_ID = "#\\{releaseId}";
+  private static final String EMAIL_CONTENT_FIELD_RELEASE_HISTORY_ID = "#\\{releaseHistoryId}";
+  private static final String EMAIL_CONTENT_FIELD_RELEASE_TITLE = "#\\{releaseTitle}";
+  private static final String EMAIL_CONTENT_FIELD_RELEASE_COMMENT = "#\\{releaseComment}";
+  private static final String EMAIL_CONTENT_FIELD_APOLLO_SERVER_ADDRESS = "#\\{apollo.portal.address}";
+  private static final String EMAIL_CONTENT_FIELD_DIFF = "#\\{diff}";
 
   //email content special field placeholder
-  protected static final String EMAIL_CONTENT_FIELD_RULE = "\\$\\{rules}";
+  protected static final String EMAIL_CONTENT_FIELD_RULE = "#\\{rules}";
 
   //email content module switch
   private static final String EMAIL_CONTENT_DIFF_HAS_CONTENT_SWITCH = "diff-hidden";

@@ -110,11 +110,11 @@ public class PortalConfig extends RefreshableConfig {
   }
 
   public String publishEmailBodyTemplate() {
-    return getValue("email.template.release", "");
+    return getValue("email.template.release.v2", "");
   }
 
   public String rollbackEmailBodyTemplate() {
-    return getValue("email.template.rollback", "");
+    return getValue("email.template.rollback.v2", "");
   }
 
   /***
