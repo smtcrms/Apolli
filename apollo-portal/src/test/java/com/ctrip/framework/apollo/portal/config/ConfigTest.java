@@ -39,7 +39,7 @@ public class ConfigTest {
 
     when(environment.getProperty(testKey)).thenReturn(testValue);
 
-    String[] result = config.getArrayProperty(testKey, "");
+    String[] result = config.getArrayProperty(testKey, null);
 
     Assert.assertEquals(3, result.length);
     Assert.assertEquals("a", result[0]);
