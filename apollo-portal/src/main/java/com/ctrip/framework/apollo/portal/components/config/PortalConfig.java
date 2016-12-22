@@ -43,10 +43,10 @@ public class PortalConfig extends RefreshableConfig {
    * Level: important
    **/
   public List<Env> portalSupportedEnvs() {
-    String[] configuration = getArrayProperty("apollo.portal.envs", "FAT,UAT,PRO");
+    String[] configurations = getArrayProperty("apollo.portal.envs", new String[]{"FAT", "UAT", "PRO"});
     List<Env> envs = Lists.newLinkedList();
 
-    for (String env : configuration) {
+    for (String env : configurations) {
       envs.add(Env.fromString(env));
     }
 
@@ -62,10 +62,10 @@ public class PortalConfig extends RefreshableConfig {
   }
 
   public Set<Env> emailSupportedEnvs() {
-    String[] configurations = getArrayProperty("email.supported.envs", "");
+    String[] configurations = getArrayProperty("email.supported.envs", null);
 
     Set<Env> result = Sets.newHashSet();
-    if (StringUtils.isEmpty(configurations)) {
+    if (configurations == null || configurations.length == 0) {
       return result;
     }
 

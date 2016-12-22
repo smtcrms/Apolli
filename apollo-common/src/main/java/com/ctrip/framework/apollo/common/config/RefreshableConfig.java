@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.ctrip.framework.apollo.core.utils.ApolloThreadFactory;
 import com.ctrip.framework.apollo.tracer.Tracer;
 
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +91,13 @@ public abstract class RefreshableConfig {
     }
   }
 
-  public String[] getArrayProperty(String key, String defaultValue) {
+  public String[] getArrayProperty(String key, String[] defaultValue) {
     try {
-      String configuration = getValue(key, defaultValue);
-      return configuration.split(LIST_SEPARATOR);
+      String value = getValue(key);
+      return Strings.isNullOrEmpty(value) ? defaultValue : value.split(LIST_SEPARATOR);
     } catch (Exception e) {
       Tracer.logError("Get array property failed.", e);
-      return defaultValue.split(LIST_SEPARATOR);
+      return defaultValue;
     }
   }
 
