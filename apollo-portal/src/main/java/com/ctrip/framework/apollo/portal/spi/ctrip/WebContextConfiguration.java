@@ -1,10 +1,10 @@
 package com.ctrip.framework.apollo.portal.spi.ctrip;
 
+import com.ctrip.framework.apollo.portal.spi.ctrip.filters.UserAccessFilter;
 import com.google.common.base.Strings;
 
 import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
-import com.ctrip.framework.apollo.portal.spi.ctrip.filters.RecordAccessUserFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -47,10 +47,10 @@ public class WebContextConfiguration {
   }
 
   @Bean
-  public FilterRegistrationBean recordAccessUserFilter() {
+  public FilterRegistrationBean userAccessFilter() {
     FilterRegistrationBean filter = new FilterRegistrationBean();
-    filter.setFilter(new RecordAccessUserFilter(userInfoHolder));
-    filter.addUrlPatterns("/apps");
+    filter.setFilter(new UserAccessFilter(userInfoHolder));
+    filter.addUrlPatterns("/*");
     return filter;
   }
 

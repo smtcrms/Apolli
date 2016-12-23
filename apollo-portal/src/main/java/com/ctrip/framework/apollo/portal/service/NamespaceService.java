@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.service;
 
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
@@ -30,10 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class NamespaceService {
@@ -41,8 +39,6 @@ public class NamespaceService {
   private Logger logger = LoggerFactory.getLogger(NamespaceService.class);
   private Gson gson = new Gson();
 
-  @Autowired
-  private PortalSettings portalSettings;
   @Autowired
   private UserInfoHolder userInfoHolder;
   @Autowired
@@ -53,6 +49,10 @@ public class NamespaceService {
   private AdminServiceAPI.NamespaceAPI namespaceAPI;
   @Autowired
   private AppNamespaceService appNamespaceService;
+  @Autowired
+  private PortalConfig portalConfig;
+  @Autowired
+  private PortalSettings portalSettings;
 
 
   public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
@@ -138,9 +138,11 @@ public class NamespaceService {
   public Map<String, Map<String, Boolean>> getNamespacesPublishInfo(String appId) {
     Map<String, Map<String, Boolean>> result = Maps.newHashMap();
 
-    List<Env> envs = portalSettings.getActiveEnvs();
+    Set<Env> envs = portalConfig.publishTipsSupportedEnvs();
     for (Env env: envs) {
-      result.put(env.toString(), namespaceAPI.getNamespacePublishInfo(env, appId));
+      if (portalSettings.isEnvActive(env)) {
+        result.put(env.toString(), namespaceAPI.getNamespacePublishInfo(env, appId));
+      }
     }
 
     return result;

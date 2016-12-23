@@ -101,6 +101,21 @@ public class PortalConfig extends RefreshableConfig {
   /***
    * Level: low
    **/
+  public Set<Env> publishTipsSupportedEnvs() {
+    String[] configurations = getArrayProperty("namespace.publish.tips.supported.envs", null);
+
+    Set<Env> result = Sets.newHashSet();
+    if (configurations == null || configurations.length == 0) {
+      return result;
+    }
+
+    for (String env : configurations) {
+      result.add(Env.fromString(env));
+    }
+
+    return result;
+  }
+
   public String consumerTokenSalt() {
     return getValue("consumer.token.salt", "apollo-portal");
   }
@@ -109,12 +124,20 @@ public class PortalConfig extends RefreshableConfig {
     return getValue("email.sender");
   }
 
-  public String publishEmailBodyTemplate() {
-    return getValue("email.template.release.v2", "");
+  public String emailTemplateFramework() {
+    return getValue("email.template.framework", "");
   }
 
-  public String rollbackEmailBodyTemplate() {
-    return getValue("email.template.rollback.v2", "");
+  public String emailReleaseDiffModuleTemplate() {
+    return getValue("email.template.release.module.diff", "");
+  }
+
+  public String emailRollbackDiffModuleTemplate() {
+    return getValue("email.template.rollback.module.diff", "");
+  }
+
+  public String emailGrayRulesModuleTemplate() {
+    return getValue("email.template.release.module.rules", "");
   }
 
   /***
@@ -137,6 +160,10 @@ public class PortalConfig extends RefreshableConfig {
   //email retention time in email server queue.TimeUnit: hour
   public int survivalDuration() {
     return getIntProperty("ctrip.email.survival.duration", 5);
+  }
+
+  public boolean isSendEmailAsync() {
+    return getBooleanProperty("email.send.async", true);
   }
 
   public String portalServerName() {

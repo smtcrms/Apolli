@@ -66,7 +66,10 @@ public class CtripEmailRequestBuilder {
 
     setSender.invoke(emailRequest, email.getSenderEmailAddress());
     setSubject.invoke(emailRequest, email.getSubject());
-    setBodyContent.invoke(emailRequest, email.getBody());
+    String emailBodyBuilder = "<entry><content><![CDATA[<!DOCTYPE html>" +
+            email.getBody() +
+            "]]></content></entry>";
+    setBodyContent.invoke(emailRequest, emailBodyBuilder);
     setRecipient.invoke(emailRequest, email.getRecipients());
 
     return emailRequest;

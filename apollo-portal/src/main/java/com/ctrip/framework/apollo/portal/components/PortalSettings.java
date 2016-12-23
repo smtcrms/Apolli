@@ -76,6 +76,11 @@ public class PortalSettings {
     return activeEnvs;
   }
 
+  public boolean isEnvActive(Env env) {
+    Boolean mark = envStatusMark.get(env);
+    return mark == null ? false : mark;
+  }
+
   private class HealthCheckTask implements Runnable {
 
     private static final int ENV_DOWN_THRESHOLD = 2;
