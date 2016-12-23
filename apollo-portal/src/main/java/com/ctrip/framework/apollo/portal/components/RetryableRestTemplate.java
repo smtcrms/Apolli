@@ -85,6 +85,7 @@ public class RetryableRestTemplate {
 
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
     Transaction ct = Tracer.newTransaction("AdminAPI", uri);
+    ct.addData("Env", env);
 
     List<ServiceDTO> services = getAdminServices(env, ct);
 
@@ -126,6 +127,7 @@ public class RetryableRestTemplate {
 
     String uri = uriTemplateHandler.expand(path, uriVariables).getPath();
     Transaction ct = Tracer.newTransaction("AdminAPI", uri);
+    ct.addData("Env", env);
 
     List<ServiceDTO> services = getAdminServices(env, ct);
 
