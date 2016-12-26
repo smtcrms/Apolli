@@ -27,7 +27,7 @@ public class NamespaceController {
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces", method = RequestMethod.POST)
   public NamespaceDTO create(@PathVariable("appId") String appId,
-                                     @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
+                             @PathVariable("clusterName") String clusterName, @RequestBody NamespaceDTO dto) {
     if (!InputValidator.isValidClusterNamespace(dto.getNamespaceName())) {
       throw new BadRequestException(String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
     }
@@ -45,18 +45,18 @@ public class NamespaceController {
 
   @RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName,
-      @PathVariable("namespaceName") String namespaceName, @RequestParam String operator) {
+                     @PathVariable("clusterName") String clusterName,
+                     @PathVariable("namespaceName") String namespaceName, @RequestParam String operator) {
     Namespace entity = namespaceService.findOne(appId, clusterName, namespaceName);
     if (entity == null) throw new NotFoundException(
-        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+            String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
 
     namespaceService.deleteNamespace(entity, operator);
   }
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces")
   public List<NamespaceDTO> find(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName) {
+                                 @PathVariable("clusterName") String clusterName) {
     List<Namespace> groups = namespaceService.findNamespaces(appId, clusterName);
     return BeanUtils.batchTransform(NamespaceDTO.class, groups);
   }
@@ -71,18 +71,19 @@ public class NamespaceController {
 
   @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}")
   public NamespaceDTO get(@PathVariable("appId") String appId,
-      @PathVariable("clusterName") String clusterName,
-      @PathVariable("namespaceName") String namespaceName) {
+                          @PathVariable("clusterName") String clusterName,
+                          @PathVariable("namespaceName") String namespaceName) {
     Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);
     if (namespace == null) throw new NotFoundException(
-        String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
+            String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
     return BeanUtils.transfrom(NamespaceDTO.class, namespace);
   }
 
-  @RequestMapping("/clusters/{clusterName}/namespaces/{namespaceName}/public")
-  public NamespaceDTO findPublicNamespace(@PathVariable String clusterName,
-                                          @PathVariable String namespaceName) {
-    Namespace namespace = namespaceService.findPublicNamespace(clusterName, namespaceName);
+  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace")
+  public NamespaceDTO findPublicNamespaceForAssociatedNamespace(@PathVariable String appId,
+                                                                @PathVariable String clusterName,
+                                                                @PathVariable String namespaceName) {
+    Namespace namespace = namespaceService.findPublicNamespaceForAssociatedNamespace(clusterName, namespaceName);
 
     if (namespace == null) {
       throw new NotFoundException(String.format("public namespace not found. namespace:%s", namespaceName));
@@ -95,7 +96,7 @@ public class NamespaceController {
    * cluster -> cluster has not published namespaces?
    */
   @RequestMapping("/apps/{appId}/namespaces/publish_info")
-  public Map<String, Boolean> namespacePublishInfo(@PathVariable String appId){
+  public Map<String, Boolean> namespacePublishInfo(@PathVariable String appId) {
     return namespaceService.namespacePublishInfo(appId);
   }
 

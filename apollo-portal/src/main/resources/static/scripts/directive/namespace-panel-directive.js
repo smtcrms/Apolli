@@ -227,7 +227,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                         return;
                     }
                     //load public namespace
-                    ConfigService.load_public_namespace(scope.env, scope.cluster, namespace.baseInfo.namespaceName)
+                    ConfigService.load_public_namespace_for_associated_namespace(scope.env, scope.appId, scope.cluster,
+                                                                                 namespace.baseInfo.namespaceName)
                         .then(function (result) {
                             var publicNamespace = result;
                             namespace.publicNamespace = publicNamespace;
@@ -429,6 +430,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                                         namespace.latestReleaseInstances = result;
                                         namespace.latestReleaseInstancesPage++;
                                     })
+
+                                namespace.isLatestReleaseLoaded = true;
                             });
                     } else {
                         InstanceService.findInstancesByRelease(scope.env,
