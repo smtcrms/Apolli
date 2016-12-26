@@ -11,7 +11,6 @@ import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -26,10 +25,8 @@ import com.ctrip.framework.apollo.tracer.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
 
@@ -104,9 +101,9 @@ public class NamespaceService {
     List<NamespaceBO> namespaceBOs = new LinkedList<>();
     for (NamespaceDTO namespace : namespaces) {
 
-      NamespaceBO namespaceBO = null;
+      NamespaceBO namespaceBO;
       try {
-        namespaceBO = transformNamespace2BO(appId, env, clusterName, namespace);
+        namespaceBO = transformNamespace2BO(env, namespace);
         namespaceBOs.add(namespaceBO);
       } catch (Exception e) {
         logger.error("parse namespace error. app id:{}, env:{}, clusterName:{}, namespace:{}",
@@ -123,16 +120,15 @@ public class NamespaceService {
     if (namespace == null) {
       throw new BadRequestException("namespaces not exist");
     }
-    return transformNamespace2BO(appId, env, clusterName, namespace);
+    return transformNamespace2BO(env, namespace);
   }
 
-  public NamespaceBO loadPublicNamespaceBO(Env env, String clusterName, String namespaceName) {
-    NamespaceDTO namespace = namespaceAPI.loadPublicNamespace(env, clusterName, namespaceName);
+  public NamespaceBO findPublicNamespaceForAssociatedNamespace(Env env, String appId,
+                                                               String clusterName, String namespaceName) {
+    NamespaceDTO namespace = namespaceAPI.findPublicNamespaceForAssociatedNamespace(env, appId, clusterName, namespaceName);
 
-    String appId = namespace.getAppId();
-    String actualClusterName = namespace.getClusterName();
 
-    return transformNamespace2BO(appId, env, actualClusterName, namespace);
+    return transformNamespace2BO(env, namespace);
   }
 
   public Map<String, Map<String, Boolean>> getNamespacesPublishInfo(String appId) {
@@ -148,19 +144,21 @@ public class NamespaceService {
     return result;
   }
 
-  private NamespaceBO transformNamespace2BO(String appId, Env env, String clusterName, NamespaceDTO namespace) {
+  private NamespaceBO transformNamespace2BO(Env env, NamespaceDTO namespace) {
     NamespaceBO namespaceBO = new NamespaceBO();
     namespaceBO.setBaseInfo(namespace);
+
+    String appId = namespace.getAppId();
+    String clusterName = namespace.getClusterName();
+    String namespaceName = namespace.getNamespaceName();
 
     fillAppNamespaceProperties(namespaceBO);
 
     List<ItemBO> itemBOs = new LinkedList<>();
     namespaceBO.setItems(itemBOs);
 
-    String namespaceName = namespace.getNamespaceName();
-
     //latest Release
-    ReleaseDTO latestRelease = null;
+    ReleaseDTO latestRelease;
     Map<String, String> releaseItems = new HashMap<>();
     latestRelease = releaseService.loadLatestRelease(appId, env, clusterName, namespaceName);
     if (latestRelease != null) {

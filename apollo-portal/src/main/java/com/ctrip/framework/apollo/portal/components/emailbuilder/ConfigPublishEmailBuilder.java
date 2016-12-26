@@ -58,7 +58,7 @@ public abstract class ConfigPublishEmailBuilder {
   //set config's value max length to protect email.
   protected static final int VALUE_MAX_LENGTH = 100;
 
-  private FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd hh:mm:ss");
+  protected FastDateFormat dateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
 
   @Autowired

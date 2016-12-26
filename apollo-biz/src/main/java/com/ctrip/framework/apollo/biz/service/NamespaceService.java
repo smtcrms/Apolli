@@ -59,7 +59,6 @@ public class NamespaceService {
   private InstanceService instanceService;
 
 
-
   public Namespace findOne(Long namespaceId) {
     return namespaceRepository.findOne(namespaceId);
   }
@@ -69,7 +68,7 @@ public class NamespaceService {
                                                                          namespaceName);
   }
 
-  public Namespace findPublicNamespace(String clusterName, String namespaceName) {
+  public Namespace findPublicNamespaceForAssociatedNamespace(String clusterName, String namespaceName) {
     AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespaceName);
     if (appNamespace == null) {
       throw new BadRequestException("namespace not exist");
@@ -79,11 +78,46 @@ public class NamespaceService {
 
     Namespace namespace = findOne(appId, clusterName, namespaceName);
 
-    if (namespace == null) {
-      namespace = findOne(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespaceName);
+    //default cluster's namespace
+    if (Objects.equals(clusterName, ConfigConsts.CLUSTER_NAME_DEFAULT)) {
+      return namespace;
     }
 
+    //custom cluster's namespace not exist.
+    //return default cluster's namespace
+    if (namespace == null) {
+      return findOne(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespaceName);
+    }
+
+    //custom cluster's namespace exist and has published.
+    //return custom cluster's namespace
+    Release latestActiveRelease = releaseService.findLatestActiveRelease(namespace);
+    if (latestActiveRelease != null) {
+      return namespace;
+    }
+
+    Namespace defaultNamespace = findOne(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, namespaceName);
+
+    //custom cluster's namespace exist but never published.
+    //and default cluster's namespace not exist.
+    //return custom cluster's namespace
+    if (defaultNamespace == null) {
+      return namespace;
+    }
+
+    //custom cluster's namespace exist but never published.
+    //and default cluster's namespace exist and has published.
+    //return default cluster's namespace
+    Release defaultNamespaceLatestActiveRelease = releaseService.findLatestActiveRelease(defaultNamespace);
+    if (defaultNamespaceLatestActiveRelease != null) {
+      return defaultNamespace;
+    }
+
+    //custom cluster's namespace exist but never published.
+    //and default cluster's namespace exist but never published.
+    //return custom cluster's namespace
     return namespace;
+
   }
 
   public List<Namespace> findNamespaces(String appId, String clusterName) {
@@ -129,7 +163,7 @@ public class NamespaceService {
 
   }
 
-  public Namespace findParentNamespace(String appId, String clusterName, String namespaceName){
+  public Namespace findParentNamespace(String appId, String clusterName, String namespaceName) {
     return findParentNamespace(new Namespace(appId, clusterName, namespaceName));
   }
 
@@ -146,7 +180,7 @@ public class NamespaceService {
     return null;
   }
 
-  public boolean isChildNamespace(String appId, String clusterName, String namespaceName){
+  public boolean isChildNamespace(String appId, String clusterName, String namespaceName) {
     return isChildNamespace(new Namespace(appId, clusterName, namespaceName));
   }
 
@@ -268,10 +302,10 @@ public class NamespaceService {
       String clusterName = cluster.getName();
       List<Namespace> namespaces = findNamespaces(appId, clusterName);
 
-      for (Namespace namespace: namespaces) {
+      for (Namespace namespace : namespaces) {
         boolean isNamespaceNotPublished = isNamespaceNotPublished(namespace);
 
-        if (isNamespaceNotPublished){
+        if (isNamespaceNotPublished) {
           clusterHasNotPublishedItems.put(clusterName, true);
           break;
         }
@@ -301,8 +335,8 @@ public class NamespaceService {
     }
 
     Map<String, String> publishedConfiguration = gson.fromJson(latestRelease.getConfigurations(), GsonType.CONFIG);
-    for (Item item: itemsModifiedAfterLastPublish) {
-      if (!Objects.equals(item.getValue(), publishedConfiguration.get(item.getKey()))){
+    for (Item item : itemsModifiedAfterLastPublish) {
+      if (!Objects.equals(item.getValue(), publishedConfiguration.get(item.getKey()))) {
         return true;
       }
     }

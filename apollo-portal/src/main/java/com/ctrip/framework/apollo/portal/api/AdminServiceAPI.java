@@ -81,10 +81,10 @@ public class AdminServiceAPI {
                            NamespaceDTO.class, appId, clusterName, namespaceName);
     }
 
-    public NamespaceDTO loadPublicNamespace(Env env, String clusterName, String namespaceName) {
+    public NamespaceDTO findPublicNamespaceForAssociatedNamespace(Env env, String appId, String clusterName, String namespaceName) {
       return
-          restTemplate.get(env, "/clusters/{clusterName}/namespaces/{namespaceName}/public",
-                           NamespaceDTO.class, clusterName, namespaceName);
+          restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace",
+                           NamespaceDTO.class, appId, clusterName, namespaceName);
     }
 
     public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
