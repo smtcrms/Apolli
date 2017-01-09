@@ -1,16 +1,20 @@
 application_module.controller("ConfigBaseInfoController",
-                              ['$rootScope', '$scope', '$location', 'toastr', 'EventManager', 'UserService',
+                              ['$rootScope', '$scope', '$window', '$location', 'toastr', 'EventManager', 'UserService',
                                'AppService',
                                'FavoriteService',
                                'PermissionService',
                                'AppUtil', ConfigBaseInfoController]);
 
-function ConfigBaseInfoController($rootScope, $scope, $location, toastr, EventManager, UserService, AppService,
+function ConfigBaseInfoController($rootScope, $scope, $window, $location, toastr, EventManager, UserService, AppService,
                                   FavoriteService,
                                   PermissionService,
                                   AppUtil) {
 
     var appId = AppUtil.parseParams($location.$$url).appid;
+
+    if (!appId) {
+        $window.location.href = '/index.html';
+    }
 
     initPage();
 
