@@ -435,6 +435,7 @@
 	</build>
 	<profiles>
 		<profile>
+			<!-- for travis usage -->
 			<id>travis</id>
 			<activation>
 				<property>
@@ -490,6 +491,7 @@
 			</repositories>
 		</profile>
 		<profile>
+			<!-- for open source usage -->
 			<id>dev</id>
 			<properties>
 				<package.environment>dev</package.environment>
@@ -505,6 +507,7 @@
 			</repositories>
 		</profile>
 		<profile>
+            <!-- for ctrip development -->
 			<id>ctrip-dev</id>
 			<properties>
 				<package.environment>dev</package.environment>
@@ -585,12 +588,18 @@
 			</dependencyManagement>
 			<dependencies>
 				<dependency>
-					<groupId>com.dianping.cat</groupId>
-					<artifactId>cat-client</artifactId>
-				</dependency>
-				<dependency>
 					<groupId>com.ctrip.3rdparty.tomcat.embed</groupId>
 					<artifactId>tomcat-embed-core</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<!-- for ctrip development with logging capability -->
+			<id>ctrip-logging</id>
+            <dependencies>
+				<dependency>
+					<groupId>com.dianping.cat</groupId>
+					<artifactId>cat-client</artifactId>
 				</dependency>
 				<dependency>
 					<groupId>com.ctrip.framework.clogging</groupId>
@@ -599,6 +608,7 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<!-- for ctrip production -->
 			<id>ctrip</id>
 			<dependencyManagement>
 				<dependencies>
