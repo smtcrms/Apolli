@@ -84,13 +84,14 @@ public class NamespaceBranchService {
 
 
   public ReleaseDTO merge(String appId, Env env, String clusterName, String namespaceName,
-                          String branchName, String title, String comment, boolean deleteBranch) {
+                          String branchName, String title, String comment,
+                          boolean isEmergencyPublish, boolean deleteBranch) {
 
     ItemChangeSets changeSets = calculateBranchChangeSet(appId, env, clusterName, namespaceName, branchName);
 
-    ReleaseDTO
-        mergedResult =
-        releaseService.updateAndPublish(appId, env, clusterName, namespaceName, title, comment, branchName, deleteBranch, changeSets);
+    ReleaseDTO mergedResult =
+        releaseService.updateAndPublish(appId, env, clusterName, namespaceName, title, comment,
+                                        branchName, isEmergencyPublish, deleteBranch, changeSets);
 
     Tracer.logEvent(CatEventType.MERGE_GRAY_RELEASE,
                  String.format("%s+%s+%s+%s", appId, env, clusterName, namespaceName));

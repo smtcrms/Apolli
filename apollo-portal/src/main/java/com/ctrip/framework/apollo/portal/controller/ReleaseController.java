@@ -1,8 +1,10 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.bo.ReleaseBO;
@@ -30,6 +32,8 @@ public class ReleaseController {
   private ReleaseService releaseService;
   @Autowired
   private ApplicationEventPublisher publisher;
+  @Autowired
+  private PortalConfig portalConfig;
 
   @PreAuthorize(value = "@permissionValidator.hasReleaseNamespacePermission(#appId, #namespaceName)")
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
@@ -42,6 +46,10 @@ public class ReleaseController {
     model.setEnv(env);
     model.setClusterName(clusterName);
     model.setNamespaceName(namespaceName);
+
+    if (model.isEmergencyPublish() && !portalConfig.isEmergencyPublishAllowed(Env.valueOf(env))) {
+      throw new BadRequestException(String.format("Env: %s is not supported emergency publish now", env));
+    }
 
     ReleaseDTO createdRelease = releaseService.publish(model);
 
@@ -71,6 +79,10 @@ public class ReleaseController {
     model.setEnv(env);
     model.setClusterName(branchName);
     model.setNamespaceName(namespaceName);
+
+    if (model.isEmergencyPublish() && !portalConfig.isEmergencyPublishAllowed(Env.valueOf(env))) {
+      throw new BadRequestException(String.format("Env: %s is not supported emergency publish now", env));
+    }
 
     ReleaseDTO createdRelease = releaseService.publish(model);
 
