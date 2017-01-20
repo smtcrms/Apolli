@@ -229,7 +229,7 @@
                               cluster="pageContext.clusterName">
         </mergeandpublishmodal>
 
-        <publishdenymodal></publishdenymodal>
+        <publishdenymodal env="pageContext.env"></publishdenymodal>
 
         <apolloconfirmdialog apollo-dialog-id="'deleteConfirmDialog'" apollo-title="'删除配置'"
                              apollo-detail="'确定要删除配置吗?'"
@@ -255,6 +255,10 @@
         <apolloconfirmdialog apollo-dialog-id="'rollbackAlertDialog'" apollo-title="'回滚'"
                              apollo-detail="'确定要回滚吗?'"
                              apollo-show-cancel-btn="true" apollo-confirm="rollback"></apolloconfirmdialog>
+
+        <apolloconfirmdialog apollo-dialog-id="'emergencyPublishAlertDialog'" apollo-title="'紧急发布'"
+                             apollo-detail="'确定要紧急发布吗?'"
+                             apollo-show-cancel-btn="true" apollo-confirm="emergencyPublish"></apolloconfirmdialog>
 
         <apolloconfirmdialog apollo-dialog-id="'deleteBranchDialog'" apollo-title="'删除灰度'"
                              apollo-detail="'删除灰度会丢失灰度的配置，确定要删除吗?'"
