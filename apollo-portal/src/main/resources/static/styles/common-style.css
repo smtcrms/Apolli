@@ -25,6 +25,10 @@ p, td, span {
     word-break: break-all;
 }
 
+.modal {
+    overflow-y: scroll
+}
+
 .no-radius {
     border-radius: 0;
 }
