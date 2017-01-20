@@ -7,6 +7,7 @@ function publishDenyDirective(AppUtil, EventManager) {
         transclude: true,
         replace: true,
         scope: {
+            env: "="
         },
         link: function (scope) {
             var MODAL_ID = "#publishDenyModal";
@@ -21,20 +22,12 @@ function publishDenyDirective(AppUtil, EventManager) {
 
             function emergencyPublish() {
                 AppUtil.hideModal(MODAL_ID);
-                
-                if (scope.mergeAndPublish) {
-                    EventManager.emit(EventManager.EventType.MERGE_AND_PUBLISH_NAMESPACE,
-                                      {
-                                          branch: scope.toReleaseNamespace,
-                                          isEmergencyPublish: true
-                                      });
-                } else {
-                    EventManager.emit(EventManager.EventType.PUBLISH_NAMESPACE,
-                                      {
-                                          namespace: scope.toReleaseNamespace,
-                                          isEmergencyPublish: true
-                                      });
-                }
+
+                EventManager.emit(EventManager.EventType.EMERGENCY_PUBLISH,
+                                  {
+                                      mergeAndPublish: scope.mergeAndPublish,
+                                      namespace: scope.toReleaseNamespace
+                                  });
 
             }
         }
