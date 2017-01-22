@@ -48,7 +48,7 @@ public class ReleaseController {
   private NamespaceBranchService namespaceBranchService;
 
 
-  @RequestMapping("/releases/{releaseId}")
+  @RequestMapping(value = "/releases/{releaseId}", method = RequestMethod.GET)
   public ReleaseDTO get(@PathVariable("releaseId") long releaseId) {
     Release release = releaseService.findOne(releaseId);
     if (release == null) {
@@ -57,7 +57,7 @@ public class ReleaseController {
     return BeanUtils.transfrom(ReleaseDTO.class, release);
   }
 
-  @RequestMapping("/releases")
+  @RequestMapping(value = "/releases", method = RequestMethod.GET)
   public List<ReleaseDTO> findReleaseByIds(@RequestParam("releaseIds") String releaseIds) {
     Set<Long> releaseIdSet = RELEASES_SPLITTER.splitToList(releaseIds).stream().map(Long::parseLong)
         .collect(Collectors.toSet());
@@ -67,7 +67,7 @@ public class ReleaseController {
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 
-  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all")
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all", method = RequestMethod.GET)
   public List<ReleaseDTO> findAllReleases(@PathVariable("appId") String appId,
                                           @PathVariable("clusterName") String clusterName,
                                           @PathVariable("namespaceName") String namespaceName,
@@ -77,7 +77,7 @@ public class ReleaseController {
   }
 
 
-  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active")
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active", method = RequestMethod.GET)
   public List<ReleaseDTO> findActiveReleases(@PathVariable("appId") String appId,
                                              @PathVariable("clusterName") String clusterName,
                                              @PathVariable("namespaceName") String namespaceName,
@@ -86,7 +86,7 @@ public class ReleaseController {
     return BeanUtils.batchTransform(ReleaseDTO.class, releases);
   }
 
-  @RequestMapping("/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest")
+  @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/latest", method = RequestMethod.GET)
   public ReleaseDTO getLatest(@PathVariable("appId") String appId,
                               @PathVariable("clusterName") String clusterName,
                               @PathVariable("namespaceName") String namespaceName) {

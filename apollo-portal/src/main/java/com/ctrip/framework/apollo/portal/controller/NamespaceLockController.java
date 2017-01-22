@@ -8,6 +8,7 @@ import com.ctrip.framework.apollo.portal.service.NamespaceLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,14 +18,14 @@ public class NamespaceLockController {
   private NamespaceLockService namespaceLockService;
 
   @Deprecated
-  @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock", method = RequestMethod.GET)
   public NamespaceLockDTO getNamespaceLock(@PathVariable String appId, @PathVariable String env,
                                            @PathVariable String clusterName, @PathVariable String namespaceName) {
 
     return namespaceLockService.getNamespaceLock(appId, Env.valueOf(env), clusterName, namespaceName);
   }
 
-  @RequestMapping("/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock-info")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/lock-info", method = RequestMethod.GET)
   public LockInfo getNamespaceLockInfo(@PathVariable String appId, @PathVariable String env,
                                        @PathVariable String clusterName, @PathVariable String namespaceName) {
 

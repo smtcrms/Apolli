@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.portal.components.config;
+package com.ctrip.framework.apollo.portal.component.config;
 
 
 import com.google.common.base.Strings;
@@ -15,7 +15,6 @@ import com.ctrip.framework.apollo.portal.service.PortalDBPropertySource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.Collections;

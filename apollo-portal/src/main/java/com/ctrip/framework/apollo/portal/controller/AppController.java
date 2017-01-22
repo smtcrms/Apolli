@@ -10,7 +10,7 @@ import com.ctrip.framework.apollo.common.http.RichResponseEntity;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.components.PortalSettings;
+import com.ctrip.framework.apollo.portal.component.PortalSettings;
 import com.ctrip.framework.apollo.portal.entity.bo.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.vo.EnvClusterInfo;
 import com.ctrip.framework.apollo.portal.listener.AppCreationEvent;
@@ -50,7 +50,7 @@ public class AppController {
   @Autowired
   private UserService userService;
 
-  @RequestMapping("")
+  @RequestMapping(value = "", method = RequestMethod.GET)
   public List<App> findApps(@RequestParam(value = "appIds", required = false) String appIds) {
     if (StringUtils.isEmpty(appIds)){
       return appService.findAll();
@@ -60,12 +60,12 @@ public class AppController {
 
   }
 
-  @RequestMapping("/by-owner")
+  @RequestMapping(value = "/by-owner", method = RequestMethod.GET)
   public List<App> findAppsByOwner(@RequestParam("owner") String owner, Pageable page){
     return appService.findByOwnerName(owner, page);
   }
 
-  @RequestMapping("/{appId}/navtree")
+  @RequestMapping(value = "/{appId}/navtree", method = RequestMethod.GET)
   public MultiResponseEntity<EnvClusterInfo> nav(@PathVariable String appId) {
 
     MultiResponseEntity<EnvClusterInfo> response = MultiResponseEntity.ok();
@@ -130,7 +130,7 @@ public class AppController {
     return appService.load(appId);
   }
 
-  @RequestMapping(value = "/{appId}/miss_envs")
+  @RequestMapping(value = "/{appId}/miss_envs", method = RequestMethod.GET)
   public MultiResponseEntity<Env> findMissEnvs(@PathVariable String appId) {
 
     MultiResponseEntity<Env> response = MultiResponseEntity.ok();
