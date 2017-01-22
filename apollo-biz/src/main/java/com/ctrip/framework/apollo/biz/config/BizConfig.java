@@ -105,4 +105,11 @@ public class BizConfig extends RefreshableConfig {
     return TimeUnit.SECONDS;
   }
 
+  public int releaseMessageNotificationBatch() {
+    return getIntProperty("apollo.release-message.notification.batch", 100);
+  }
+
+  public int releaseMessageNotificationBatchIntervalInMilli() {
+    return getIntProperty("apollo.release-message.notification.batch.interval", 100);
+  }
 }
