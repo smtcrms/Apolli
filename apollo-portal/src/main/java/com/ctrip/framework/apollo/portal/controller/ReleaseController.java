@@ -4,7 +4,7 @@ import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
-import com.ctrip.framework.apollo.portal.components.config.PortalConfig;
+import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceReleaseModel;
 import com.ctrip.framework.apollo.portal.entity.vo.ReleaseCompareResult;
 import com.ctrip.framework.apollo.portal.entity.bo.ReleaseBO;
@@ -100,7 +100,7 @@ public class ReleaseController {
   }
 
 
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/all", method = RequestMethod.GET)
   public List<ReleaseBO> findAllReleases(@PathVariable String appId,
                                          @PathVariable String env,
                                          @PathVariable String clusterName,
@@ -114,7 +114,7 @@ public class ReleaseController {
     return releaseService.findAllReleases(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
   }
 
-  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active")
+  @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName}/releases/active", method = RequestMethod.GET)
   public List<ReleaseDTO> findActiveReleases(@PathVariable String appId,
                                              @PathVariable String env,
                                              @PathVariable String clusterName,
@@ -128,7 +128,7 @@ public class ReleaseController {
     return releaseService.findActiveReleases(appId, Env.valueOf(env), clusterName, namespaceName, page, size);
   }
 
-  @RequestMapping(value = "/envs/{env}/releases/compare")
+  @RequestMapping(value = "/envs/{env}/releases/compare", method = RequestMethod.GET)
   public ReleaseCompareResult compareRelease(@PathVariable String env,
                                              @RequestParam long baseReleaseId,
                                              @RequestParam long toCompareReleaseId) {
