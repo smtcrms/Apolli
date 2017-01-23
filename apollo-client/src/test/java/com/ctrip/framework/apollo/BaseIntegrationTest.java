@@ -182,6 +182,16 @@ public abstract class BaseIntegrationTest extends ComponentTestCase {
     public String getDefaultLocalCacheDir() {
       return ClassLoaderUtil.getClassPath();
     }
+
+    @Override
+    public long getOnErrorRetryInterval() {
+      return 10;
+    }
+
+    @Override
+    public TimeUnit getOnErrorRetryIntervalTimeUnit() {
+      return TimeUnit.MILLISECONDS;
+    }
   }
 
   /**

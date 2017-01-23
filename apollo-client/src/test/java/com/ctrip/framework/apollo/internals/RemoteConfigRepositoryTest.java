@@ -233,6 +233,16 @@ public class RemoteConfigRepositoryTest extends ComponentTestCase {
     public int getLongPollQPS() {
       return 200;
     }
+
+    @Override
+    public long getOnErrorRetryInterval() {
+      return 10;
+    }
+
+    @Override
+    public TimeUnit getOnErrorRetryIntervalTimeUnit() {
+      return TimeUnit.MILLISECONDS;
+    }
   }
 
   public static class MockConfigServiceLocator extends ConfigServiceLocator {

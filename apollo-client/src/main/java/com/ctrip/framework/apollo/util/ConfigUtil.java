@@ -29,6 +29,9 @@ public class ConfigUtil {
   private String cluster;
   private int loadConfigQPS = 2; //2 times per second
   private int longPollQPS = 2; //2 times per second
+  //for on error retry
+  private long onErrorRetryInterval = 1;//1 second
+  private TimeUnit onErrorRetryIntervalTimeUnit = TimeUnit.SECONDS;//1 second
   //for typed config cache of parser result, e.g. integer, double, long, etc.
   private long maxConfigCacheSize = 500;//500 cache key
   private long configCacheExpireTime = 1;//1 minute
@@ -210,6 +213,14 @@ public class ConfigUtil {
 
   public int getLongPollQPS() {
     return longPollQPS;
+  }
+
+  public long getOnErrorRetryInterval() {
+    return onErrorRetryInterval;
+  }
+
+  public TimeUnit getOnErrorRetryIntervalTimeUnit() {
+    return onErrorRetryIntervalTimeUnit;
   }
 
   public String getDefaultLocalCacheDir() {
