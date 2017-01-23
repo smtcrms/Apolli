@@ -21,8 +21,8 @@ public class ConfigService {
   private static final ConfigService s_instance = new ConfigService();
 
   private PlexusContainer m_container;
-  private ConfigManager m_configManager;
-  private ConfigRegistry m_configRegistry;
+  private volatile ConfigManager m_configManager;
+  private volatile ConfigRegistry m_configRegistry;
 
   private ConfigService() {
     m_container = ContainerLoader.getDefaultContainer();
@@ -128,8 +128,10 @@ public class ConfigService {
 
   // for test only
   static void setContainer(PlexusContainer m_container) {
-    s_instance.m_container = m_container;
-    s_instance.m_configManager = null;
-    s_instance.m_configRegistry = null;
+    synchronized (s_instance) {
+      s_instance.m_container = m_container;
+      s_instance.m_configManager = null;
+      s_instance.m_configRegistry = null;
+    }
   }
 }
