@@ -416,6 +416,68 @@ public class DefaultConfigTest extends ComponentTestCase {
   }
 
   @Test
+  public void testGetArrayPropertyMultipleTimesWithCache() throws Exception {
+    String someKey = "someKey";
+    String someDelimiter = ",";
+    String someInvalidDelimiter = "{";
+
+    String[] values = new String[]{"a", "b", "c"};
+    String someValue = Joiner.on(someDelimiter).join(values);
+
+    String[] someDefaultValue = new String[]{"1", "2"};
+
+    //set up config repo
+    someProperties = mock(Properties.class);
+    when(someProperties.getProperty(someKey)).thenReturn(someValue);
+    when(configRepository.getConfig()).thenReturn(someProperties);
+
+    DefaultConfig defaultConfig =
+        new DefaultConfig(someNamespace, configRepository);
+
+    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+
+    verify(someProperties, times(1)).getProperty(someKey);
+
+    assertArrayEquals(someDefaultValue, defaultConfig.getArrayProperty(someKey, someInvalidDelimiter,
+        someDefaultValue));
+    assertArrayEquals(someDefaultValue, defaultConfig.getArrayProperty(someKey, someInvalidDelimiter,
+        someDefaultValue));
+
+    verify(someProperties, times(3)).getProperty(someKey);
+  }
+
+  @Test
+  public void testGetArrayPropertyMultipleTimesWithCacheAndValueChanges() throws Exception {
+    String someKey = "someKey";
+    String someDelimiter = ",";
+
+    String[] values = new String[]{"a", "b", "c"};
+    String[] anotherValues = new String[]{"b", "c", "d"};
+    String someValue = Joiner.on(someDelimiter).join(values);
+    String anotherValue = Joiner.on(someDelimiter).join(anotherValues);
+
+    String[] someDefaultValue = new String[]{"1", "2"};
+
+    //set up config repo
+    someProperties = new Properties();
+    someProperties.setProperty(someKey, someValue);
+    when(configRepository.getConfig()).thenReturn(someProperties);
+
+    Properties anotherProperties = new Properties();
+    anotherProperties.setProperty(someKey, anotherValue);
+
+    DefaultConfig defaultConfig =
+        new DefaultConfig(someNamespace, configRepository);
+
+    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+
+    defaultConfig.onRepositoryChange(someNamespace, anotherProperties);
+
+    assertArrayEquals(anotherValues, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+  }
+
+  @Test
   public void testGetDatePropertyWithFormat() throws Exception {
     Date someDefaultValue = new Date();
 

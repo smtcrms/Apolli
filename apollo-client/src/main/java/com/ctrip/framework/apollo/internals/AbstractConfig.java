@@ -5,6 +5,7 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.Config;
@@ -28,6 +29,7 @@ import org.unidal.lookup.ContainerLoader;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -53,6 +55,7 @@ public abstract class AbstractConfig implements Config {
   private volatile Cache<String, Boolean> m_booleanCache;
   private volatile Cache<String, Date> m_dateCache;
   private volatile Cache<String, Long> m_durationCache;
+  private Map<String, Cache<String, String[]>> m_arrayCache;
   private List<Cache> allCaches;
   private AtomicLong m_configVersion; //indicate config version
 
@@ -65,6 +68,7 @@ public abstract class AbstractConfig implements Config {
     try {
       m_configUtil = ContainerLoader.getDefaultContainer().lookup(ConfigUtil.class);
       m_configVersion = new AtomicLong();
+      m_arrayCache = Maps.newConcurrentMap();
       allCaches = Lists.newArrayList();
     } catch (ComponentLookupException ex) {
       Tracer.logError(ex);
@@ -220,13 +224,29 @@ public abstract class AbstractConfig implements Config {
   }
 
   @Override
-  public String[] getArrayProperty(String key, String delimiter, String[] defaultValue) {
+  public String[] getArrayProperty(String key, final String delimiter, String[] defaultValue) {
     try {
-      String value = getProperty(key, null);
-
-      if (value != null) {
-        return value.split(delimiter);
+      if (!m_arrayCache.containsKey(delimiter)) {
+        synchronized (this) {
+          if (!m_arrayCache.containsKey(delimiter)) {
+            m_arrayCache.put(delimiter, this.<String[]>newCache());
+          }
+        }
       }
+
+      Cache<String, String[]> cache = m_arrayCache.get(delimiter);
+      String[] result = cache.getIfPresent(key);
+
+      if (result != null) {
+        return result;
+      }
+
+      return getValueAndStoreToCache(key, new Function<String, String[]>() {
+        @Override
+        public String[] apply(String input) {
+          return input.split(delimiter);
+        }
+      }, cache, defaultValue);
     } catch (Throwable ex) {
       Tracer.logError(new ApolloConfigException(
           String.format("getArrayProperty for %s failed, return default value", key), ex));
@@ -334,11 +354,15 @@ public abstract class AbstractConfig implements Config {
       return result;
     }
 
+    return getValueAndStoreToCache(key, parser, cache, defaultValue);
+  }
+
+  private <T> T getValueAndStoreToCache(String key, Function<String, T> parser, Cache<String, T> cache, T defaultValue) {
     long currentConfigVersion = m_configVersion.get();
     String value = getProperty(key, null);
 
     if (value != null) {
-      result = parser.apply(value);
+      T result = parser.apply(value);
 
       if (result != null) {
         synchronized (this) {
