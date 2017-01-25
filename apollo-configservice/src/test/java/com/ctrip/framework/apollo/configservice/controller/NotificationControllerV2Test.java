@@ -330,7 +330,7 @@ public class NotificationControllerV2Test {
 
     assertTrue(!anotherDeferredResult.hasResult());
 
-    TimeUnit.MILLISECONDS.sleep(someBatchInterval * 3);
+    TimeUnit.MILLISECONDS.sleep(someBatchInterval * 5);
 
     assertTrue(anotherDeferredResult.hasResult());
   }
