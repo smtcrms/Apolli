@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.biz;
 
+import com.ctrip.framework.apollo.biz.config.BizConfigTest;
 import com.ctrip.framework.apollo.biz.grayReleaseRule.GrayReleaseRulesHolderTest;
 import com.ctrip.framework.apollo.biz.message.DatabaseMessageSenderTest;
 import com.ctrip.framework.apollo.biz.message.ReleaseMessageScannerTest;
@@ -38,7 +39,8 @@ import org.junit.runners.Suite.SuiteClasses;
     NamespaceBranchServiceTest.class,
     ReleaseCreationTest.class,
     NamespacePublishInfoTest.class,
-    NamespaceServiceTest.class
+    NamespaceServiceTest.class,
+    BizConfigTest.class
 })
 public class AllTests {
 
