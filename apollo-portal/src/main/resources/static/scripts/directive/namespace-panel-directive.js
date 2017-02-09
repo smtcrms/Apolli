@@ -88,7 +88,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     namespace.isPublic ? namespace.parentAppId != namespace.baseInfo.appId : false;
                 namespace.displayControl = {
                     currentOperateBranch: 'master',
-                    showSearchInput: false
+                    showSearchInput: false,
+                    show: true
                 };
                 namespace.viewItems = namespace.items;
                 namespace.isPropertiesFormat = namespace.format == 'properties';
@@ -99,6 +100,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 namespace.allInstancesPage = 0;
                 namespace.commitChangeBtnDisabled = false;
 
+                generateNamespaceId(namespace);
                 initNamespaceBranch(namespace);
                 initNamespaceViewName(namespace);
                 initNamespaceLock(namespace);
@@ -131,7 +133,11 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                             namespace.branch.latestReleaseInstancesPage = 0;
                             namespace.branch.instanceViewType = namespace_instance_view_type.LATEST_RELEASE;
                             namespace.branch.hasLoadInstances = false;
+                            namespace.branch.displayControl = {
+                                show: true
+                            };
 
+                            generateNamespaceId(namespace.branch);
                             initBranchItems(namespace.branch);
                             initRules(namespace.branch);
                             loadInstanceInfo(namespace.branch);
@@ -201,6 +207,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                     }
                 }
 
+                function generateNamespaceId(namespace) {
+                    namespace.id = Math.random().toString(36).substr(2);  
+                }
+                
                 function initPermission(namespace) {
 
                     PermissionService.has_modify_namespace_permission(
@@ -338,7 +348,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function switchBranch(branchName) {
                 if (branchName != 'master') {
+                    scope.namespace.branch.displayControl.show = true;
                     initRules(scope.namespace.branch);
+                } else {
+                    scope.namespace.displayControl.show = true;
                 }
                 scope.namespace.displayControl.currentOperateBranch = branchName;
 
