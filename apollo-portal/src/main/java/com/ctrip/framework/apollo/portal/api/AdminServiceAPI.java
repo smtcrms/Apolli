@@ -20,6 +20,7 @@ import com.ctrip.framework.apollo.core.enums.Env;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -81,10 +82,12 @@ public class AdminServiceAPI {
                            NamespaceDTO.class, appId, clusterName, namespaceName);
     }
 
-    public NamespaceDTO findPublicNamespaceForAssociatedNamespace(Env env, String appId, String clusterName, String namespaceName) {
+    public NamespaceDTO findPublicNamespaceForAssociatedNamespace(Env env, String appId, String clusterName,
+                                                                  String namespaceName) {
       return
-          restTemplate.get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace",
-                           NamespaceDTO.class, appId, clusterName, namespaceName);
+          restTemplate
+              .get(env, "apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace",
+                   NamespaceDTO.class, appId, clusterName, namespaceName);
     }
 
     public NamespaceDTO createNamespace(Env env, NamespaceDTO namespace) {
@@ -107,6 +110,22 @@ public class AdminServiceAPI {
 
     public Map<String, Boolean> getNamespacePublishInfo(Env env, String appId) {
       return restTemplate.get(env, "apps/{appId}/namespaces/publish_info", typeReference, appId).getBody();
+    }
+
+    public List<NamespaceDTO> getPublicAppNamespaceAllNamespaces(Env env, String publicNamespaceName,
+                                                                 int page, int size) {
+      NamespaceDTO[] namespaceDTOs =
+          restTemplate.get(env, "/appnamespaces/{publicNamespaceName}/namespaces?page={page}&size={size}",
+                           NamespaceDTO[].class, publicNamespaceName, page, size);
+      return Arrays.asList(namespaceDTOs);
+    }
+
+    public int countPublicAppNamespaceAssociatedNamespaces(Env env, String publicNamesapceName) {
+      Integer count =
+          restTemplate.get(env, "/appnamespaces/{publicNamespaceName}/associated-namespaces/count", Integer.class,
+                           publicNamesapceName);
+
+      return count == null ? 0 : count;
     }
 
   }
@@ -230,7 +249,8 @@ public class AdminServiceAPI {
     }
 
     public ReleaseDTO createRelease(String appId, Env env, String clusterName, String namespace,
-                                    String releaseName, String releaseComment, String operator, boolean isEmergencyPublish) {
+                                    String releaseName, String releaseComment, String operator,
+                                    boolean isEmergencyPublish) {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.parseMediaType(MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8"));
       MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();

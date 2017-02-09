@@ -231,6 +231,8 @@
 
         <publishdenymodal env="pageContext.env"></publishdenymodal>
 
+        <deletenamespacemodal env="pageContext.env"></deletenamespacemodal>
+
         <apolloconfirmdialog apollo-dialog-id="'deleteConfirmDialog'" apollo-title="'删除配置'"
                              apollo-detail="'确定要删除配置吗?'"
                              apollo-show-cancel-btn="true" apollo-confirm="deleteItem"></apolloconfirmdialog>
@@ -272,6 +274,31 @@
 
         <apolloconfirmdialog apollo-dialog-id="'grayReleaseWithoutRulesTips'" apollo-title="'缺失灰度规则提示'"
                              apollo-detail="'灰度版本还没有配置任何灰度规则，请配置灰度规则'">
+        </apolloconfirmdialog>
+
+        <apolloconfirmdialog apollo-dialog-id="'deleteNamespaceDenyForMasterInstanceDialog'"
+                             apollo-title="'删除Namespace警告信息'"
+                             apollo-detail="'发现有 <b>' + deleteNamespaceContext.namespace.instancesCount +
+                             '</b> 个实例正在使用Namespace(' + deleteNamespaceContext.namespace.baseInfo.namespaceName +
+                             ')，删除Namespace将导致实例获取不到配置。<br>
+                             请到 <ins>“实例列表”</ins> 确认实例信息，如已确认删除Namespace将不会导致实例异常，
+                             请发送邮件至<ins> <a href=\'mailto:rdkjapollo@ctrip.com\'>Apollo团队(rdkjapollo@ctrip.com)</a></ins> 删除Namespace。'"
+                             apollo-confirm="continueDeleteNamespace">
+        </apolloconfirmdialog>
+
+        <apolloconfirmdialog apollo-dialog-id="'deleteNamespaceDenyForBranchInstanceDialog'"
+                             apollo-title="'删除Namespace警告信息'"
+                             apollo-detail="'发现有 <b>' + deleteNamespaceContext.namespace.branch.latestReleaseInstances.total
+                             + '</b> 个实例正在使用Namespace(' + deleteNamespaceContext.namespace.baseInfo.namespaceName +
+                             ')灰度版本的配置，删除Namespace将导致实例获取不到配置。<br>
+                             请到 <ins>“灰度版本” => “实例列表”</ins> 确认实例信息，如已确认删除Namespace将不会导致实例异常，
+                             请发送邮件至<ins> <a href=\'mailto:rdkjapollo@ctrip.com\'>Apollo团队(rdkjapollo@ctrip.com)</a></ins> 删除Namespace。'"
+                             apollo-confirm="continueDeleteNamespace">
+        </apolloconfirmdialog>
+
+        <apolloconfirmdialog apollo-dialog-id="'deleteNamespaceDenyForPublicNamespaceDialog'"
+                             apollo-title="'删除Namespace失败提示'"
+                             apollo-detail="deleteNamespaceContext.detailReason">
         </apolloconfirmdialog>
 
 
@@ -375,6 +402,7 @@
 <script type="application/javascript" src="scripts/directive/gray-release-rules-modal-directive.js"></script>
 <script type="application/javascript" src="scripts/directive/merge-and-publish-modal-directive.js"></script>
 <script type="application/javascript" src="scripts/directive/publish-deny-modal-directive.js"></script>
+<script type="application/javascript" src="scripts/directive/delete-namespace-modal-directive.js"></script>
 
 <!--controller-->
 <script type="application/javascript" src="scripts/controller/config/ConfigNamespaceController.js"></script>

@@ -1,7 +1,7 @@
 <!--master panel body-->
 <section class="master-panel-body"
          ng-if="namespace.hasBranch
-         && namespace.currentOperateBranch == 'master' ||
+         && namespace.displayControl.currentOperateBranch == 'master' ||
           !namespace.hasBranch">
     <!--main header-->
     <header class="panel-heading">
@@ -20,6 +20,7 @@
             </div>
 
             <div class="col-md-6 col-sm-6 text-right header-buttons">
+
                 <button type="button" class="btn btn-success btn-sm"
                         data-tooltip="tooltip" data-placement="bottom" title="发布配置"
                         ng-show="(namespace.hasReleasePermission || namespace.hasModifyPermission)"
@@ -54,14 +55,28 @@
                    ng-show="!namespace.hasBranch && namespace.isPropertiesFormat && namespace.hasModifyPermission"
                    ng-click="preCreateBranch(namespace)">
                     <img src="img/test.png">
-                    创建灰度
+                    灰度
                 </a>
+
                 <a type="button" class="btn btn-default btn-sm J_tableview_btn"
                    data-tooltip="tooltip" data-placement="bottom" title="您没有任何配置权限,请申请"
                    ng-click="showNoModifyPermissionDialog()"
                    ng-show="!namespace.hasModifyPermission && !namespace.hasReleasePermission">
                     申请配置权限
                 </a>
+
+                <div class="btn-group dropdown">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                            aria-haspopup="true" aria-expanded="false">
+                        <img src="img/operate.png"> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" style="right: 0; left: -160px;">
+                        <li ng-click="deleteNamespace(namespace)">
+                            <a style="color: red">
+                                <img src="img/delete.png"> 删除Namespace</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </header>
@@ -130,7 +145,7 @@
 
                 <button type="button" class="btn btn-default btn-sm"
                         data-tooltip="tooltip" data-placement="bottom" title="按Key过滤配置"
-                        ng-show="namespace.viewType == 'table' && namespace.currentOperateBranch == 'master'
+                        ng-show="namespace.viewType == 'table' && namespace.displayControl.currentOperateBranch == 'master'
                         && !namespace.isLinkedNamespace"
                         ng-click="toggleItemSearchInput(namespace)">
                     <span class="glyphicon glyphicon-filter"></span>
@@ -140,7 +155,7 @@
                 <button type="button" class="btn btn-default btn-sm J_tableview_btn"
                         data-tooltip="tooltip" data-placement="bottom" title="同步各环境间配置"
                         ng-click="goToSyncPage(namespace)"
-                        ng-show="namespace.viewType == 'table' && namespace.currentOperateBranch == 'master'
+                        ng-show="namespace.viewType == 'table' && namespace.displayControl.currentOperateBranch == 'master'
                              && namespace.hasModifyPermission && namespace.isPropertiesFormat">
                     <img src="img/sync.png">
                     同步配置
@@ -149,7 +164,7 @@
                 <button type="button" class="btn btn-primary btn-sm"
                         ng-show="!namespace.isLinkedNamespace
                              && namespace.viewType == 'table'
-                             && namespace.currentOperateBranch == 'master'
+                             && namespace.displayControl.currentOperateBranch == 'master'
                              && namespace.hasModifyPermission"
                         ng-click="createItem(namespace)">
                     <img src="img/plus.png">
@@ -169,7 +184,7 @@
             </div>
             <!--not link namespace-->
             <div ng-if="!namespace.isLinkedNamespace">
-                <div class="search-input" ng-show="namespace.showSearchInput">
+                <div class="search-input" ng-show="namespace.displayControl.showSearchInput">
                     <input type="text" class="form-control" placeholder="输入key过滤"
                            ng-model="namespace.searchKey"
                            ng-change="searchItems(namespace)">
@@ -224,7 +239,7 @@
                             <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                             <span class="label label-default cursor-pointer" ng-if="config.hasBranchValue"
                                   data-tooltip="tooltip" data-placement="bottom" title="该配置有灰度配置,点击查看灰度的值"
-                                  ng-click="namespace.currentOperateBranch=namespace.branchName;namespace.branch.viewType='table'">灰</span>
+                                  ng-click="namespace.displayControl.currentOperateBranch=namespace.branchName;namespace.branch.viewType='table'">灰</span>
                             <span class="label label-success" ng-if="config.isModified && !config.oldValue"
                                   data-tooltip="tooltip" data-placement="bottom" title="新增的配置">新</span>
                             <span class="label label-info"
@@ -333,7 +348,7 @@
                             <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                             <span class="label label-default cursor-pointer" ng-if="config.hasBranchValue"
                                   data-tooltip="tooltip" data-placement="bottom" title="该配置有灰度配置,点击查看灰度的值"
-                                  ng-click="namespace.currentOperateBranch=namespace.branchName;namespace.branch.viewType='table'">灰</span>
+                                  ng-click="namespace.displayControl.currentOperateBranch=namespace.branchName;namespace.branch.viewType='table'">灰</span>
                             <span class="label label-success" ng-if="config.isModified && !config.oldValue"
                                   data-tooltip="tooltip" data-placement="bottom" title="新增的配置">新</span>
                             <span class="label label-info"
@@ -385,7 +400,8 @@
                         <div class="row">
                             <div class="padding-top-5 col-md-4 col-sm-4">
                                 公共的配置
-                                <a href="/config.html?#/appid={{namespace.publicNamespace.baseInfo.appId}}&env={{env}}&cluster={{namespace.publicNamespace.baseInfo.clusterName}}" target="_blank">
+                                <a href="/config.html?#/appid={{namespace.publicNamespace.baseInfo.appId}}&env={{env}}&cluster={{namespace.publicNamespace.baseInfo.clusterName}}"
+                                   target="_blank">
                                     <small>
                                         (AppId:{{namespace.publicNamespace.baseInfo.appId}},
                                         Cluster:{{namespace.publicNamespace.baseInfo.clusterName}})
@@ -394,7 +410,8 @@
                             </div>
 
                             <div class="col-md-4 col-sm-4 text-center">
-                                <div class="btn-group btn-group-sm" role="group"  ng-show="namespace.publicNamespace.isModified">
+                                <div class="btn-group btn-group-sm" role="group"
+                                     ng-show="namespace.publicNamespace.isModified">
                                     <button type="button" class="btn btn-default"
                                             ng-class="{'active':namespace.publicNamespaceViewType == 'RELEASE'
                                         || !namespace.publicNamespaceViewType}"
@@ -461,11 +478,13 @@
                             <tbody>
                             <tr ng-repeat="config in namespace.publicNamespace.viewItems |orderBy:col:desc"
                                 ng-if="config.item.key && !config.isModified && !config.isDeleted">
-                                <td width="15%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
+                                <td width="15%" class="cursor-pointer" title="点击查看"
+                                    ng-click="showText(config.item.key)">
                                     <span ng-bind="config.item.key | limitTo: 250"></span>
                                     <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                                 </td>
-                                <td width="35%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
+                                <td width="35%" class="cursor-pointer" title="点击查看"
+                                    ng-click="showText(config.item.value)">
                                     <span ng-bind="config.item.value | limitTo: 250"></span>
                                     <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
                                 </td>
@@ -480,7 +499,8 @@
                                 </td>
 
                                 <td width="10%" class="text-center" ng-if="!config.isDeleted">
-                                    <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom" title="覆盖此配置"
+                                    <img src="img/gray.png" data-tooltip="tooltip" data-placement="bottom"
+                                         title="覆盖此配置"
                                          ng-click="editItem(namespace, config.item)"
                                          ng-show="namespace.hasModifyPermission && !config.covered">
                                 </td>
@@ -533,7 +553,8 @@
                         <tbody>
                         <tr ng-repeat="config in namespace.publicNamespace.viewItems |orderBy:col:desc"
                             ng-if="config.item.key && (config.isModified || config.isDeleted)">
-                            <td width="20%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.key)">
+                            <td width="20%" class="cursor-pointer" title="点击查看"
+                                ng-click="showText(config.item.key)">
                                 <span ng-bind="config.item.key | limitTo: 250"></span>
                                 <span ng-bind="config.item.key.length > 250 ? '...' :''"></span>
                             <span class="label label-success" ng-if="config.isModified && !config.oldValue"
@@ -544,11 +565,13 @@
                             <span class="label label-danger" ng-if="config.isDeleted"
                                   data-tooltip="tooltip" data-placement="bottom" title="删除的配置">删</span>
                             </td>
-                            <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.oldValue)">
+                            <td width="25%" class="cursor-pointer" title="点击查看"
+                                ng-click="showText(config.oldValue)">
                                 <span ng-bind="config.oldValue | limitTo: 250"></span>
                                 <span ng-bind="config.oldValue.length > 250 ? '...': ''"></span>
                             </td>
-                            <td width="25%" class="cursor-pointer" title="点击查看" ng-click="showText(config.item.value)">
+                            <td width="25%" class="cursor-pointer" title="点击查看"
+                                ng-click="showText(config.item.value)">
                                 <span ng-bind="config.item.value | limitTo: 250"></span>
                                 <span ng-bind="config.item.value.length > 250 ? '...': ''"></span>
                             </td>
@@ -610,10 +633,11 @@
                  ng-repeat="commits in namespace.commits">
                 <div class="media-body">
                     <div class="row">
-                        <div class="col-md-6 col-sm-6"><h3 class="media-heading" ng-bind="commits.dataChangeCreatedBy"></h3>
+                        <div class="col-md-6 col-sm-6"><h3 class="media-heading"
+                                                           ng-bind="commits.dataChangeCreatedBy"></h3>
                         </div>
                         <div class="col-md-6 col-sm-6 text-right"><h5 class="media-heading"
-                                                             ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5>
+                                                                      ng-bind="commits.dataChangeCreatedTime  | date: 'yyyy-MM-dd HH:mm:ss'"></h5>
                         </div>
                     </div>
 
@@ -892,4 +916,5 @@
             </div>
         </div>
     </section>
+
 </section>

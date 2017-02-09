@@ -62,6 +62,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             scope.addRuleItem = addRuleItem;
             scope.editRuleItem = editRuleItem;
 
+            scope.deleteNamespace = deleteNamespace;
+            
             var subscriberId = EventManager.subscribe(EventManager.EventType.UPDATE_GRAY_RELEASE_RULES,
                                                       function (context) {
                                                           useRules(context.branch);
@@ -81,11 +83,13 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function initNamespace(namespace, viewType) {
                 namespace.hasBranch = false;
-                namespace.currentOperateBranch = 'master';
                 namespace.isBranch = false;
                 namespace.isLinkedNamespace =
                     namespace.isPublic ? namespace.parentAppId != namespace.baseInfo.appId : false;
-                namespace.showSearchInput = false;
+                namespace.displayControl = {
+                    currentOperateBranch: 'master',
+                    showSearchInput: false
+                };
                 namespace.viewItems = namespace.items;
                 namespace.isPropertiesFormat = namespace.format == 'properties';
                 namespace.isTextEditing = false;
@@ -336,7 +340,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 if (branchName != 'master') {
                     initRules(scope.namespace.branch);
                 }
-                scope.namespace.currentOperateBranch = branchName;
+                scope.namespace.displayControl.currentOperateBranch = branchName;
 
                 //save to local storage
                 var operateBranchStorage = JSON.parse(localStorage.getItem(operate_branch_storage_key));
@@ -398,6 +402,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             }
 
             function loadInstanceInfo(namespace) {
+                
                 var size = 20;
                 if (namespace.isBranch) {
                     size = 2000;
@@ -779,6 +784,10 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function rollback(namespace) {
                 EventManager.emit(EventManager.EventType.PRE_ROLLBACK_NAMESPACE, {namespace: namespace});
+            }
+            
+            function deleteNamespace(namespace) {
+                EventManager.emit(EventManager.EventType.PRE_DELETE_NAMESPACE, {namespace: namespace});    
             }
 
             setTimeout(function () {
