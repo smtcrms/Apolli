@@ -74,8 +74,10 @@
                     申请配置权限
                 </a>
 
-                <div class="btn-group dropdown">
+                <div class="btn-group"
+                ng-show="namespace.hasModifyPermission || namespace.hasReleasePermission || hasAssignUserPermission">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                            data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <img src="img/operate.png"> <span class="caret"></span>
                     </button>
