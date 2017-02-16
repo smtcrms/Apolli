@@ -9,11 +9,11 @@
             <div class="col-md-6 col-sm-6 header-namespace">
                 <span class="cursor-pointer"
                       data-toggle="collapse" data-target="#BODY{{namespace.id}}" aria-expanded="false"
-                ng-click="namespace.displayControl.show = !namespace.displayControl.show">
+                      ng-click="namespace.displayControl.show = !namespace.displayControl.show">
                     <span class="glyphicon glyphicon-triangle-bottom small"
-                    ng-show="namespace.displayControl.show"></span>
+                          ng-show="namespace.displayControl.show"></span>
                     <span class="glyphicon glyphicon-triangle-top small"
-                    ng-show="!namespace.displayControl.show"></span>
+                          ng-show="!namespace.displayControl.show"></span>
                     <b class="namespace-name" ng-bind="namespace.viewName"
                        data-tooltip="tooltip" data-placement="bottom" title="点击展开/收缩Namespace"></b>
 
@@ -75,7 +75,7 @@
                 </a>
 
                 <div class="btn-group"
-                ng-show="namespace.hasModifyPermission || namespace.hasReleasePermission || hasAssignUserPermission">
+                     ng-show="namespace.hasModifyPermission || namespace.hasReleasePermission || hasAssignUserPermission">
                     <button type="button" class="btn btn-default btn-sm dropdown-toggle"
                             data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -129,31 +129,26 @@
                     </ul>
                 </div>
                 <div class="col-md-6 col-sm-6 text-right">
-                    <a class="clipboard"
-                       data-clipboard-text="{{namespace.text}}"
-                       data-tooltip="tooltip" data-placement="bottom" title="复制文本"
-                       ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission">
-                        <img src="img/copy.png" class="ns_btn">
-                    </a>
+                    <img src="img/copy.png" class="ns_btn clipboard cursor-pointer"
+                         data-clipboard-text="{{namespace.text}}"
+                         data-tooltip="tooltip" data-placement="bottom" title="复制文本"
+                         ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission">
                     &nbsp;
-                    <a data-tooltip="tooltip" data-placement="bottom" title="取消修改"
-                       ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                       ng-click="toggleTextEditStatus(namespace)">
-                        <img src="img/cancel.png" class="ns_btn">
-                    </a>
-                    <a data-tooltip="tooltip" data-placement="bottom" title="修改配置"
-                       ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission"
-                       ng-click="toggleTextEditStatus(namespace)">
-                        <img src="img/edit.png" class="ns_btn">
-                    </a>
+                    <img src="img/cancel.png" class="ns_btn cursor-pointer"
+                         data-tooltip="tooltip" data-placement="bottom" title="取消修改"
+                         ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
+                         ng-click="toggleTextEditStatus(namespace)">
+                    <img src="img/edit.png" class="ns_btn cursor-pointer"
+                         data-tooltip="tooltip" data-placement="bottom" title="修改配置"
+                         ng-show="!namespace.isTextEditing && namespace.viewType == 'text' && namespace.hasModifyPermission"
+                         ng-click="toggleTextEditStatus(namespace)">
 
                     &nbsp;
-                    <a data-tooltip="tooltip" data-placement="bottom" title="提交修改"
-                       data-toggle="modal" data-target="#commitModal"
-                       ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
-                       ng-click="modifyByText(namespace)">
-                        <img src="img/submit.png" class="ns_btn">
-                    </a>
+                    <img src="img/submit.png" class="ns_btn cursor-pointer"
+                         data-tooltip="tooltip" data-placement="bottom" title="提交修改"
+                         data-toggle="modal" data-target="#commitModal"
+                         ng-show="namespace.isTextEditing && namespace.viewType == 'text'"
+                         ng-click="modifyByText(namespace)">
 
                     <button type="button" class="btn btn-default btn-sm"
                             data-tooltip="tooltip" data-placement="bottom" title="按Key过滤配置"
