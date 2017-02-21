@@ -79,7 +79,7 @@ public class CtripMQService implements MQService {
 
     String appId = releaseHistory.getAppId();
     App app = appService.load(appId);
-    msg.setInfluence_bu(app.getOrgId());
+    msg.setInfluence_bu(app.getOrgName());
     msg.setAppid(appId);
 
     ReleaseDTO release = releaseService.findReleaseById(env, releaseHistory.getReleaseId());
