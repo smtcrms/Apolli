@@ -2,7 +2,6 @@ package com.ctrip.framework.apollo.portal.spi.ctrip;
 
 import com.google.gson.Gson;
 
-import com.ctrip.framework.apollo.common.dto.ReleaseDTO;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
@@ -81,12 +80,10 @@ public class CtripMQService implements MQService {
     App app = appService.load(appId);
     msg.setInfluence_bu(app.getOrgName());
     msg.setAppid(appId);
-
-    ReleaseDTO release = releaseService.findReleaseById(env, releaseHistory.getReleaseId());
-    msg.setAssginee(release.getDataChangeCreatedBy());
-    msg.setDesc(
-        gson.toJson(releaseService.compare(env, releaseHistory.getPreviousReleaseId(), releaseHistory.getReleaseId())));
-    msg.setOperation_time(TIMESTAMP_FORMAT.format(release.getDataChangeCreatedTime()));
+    msg.setAssginee(releaseHistory.getOperator());
+    msg.setOperation_time(TIMESTAMP_FORMAT.format(releaseHistory.getReleaseTime()));
+    msg.setDesc(gson.toJson(releaseService.compare(env, releaseHistory.getPreviousReleaseId(),
+                                                   releaseHistory.getReleaseId())));
 
     return msg;
   }
