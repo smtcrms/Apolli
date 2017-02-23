@@ -21,4 +21,6 @@ public interface ConsumerRoleRepository extends PagingAndSortingRepository<Consu
    * find consumer roles by roleId
    */
   List<ConsumerRole> findByRoleId(long roleId);
+
+  ConsumerRole findByConsumerIdAndRoleId(long consumerId, long roleId);
 }

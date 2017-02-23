@@ -17,4 +17,6 @@ public interface ConsumerTokenRepository extends PagingAndSortingRepository<Cons
    * @param validDate the date when the token is valid
    */
   ConsumerToken findTopByTokenAndExpiresAfter(String token, Date validDate);
+
+  ConsumerToken findByConsumerId(Long consumerId);
 }
