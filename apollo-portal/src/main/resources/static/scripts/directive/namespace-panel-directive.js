@@ -739,7 +739,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             }
 
             function toggleItemSearchInput(namespace) {
-                namespace.showSearchInput = !namespace.showSearchInput;
+                namespace.displayControl.showSearchInput = !namespace.displayControl.showSearchInput;
             }
 
             function searchItems(namespace) {
