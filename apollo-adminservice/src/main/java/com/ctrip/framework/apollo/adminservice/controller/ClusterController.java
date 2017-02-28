@@ -39,9 +39,9 @@ public class ClusterController {
     }
 
     if (autoCreatePrivateNamespace) {
-      entity = clusterService.saveWithCreatePrivateNamespace(entity);
+      entity = clusterService.saveWithInstanceOfAppNamespaces(entity);
     } else {
-      entity = clusterService.saveWithoutCreatePrivateNamespace(entity);
+      entity = clusterService.saveWithoutInstanceOfAppNamespaces(entity);
     }
 
     dto = BeanUtils.transfrom(ClusterDTO.class, entity);

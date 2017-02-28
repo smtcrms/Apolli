@@ -1,8 +1,8 @@
 namespace_module.controller("LinkNamespaceController",
                             ['$scope', '$location', '$window', 'toastr', 'AppService', 'AppUtil', 'NamespaceService',
-                             'PermissionService',
+                             'PermissionService', 'CommonService',
                              function ($scope, $location, $window, toastr, AppService, AppUtil, NamespaceService,
-                                       PermissionService) {
+                                       PermissionService, CommonService) {
 
                                  var params = AppUtil.parseParams($location.$$url);
                                  $scope.appId = params.appid;
@@ -14,6 +14,10 @@ namespace_module.controller("LinkNamespaceController",
 
                                  PermissionService.has_root_permission().then(function (result) {
                                      $scope.hasRootPermission = result.hasPermission;
+                                 });
+
+                                 CommonService.getPageSetting().then(function (setting) {
+                                    $scope.pageSetting = setting;
                                  });
 
                                  NamespaceService.find_public_namespaces().then(function (result) {
@@ -112,27 +116,23 @@ namespace_module.controller("LinkNamespaceController",
                                      } else {
 
                                          var namespaceNameLength = $scope.concatNamespace().length;
-                                         if (namespaceNameLength > 32){
+                                         if (namespaceNameLength > 32) {
                                              toastr.error("namespace名称不能大于32个字符. 部门前缀"
                                                           + (namespaceNameLength - $scope.appNamespace.name.length)
                                                           + "个字符, 名称" + $scope.appNamespace.name.length + "个字符"
                                              );
                                              return;
                                          }
-                                         
+
                                          $scope.submitBtnDisabled = true;
                                          NamespaceService.createAppNamespace($scope.appId, $scope.appNamespace).then(
                                              function (result) {
                                                  $scope.step = 2;
                                                  setTimeout(function () {
                                                      $scope.submitBtnDisabled = false;
-                                                     if ($scope.appNamespace.isPublic) {
-                                                         $window.location.reload();
-                                                     } else {//private的直接link并且跳转到授权页面
-                                                         $window.location.href =
-                                                             "/namespace/role.html?#/appid=" + $scope.appId
-                                                             + "&namespaceName=" + result.name;
-                                                     }
+                                                     $window.location.href =
+                                                         "/namespace/role.html?#/appid=" + $scope.appId
+                                                         + "&namespaceName=" + result.name;
                                                  }, 1000);
                                              }, function (result) {
                                                  $scope.submitBtnDisabled = false;

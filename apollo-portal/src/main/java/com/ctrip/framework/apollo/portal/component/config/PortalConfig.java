@@ -153,6 +153,14 @@ public class PortalConfig extends RefreshableConfig {
     return getValue("email.template.release.module.rules", "");
   }
 
+  public String wikiAddress() {
+    return getValue("wiki.address", "https://github.com/ctripcorp/apollo/wiki");
+  }
+
+  public boolean canAppAdminCreatePrivateNamespace() {
+    return getBooleanProperty("admin.createPrivateNamespace.switch", true);
+  }
+
   /***
    * The following configurations are used in ctrip profile
    **/

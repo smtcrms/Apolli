@@ -77,10 +77,7 @@ public class AppNamespaceService {
 
     AppNamespace createdAppNamespace = appNamespaceRepository.save(appNamespace);
 
-    //如果是私有的app namespace 要默认初始化权限,如果是公共的,则在关联此namespace的时候初始化权限
-    if (!createdAppNamespace.isPublic()) {
-      roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName());
-    }
+    roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName());
 
     return createdAppNamespace;
   }

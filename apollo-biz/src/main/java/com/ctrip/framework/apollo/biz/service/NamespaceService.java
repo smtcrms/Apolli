@@ -313,12 +313,11 @@ public class NamespaceService {
   }
 
   @Transactional
-  public void createPrivateNamespace(String appId, String clusterName, String createBy) {
+  public void instanceOfAppNamespaces(String appId, String clusterName, String createBy) {
 
-    //load all private app namespace
-    List<AppNamespace> privateAppNamespaces = appNamespaceService.findPrivateAppNamespace(appId);
-    //create all private namespace
-    for (AppNamespace appNamespace : privateAppNamespaces) {
+    List<AppNamespace> appNamespaces = appNamespaceService.findByAppId(appId);
+
+    for (AppNamespace appNamespace : appNamespaces) {
       Namespace ns = new Namespace();
       ns.setAppId(appId);
       ns.setClusterName(clusterName);

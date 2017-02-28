@@ -8,7 +8,6 @@ import com.ctrip.framework.apollo.biz.entity.Cluster;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
 import com.ctrip.framework.apollo.biz.repository.AppNamespaceRepository;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
-import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.core.ConfigConsts;
@@ -45,6 +44,10 @@ public class AppNamespaceService {
   public AppNamespace findPublicNamespaceByName(String namespaceName) {
     Preconditions.checkArgument(namespaceName != null, "Namespace must not be null");
     return appNamespaceRepository.findByNameAndIsPublicTrue(namespaceName);
+  }
+
+  public List<AppNamespace> findByAppId(String appId) {
+    return appNamespaceRepository.findByAppId(appId);
   }
 
   public List<AppNamespace> findPublicNamespacesByNames(Set<String> namespaceNames) {
@@ -100,14 +103,12 @@ public class AppNamespaceService {
     appNamespace.setId(0);//protection
     appNamespace.setDataChangeCreatedBy(createBy);
     appNamespace.setDataChangeLastModifiedBy(createBy);
+
     appNamespace = appNamespaceRepository.save(appNamespace);
 
-    if (!appNamespace.isPublic()) {
-      linkPrivateAppNamespaceInAllCluster(appNamespace.getAppId(), appNamespace.getName(), createBy);
-    }
+    instanceOfAppNamespaceInAllCluster(appNamespace.getAppId(), appNamespace.getName(), createBy);
 
-    auditService.audit(AppNamespace.class.getSimpleName(), appNamespace.getId(), Audit.OP.INSERT,
-                       createBy);
+    auditService.audit(AppNamespace.class.getSimpleName(), appNamespace.getId(), Audit.OP.INSERT, createBy);
     return appNamespace;
   }
 
@@ -122,8 +123,9 @@ public class AppNamespaceService {
     return managedNs;
   }
 
-  private void linkPrivateAppNamespaceInAllCluster(String appId, String namespaceName, String createBy) {
+  private void instanceOfAppNamespaceInAllCluster(String appId, String namespaceName, String createBy) {
     List<Cluster> clusters = clusterService.findParentClusters(appId);
+
     for (Cluster cluster : clusters) {
       Namespace namespace = new Namespace();
       namespace.setClusterName(cluster.getName());
@@ -131,6 +133,7 @@ public class AppNamespaceService {
       namespace.setNamespaceName(namespaceName);
       namespace.setDataChangeCreatedBy(createBy);
       namespace.setDataChangeLastModifiedBy(createBy);
+
       namespaceService.save(namespace);
     }
   }
