@@ -52,7 +52,7 @@ public class NamespaceBranchService {
     //create child cluster
     Cluster childCluster = createChildCluster(appId, parentCluster, namespaceName, operator);
 
-    Cluster createdChildCluster = clusterService.saveWithoutCreatePrivateNamespace(childCluster);
+    Cluster createdChildCluster = clusterService.saveWithoutInstanceOfAppNamespaces(childCluster);
 
     //create child namespace
     childNamespace = createNamespaceBranch(appId, createdChildCluster.getName(),

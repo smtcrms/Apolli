@@ -11,6 +11,7 @@ import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
+import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.constant.RoleType;
 import com.ctrip.framework.apollo.portal.entity.model.NamespaceCreationModel;
 import com.ctrip.framework.apollo.portal.entity.bo.NamespaceBO;
@@ -62,6 +63,9 @@ public class NamespaceController {
   private RoleInitializationService roleInitializationService;
   @Autowired
   private RolePermissionService rolePermissionService;
+  @Autowired
+  private PortalConfig portalConfig;
+
 
   @RequestMapping(value = "/appnamespaces/public", method = RequestMethod.GET)
   public List<AppNamespace> findPublicAppNamespaces() {
@@ -119,14 +123,7 @@ public class NamespaceController {
       }
     }
 
-    //default assign modify、release namespace role to namespace creator
-    String loginUser = userInfoHolder.getUser().getUserId();
-    rolePermissionService
-            .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE),
-                    Sets.newHashSet(loginUser), loginUser);
-    rolePermissionService
-            .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE),
-                    Sets.newHashSet(loginUser), loginUser);
+    assignNamespaceRoleToOperator(appId, namespaceName);
 
     return ResponseEntity.ok().build();
   }
@@ -169,6 +166,10 @@ public class NamespaceController {
     appNamespace.setDataChangeLastModifiedBy(operator);
     AppNamespace createdAppNamespace = appNamespaceService.createAppNamespaceInLocal(appNamespace);
 
+    if (portalConfig.canAppAdminCreatePrivateNamespace() || createdAppNamespace.isPublic()) {
+      assignNamespaceRoleToOperator(appId, appNamespace.getName());
+    }
+
     publisher.publishEvent(new AppNamespaceCreationEvent(createdAppNamespace));
 
     return createdAppNamespace;
@@ -196,4 +197,15 @@ public class NamespaceController {
 
   }
 
+  private void assignNamespaceRoleToOperator(String appId, String namespaceName) {
+    //default assign modify、release namespace role to namespace creator
+    String operator = userInfoHolder.getUser().getUserId();
+
+    rolePermissionService
+        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE),
+                           Sets.newHashSet(operator), operator);
+    rolePermissionService
+        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE),
+                           Sets.newHashSet(operator), operator);
+  }
 }

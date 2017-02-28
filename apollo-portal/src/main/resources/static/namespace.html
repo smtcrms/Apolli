@@ -23,7 +23,11 @@
             <div class="panel">
                 <header class="panel-heading">
                     <div class="row">
-                        <div class="col-md-6">新建Namespace</div>
+                        <div class="col-md-6">新建Namespace
+                        <small><a target="_blank" href="https://github.com/ctripcorp/apollo/wiki/Apollo%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E4%B9%8B%E2%80%9CNamespace%E2%80%9D">
+                            (点击了解更多Namespace相关知识)
+                        </a> </small>
+                        </div>
                         <div class="col-md-6 text-right">
                             <button type="button" class="btn btn-info" ng-click="back()">返回到项目首页
                             </button>
@@ -37,26 +41,32 @@
                     <div class="alert alert-info no-radius">
                         <strong>Tips:</strong>
                         <ul ng-show="type == 'link'">
-                            <li>公共namespace所属的应用通过关联公共namespace来配置公共部分的配置</li>
-                            <li>其它应用可以通过关联公共namespace来覆盖公共部分的配置</li>
-                            <li>如果其它应用不需要覆盖公共部分的配置，那么无需关联公共namespace</li>
+                            <li>应用可以通过关联公共namespace来覆盖公共Namespace的配置</li>
+                            <li>如果应用不需要覆盖公共Namespace的配置，那么无需关联公共Namespace</li>
                         </ul>
-                        <ul ng-show="type == 'create'">
+                        <ul ng-show="type == 'create' && appNamespace.isPublic">
+                            <li>公共的Namespace的配置能被任何项目读取</li>
                             <li>
-                                通过创建一个公共的namespace可以实现公共组件的配置，或多个应用共享同一份配置的需求
+                                通过创建公共Namespace可以实现公共组件的配置，或多个应用共享同一份配置的需求
                             </li>
-                            <li>创建完公共的namespace且关联到当前应用后，就可以配置公共部分的配置了</li>
-                            <li>如果其它应用需要覆盖公共部分的配置，可以在其它应用那里关联公共的namespace，然后在关联的namespace里面配置需要覆盖的配置即可</li>
-                            <li>如果其它应用不需要覆盖公共部分的配置，那么就不需要在其它应用那里关联公共的namespace</li>
+                            <li>如果其它应用需要覆盖公共部分的配置，可以在其它应用那里关联公共Namespace，然后在关联的Namespace里面配置需要覆盖的配置即可</li>
+                            <li>如果其它应用不需要覆盖公共部分的配置，那么就不需要在其它应用那里关联公共Namespace</li>
+                        </ul>
+                        <ul ng-show="type == 'create' && !appNamespace.isPublic">
+                            <li>私有Namespace的配置只能被所属的应用获取到</li>
+                            <li>
+                                通过创建一个私有的Namespace可以实现分组管理配置
+                            </li>
+                            <li>私有Namespace的格式可以是xml、yml、yaml、json. 您可以通过Apollo-client中ConfigFile接口来获取非properties格式Namespace的内容</li>
                         </ul>
                     </div>
                     <div class="row text-right" style="padding-right: 20px;">
                         <div class="btn-group btn-group-sm" role="group" aria-label="...">
                             <button type="button" class="btn btn-default" ng-class="{active:type=='link'}"
-                                    ng-click="switchType('link')">关联已存在的Namespace
+                                    ng-click="switchType('link')">关联公共Namespace
                             </button>
                             <button type="button" class="btn btn-default" ng-class="{active:type=='create'}"
-                                    ng-click="switchType('create')">创建新的Namespace
+                                    ng-click="switchType('create')">创建Namespace
                             </button>
                         </div>
                     </div>
@@ -65,7 +75,7 @@
                     <form class="form-horizontal" name="namespaceForm" valdr-type="AppNamespace"
                           style="margin-top: 30px;" ng-show="step == 1" ng-submit="createNamespace()">
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">应用ID</label>
+                            <label class="col-sm-3 control-label">AppId</label>
                             <div class="col-sm-6" valdr-form-group>
                                 <label class="form-control-static" ng-bind="appId"></label>
                             </div>
@@ -93,7 +103,9 @@
                                            ng-model="appNamespace.name">
                                 </div>
                             </div>
-                            <div class="col-sm-2" ng-if="hasRootPermission">
+
+                            <!--public namespace can only be properties -->
+                            <div class="col-sm-2" ng-show="!appNamespace.isPublic">
                                 <select class="form-control" name="format" ng-model="appNamespace.format">
                                     <option value="properties">properties</option>
                                     <option value="xml">xml</option>
@@ -103,10 +115,11 @@
                                 </select>
                             </div>
 
+                            &nbsp;&nbsp;
                             <span ng-show="appNamespace.isPublic" ng-bind="concatNamespace()"
                                   style="line-height: 34px;"></span>
                         </div>
-                        <div class="form-group" ng-show="type == 'create' && hasRootPermission">
+                        <div class="form-group" ng-show="type == 'create' && (pageSetting.canAppAdminCreatePrivateNamespace || hasRootPermission)">
                             <label class="col-sm-3 control-label">
                                 <apollorequiredfield></apollorequiredfield>
                                 类型</label>
@@ -184,6 +197,7 @@
 <script type="application/javascript" src="scripts/services/AppService.js"></script>
 <script type="application/javascript" src="scripts/services/EnvService.js"></script>
 <script type="application/javascript" src="scripts/services/UserService.js"></script>
+<script type="application/javascript" src="scripts/services/CommonService.js"></script>
 <script type="application/javascript" src="scripts/services/NamespaceService.js"></script>
 <script type="application/javascript" src="scripts/services/PermissionService.js"></script>
 <script type="application/javascript" src="scripts/AppUtils.js"></script>

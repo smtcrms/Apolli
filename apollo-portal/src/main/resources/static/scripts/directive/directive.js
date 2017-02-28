@@ -1,12 +1,16 @@
 /** navbar */
 directive_module.directive('apollonav',
-                           function ($compile, $window, toastr, AppUtil, AppService, EnvService, UserService) {
+                           function ($compile, $window, toastr, AppUtil, AppService, EnvService, UserService, CommonService) {
                                return {
                                    restrict: 'E',
                                    templateUrl: '../../views/common/nav.html',
                                    transclude: true,
                                    replace: true,
                                    link: function (scope, element, attrs) {
+
+                                       CommonService.getPageSetting().then(function (setting) {
+                                           scope.pageSetting = setting;
+                                       });
 
                                        scope.sourceApps = [];
                                        scope.copyedApps = [];

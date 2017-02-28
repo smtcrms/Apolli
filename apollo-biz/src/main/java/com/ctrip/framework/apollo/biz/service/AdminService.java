@@ -30,7 +30,7 @@ public class AdminService {
 
     clusterService.createDefaultCluster(appId, createBy);
 
-    namespaceService.createPrivateNamespace(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, createBy);
+    namespaceService.instanceOfAppNamespaces(appId, ConfigConsts.CLUSTER_NAME_DEFAULT, createBy);
 
     return app;
   }

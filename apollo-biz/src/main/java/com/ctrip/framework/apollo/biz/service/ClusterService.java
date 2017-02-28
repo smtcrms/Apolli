@@ -39,7 +39,7 @@ public class ClusterService {
     return clusterRepository.findByAppIdAndName(appId, name);
   }
 
-  public Cluster findOne(long clusterId){
+  public Cluster findOne(long clusterId) {
     return clusterRepository.findOne(clusterId);
   }
 
@@ -59,18 +59,18 @@ public class ClusterService {
   }
 
   @Transactional
-  public Cluster saveWithCreatePrivateNamespace(Cluster entity) {
+  public Cluster saveWithInstanceOfAppNamespaces(Cluster entity) {
 
-    Cluster savedCluster = saveWithoutCreatePrivateNamespace(entity);
+    Cluster savedCluster = saveWithoutInstanceOfAppNamespaces(entity);
 
-    namespaceService.createPrivateNamespace(savedCluster.getAppId(), savedCluster.getName(),
-                                            savedCluster.getDataChangeCreatedBy());
+    namespaceService.instanceOfAppNamespaces(savedCluster.getAppId(), savedCluster.getName(),
+                                             savedCluster.getDataChangeCreatedBy());
 
     return savedCluster;
   }
 
   @Transactional
-  public Cluster saveWithoutCreatePrivateNamespace(Cluster entity){
+  public Cluster saveWithoutInstanceOfAppNamespaces(Cluster entity) {
     if (!isClusterNameUnique(entity.getAppId(), entity.getName())) {
       throw new BadRequestException("cluster not unique");
     }
@@ -108,7 +108,7 @@ public class ClusterService {
     managedCluster = clusterRepository.save(managedCluster);
 
     auditService.audit(Cluster.class.getSimpleName(), managedCluster.getId(), Audit.OP.UPDATE,
-        managedCluster.getDataChangeLastModifiedBy());
+                       managedCluster.getDataChangeLastModifiedBy());
 
     return managedCluster;
   }
@@ -128,9 +128,9 @@ public class ClusterService {
     auditService.audit(Cluster.class.getSimpleName(), cluster.getId(), Audit.OP.INSERT, createBy);
   }
 
-  public List<Cluster> findChildClusters(String appId, String parentClusterName){
+  public List<Cluster> findChildClusters(String appId, String parentClusterName) {
     Cluster parentCluster = findOne(appId, parentClusterName);
-    if (parentCluster == null){
+    if (parentCluster == null) {
       throw new BadRequestException("parent cluster not exist");
     }
 
