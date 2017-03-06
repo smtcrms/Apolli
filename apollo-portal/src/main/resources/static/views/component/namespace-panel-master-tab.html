@@ -233,7 +233,8 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="config in namespace.viewItems |orderBy:col:desc"
-                            ng-if="config.item.key">
+                            ng-if="config.item.key"
+                            ng-class="{'warning': !config.item.value}">
                             <td width="8%" class="text-center">
                             <span class="label label-warning no-radius cursor-pointer" ng-if="config.isModified"
                                   data-tooltip="tooltip" data-placement="bottom" title="点击查看已发布的值"
