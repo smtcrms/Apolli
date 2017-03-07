@@ -28,8 +28,8 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class NamespaceLockAspect {
-  private static final Logger logger = LoggerFactory.getLogger(NamespaceLockAspect.class);
+public class NamespaceAcquireLockAspect {
+  private static final Logger logger = LoggerFactory.getLogger(NamespaceAcquireLockAspect.class);
 
 
   @Autowired
