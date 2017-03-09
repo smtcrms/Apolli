@@ -14,7 +14,6 @@ export JAVA_OPTS="$JAVA_OPTS -Dserver.port=$SERVER_PORT -Dlogging.file=$LOG_DIR/
 
 PATH_TO_JAR=$SERVICE_NAME".jar"
 SERVER_URL="http://localhost:$SERVER_PORT"
-STARTUP_LOG=$LOG_DIR"/startup.log"
 
 if [[ -z "$JAVA_HOME" && -d /usr/java/latest/ ]]; then
     export JAVA_HOME=/usr/java/latest/
@@ -47,7 +46,7 @@ if [[ -f $SERVICE_NAME".jar" ]]; then
   rm -rf $SERVICE_NAME".jar"
 fi
 
-printf "$(date) ==== Starting ==== \n" > $STARTUP_LOG
+printf "$(date) ==== Starting ==== \n"
 
 ln $PATH_TO_JAR $SERVICE_NAME".jar"
 chmod a+x $SERVICE_NAME".jar"
@@ -57,7 +56,7 @@ rc=$?;
 
 if [[ $rc != 0 ]];
 then
-    echo "$(date) Failed to start $SERVICE_NAME.jar, return code: $rc" >> $STARTUP_LOG
+    echo "$(date) Failed to start $SERVICE_NAME.jar, return code: $rc"
     exit $rc;
 fi
 
@@ -65,10 +64,10 @@ declare -i counter=0
 declare -i max_counter=16 # 16*5=80s
 declare -i total_time=0
 
-printf "Waiting for server startup" >> $STARTUP_LOG
+printf "Waiting for server startup"
 until [[ (( counter -ge max_counter )) || "$(curl -X GET --silent --connect-timeout 1 --max-time 2 --head $SERVER_URL | grep "Coyote")" != "" ]];
 do
-    printf "." >> $STARTUP_LOG
+    printf "."
     counter+=1
     sleep 5
 done
@@ -77,10 +76,10 @@ total_time=counter*5
 
 if [[ (( counter -ge max_counter )) ]];
 then
-    printf "\n$(date) Server failed to start in $total_time seconds!\n" >> $STARTUP_LOG
+    printf "\n$(date) Server failed to start in $total_time seconds!\n"
     exit 1;
 fi
 
-printf "\n$(date) Server started in $total_time seconds!\n" >> $STARTUP_LOG
+printf "\n$(date) Server started in $total_time seconds!\n"
 
 exit 0;
