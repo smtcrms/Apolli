@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.adminservice.aop;
 
 
+import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
@@ -35,7 +36,6 @@ import java.util.Objects;
  * --------------------------------------------
  * First operate: change k1 = v2 (lock namespace)
  * Second operate: change k1 = v1 (unlock namespace)
- *
  */
 @Aspect
 @Component
@@ -106,32 +106,12 @@ public class NamespaceUnlockAspect {
     }
 
     Map<String, String> releasedConfiguration = gson.fromJson(release.getConfigurations(), GsonType.CONFIG);
-    Map<String, String> configurationFromItems = Maps.newHashMap();
+    Map<String, String> configurationFromItems = generateConfigurationFromItems(namespace, items);
 
-    for (Item item : items) {
-      String key = item.getKey();
-      if (StringUtils.isBlank(key)) {
-        continue;
-      }
-      //added
-      if (releasedConfiguration.get(key) == null) {
-        return true;
-      }
-      configurationFromItems.put(key, item.getValue());
-    }
+    MapDifference<String, String> difference = Maps.difference(releasedConfiguration, configurationFromItems);
 
-    for (Map.Entry<String, String> entry : releasedConfiguration.entrySet()) {
-      String key = entry.getKey();
-      String value = entry.getValue();
+    return !difference.areEqual();
 
-      //deleted or modified
-      if (!Objects.equals(configurationFromItems.get(key), value)) {
-        return true;
-      }
-
-    }
-
-    return false;
   }
 
   private boolean hasNormalItems(List<Item> items) {
@@ -142,6 +122,36 @@ public class NamespaceUnlockAspect {
     }
 
     return false;
+  }
+
+  private Map<String, String> generateConfigurationFromItems(Namespace namespace, List<Item> namespaceItems) {
+
+    Map<String, String> configurationFromItems = Maps.newHashMap();
+
+    Namespace parentNamespace = namespaceService.findParentNamespace(namespace);
+    //parent namespace
+    if (parentNamespace == null) {
+      generateMapFromItems(namespaceItems, configurationFromItems);
+    } else {//child namespace
+      List<Item> parentItems = itemService.findItems(parentNamespace.getId());
+
+      generateMapFromItems(parentItems, configurationFromItems);
+      generateMapFromItems(namespaceItems, configurationFromItems);
+    }
+
+    return configurationFromItems;
+  }
+
+  private Map<String, String> generateMapFromItems(List<Item> items, Map<String, String> configurationFromItems) {
+    for (Item item : items) {
+      String key = item.getKey();
+      if (StringUtils.isBlank(key)) {
+        continue;
+      }
+      configurationFromItems.put(key, item.getValue());
+    }
+
+    return configurationFromItems;
   }
 
 }
