@@ -133,9 +133,10 @@ public class NamespaceUnlockAspect {
     if (parentNamespace == null) {
       generateMapFromItems(namespaceItems, configurationFromItems);
     } else {//child namespace
-      List<Item> parentItems = itemService.findItems(parentNamespace.getId());
-
-      generateMapFromItems(parentItems, configurationFromItems);
+      Release parentRelease = releaseService.findLatestActiveRelease(parentNamespace);
+      if (parentRelease != null) {
+        configurationFromItems = gson.fromJson(parentRelease.getConfigurations(), GsonType.CONFIG);
+      }
       generateMapFromItems(namespaceItems, configurationFromItems);
     }
 

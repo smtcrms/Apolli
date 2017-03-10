@@ -103,18 +103,18 @@ public class NamespaceUnlockAspectTest {
   public void testChildNamespaceModified() {
     long childNamespaceId = 1, parentNamespaceId = 2;
     Namespace childNamespace = createNamespace(childNamespaceId);
-    Namespace parentNamespace = createNamespace(childNamespaceId);
+    Namespace parentNamespace = createNamespace(parentNamespaceId);
 
     Release childRelease = createRelease("{\"k1\":\"v1\", \"k2\":\"v2\"}");
     List<Item> childItems = Arrays.asList(createItem("k1", "v3"));
-    List<Item> parentItems = Arrays.asList(createItem("k1", "v1"), createItem("k2", "v2"));
+    Release parentRelease = createRelease("{\"k1\":\"v1\", \"k2\":\"v2\"}");
 
     when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
+    when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(parentRelease);
     when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
-    when(itemService.findItems(parentNamespaceId)).thenReturn(parentItems);
-    when(namespaceService.findParentNamespace(parentNamespace)).thenReturn(parentNamespace);
+    when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
 
-    boolean isModified = namespaceUnlockAspect.isModified(parentNamespace);
+    boolean isModified = namespaceUnlockAspect.isModified(childNamespace);
 
     Assert.assertTrue(isModified);
   }
@@ -123,18 +123,37 @@ public class NamespaceUnlockAspectTest {
   public void testChildNamespaceNotModified() {
     long childNamespaceId = 1, parentNamespaceId = 2;
     Namespace childNamespace = createNamespace(childNamespaceId);
-    Namespace parentNamespace = createNamespace(childNamespaceId);
+    Namespace parentNamespace = createNamespace(parentNamespaceId);
 
-    Release childRelease = createRelease("{\"k1\":\"v1\", \"k2\":\"v2\"}");
-    List<Item> childItems = Arrays.asList(createItem("k1", "v1"));
-    List<Item> parentItems = Arrays.asList(createItem("k2", "v2"));
+    Release childRelease = createRelease("{\"k1\":\"v3\", \"k2\":\"v2\"}");
+    List<Item> childItems = Arrays.asList(createItem("k1", "v3"));
+    Release parentRelease = createRelease("{\"k1\":\"v1\", \"k2\":\"v2\"}");
 
     when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
+    when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(parentRelease);
     when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
-    when(itemService.findItems(parentNamespaceId)).thenReturn(parentItems);
-    when(namespaceService.findParentNamespace(parentNamespace)).thenReturn(parentNamespace);
+    when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
 
-    boolean isModified = namespaceUnlockAspect.isModified(parentNamespace);
+    boolean isModified = namespaceUnlockAspect.isModified(childNamespace);
+
+    Assert.assertFalse(isModified);
+  }
+
+  @Test
+  public void testParentNamespaceNotReleased() {
+    long childNamespaceId = 1, parentNamespaceId = 2;
+    Namespace childNamespace = createNamespace(childNamespaceId);
+    Namespace parentNamespace = createNamespace(parentNamespaceId);
+
+    Release childRelease = createRelease("{\"k1\":\"v3\", \"k2\":\"v2\"}");
+    List<Item> childItems = Arrays.asList(createItem("k1", "v2"), createItem("k2", "v2"));
+
+    when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
+    when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(null);
+    when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
+    when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
+
+    boolean isModified = namespaceUnlockAspect.isModified(childNamespace);
 
     Assert.assertTrue(isModified);
   }
