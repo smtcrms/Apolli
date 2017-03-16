@@ -51,6 +51,9 @@ public class AnnotatedBean {
       logger.info("[someChangeHandler]Change - key: {}, oldValue: {}, newValue: {}, changeType: {}",
           change.getPropertyName(), change.getOldValue(), change.getNewValue(),
           change.getChangeType());
+      if (key.equals("timeout")) {
+        refreshTimeout();
+      }
     }
   }
 
@@ -63,5 +66,11 @@ public class AnnotatedBean {
           change.getPropertyName(), change.getOldValue(), change.getNewValue(),
           change.getChangeType());
     }
+  }
+
+  private void refreshTimeout() {
+    //do some custom logic to update placeholder value
+    timeout = config.getIntProperty("timeout", timeout);
+    logger.info("Refreshing timeout to {}", timeout);
   }
 }
