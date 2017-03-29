@@ -105,7 +105,7 @@ public class ConfigServiceLocator implements Initializable {
     String url = assembleMetaServiceUrl();
 
     HttpRequest request = new HttpRequest(url);
-    int maxRetries = 5;
+    int maxRetries = 2;
     Throwable exception = null;
 
     for (int i = 0; i < maxRetries; i++) {
