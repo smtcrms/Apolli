@@ -14,7 +14,7 @@ Apollo（阿波罗）是携程框架部门研发的配置管理平台，能够�
 
 服务端基于Spring Boot和Spring Cloud开发，打包后可以直接运行，不需要额外安装Tomcat等应用容器。
 
-Java客户端不依赖任何框架，能够运行于所有Java运行时环境，同时对Spring环境也有较好的支持。
+Java客户端不依赖任何框架，能够运行于所有Java运行时环境，同时对Spring/Spring Boot环境也有较好的支持。
 
 .Net客户端不依赖任何框架，能够运行于所有.Net运行时环境。
 
@@ -49,7 +49,7 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
 
 * **提供Java和.Net原生客户端**
   * 提供了Java和.Net的原生客户端，方便应用集成
-  * 支持Spring Placeholder和Annotation，方便应用使用（需要Spring 3.1.1+）
+  * 支持Spring Placeholder, Annotation和Spring Boot的ConfigurationProperties，方便应用使用（需要Spring 3.1.1+）
   * 同时提供了Http接口，非Java和.Net应用也可以方便的使用
 
 * **提供开放平台API**
