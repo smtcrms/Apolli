@@ -1,7 +1,5 @@
 package com.ctrip.framework.apollo.demo.spring.config;
 
-import com.ctrip.framework.apollo.demo.spring.bean.AnnotatedBean;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
