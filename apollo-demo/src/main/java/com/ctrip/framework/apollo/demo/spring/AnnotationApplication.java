@@ -1,5 +1,8 @@
 package com.ctrip.framework.apollo.demo.spring;
 
+import com.ctrip.framework.apollo.demo.spring.bean.AnnotatedBean;
+import com.ctrip.framework.apollo.demo.spring.config.AppConfig;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Scanner;
@@ -9,7 +12,8 @@ import java.util.Scanner;
  */
 public class AnnotationApplication {
   public static void main(String[] args) {
-    new AnnotationConfigApplicationContext(AnnotationApplication.class.getPackage().getName());
+    new AnnotationConfigApplicationContext(
+        AppConfig.class.getPackage().getName(), AnnotatedBean.class.getPackage().getName());
     onKeyExit();
   }
 
