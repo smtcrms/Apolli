@@ -74,6 +74,7 @@ function itemModalDirective(toastr, $sce, AppUtil, EventManager, ConfigService) 
                     } else {
                         if (selectedClusters.length == 0) {
                             toastr.error("请选择集群");
+                            scope.item.addItemBtnDisabled = false;
                             return;
                         }
 
