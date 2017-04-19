@@ -1,5 +1,6 @@
-package com.ctrip.framework.apollo.core.utils;
+package com.ctrip.framework.apollo.foundation.internals;
 
+import com.ctrip.framework.foundation.internals.ServiceBootstrap;
 import org.junit.Test;
 
 import java.util.ServiceConfigurationError;
