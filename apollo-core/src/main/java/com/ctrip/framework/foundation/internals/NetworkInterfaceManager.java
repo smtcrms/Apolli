@@ -98,12 +98,7 @@ public enum NetworkInterfaceManager {
 
     try {
       Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-      List<NetworkInterface> nis;
-      if (interfaces == null) {
-        nis = Collections.emptyList();
-      } else {
-        nis = Collections.list(NetworkInterface.getNetworkInterfaces());
-      }
+      List<NetworkInterface> nis = interfaces == null ? Collections.<NetworkInterface>emptyList() : Collections.list(interfaces);
       List<InetAddress> addresses = new ArrayList<InetAddress>();
       InetAddress local = null;
 
