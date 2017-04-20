@@ -98,8 +98,12 @@ public enum NetworkInterfaceManager {
 
     try {
       Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-      List<NetworkInterface> nis = interfaces == null ? Collections.<NetworkInterface>emptyList()
-          : Collections.list(NetworkInterface.getNetworkInterfaces());
+      List<NetworkInterface> nis;
+      if (interfaces == null) {
+        nis = Collections.emptyList();
+      } else {
+        nis = Collections.list(NetworkInterface.getNetworkInterfaces());
+      }
       List<InetAddress> addresses = new ArrayList<InetAddress>();
       InetAddress local = null;
 
@@ -113,9 +117,14 @@ public enum NetworkInterfaceManager {
       } catch (Exception e) {
         // ignore
       }
-      m_local = local;
+      if (local != null) {
+        m_local = local;
+        return;
+      }
     } catch (SocketException e) {
       // ignore it
     }
+
+    m_local = InetAddress.getLoopbackAddress();
   }
 }
