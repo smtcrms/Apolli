@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,7 +97,9 @@ public enum NetworkInterfaceManager {
     }
 
     try {
-      List<NetworkInterface> nis = Collections.list(NetworkInterface.getNetworkInterfaces());
+      Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+      List<NetworkInterface> nis = interfaces == null ? Collections.<NetworkInterface>emptyList()
+          : Collections.list(NetworkInterface.getNetworkInterfaces());
       List<InetAddress> addresses = new ArrayList<InetAddress>();
       InetAddress local = null;
 
