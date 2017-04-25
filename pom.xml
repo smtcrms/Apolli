@@ -5,7 +5,7 @@
 
 	<groupId>com.ctrip.framework.apollo</groupId>
 	<artifactId>apollo</artifactId>
-	<version>0.6.4-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<name>Apollo</name>
 	<packaging>pom</packaging>
 	<description>Ctrip Configuration Center</description>
@@ -263,9 +263,9 @@
 				<version>5.1.39</version>
 			</dependency>
 			<dependency>
-				<groupId>org.unidal.framework</groupId>
-				<artifactId>foundation-service</artifactId>
-				<version>2.5.6</version>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>4.1.0</version>
 			</dependency>
 			<!--for test -->
 			<dependency>
@@ -583,12 +583,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<repositories>
-				<repository>
-					<id>internal.repo</id>
-					<url>https://raw.github.com/ctripcorp/apollo/mvn-repo/</url>
-				</repository>
-			</repositories>
 		</profile>
 		<profile>
 			<!-- for open source usage -->
@@ -599,12 +593,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<repositories>
-				<repository>
-					<id>internal.repo</id>
-					<url>https://raw.github.com/ctripcorp/apollo/mvn-repo/</url>
-				</repository>
-			</repositories>
 		</profile>
 		<profile>
       <!-- for ctrip development -->
