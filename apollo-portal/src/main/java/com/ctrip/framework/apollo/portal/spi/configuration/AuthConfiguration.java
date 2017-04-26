@@ -1,7 +1,5 @@
 package com.ctrip.framework.apollo.portal.spi.configuration;
 
-import com.google.common.collect.Maps;
-
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.spi.LogoutHandler;
 import com.ctrip.framework.apollo.portal.spi.SsoHeartbeatHandler;
@@ -15,7 +13,7 @@ import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserService;
-
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -24,10 +22,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import javax.servlet.Filter;
 import java.util.EventListener;
 import java.util.Map;
-
-import javax.servlet.Filter;
 
 
 @Configuration
@@ -168,6 +165,7 @@ public class AuthConfiguration {
     public SsoHeartbeatHandler ctripSsoHeartbeatHandler() {
       return new CtripSsoHeartbeatHandler();
     }
+
   }
 
 
@@ -201,6 +199,7 @@ public class AuthConfiguration {
     public UserService defaultUserService() {
       return new DefaultUserService();
     }
+
   }
 
 
