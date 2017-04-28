@@ -669,6 +669,11 @@
 								<groupId>commons-beanutils</groupId>
 								<artifactId>commons-beanutils-core</artifactId>
 							</exclusion>
+							<!-- duplicated with spring-aop -->
+							<exclusion>
+								<groupId>aopalliance</groupId>
+								<artifactId>aopalliance</artifactId>
+							</exclusion>
 						</exclusions>
 					</dependency>
 					<!-- end of eureka -->
@@ -766,6 +771,11 @@
 							<exclusion>
 								<groupId>commons-beanutils</groupId>
 								<artifactId>commons-beanutils-core</artifactId>
+							</exclusion>
+							<!-- duplicated with spring-aop -->
+							<exclusion>
+								<groupId>aopalliance</groupId>
+								<artifactId>aopalliance</artifactId>
 							</exclusion>
 						</exclusions>
 					</dependency>
