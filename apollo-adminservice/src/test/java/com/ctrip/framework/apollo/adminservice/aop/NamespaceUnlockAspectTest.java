@@ -41,7 +41,7 @@ public class NamespaceUnlockAspectTest {
     Namespace namespace = createNamespace(namespaceId);
 
     when(releaseService.findLatestActiveRelease(namespace)).thenReturn(null);
-    when(itemService.findItems(namespaceId)).thenReturn(Collections.singletonList(createItem("", "")));
+    when(itemService.findItemsWithOrdered(namespaceId)).thenReturn(Collections.singletonList(createItem("", "")));
 
     boolean isModified = namespaceUnlockAspect.isModified(namespace);
 
@@ -57,7 +57,7 @@ public class NamespaceUnlockAspectTest {
     List<Item> items = Arrays.asList(createItem("k1", "v1"), createItem("k2", "v2"));
 
     when(releaseService.findLatestActiveRelease(namespace)).thenReturn(release);
-    when(itemService.findItems(namespaceId)).thenReturn(items);
+    when(itemService.findItemsWithOrdered(namespaceId)).thenReturn(items);
     when(namespaceService.findParentNamespace(namespace)).thenReturn(null);
 
     boolean isModified = namespaceUnlockAspect.isModified(namespace);
@@ -74,7 +74,7 @@ public class NamespaceUnlockAspectTest {
     List<Item> items = Arrays.asList(createItem("k1", "v2"));
 
     when(releaseService.findLatestActiveRelease(namespace)).thenReturn(release);
-    when(itemService.findItems(namespaceId)).thenReturn(items);
+    when(itemService.findItemsWithOrdered(namespaceId)).thenReturn(items);
     when(namespaceService.findParentNamespace(namespace)).thenReturn(null);
 
     boolean isModified = namespaceUnlockAspect.isModified(namespace);
@@ -91,7 +91,7 @@ public class NamespaceUnlockAspectTest {
     List<Item> items = Arrays.asList(createItem("k2", "v2"));
 
     when(releaseService.findLatestActiveRelease(namespace)).thenReturn(release);
-    when(itemService.findItems(namespaceId)).thenReturn(items);
+    when(itemService.findItemsWithOrdered(namespaceId)).thenReturn(items);
     when(namespaceService.findParentNamespace(namespace)).thenReturn(null);
 
     boolean isModified = namespaceUnlockAspect.isModified(namespace);
@@ -111,7 +111,7 @@ public class NamespaceUnlockAspectTest {
 
     when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
     when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(parentRelease);
-    when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
+    when(itemService.findItemsWithoutOrdered(childNamespaceId)).thenReturn(childItems);
     when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
 
     boolean isModified = namespaceUnlockAspect.isModified(childNamespace);
@@ -131,7 +131,7 @@ public class NamespaceUnlockAspectTest {
 
     when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
     when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(parentRelease);
-    when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
+    when(itemService.findItemsWithoutOrdered(childNamespaceId)).thenReturn(childItems);
     when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
 
     boolean isModified = namespaceUnlockAspect.isModified(childNamespace);
@@ -150,7 +150,7 @@ public class NamespaceUnlockAspectTest {
 
     when(releaseService.findLatestActiveRelease(childNamespace)).thenReturn(childRelease);
     when(releaseService.findLatestActiveRelease(parentNamespace)).thenReturn(null);
-    when(itemService.findItems(childNamespaceId)).thenReturn(childItems);
+    when(itemService.findItemsWithOrdered(childNamespaceId)).thenReturn(childItems);
     when(namespaceService.findParentNamespace(childNamespace)).thenReturn(parentNamespace);
 
     boolean isModified = namespaceUnlockAspect.isModified(childNamespace);

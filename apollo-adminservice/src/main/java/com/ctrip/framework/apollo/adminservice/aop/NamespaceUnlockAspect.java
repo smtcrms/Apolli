@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -99,7 +98,7 @@ public class NamespaceUnlockAspect {
 
   boolean isModified(Namespace namespace) {
     Release release = releaseService.findLatestActiveRelease(namespace);
-    List<Item> items = itemService.findItems(namespace.getId());
+    List<Item> items = itemService.findItemsWithoutOrdered(namespace.getId());
 
     if (release == null) {
       return hasNormalItems(items);
