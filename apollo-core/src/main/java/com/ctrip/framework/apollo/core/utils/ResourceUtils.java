@@ -9,16 +9,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.Properties;
 
 public class ResourceUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+  private static final String[] DEFAULT_FILE_SEARCH_LOCATIONS = new String[]{"./config/", "./"};
 
   @SuppressWarnings("unchecked")
   public static Properties readConfigFile(String configPath, Properties defaults) {
-    InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(configPath);
+    InputStream in = loadConfigFileFromDefaultSearchLocations(configPath);
     logger.debug("Reading config from resource {}", configPath);
     Properties props = new Properties();
     try {
@@ -64,5 +66,20 @@ public class ResourceUtils {
       logger.warn("No available properties");
     }
     return props;
+  }
+
+  private static InputStream loadConfigFileFromDefaultSearchLocations(String configPath) {
+    for (String searchLocation : DEFAULT_FILE_SEARCH_LOCATIONS) {
+      try {
+        File candidate = Paths.get(searchLocation, configPath).toFile();
+        if (candidate.exists() && candidate.isFile() && candidate.canRead()) {
+          return new FileInputStream(candidate);
+        }
+      } catch (Throwable ex) {
+        //ignore
+      }
+    }
+
+    return ClassLoaderUtil.getLoader().getResourceAsStream(configPath);
   }
 }
