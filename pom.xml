@@ -586,9 +586,9 @@
 		</profile>
 		<profile>
 			<!-- for open source usage -->
-			<id>dev</id>
+			<id>github</id>
 			<properties>
-				<package.environment>dev</package.environment>
+				<package.environment>github</package.environment>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -598,7 +598,7 @@
       <!-- for ctrip development -->
 			<id>ctrip-dev</id>
 			<properties>
-				<package.environment>dev</package.environment>
+				<package.environment>ctrip</package.environment>
 			</properties>
 			<dependencyManagement>
 				<dependencies>
@@ -703,6 +703,9 @@
 		<profile>
 			<!-- for ctrip production -->
 			<id>ctrip</id>
+			<properties>
+				<package.environment>ctrip</package.environment>
+			</properties>
 			<dependencyManagement>
 				<dependencies>
 					<dependency>
