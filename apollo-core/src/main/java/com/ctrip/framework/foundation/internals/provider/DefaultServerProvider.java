@@ -158,7 +158,7 @@ public class DefaultServerProvider implements ServerProvider {
 
     // 4. Set Data Center to null.
     m_dc = null;
-    logger.warn("Data Center is set to null. Because it is not available in either (1) JVM system property 'idc', (2) OS env variable 'IDC' nor (3) property 'idc' from the properties InputStream.");
+    logger.debug("Data Center is set to null. Because it is not available in either (1) JVM system property 'idc', (2) OS env variable 'IDC' nor (3) property 'idc' from the properties InputStream.");
   }
 
   @Override
