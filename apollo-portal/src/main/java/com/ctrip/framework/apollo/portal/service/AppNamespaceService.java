@@ -1,10 +1,12 @@
 package com.ctrip.framework.apollo.portal.service;
 
+import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.entity.AppNamespace;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.portal.repository.AppNamespaceRepository;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 
@@ -24,6 +26,8 @@ public class AppNamespaceService {
   private AppNamespaceRepository appNamespaceRepository;
   @Autowired
   private RoleInitializationService roleInitializationService;
+  @Autowired
+  private AppService appService;
 
   /**
    * 公共的app ns,能被其它项目关联到的app ns
@@ -65,6 +69,38 @@ public class AppNamespaceService {
 
   @Transactional
   public AppNamespace createAppNamespaceInLocal(AppNamespace appNamespace) {
+    String appId = appNamespace.getAppId();
+
+    //add app org id as prefix
+    App app = appService.load(appId);
+    if (app == null) {
+      throw new BadRequestException("App not exist. AppId = " + appId);
+    }
+
+    StringBuilder appNamespaceName = new StringBuilder();
+    //add prefix postfix
+    appNamespaceName
+        .append(appNamespace.isPublic() ? app.getOrgId() + "." : "")
+        .append(appNamespace.getName())
+        .append(appNamespace.formatAsEnum() == ConfigFileFormat.Properties ? "" : "." + appNamespace.getFormat());
+    appNamespace.setName(appNamespaceName.toString());
+
+    if (appNamespace.getComment() == null) {
+      appNamespace.setComment("");
+    }
+
+    if (!ConfigFileFormat.isValidFormat(appNamespace.getFormat())) {
+     throw new BadRequestException("Invalid namespace format. format must be properties、json、yaml、yml、xml");
+    }
+
+    String operator = appNamespace.getDataChangeCreatedBy();
+    if (StringUtils.isEmpty(operator)) {
+      operator = userInfoHolder.getUser().getUserId();
+      appNamespace.setDataChangeCreatedBy(operator);
+    }
+
+    appNamespace.setDataChangeLastModifiedBy(operator);
+
     // unique check
     if (appNamespace.isPublic() && findPublicAppNamespace(appNamespace.getName()) != null) {
       throw new BadRequestException(appNamespace.getName() + "已存在");
@@ -77,7 +113,7 @@ public class AppNamespaceService {
 
     AppNamespace createdAppNamespace = appNamespaceRepository.save(appNamespace);
 
-    roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName());
+    roleInitializationService.initNamespaceRoles(appNamespace.getAppId(), appNamespace.getName(), operator);
 
     return createdAppNamespace;
   }
