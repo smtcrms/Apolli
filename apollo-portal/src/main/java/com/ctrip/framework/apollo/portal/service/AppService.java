@@ -61,11 +61,7 @@ public class AppService {
   }
 
   public App load(String appId) {
-    App app = appRepository.findByAppId(appId);
-    if (app == null) {
-      throw new BadRequestException(String.format("app %s cant found.", appId));
-    }
-    return app;
+    return appRepository.findByAppId(appId);
   }
 
   public AppDTO load(Env env, String appId) {
