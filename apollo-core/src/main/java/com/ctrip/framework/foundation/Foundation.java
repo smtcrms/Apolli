@@ -13,7 +13,7 @@ public abstract class Foundation {
   private static final Logger logger = LoggerFactory.getLogger(Foundation.class);
   private static Object lock = new Object();
 
-  private static ProviderManager s_manager;
+  private static volatile ProviderManager s_manager;
 
   // Encourage early initialization and fail early if it happens.
   static {
