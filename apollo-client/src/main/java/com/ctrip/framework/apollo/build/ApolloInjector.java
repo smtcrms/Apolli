@@ -9,7 +9,7 @@ import com.ctrip.framework.foundation.internals.ServiceBootstrap;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ApolloInjector {
-  private static Injector s_injector;
+  private static volatile Injector s_injector;
   private static Object lock = new Object();
 
   private static Injector getInjector() {
