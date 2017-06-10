@@ -22,6 +22,7 @@ import com.ctrip.framework.apollo.spring.JavaConfigAnnotationTest;
 import com.ctrip.framework.apollo.spring.JavaConfigPlaceholderTest;
 import com.ctrip.framework.apollo.spring.XMLConfigAnnotationTest;
 import com.ctrip.framework.apollo.spring.XmlConfigPlaceholderTest;
+import com.ctrip.framework.apollo.util.ConfigUtilTest;
 import com.ctrip.framework.apollo.util.ExceptionUtilTest;
 import com.ctrip.framework.apollo.util.parser.DateParserTest;
 import com.ctrip.framework.apollo.util.parser.DurationParserTest;
@@ -34,7 +35,7 @@ import com.ctrip.framework.apollo.util.parser.DurationParserTest;
     ConfigIntegrationTest.class, ExceptionUtilTest.class, XmlConfigFileTest.class, PropertiesConfigFileTest.class,
     RemoteConfigLongPollServiceTest.class, DateParserTest.class, DurationParserTest.class, JsonConfigFileTest.class,
     XmlConfigPlaceholderTest.class, JavaConfigPlaceholderTest.class, XMLConfigAnnotationTest.class,
-    JavaConfigAnnotationTest.class
+    JavaConfigAnnotationTest.class, ConfigUtilTest.class
 })
 public class AllTests {
 
