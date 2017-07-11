@@ -101,3 +101,19 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
 
 # License
 The project is licensed under the [Apache 2 license](https://github.com/ctripcorp/apollo/blob/master/LICENSE).
+
+# Known Users
+
+> 按照登记顺序排序，更多接入公司，欢迎在[https://github.com/ctripcorp/apollo/issues/451](https://github.com/ctripcorp/apollo/issues/451)登记
+
+![携程](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/ctrip.png) 
+![青石证券](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/bluestone.png) 
+![沙绿](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/sagreen.png) 
+![航旅纵横](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/umetrip.jpg) 
+![58转转](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/zhuanzhuan.png) 
+![蜂助手](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/phone580.png) 
+![海南航空](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/hainan-airlines.png) 
+![CVTE](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/cvte.png) 
+![明博教育](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mainbo.jpg) 
+![麻袋理财](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/madailicai.png) 
+![美行科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mxnavi.jpg)
