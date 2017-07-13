@@ -1,6 +1,6 @@
 # Apollo for Docker
 
-# 修改明细
+### 修改明细
 
 1、在apollo-configservice、apollo-adminservice、apollo-portal模块中分别添加了`src/main/docker/Dockerfile`以及在`pom.xml`中添加了`docker-maven-plugin`插件
 
@@ -14,28 +14,28 @@
 
 5、添加`run.sh`脚本
 
-# 如何使用
+### 如何使用
 
-```bash
-./run.sh
-```
+克隆项目，在项目根目录下执行`./run.sh`，该过程涉及编译、打包、构建镜像会比较漫长。
 
-待数据库启动完毕，连接数据库，执行`scripts/sql-docker`目录下的数据库脚本。数据库已经映射到宿主机的`3306`端口，用户名密码为`root/root`
+待数据库启动完毕，连接数据库（数据库已经映射到宿主机的`3306`端口），用户名密码为`root/root`，执行`scripts/sql-docker`目录下的数据库脚本完成数据库初始化。
 
-http://localhost:9090 Apollo配置中心
+Apollo配置中心 http://localhost:9090 
 
-http://localhost:8080 Eureka注册中心
+Eureka注册中心 http://localhost:8080
 
-访问 apollo-spring-boot-sample 示例应用
+apollo-spring-boot-sample 示例应用演示与配置
 
-在配置中心中创建应用`apollo-spring-boot-sample`，其应用id与`/apollo-spring-boot-sample/src/main/resources/META-INF/app.properties`中的内容一致
+在Apollo配置中心中创建应用`apollo-spring-boot-sample`，其应用id与`/apollo-spring-boot-sample/src/main/resources/META-INF/app.properties`中的内容一致。配置中心中具体的键值对请参考源码。
 
-localhost:9190/clientapi 使用Config API方式实时同步属性值
+http://localhost:9190/clientapi 
 
-localhost:9190/javaconfig 使用Config API方式实时同步属性值，注入@ApolloConfig和@ApolloConfigChangeListener
+使用Config API方式实时同步属性值
 
-localhost:9190/configuration 使用Spring Boot ConfigurationProperties方式，没有使用Config API，但使用了Spring Cloud的@RefreshScope注解，执行/refresh端点时会刷新属性的值。Apollo配置中心的值修改后，需要执行如下请求，才能使值生效
+http://localhost:9190/javaconfig 
 
-```
-curl -X POST http://localhost:9190/refresh
-```
+使用Config API方式实时同步属性值，注入@ApolloConfig和@ApolloConfigChangeListener
+
+http://localhost:9190/configuration 
+
+使用Spring Boot ConfigurationProperties方式，没有使用Config API，但使用了Spring Cloud的@RefreshScope注解，执行/refresh端点时会刷新属性的值。Apollo配置中心的值修改后，需要执行`curl -X POST http://localhost:9190/refresh`，才能使其生效。
