@@ -1,22 +1,17 @@
-package com.ctrip.framework.apollo.demo.spring;
-
-import com.ctrip.framework.apollo.demo.spring.config.SampleRedisConfig;
+package com.ctrip.framework.apollo.demo.spring.springBootDemo;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Bean;
 
 import java.util.Scanner;
 
 /**
- * @author Jason Song
+ * @author Jason Song(song_s@ctrip.com)
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.ctrip.framework.apollo.demo.spring.common",
+    "com.ctrip.framework.apollo.demo.spring.springBootDemo"
+})
 public class SpringBootSampleApplication {
-  @Bean
-  public SampleRedisConfig sampleRedisConfig() {
-    return new SampleRedisConfig();
-  }
 
   public static void main(String[] args) {
     new SpringApplicationBuilder(SpringBootSampleApplication.class).run(args);
