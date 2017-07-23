@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.demo.spring.bean;
+package com.ctrip.framework.apollo.demo.spring.common.bean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

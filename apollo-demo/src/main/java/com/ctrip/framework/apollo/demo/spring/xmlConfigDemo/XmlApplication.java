@@ -1,4 +1,4 @@
-package com.ctrip.framework.apollo.demo.spring;
+package com.ctrip.framework.apollo.demo.spring.xmlConfigDemo;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
