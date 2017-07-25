@@ -25,4 +25,9 @@ public class NormalBean {
   public void setBatch(int batch) {
     this.batch = batch;
   }
+
+  @Override
+  public String toString() {
+    return String.format("[NormalBean] timeout: %d, batch: %d", timeout, batch);
+  }
 }

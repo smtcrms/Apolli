@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.demo.spring.common.refresh;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigChangeListener;
+import com.ctrip.framework.apollo.demo.spring.common.bean.NormalBean;
 import com.ctrip.framework.apollo.demo.spring.common.bean.RefreshScopeBean;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
@@ -32,21 +33,26 @@ public class ApolloRefreshConfig implements ConfigChangeListener {
   private RefreshScope refreshScope;
 
   @Autowired
-  @Qualifier("refreshScopeBean")
   private RefreshScopeBean refreshScopeBean;
+
+  @Autowired
+  private NormalBean normalBean;
 
   @PostConstruct
   private void init() {
-    logger.info(refreshScopeBean.toString());
     config.addChangeListener(this);
     anotherConfig.addChangeListener(this);
   }
 
   @Override
   public void onChange(ConfigChangeEvent changeEvent) {
+    //could also call refreshScope.refreshAll();
     logger.info("refreshScopeBean before refresh {}", refreshScopeBean.toString());
     //could also call refreshScope.refreshAll();
     refreshScope.refresh("refreshScopeBean");
     logger.info("refreshScopeBean after refresh {}", refreshScopeBean.toString());
+    logger.info("normalBean with refresh scope before refresh {}", normalBean.toString());
+    refreshScope.refresh("normalBean");
+    logger.info("normalBean with refresh scope after refresh {}", normalBean.toString());
   }
 }
