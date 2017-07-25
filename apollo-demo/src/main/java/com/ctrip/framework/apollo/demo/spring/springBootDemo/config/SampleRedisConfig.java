@@ -1,8 +1,5 @@
 package com.ctrip.framework.apollo.demo.spring.springBootDemo.config;
 
-import com.ctrip.framework.apollo.ConfigChangeListener;
-import com.ctrip.framework.apollo.model.ConfigChangeEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,8 +22,8 @@ public class SampleRedisConfig {
   private int commandTimeout;
 
   @PostConstruct
-  private void init() {
-    logger.info("ConfigurationProperties sample - expireSeconds: {}, clusterNodes: {}, commandTimeout: {}",
+  private void initialize() {
+    logger.info("SampleRedisConfig initialized - expireSeconds: {}, clusterNodes: {}, commandTimeout: {}",
         expireSeconds, clusterNodes, commandTimeout);
   }
 
