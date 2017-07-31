@@ -20,6 +20,7 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.tracer.Tracer;
 import com.ctrip.framework.apollo.util.ExceptionUtil;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.RateLimiter;
 
 
 /**
@@ -31,6 +32,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
   private Properties m_resourceProperties;
   private AtomicReference<Properties> m_configProperties;
   private ConfigRepository m_configRepository;
+  private RateLimiter m_warnLogRateLimiter;
 
   /**
    * Constructor.
@@ -43,6 +45,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     m_resourceProperties = loadFromResource(m_namespace);
     m_configRepository = configRepository;
     m_configProperties = new AtomicReference<>();
+    m_warnLogRateLimiter = RateLimiter.create(0.017); // 1 warning log output per minute
     initialize();
   }
 
@@ -84,9 +87,8 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
       value = (String) m_resourceProperties.get(key);
     }
 
-    if (value == null && m_configProperties.get() == null) {
-      logger.warn("Could not load config for namespace {} from Apollo, please check whether the configs are released " +
-          "in Apollo! Return default value now!", m_namespace);
+    if (value == null && m_configProperties.get() == null && m_warnLogRateLimiter.tryAcquire()) {
+      logger.warn("Could not load config for namespace {} from Apollo, please check whether the configs are released in Apollo! Return default value now!", m_namespace);
     }
 
     return value == null ? defaultValue : value;
