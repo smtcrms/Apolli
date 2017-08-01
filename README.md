@@ -117,4 +117,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![明博教育](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mainbo.jpg) 
 ![麻袋理财](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/madailicai.png) 
 ![美行科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mxnavi.jpg) 
-![首展科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/fshows.jpg)
+![首展科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/fshows.jpg) 
+![易微行](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/feezu.png) 
