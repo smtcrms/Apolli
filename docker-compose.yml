@@ -34,24 +34,11 @@ services:
     depends_on:
       - db
     ports:
-      - "9090:8080"
+      - "8070:8080"
     volumes:
       - /tmp/logs:/opt/logs
     links:
       - db
-
-  apollo-spring-boot-sample:
-    image: apollo-spring-boot-sample
-    container_name: apollo-spring-boot-sample
-    restart: always
-    depends_on:
-      - apollo-configservice
-      - apollo-adminservice
-      - apollo-portal
-    ports:
-      - "9190:9090"
-    volumes:
-      - /tmp:/tmp
 
   db:
     image: mariadb:latest
@@ -59,7 +46,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - /var/data/mysql:/var/lib/mysql
       - ./scripts/sql-docker:/docker-entrypoint-initdb.d
