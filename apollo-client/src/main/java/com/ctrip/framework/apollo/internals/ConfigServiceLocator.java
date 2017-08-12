@@ -106,11 +106,11 @@ public class ConfigServiceLocator {
         transaction.setStatus(Transaction.SUCCESS);
         List<ServiceDTO> services = response.getBody();
         if (services == null || services.isEmpty()) {
-          logConfigServiceToCat("Empty response!");
+          logConfigService("Empty response!");
           continue;
         }
         m_configServices.set(services);
-        logConfigServicesToCat(services);
+        logConfigServices(services);
         return;
       } catch (Throwable ex) {
         Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex));
@@ -145,13 +145,13 @@ public class ConfigServiceLocator {
     return domainName + "/services/config?" + MAP_JOINER.join(queryParams);
   }
 
-  private void logConfigServicesToCat(List<ServiceDTO> serviceDtos) {
+  private void logConfigServices(List<ServiceDTO> serviceDtos) {
     for (ServiceDTO serviceDto : serviceDtos) {
-      logConfigServiceToCat(serviceDto.getHomepageUrl());
+      logConfigService(serviceDto.getHomepageUrl());
     }
   }
 
-  private void logConfigServiceToCat(String serviceUrl) {
+  private void logConfigService(String serviceUrl) {
     Tracer.logEvent("Apollo.Config.Services", serviceUrl);
   }
 }
