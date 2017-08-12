@@ -1,7 +1,11 @@
 package com.ctrip.framework.apollo.spring.config;
 
-import java.util.Collection;
-import java.util.Iterator;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Multimap;
+
+import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigService;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -13,14 +17,16 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigService;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
- * Apollo Property Sources processor for Spring Annotation Based Application
+ * Apollo Property Sources processor for Spring Annotation Based Application. <br /> <br />
+ *
+ * The reason why PropertySourcesProcessor implements {@link BeanFactoryPostProcessor} instead of
+ * {@link org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor} is that lower versions of
+ * Spring (e.g. 3.1.1) doesn't support registering BeanDefinitionRegistryPostProcessor in ImportBeanDefinitionRegistrar
+ * - {@link com.ctrip.framework.apollo.spring.annotation.ApolloConfigRegistrar}
  *
  * @author Jason Song(song_s@ctrip.com)
  */
@@ -68,7 +74,7 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
   }
 
   //only for test
-   private static void reset() {
+  private static void reset() {
     NAMESPACE_NAMES.clear();
   }
 
