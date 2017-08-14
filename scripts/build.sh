@@ -10,11 +10,11 @@ apollo_portal_db_url=jdbc:mysql://localhost:3306/ApolloPortalDB?characterEncodin
 apollo_portal_db_username=root
 apollo_portal_db_password=
 
-# meta server url
+# meta server url, different environments should have different meta server addresses
 dev_meta=http://localhost:8080
-fat_meta=http://localhost:8080
-uat_meta=http://localhost:8080
-pro_meta=http://localhost:8080
+fat_meta=http://someIp:8080
+uat_meta=http://anotherIp:8080
+pro_meta=http://yetAnotherIp:8080
 
 META_SERVERS_OPTS="-Ddev_meta=$dev_meta -Dfat_meta=$fat_meta -Duat_meta=$uat_meta -Dpro_meta=$pro_meta"
 
@@ -39,6 +39,4 @@ echo "==== starting to build client ===="
 mvn clean install -DskipTests -pl apollo-client -am $META_SERVERS_OPTS
 
 echo "==== building client finished ===="
-
-
 
