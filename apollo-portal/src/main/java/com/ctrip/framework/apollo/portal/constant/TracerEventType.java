@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.portal.constant;
 
-public interface CatEventType {
+public interface TracerEventType {
 
   String RELEASE_NAMESPACE = "Namespace.Release";
 
