@@ -17,6 +17,7 @@ import com.ctrip.framework.apollo.Apollo;
 import com.ctrip.framework.apollo.build.ApolloInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
+import com.ctrip.framework.apollo.core.dto.ApolloNotificationMessages;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
 import com.ctrip.framework.apollo.core.schedule.ExponentialSchedulePolicy;
 import com.ctrip.framework.apollo.core.schedule.SchedulePolicy;
@@ -37,6 +38,7 @@ import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.google.common.util.concurrent.RateLimiter;
+import com.google.gson.Gson;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -53,9 +55,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
   private final String m_namespace;
   private final static ScheduledExecutorService m_executorService;
   private AtomicReference<ServiceDTO> m_longPollServiceDto;
+  private AtomicReference<ApolloNotificationMessages> m_remoteMessages;
   private RateLimiter m_loadConfigRateLimiter;
   private AtomicBoolean m_configNeedForceRefresh;
   private SchedulePolicy m_loadConfigFailSchedulePolicy;
+  private Gson gson;
   private static final Escaper pathEscaper = UrlEscapers.urlPathSegmentEscaper();
   private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
 
@@ -77,10 +81,12 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     m_serviceLocator = ApolloInjector.getInstance(ConfigServiceLocator.class);
     remoteConfigLongPollService = ApolloInjector.getInstance(RemoteConfigLongPollService.class);
     m_longPollServiceDto = new AtomicReference<>();
+    m_remoteMessages = new AtomicReference<>();
     m_loadConfigRateLimiter = RateLimiter.create(m_configUtil.getLoadConfigQPS());
     m_configNeedForceRefresh = new AtomicBoolean(true);
     m_loadConfigFailSchedulePolicy = new ExponentialSchedulePolicy(m_configUtil.getOnErrorRetryInterval(),
         m_configUtil.getOnErrorRetryInterval() * 8);
+    gson = new Gson();
     this.trySync();
     this.schedulePeriodicRefresh();
     this.scheduleLongPollingRefresh();
@@ -167,6 +173,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     Throwable exception = null;
 
     List<ServiceDTO> configServices = getConfigServices();
+    String url = null;
     for (int i = 0; i < maxRetries; i++) {
       List<ServiceDTO> randomConfigServices = Lists.newLinkedList(configServices);
       Collections.shuffle(randomConfigServices);
@@ -188,9 +195,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
           }
         }
 
-        String url =
-            assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
-                dataCenter, m_configCache.get());
+        url = assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
+                dataCenter, m_remoteMessages.get(), m_configCache.get());
 
         logger.debug("Loading config from {}", url);
         HttpRequest request = new HttpRequest(url);
@@ -245,13 +251,13 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     }
     String message = String.format(
-        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s",
-        appId, cluster, m_namespace);
+        "Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, url: %s",
+        appId, cluster, m_namespace, url);
     throw new ApolloConfigException(message, exception);
   }
 
   String assembleQueryConfigUrl(String uri, String appId, String cluster, String namespace,
-                                String dataCenter, ApolloConfig previousConfig) {
+                                String dataCenter, ApolloNotificationMessages remoteMessages, ApolloConfig previousConfig) {
 
     String path = "configs/%s/%s/%s";
     List<String> pathParams =
@@ -272,6 +278,10 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
       queryParams.put("ip", queryParamEscaper.escape(localIp));
     }
 
+    if (remoteMessages != null) {
+      queryParams.put("messages", queryParamEscaper.escape(gson.toJson(remoteMessages)));
+    }
+
     String pathExpanded = String.format(path, pathParams.toArray());
 
     if (!queryParams.isEmpty()) {
@@ -287,8 +297,9 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     remoteConfigLongPollService.submit(m_namespace, this);
   }
 
-  public void onLongPollNotified(ServiceDTO longPollNotifiedServiceDto) {
+  public void onLongPollNotified(ServiceDTO longPollNotifiedServiceDto, ApolloNotificationMessages remoteMessages) {
     m_longPollServiceDto.set(longPollNotifiedServiceDto);
+    m_remoteMessages.set(remoteMessages);
     m_executorService.submit(new Runnable() {
       @Override
       public void run() {
