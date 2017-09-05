@@ -1,10 +1,19 @@
 package com.ctrip.framework.apollo.portal.entity.bo;
 
 public class UserInfo {
+  public static final UserInfo DEFAULT_USER = new UserInfo("apollo");
 
   private String userId;
   private String name;
   private String email;
+
+  public UserInfo() {
+
+  }
+
+  public UserInfo(String userId) {
+    this.userId = userId;
+  }
 
   public String getUserId() {
     return userId;

@@ -275,15 +275,48 @@ CREATE TABLE `UserRole` (
   KEY `IX_UserId_RoleId` (`UserId`,`RoleId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和role的绑定表';
 
+# Dump of table users
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  `enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+
+# Dump of table authorities
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `authorities`;
+
+CREATE TABLE `authorities` (
+  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `username` varchar(50) NOT NULL,
+  `authority` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 # Config
 # ------------------------------------------------------------
 INSERT INTO `ServerConfig` (`Key`, `Value`, `Comment`)
 VALUES
     ('apollo.portal.envs', 'dev', '可支持的环境列表'),
     ('organizations', '[{\"orgId\":\"TEST1\",\"orgName\":\"样例部门1\"},{\"orgId\":\"TEST2\",\"orgName\":\"样例部门2\"}]', '部门列表'),
-    ('superAdmin', 'apollo', 'Portal超级管理员'),
+    ('superAdmin', 'admin', 'Portal超级管理员'),
     ('api.readTimeout', '10000', 'http接口read timeout'),
     ('consumer.token.salt', 'someSalt', 'consumer token salt');
+
+INSERT INTO `users` ( `username`, `password`, `enabled`)
+VALUES
+	('admin', '$2a$10$7r20uS.BQ9uBpf3Baj3uQOZvMVvB1RN3PYoKE94gtz2.WAOuiiwXS', 1);
+
+INSERT INTO `authorities` (`username`, `authority`) VALUES ('admin', 'ROLE_user');
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

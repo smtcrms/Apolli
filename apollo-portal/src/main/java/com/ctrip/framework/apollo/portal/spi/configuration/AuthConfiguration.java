@@ -1,5 +1,8 @@
 package com.ctrip.framework.apollo.portal.spi.configuration;
 
+import com.google.common.collect.Maps;
+
+import com.ctrip.framework.apollo.common.condition.ConditionalOnMissingProfile;
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.spi.LogoutHandler;
 import com.ctrip.framework.apollo.portal.spi.SsoHeartbeatHandler;
@@ -13,7 +16,10 @@ import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultLogoutHandler;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultSsoHeartbeatHandler;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserInfoHolder;
 import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultUserService;
-import com.google.common.collect.Maps;
+import com.ctrip.framework.apollo.portal.spi.springsecurity.SpringSecurityUserInfoHolder;
+import com.ctrip.framework.apollo.portal.spi.springsecurity.SpringSecurityUserService;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -21,6 +27,16 @@ import org.springframework.boot.context.embedded.ServletListenerRegistrationBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import javax.servlet.Filter;
 import java.util.EventListener;
@@ -170,10 +186,89 @@ public class AuthConfiguration {
 
 
   /**
-   * spring.profiles.active != ctrip
+   * spring.profiles.active = auth
    */
   @Configuration
-  @Profile({"!ctrip"})
+  @Profile("auth")
+  static class SpringSecurityAuthAutoConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean(SsoHeartbeatHandler.class)
+    public SsoHeartbeatHandler defaultSsoHeartbeatHandler() {
+      return new DefaultSsoHeartbeatHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UserInfoHolder.class)
+    public UserInfoHolder springSecurityUserInfoHolder() {
+      return new SpringSecurityUserInfoHolder();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LogoutHandler.class)
+    public LogoutHandler logoutHandler() {
+      return new DefaultLogoutHandler();
+    }
+
+    @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource datasource) {
+      JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
+      userDetailsService.setDataSource(datasource);
+
+      return userDetailsService;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UserService.class)
+    public UserService springSecurityUserService() {
+      return new SpringSecurityUserService();
+    }
+
+
+    @Order(99)
+    @Configuration
+    @Profile("auth")
+    @EnableWebSecurity
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+    static class SpringSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+      public static final String USER_ROLE = "user";
+
+      @Autowired
+      private DataSource datasource;
+      
+
+      @Override
+      protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
+        http.authorizeRequests()
+            .antMatchers("/openapi/*").permitAll()
+            .antMatchers("/*").hasAnyRole(USER_ROLE);
+        http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
+        http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
+        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
+      }
+
+      @Autowired
+      public void configureGlobal(AuthenticationManagerBuilder auth, JdbcUserDetailsManager userDetailsService)
+          throws Exception {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
+        auth.jdbcAuthentication().dataSource(datasource).usersByUsernameQuery(
+            "select username,password, enabled from users where username=?");
+      }
+
+    }
+
+  }
+
+  /**
+   * default profile
+   */
+  @Configuration
+  @ConditionalOnMissingProfile({"ctrip", "auth"})
   static class DefaultAuthAutoConfiguration {
 
     @Bean
@@ -184,7 +279,7 @@ public class AuthConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(UserInfoHolder.class)
-    public DefaultUserInfoHolder notCtripUserInfoHolder() {
+    public DefaultUserInfoHolder defaultUserInfoHolder() {
       return new DefaultUserInfoHolder();
     }
 
@@ -199,8 +294,6 @@ public class AuthConfiguration {
     public UserService defaultUserService() {
       return new DefaultUserService();
     }
-
   }
-
 
 }
