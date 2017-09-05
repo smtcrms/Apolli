@@ -18,9 +18,10 @@ import javax.annotation.PostConstruct;
 public abstract class AbstractIntegrationTest {
 
   RestTemplate restTemplate = new TestRestTemplate("apollo", "");
-
+ 
   @PostConstruct
   private void postConstruct() {
+    System.setProperty("spring.profiles.active", "test");
     restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
   }
 

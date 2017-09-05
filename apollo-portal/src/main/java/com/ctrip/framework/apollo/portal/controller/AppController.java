@@ -56,7 +56,6 @@ public class AppController {
   @Autowired
   private RolePermissionService rolePermissionService;
 
-
   @RequestMapping(value = "", method = RequestMethod.GET)
   public List<App> findApps(@RequestParam(value = "appIds", required = false) String appIds) {
     if (StringUtils.isEmpty(appIds)) {
