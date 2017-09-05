@@ -32,10 +32,15 @@ public class OnProfileCondition implements Condition {
       return Collections.emptySet();
     }
 
-    Set<String> profiles = Sets.newHashSet();
     MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(annotationType);
 
+    if (attributes == null) {
+      return Collections.emptySet();
+    }
+
+    Set<String> profiles = Sets.newHashSet();
     List<?> values = attributes.get("value");
+
     if (values != null) {
       for (Object value : values) {
         if (value instanceof String[]) {
