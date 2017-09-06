@@ -12,18 +12,18 @@ import javax.persistence.Table;
  * @author lepdou 2017-04-08
  */
 @Entity
-@Table(name = "users")
+@Table(name = "Users")
 public class UserPO {
 
   @Id
   @GeneratedValue
   @Column(name = "Id")
   private long id;
-  @Column(name = "username", nullable = false)
+  @Column(name = "Username", nullable = false)
   private String username;
-  @Column(name = "password", nullable = false)
+  @Column(name = "Password", nullable = false)
   private String password;
-  @Column(name = "enabled", nullable = false)
+  @Column(name = "Enabled", nullable = false)
   private int enabled;
 
   public long getId() {
@@ -62,7 +62,7 @@ public class UserPO {
     UserInfo userInfo = new UserInfo();
     userInfo.setName(this.getUsername());
     userInfo.setUserId(this.getUsername());
-    userInfo.setEmail("apollo@acme.com");
+    userInfo.setEmail(this.getUsername() + "@acme.com");
     return userInfo;
   }
 }
