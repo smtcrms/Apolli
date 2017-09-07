@@ -34,7 +34,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -211,11 +210,11 @@ public class AuthConfiguration {
     }
 
     @Bean
-    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource datasource) {
-      JdbcUserDetailsManager userDetailsService = new JdbcUserDetailsManager();
-      userDetailsService.setDataSource(datasource);
-
-      return userDetailsService;
+    public JdbcUserDetailsManager jdbcUserDetailsManager(AuthenticationManagerBuilder auth, DataSource datasource) throws Exception {
+      return auth.jdbcAuthentication().passwordEncoder(new BCryptPasswordEncoder()).dataSource(datasource)
+          .usersByUsernameQuery("select Username,Password,Enabled from `Users` where Username=?")
+          .authoritiesByUsernameQuery("select Username,Authority from `Authorities` where Username = ?")
+          .getUserDetailsService();
     }
 
     @Bean
@@ -224,42 +223,27 @@ public class AuthConfiguration {
       return new SpringSecurityUserService();
     }
 
+  }
 
-    @Order(99)
-    @Configuration
-    @Profile("auth")
-    @EnableWebSecurity
-    @EnableGlobalMethodSecurity(prePostEnabled = true)
-    static class SpringSecurityConfigurer extends WebSecurityConfigurerAdapter {
+  @Order(99)
+  @Profile("auth")
+  @Configuration
+  @EnableWebSecurity
+  @EnableGlobalMethodSecurity(prePostEnabled = true)
+  static class SpringSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-      public static final String USER_ROLE = "user";
+    public static final String USER_ROLE = "user";
 
-      @Autowired
-      private DataSource datasource;
-      
-
-      @Override
-      protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.headers().frameOptions().sameOrigin();
-        http.authorizeRequests()
-            .antMatchers("/openapi/*").permitAll()
-            .antMatchers("/*").hasAnyRole(USER_ROLE);
-        http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
-        http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
-        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
-      }
-
-      @Autowired
-      public void configureGlobal(AuthenticationManagerBuilder auth, JdbcUserDetailsManager userDetailsService)
-          throws Exception {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder);
-        auth.jdbcAuthentication().dataSource(datasource).usersByUsernameQuery(
-            "select username,password, enabled from users where username=?");
-      }
-
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+      http.csrf().disable();
+      http.headers().frameOptions().sameOrigin();
+      http.authorizeRequests()
+          .antMatchers("/openapi/*").permitAll()
+          .antMatchers("/*").hasAnyRole(USER_ROLE);
+      http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
+      http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
+      http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
     }
 
   }
@@ -296,4 +280,16 @@ public class AuthConfiguration {
     }
   }
 
+  @ConditionalOnMissingProfile("auth")
+  @Configuration
+  @EnableWebSecurity
+  @EnableGlobalMethodSecurity(prePostEnabled = true)
+  static class DefaultWebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+      http.csrf().disable();
+      http.headers().frameOptions().sameOrigin();
+    }
+  }
 }

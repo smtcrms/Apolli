@@ -1,4 +1,6 @@
-package com.ctrip.framework.apollo.common.auth;
+package com.ctrip.framework.apollo.biz.auth;
+
+import com.ctrip.framework.apollo.common.condition.ConditionalOnMissingProfile;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+@ConditionalOnMissingProfile("auth")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

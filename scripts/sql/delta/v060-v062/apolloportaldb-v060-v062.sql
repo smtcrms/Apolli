@@ -1,4 +1,4 @@
-# delta schema to upgrade apollo config db from v0.6.0 to v0.6.2
+# delta schema to upgrade apollo portal db from v0.6.0 to v0.6.2
 
 Use ApolloPortalDB;
 

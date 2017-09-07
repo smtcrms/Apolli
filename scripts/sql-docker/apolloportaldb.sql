@@ -276,29 +276,29 @@ CREATE TABLE `UserRole` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和role的绑定表';
 
 
-# Dump of table users
+# Dump of table Users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `Users`;
 
-CREATE TABLE `users` (
+CREATE TABLE `Users` (
   `Id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
-  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
-  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
-  `enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
+  `Username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `Password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  `Enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 
-# Dump of table authorities
+# Dump of table Authorities
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `authorities`;
+DROP TABLE IF EXISTS `Authorities`;
 
-CREATE TABLE `authorities` (
+CREATE TABLE `Authorities` (
   `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
-  `username` varchar(50) NOT NULL,
-  `authority` varchar(50) NOT NULL,
+  `Username` varchar(50) NOT NULL,
+  `Authority` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -309,15 +309,15 @@ INSERT INTO `ServerConfig` (`Key`, `Value`, `Comment`)
 VALUES
     ('apollo.portal.envs', 'dev', '可支持的环境列表'),
     ('organizations', '[{\"orgId\":\"全辅导\",\"orgName\":\"全辅导\"},{\"orgId\":\"全课云\",\"orgName\":\"全课云\"}]', '部门列表'),
-    ('superAdmin', 'admin', 'Portal超级管理员'),
+    ('superAdmin', 'apollo', 'Portal超级管理员'),
     ('api.readTimeout', '10000', 'http接口read timeout'),
     ('consumer.token.salt', 'someSalt', 'consumer token salt');
 
-INSERT INTO `users` ( `username`, `password`, `enabled`)
+INSERT INTO `Users` (`Username`, `Password`, `Enabled`)
 VALUES
-	('admin', '$2a$10$7r20uS.BQ9uBpf3Baj3uQOZvMVvB1RN3PYoKE94gtz2.WAOuiiwXS', 1);
+	('apollo', '$2a$10$7r20uS.BQ9uBpf3Baj3uQOZvMVvB1RN3PYoKE94gtz2.WAOuiiwXS', 1);
 
-INSERT INTO `authorities` (`username`, `authority`) VALUES ('admin', 'ROLE_user');
+INSERT INTO `Authorities` (`Username`, `Authority`) VALUES ('apollo', 'ROLE_user');
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
