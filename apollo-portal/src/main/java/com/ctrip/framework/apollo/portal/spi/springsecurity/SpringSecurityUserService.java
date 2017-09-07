@@ -18,7 +18,6 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,18 +57,19 @@ public class SpringSecurityUserService implements UserService {
 
   @Override
   public List<UserInfo> searchUsers(String keyword, int offset, int limit) {
+    List<UserPO> users;
     if (StringUtils.isEmpty(keyword)) {
-      return Collections.emptyList();
+      users = userRepository.findFirst20ByEnabled(1);
+    } else {
+      users = userRepository.findByUsernameLikeAndEnabled("%" + keyword + "%", 1);
     }
 
-    List<UserPO> userPOs = userRepository.findByUsernameLike("%" + keyword + "%");
-
     List<UserInfo> result = Lists.newArrayList();
-    if (CollectionUtils.isEmpty(userPOs)) {
+    if (CollectionUtils.isEmpty(users)) {
       return result;
     }
 
-    result.addAll(userPOs.stream().map(UserPO::toUserInfo).collect(Collectors.toList()));
+    result.addAll(users.stream().map(UserPO::toUserInfo).collect(Collectors.toList()));
 
     return result;
   }
