@@ -11,7 +11,9 @@ import java.util.List;
  */
 public interface UserRepository extends PagingAndSortingRepository<UserPO, Long> {
 
-  List<UserPO> findByUsernameLike(String username);
+  List<UserPO> findFirst20ByEnabled(int enabled);
+
+  List<UserPO> findByUsernameLikeAndEnabled(String username, int enabled);
 
   UserPO findByUsername(String username);
 }
