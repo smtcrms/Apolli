@@ -23,6 +23,8 @@ public class UserPO {
   private String username;
   @Column(name = "Password", nullable = false)
   private String password;
+  @Column(name = "Email", nullable = false)
+  private String email;
   @Column(name = "Enabled", nullable = false)
   private int enabled;
 
@@ -40,6 +42,14 @@ public class UserPO {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getPassword() {
@@ -62,7 +72,7 @@ public class UserPO {
     UserInfo userInfo = new UserInfo();
     userInfo.setName(this.getUsername());
     userInfo.setUserId(this.getUsername());
-    userInfo.setEmail(this.getUsername() + "@acme.com");
+    userInfo.setEmail(this.getEmail());
     return userInfo;
   }
 }

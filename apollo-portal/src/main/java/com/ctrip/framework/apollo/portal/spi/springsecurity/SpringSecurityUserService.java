@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ public class SpringSecurityUserService implements UserService {
     authorities.add(new SimpleGrantedAuthority("ROLE_user"));
   }
 
-  public void createOrUpdate(User user) {
+  @Transactional
+  public void createOrUpdate(UserPO user) {
     String username = user.getUsername();
 
     User userDetails = new User(username, encoder.encode(user.getPassword()), authorities);
@@ -53,6 +55,10 @@ public class SpringSecurityUserService implements UserService {
       userDetailsManager.createUser(userDetails);
     }
 
+    UserPO managedUser = userRepository.findByUsername(username);
+    managedUser.setEmail(user.getEmail());
+
+    userRepository.save(managedUser);
   }
 
   @Override
