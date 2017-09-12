@@ -59,10 +59,6 @@ cd ../apollo-portal
 
 mvn docker:build
 
-cd ../apollo-spring-boot-sample
-
-mvn docker:build
-
 echo "==== building docker images finished ===="
 
 cd ..
