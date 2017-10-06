@@ -6,15 +6,15 @@
 # Or if 8080 was taken:
 # docker run -p 8070:8080 -d -v /tmp/logs:/opt/logs --name apollo-portal apollo-portal
 
-FROM openjdk:8-jre-slim
+FROM openjdk:8-jre-alpine
 MAINTAINER ameizi <sxyx2008@163.com>
 
 ENV VERSION 0.9.0-SNAPSHOT
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		procps \
-		curl \
-	&& rm -rf /var/lib/apt/lists/* \
+RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.6/community" >> /etc/apk/repositories \
+    && apk update upgrade \
+    && apk add --no-cache procps unzip curl bash tzdata \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 
