@@ -121,5 +121,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![首展科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/fshows.jpg) 
 ![易微行](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/feezu.png) 
 ![人才加](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/rencaijia.png) 
+![凯京集团](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/keking.png) 
 ![乐刻运动](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/leoao.png) 
 ![大疆](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/dji.png) 
+![快看漫画](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/kkmh.png) 
