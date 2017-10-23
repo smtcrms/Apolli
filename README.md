@@ -125,3 +125,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![乐刻运动](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/leoao.png) 
 ![大疆](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/dji.png) 
 ![快看漫画](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/kkmh.png) 
+![我来贷](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/wolaidai.png) 
+![虚实软件](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/xsrj.png) 
