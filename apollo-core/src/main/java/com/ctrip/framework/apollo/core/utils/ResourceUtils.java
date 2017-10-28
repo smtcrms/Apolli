@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.core.utils;
 
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +44,8 @@ public class ResourceUtils {
 
     if (logger.isDebugEnabled()) {
       StringBuilder sb = new StringBuilder();
-      for (String sropertyName : props.stringPropertyNames()) {
-        sb.append(sropertyName).append('=').append(props.getProperty(sropertyName)).append('\n');
+      for (String propertyName : props.stringPropertyNames()) {
+        sb.append(propertyName).append('=').append(props.getProperty(propertyName)).append('\n');
 
       }
       if (sb.length() > 0) {
@@ -58,6 +59,7 @@ public class ResourceUtils {
 
   private static InputStream loadConfigFileFromDefaultSearchLocations(String configPath) {
     try {
+      // load from default search locations
       for (String searchLocation : DEFAULT_FILE_SEARCH_LOCATIONS) {
         File candidate = Paths.get(searchLocation, configPath).toFile();
         if (candidate.exists() && candidate.isFile() && candidate.canRead()) {
@@ -66,22 +68,35 @@ public class ResourceUtils {
         }
       }
 
-      InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(configPath);
+      // load from classpath
+      URL url = ClassLoaderUtil.getLoader().getResource(configPath);
 
-      if (in != null) {
-        logger.debug("Reading config from resource {}", ClassLoaderUtil.getLoader().getResource(configPath).getPath());
-        return in;
-      } else {
-        // load outside resource under current user path
-        File candidate = new File(System.getProperty("user.dir") + configPath);
-        if (candidate.exists() && candidate.isFile() && candidate.canRead()) {
-          logger.debug("Reading config from resource {}", candidate.getAbsolutePath());
-          return new FileInputStream(candidate);
+      if (url != null) {
+        InputStream in = getResourceAsStream(url);
+
+        if (in != null) {
+          logger.debug("Reading config from resource {}", url.getPath());
+          return in;
         }
+      }
+
+      // load outside resource under current user path
+      File candidate = new File(System.getProperty("user.dir"), configPath);
+      if (candidate.exists() && candidate.isFile() && candidate.canRead()) {
+        logger.debug("Reading config from resource {}", candidate.getAbsolutePath());
+        return new FileInputStream(candidate);
       }
     } catch (FileNotFoundException e) {
       //ignore
     }
     return null;
+  }
+
+  private static InputStream getResourceAsStream(URL url) {
+    try {
+      return url != null ? url.openStream() : null;
+    } catch (IOException e) {
+      return null;
+    }
   }
 }
