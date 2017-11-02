@@ -129,3 +129,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![虚实软件](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/xsrj.png) 
 ![网易严选](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/yanxuan.png) 
 ![视觉中国](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/sjzg.png) 
+![资产360](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/zc360.png) 
+![亿咖通](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/ecarx.png) 
