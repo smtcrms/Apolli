@@ -132,3 +132,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![资产360](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/zc360.png) 
 ![亿咖通](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/ecarx.png) 
 ![5173](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/5173.png) 
+![沪江](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/hujiang.png) 
