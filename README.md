@@ -135,3 +135,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![沪江](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/hujiang.png) 
 ![网易云基础服务](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/163yun.png) 
 ![现金巴士](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/cash-bus.png) 
+![锤子科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/smartisan.png) 
+![头等仓](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/toodc.png) 
