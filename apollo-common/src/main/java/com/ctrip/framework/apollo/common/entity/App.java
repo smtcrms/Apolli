@@ -115,7 +115,7 @@ public class App extends BaseEntity {
     }
 
     public Builder ownerName(String ownerName) {
-      app.setOrgName(ownerName);
+      app.setOwnerName(ownerName);
       return this;
     }
 
