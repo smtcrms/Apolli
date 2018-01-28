@@ -30,7 +30,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  *
  * <pre class="code">
  *   apollo.bootstrap.enabled = true
- *   # will inject 'application' and 'TEST1.apollo' namespaces in bootstrap phase
+ *   # will inject 'application' and 'FX.apollo' namespaces in bootstrap phase
  *   apollo.bootstrap.namespaces = application,FX.apollo
  * </pre>
  */
