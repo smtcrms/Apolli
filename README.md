@@ -143,3 +143,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![投投金融](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/toutoujinrong.png) 
 ![每天健康](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mytijian.png) 
 ![麦芽金服](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/maiyabank.png) 
+![蜂向科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/fengunion.png) 
