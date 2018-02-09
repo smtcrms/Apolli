@@ -96,6 +96,26 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
     check(someTimeout, someBatch, AppConfig3.class);
   }
 
+
+  @Test
+  public void testMultiplePropertySourcesCoverWithSameProperties() throws Exception {
+    //Multimap does not maintain the strict input order of namespace.
+    int someTimeout = 1000;
+    int anotherTimeout = someTimeout + 1;
+    int someBatch = 2000;
+
+    Config fxApollo = mock(Config.class);
+    when(fxApollo.getProperty(eq(TIMEOUT_PROPERTY), anyString())).thenReturn(String.valueOf(someTimeout));
+    when(fxApollo.getProperty(eq(BATCH_PROPERTY), anyString())).thenReturn(String.valueOf(someBatch));
+    mockConfig(FX_APOLLO_NAMESPACE, fxApollo);
+
+    Config application = mock(Config.class);
+    when(application.getProperty(eq(TIMEOUT_PROPERTY), anyString())).thenReturn(String.valueOf(anotherTimeout));
+    mockConfig(ConfigConsts.NAMESPACE_APPLICATION, application);
+
+    check(someTimeout, someBatch, AppConfig6.class);
+  }
+
   @Test
   public void testMultiplePropertySourcesWithSamePropertiesWithWeight() throws Exception {
     int someTimeout = 1000;
@@ -185,6 +205,15 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
       bean.setBatch(batch);
 
       return bean;
+    }
+  }
+
+  @Configuration
+  @EnableApolloConfig({"FX.apollo", "application"})
+  static class AppConfig6 {
+    @Bean
+    TestJavaConfigBean testJavaConfigBean() {
+      return new TestJavaConfigBean();
     }
   }
 
