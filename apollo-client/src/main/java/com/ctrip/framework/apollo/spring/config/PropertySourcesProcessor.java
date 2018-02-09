@@ -1,6 +1,5 @@
 package com.ctrip.framework.apollo.spring.config;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
