@@ -3,12 +3,21 @@ package com.ctrip.framework.apollo.spring;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import com.ctrip.framework.apollo.build.MockInjector;
+import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.internals.SimpleConfig;
+import com.ctrip.framework.apollo.spring.JavaConfigPlaceholderTest.JsonBean;
+import com.ctrip.framework.apollo.spring.XmlConfigPlaceholderTest.TestXmlBean;
+import com.ctrip.framework.apollo.spring.annotation.ApolloJSONValue;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
+import com.ctrip.framework.apollo.util.ConfigUtil;
+import com.google.common.primitives.Ints;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,14 +29,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Component;
-
-import com.ctrip.framework.apollo.build.MockInjector;
-import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.internals.SimpleConfig;
-import com.ctrip.framework.apollo.spring.XmlConfigPlaceholderTest.TestXmlBean;
-import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
-import com.ctrip.framework.apollo.util.ConfigUtil;
-import com.google.common.primitives.Ints;
 
 public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrationTest {
 
@@ -624,6 +625,8 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     boolean someNewBoolean = !someBoolean;
     String someString = "someString";
     String someNewString = "someNewString";
+    String someJsonProperty = "[{\"a\":\"astring\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
+    String someNewJsonProperty = "[{\"a\":\"newString\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
 
     String someDateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
     Date someDate = assembleDate(2018, 2, 23, 20, 1, 2, 123);
@@ -642,6 +645,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     properties.setProperty("stringProperty", String.valueOf(someString));
     properties.setProperty("dateFormat", String.valueOf(someDateFormat));
     properties.setProperty("dateProperty", simpleDateFormat.format(someDate));
+    properties.setProperty("jsonProperty", someJsonProperty);
 
     SimpleConfig config = prepareConfig(ConfigConsts.NAMESPACE_APPLICATION, properties);
 
@@ -659,6 +663,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     assertEquals(someBoolean, bean.getBooleanProperty());
     assertEquals(someString, bean.getStringProperty());
     assertEquals(someDate, bean.getDateProperty());
+    assertEquals("astring", bean.getJsonBeanList().get(0).getA());
 
     Properties newProperties = new Properties();
     newProperties.setProperty("intProperty", String.valueOf(someNewInt));
@@ -672,6 +677,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     newProperties.setProperty("stringProperty", String.valueOf(someNewString));
     newProperties.setProperty("dateFormat", String.valueOf(someDateFormat));
     newProperties.setProperty("dateProperty", simpleDateFormat.format(someNewDate));
+    newProperties.setProperty("jsonProperty", someNewJsonProperty);
 
     config.onRepositoryChange(ConfigConsts.NAMESPACE_APPLICATION, newProperties);
 
@@ -687,6 +693,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     assertEquals(someNewBoolean, bean.getBooleanProperty());
     assertEquals(someNewString, bean.getStringProperty());
     assertEquals(someNewDate, bean.getDateProperty());
+    assertEquals("newString", bean.getJsonBeanList().get(0).getA());
   }
 
   @Configuration
@@ -932,6 +939,15 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     }
   }
 
+  static class TestJsonPropertyBean{
+    @ApolloJSONValue("${jsonPropery}")
+    private List<JsonBean> jsonBeanList;
+
+    public List<JsonBean> getJsonBeanList() {
+      return jsonBeanList;
+    }
+  }
+
   static class TestAllKindsOfDataTypesBean {
 
     @Value("${intProperty}")
@@ -963,6 +979,9 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
 
     @Value("#{new java.text.SimpleDateFormat('${dateFormat}').parse('${dateProperty}')}")
     private Date dateProperty;
+
+    @ApolloJSONValue("${jsonProperty}")
+    private List<JsonBean> jsonBeanList;
 
     public int getIntProperty() {
       return intProperty;
@@ -1002,6 +1021,10 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
 
     public Date getDateProperty() {
       return dateProperty;
+    }
+
+    public List<JsonBean> getJsonBeanList() {
+      return jsonBeanList;
     }
   }
 }

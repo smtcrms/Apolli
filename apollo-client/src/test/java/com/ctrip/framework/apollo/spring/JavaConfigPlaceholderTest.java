@@ -6,6 +6,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.spring.annotation.ApolloJSONValue;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
+import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
-
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,8 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
   private static final String BATCH_PROPERTY = "batch";
   private static final int DEFAULT_BATCH = 200;
   private static final String FX_APOLLO_NAMESPACE = "FX.apollo";
+  private static final String JSON_PROPERTY = "jsonProperty";
+  private static final String OTHER_JSON_PROPERTY = "otherJsonProperty";
 
   @Test
   public void testPropertySourceWithNoNamespace() throws Exception {
@@ -282,6 +285,30 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
   }
 
 
+  @Test
+  public void testJsonDeserialization() {
+    String someJson = "[{\"a\":\"astring\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
+    String otherJson = "[{\"a\":\"otherString\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
+
+    Config config = mock(Config.class);
+    when(config.getProperty(eq(JSON_PROPERTY), anyString())).thenReturn(String.valueOf(someJson));
+    when(config.getProperty(eq(OTHER_JSON_PROPERTY), anyString())).thenReturn(String.valueOf(otherJson));
+    when(config.getProperty(eq("a"), anyString())).thenReturn(JSON_PROPERTY);
+    mockConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
+
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+        AppConfig8.class);
+
+    TestJsonPropertyBean testJsonPropertyBean = context.getBean(TestJsonPropertyBean.class);
+    assertEquals(2, testJsonPropertyBean.getJsonBeanList().size());
+    assertEquals("astring", testJsonPropertyBean.getJsonBeanList().get(0).a);
+    assertEquals("astring", testJsonPropertyBean.getEmbeddedJsonBeanList().get(0).a);
+    assertEquals("otherString", testJsonPropertyBean.getOtherJsonBeanList().get(0).a);
+
+  }
+
+
+
   private void check(int expectedTimeout, int expectedBatch, Class<?>... annotatedClasses) {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(annotatedClasses);
 
@@ -363,6 +390,18 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
     }
   }
 
+  @Configuration
+  @EnableApolloConfig
+  static class AppConfig8 {
+
+    @Bean
+    TestJsonPropertyBean testJavaConfigBean4() {
+      return new TestJsonPropertyBean();
+    }
+  }
+
+
+  @Component
   static class TestJavaConfigBean {
     @Value("${timeout:100}")
     private int timeout;
@@ -434,4 +473,57 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
     }
   }
 
+
+  static class TestJsonPropertyBean {
+
+    @ApolloJSONValue("${jsonProperty}")
+    private List<JsonBean> jsonBeanList;
+
+    private List<JsonBean> otherJsonBeanList;
+
+    @ApolloJSONValue("${${a}}")
+    private List<JsonBean> embeddedJsonBeanList;
+
+
+    public List<JsonBean> getJsonBeanList() {
+      return jsonBeanList;
+    }
+
+    @ApolloJSONValue("${otherJsonProperty}")
+    public void setOtherJsonBeanList(
+        List<JsonBean> otherJsonBeanList) {
+      this.otherJsonBeanList = otherJsonBeanList;
+    }
+
+    public List<JsonBean> getOtherJsonBeanList() {
+      return otherJsonBeanList;
+    }
+
+    public List<JsonBean> getEmbeddedJsonBeanList() {
+      return embeddedJsonBeanList;
+    }
+  }
+
+
+  static class JsonBean {
+
+    private String a;
+    private int b;
+
+    public String getA() {
+      return a;
+    }
+
+    public void setA(String a) {
+      this.a = a;
+    }
+
+    public int getB() {
+      return b;
+    }
+
+    public void setB(int b) {
+      this.b = b;
+    }
+  }
 }
