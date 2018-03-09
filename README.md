@@ -153,3 +153,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![犀牛瀚海科技](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/rhinotech.png) 
 ![农信互联](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/nxin.png) 
 ![蘑菇租房](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/mgzf.png) 
+![狐狸金服](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/huli-logo.png) 
