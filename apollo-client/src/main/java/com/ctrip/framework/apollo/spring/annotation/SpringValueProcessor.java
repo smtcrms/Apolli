@@ -1,51 +1,28 @@
 package com.ctrip.framework.apollo.spring.annotation;
 
-import com.ctrip.framework.apollo.spring.config.AutoUpdateConfigChangeListener;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.TypeConverter;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanExpressionContext;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.Scope;
-import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.Ordered;
-import org.springframework.core.PriorityOrdered;
-import org.springframework.core.env.Environment;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ReflectionUtils;
-
-import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.build.ApolloInjector;
-import com.ctrip.framework.apollo.model.ConfigChange;
-import com.ctrip.framework.apollo.model.ConfigChangeEvent;
-import com.ctrip.framework.apollo.spring.config.ConfigPropertySource;
-import com.ctrip.framework.apollo.spring.config.ConfigPropertySourceFactory;
+import com.ctrip.framework.apollo.spring.property.AutoUpdateConfigChangeListener;
 import com.ctrip.framework.apollo.spring.property.PlaceholderHelper;
 import com.ctrip.framework.apollo.spring.property.SpringValue;
 import com.ctrip.framework.apollo.spring.property.SpringValueDefinition;
 import com.ctrip.framework.apollo.spring.property.SpringValueDefinitionProcessor;
+import com.ctrip.framework.apollo.spring.property.SpringValueRegistry;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Spring value processor of field or method which has @Value and xml config placeholders.
@@ -53,26 +30,29 @@ import com.google.common.collect.Multimap;
  * @author github.com/zhegexiaohuozi  seimimaster@gmail.com
  * @since 2017/12/20.
  */
-public class SpringValueProcessor extends ApolloProcessor implements  BeanFactoryPostProcessor {
+public class SpringValueProcessor extends ApolloProcessor implements BeanFactoryPostProcessor {
 
   private static final Logger logger = LoggerFactory.getLogger(SpringValueProcessor.class);
 
   private final ConfigUtil configUtil;
   private final PlaceholderHelper placeholderHelper;
+  private final SpringValueRegistry springValueRegistry;
 
-  private static Multimap<String, SpringValueDefinition> beanName2SpringValueDefinitions = LinkedListMultimap.create();
+  private static Multimap<String, SpringValueDefinition> beanName2SpringValueDefinitions =
+      LinkedListMultimap.create();
 
   public SpringValueProcessor() {
     configUtil = ApolloInjector.getInstance(ConfigUtil.class);
     placeholderHelper = ApolloInjector.getInstance(PlaceholderHelper.class);
+    springValueRegistry = ApolloInjector.getInstance(SpringValueRegistry.class);
   }
 
-
-
   @Override
-  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+  public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+      throws BeansException {
     if (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
-      beanName2SpringValueDefinitions = SpringValueDefinitionProcessor.getBeanName2SpringValueDefinitions();
+      beanName2SpringValueDefinitions = SpringValueDefinitionProcessor
+          .getBeanName2SpringValueDefinitions();
     }
   }
 
@@ -102,7 +82,7 @@ public class SpringValueProcessor extends ApolloProcessor implements  BeanFactor
 
     for (String key : keys) {
       SpringValue springValue = new SpringValue(key, value.value(), bean, beanName, field, false);
-      AutoUpdateConfigChangeListener.monitor.put(key, springValue);
+      springValueRegistry.register(key, springValue);
       logger.debug("Monitoring {}", springValue);
     }
   }
@@ -132,11 +112,10 @@ public class SpringValueProcessor extends ApolloProcessor implements  BeanFactor
 
     for (String key : keys) {
       SpringValue springValue = new SpringValue(key, value.value(), bean, beanName, method, false);
-      AutoUpdateConfigChangeListener.monitor.put(key, springValue);
+      springValueRegistry.register(key, springValue);
       logger.debug("Monitoring {}", springValue);
     }
   }
-
 
 
   private void processBeanPropertyValues(Object bean, String beanName) {
@@ -156,7 +135,7 @@ public class SpringValueProcessor extends ApolloProcessor implements  BeanFactor
         }
         SpringValue springValue = new SpringValue(definition.getKey(), definition.getPlaceholder(),
             bean, beanName, method, false);
-        AutoUpdateConfigChangeListener.monitor.put(definition.getKey(), springValue);
+        springValueRegistry.register(definition.getKey(), springValue);
         logger.debug("Monitoring {}", springValue);
       } catch (Throwable ex) {
         logger.error("Failed to enable auto update feature for {}.{}", bean.getClass(),

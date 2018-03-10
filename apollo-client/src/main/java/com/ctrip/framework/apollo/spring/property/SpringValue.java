@@ -31,9 +31,9 @@ public class SpringValue {
     this.key = key;
     this.placeholder = placeholder;
     this.targetType = field.getType();
+    this.isJson = isJson;
     if(isJson){
       this.genericType = field.getGenericType();
-      this.isJson = isJson;
     }
   }
 
@@ -45,9 +45,9 @@ public class SpringValue {
     this.placeholder = placeholder;
     Class<?>[] paramTps = method.getParameterTypes();
     this.targetType = paramTps[0];
+    this.isJson = isJson;
     if(isJson){
       this.genericType = method.getGenericParameterTypes()[0];
-      this.isJson = isJson;
     }
   }
 

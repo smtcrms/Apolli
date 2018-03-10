@@ -2,13 +2,14 @@ package com.ctrip.framework.apollo.spring;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.ctrip.framework.apollo.build.MockInjector;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.internals.SimpleConfig;
 import com.ctrip.framework.apollo.spring.JavaConfigPlaceholderTest.JsonBean;
 import com.ctrip.framework.apollo.spring.XmlConfigPlaceholderTest.TestXmlBean;
-import com.ctrip.framework.apollo.spring.annotation.ApolloJSONValue;
+import com.ctrip.framework.apollo.spring.annotation.ApolloJsonValue;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.primitives.Ints;
@@ -626,7 +627,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     String someString = "someString";
     String someNewString = "someNewString";
     String someJsonProperty = "[{\"a\":\"astring\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
-    String someNewJsonProperty = "[{\"a\":\"newString\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
+    String someNewJsonProperty = "[{\"a\":\"newString\", \"b\":20},{\"a\":\"astring2\", \"b\":20}]";
 
     String someDateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
     Date someDate = assembleDate(2018, 2, 23, 20, 1, 2, 123);
@@ -664,6 +665,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     assertEquals(someString, bean.getStringProperty());
     assertEquals(someDate, bean.getDateProperty());
     assertEquals("astring", bean.getJsonBeanList().get(0).getA());
+    assertEquals(10, bean.getJsonBeanList().get(0).getB());
 
     Properties newProperties = new Properties();
     newProperties.setProperty("intProperty", String.valueOf(someNewInt));
@@ -694,6 +696,91 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     assertEquals(someNewString, bean.getStringProperty());
     assertEquals(someNewDate, bean.getDateProperty());
     assertEquals("newString", bean.getJsonBeanList().get(0).getA());
+    assertEquals(20, bean.getJsonBeanList().get(0).getB());
+  }
+
+  @Test
+  public void testAutoUpdateJsonValueWithInvalidValue() throws Exception {
+    String someValidValue = "{\"a\":\"someString\", \"b\":10}";
+    String someInvalidValue = "someInvalidValue";
+
+    Properties properties = assembleProperties("jsonProperty", someValidValue);
+
+    SimpleConfig config = prepareConfig(ConfigConsts.NAMESPACE_APPLICATION, properties);
+
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig10.class);
+
+    TestApolloJsonValue bean = context.getBean(TestApolloJsonValue.class);
+
+    JsonBean jsonBean = bean.getJsonBean();
+
+    assertEquals("someString", jsonBean.getA());
+    assertEquals(10, jsonBean.getB());
+
+    Properties newProperties = assembleProperties("jsonProperty", someInvalidValue);
+
+    config.onRepositoryChange(ConfigConsts.NAMESPACE_APPLICATION, newProperties);
+
+    TimeUnit.MILLISECONDS.sleep(50);
+
+    // should not change anything
+    assertTrue(jsonBean == bean.getJsonBean());
+  }
+
+  @Test
+  public void testAutoUpdateJsonValueWithNoValueAndNoDefaultValue() throws Exception {
+    String someValidValue = "{\"a\":\"someString\", \"b\":10}";
+
+    Properties properties = assembleProperties("jsonProperty", someValidValue);
+
+    SimpleConfig config = prepareConfig(ConfigConsts.NAMESPACE_APPLICATION, properties);
+
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig10.class);
+
+    TestApolloJsonValue bean = context.getBean(TestApolloJsonValue.class);
+
+    JsonBean jsonBean = bean.getJsonBean();
+
+    assertEquals("someString", jsonBean.getA());
+    assertEquals(10, jsonBean.getB());
+
+    Properties newProperties = new Properties();
+
+    config.onRepositoryChange(ConfigConsts.NAMESPACE_APPLICATION, newProperties);
+
+    TimeUnit.MILLISECONDS.sleep(50);
+
+    // should not change anything
+    assertTrue(jsonBean == bean.getJsonBean());
+  }
+
+  @Test
+  public void testAutoUpdateJsonValueWithNoValueAndDefaultValue() throws Exception {
+    String someValidValue = "{\"a\":\"someString\", \"b\":10}";
+
+    Properties properties = assembleProperties("jsonProperty", someValidValue);
+
+    SimpleConfig config = prepareConfig(ConfigConsts.NAMESPACE_APPLICATION, properties);
+
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig11.class);
+
+    TestApolloJsonValueWithDefaultValue bean = context.getBean(TestApolloJsonValueWithDefaultValue.class);
+
+    JsonBean jsonBean = bean.getJsonBean();
+
+    assertEquals("someString", jsonBean.getA());
+    assertEquals(10, jsonBean.getB());
+
+    Properties newProperties = new Properties();
+
+    config.onRepositoryChange(ConfigConsts.NAMESPACE_APPLICATION, newProperties);
+
+    TimeUnit.MILLISECONDS.sleep(50);
+
+    JsonBean newJsonBean = bean.getJsonBean();
+
+    assertEquals("defaultString", newJsonBean.getA());
+    assertEquals(1, newJsonBean.getB());
   }
 
   @Configuration
@@ -809,6 +896,26 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     @Bean
     TestNestedPropertyBeanWithDefaultValue testNestedPropertyBean() {
       return new TestNestedPropertyBeanWithDefaultValue();
+    }
+  }
+
+  @Configuration
+  @EnableApolloConfig
+  static class AppConfig10 {
+
+    @Bean
+    TestApolloJsonValue testApolloJsonValue() {
+      return new TestApolloJsonValue();
+    }
+  }
+
+  @Configuration
+  @EnableApolloConfig
+  static class AppConfig11 {
+
+    @Bean
+    TestApolloJsonValueWithDefaultValue testApolloJsonValue() {
+      return new TestApolloJsonValueWithDefaultValue();
     }
   }
 
@@ -939,15 +1046,6 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     }
   }
 
-  static class TestJsonPropertyBean{
-    @ApolloJSONValue("${jsonPropery}")
-    private List<JsonBean> jsonBeanList;
-
-    public List<JsonBean> getJsonBeanList() {
-      return jsonBeanList;
-    }
-  }
-
   static class TestAllKindsOfDataTypesBean {
 
     @Value("${intProperty}")
@@ -980,7 +1078,7 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
     @Value("#{new java.text.SimpleDateFormat('${dateFormat}').parse('${dateProperty}')}")
     private Date dateProperty;
 
-    @ApolloJSONValue("${jsonProperty}")
+    @ApolloJsonValue("${jsonProperty}")
     private List<JsonBean> jsonBeanList;
 
     public int getIntProperty() {
@@ -1027,4 +1125,25 @@ public class JavaConfigPlaceholderAutoUpdateTest extends AbstractSpringIntegrati
       return jsonBeanList;
     }
   }
+
+  static class TestApolloJsonValue {
+
+    @ApolloJsonValue("${jsonProperty}")
+    private JsonBean jsonBean;
+
+    public JsonBean getJsonBean() {
+      return jsonBean;
+    }
+  }
+
+  static class TestApolloJsonValueWithDefaultValue {
+
+    @ApolloJsonValue("${jsonProperty:{\"a\":\"defaultString\", \"b\":1}}")
+    private JsonBean jsonBean;
+
+    public JsonBean getJsonBean() {
+      return jsonBean;
+    }
+  }
+
 }
