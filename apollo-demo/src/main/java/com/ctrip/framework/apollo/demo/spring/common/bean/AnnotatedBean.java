@@ -1,26 +1,30 @@
 package com.ctrip.framework.apollo.demo.spring.common.bean;
 
-import com.ctrip.framework.apollo.spring.annotation.ApolloJSONValue;
-import com.google.gson.Gson;
+import com.ctrip.framework.apollo.spring.annotation.ApolloJsonValue;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
-@RefreshScope
 @Component("annotatedBean")
 public class AnnotatedBean {
   private static final Logger logger = LoggerFactory.getLogger(AnnotatedBean.class);
 
   private int timeout;
   private int batch;
-  @ApolloJSONValue("${objectList}")
   private List<JsonBean> jsonBeans;
+
+  /**
+   * ApolloJsonValue annotated on fields example, the default value is specified as empty list - []
+   * <br />
+   * jsonBeanProperty=[{"someString":"hello","someInt":100},{"someString":"world!","someInt":200}]
+   */
+  @ApolloJsonValue("${jsonBeanProperty:[]}")
+  private List<JsonBean> anotherJsonBeans;
 
   @Value("${batch:100}")
   public void setBatch(int batch) {
@@ -34,31 +38,33 @@ public class AnnotatedBean {
     this.timeout = timeout;
   }
 
+  /**
+   * ApolloJsonValue annotated on methods example, the default value is specified as empty list - []
+   * <br />
+   * jsonBeanProperty=[{"someString":"hello","someInt":100},{"someString":"world!","someInt":200}]
+   */
+  @ApolloJsonValue("${jsonBeanProperty:[]}")
+  public void setJsonBeans(List<JsonBean> jsonBeans) {
+    logger.info("updating json beans, old value: {}, new value: {}", this.jsonBeans, jsonBeans);
+    this.jsonBeans = jsonBeans;
+  }
+
   @Override
   public String toString() {
-    return String.format("[AnnotatedBean] timeout: %d, batch: %d, jsonBeans: %s", timeout, batch, new Gson().toJson(jsonBeans));
+    return String.format("[AnnotatedBean] timeout: %d, batch: %d, jsonBeans: %s", timeout, batch, jsonBeans);
   }
 
-  static class JsonBean{
-    private String a;
-    private int b;
+  private static class JsonBean{
 
-    public String getA() {
-      return a;
-    }
+    private String someString;
+    private int someInt;
 
-    public void setA(String a) {
-      this.a = a;
-    }
-
-    public int getB() {
-      return b;
-    }
-
-    public void setB(int b) {
-      this.b = b;
+    @Override
+    public String toString() {
+      return "JsonBean{" +
+          "someString='" + someString + '\'' +
+          ", someInt=" + someInt +
+          '}';
     }
   }
-
-
 }

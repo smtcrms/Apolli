@@ -35,21 +35,18 @@ public abstract class ApolloProcessor implements BeanPostProcessor, PriorityOrde
 
   /**
    * subclass should implement this method to process field
-   * @param bean
-   * @param field
    */
   protected abstract void processField(Object bean, String beanName, Field field);
 
   /**
    * subclass should implement this method to process method
-   * @param bean
-   * @param method
    */
   protected abstract void processMethod(Object bean, String beanName, Method method);
 
 
   @Override
   public int getOrder() {
+    //make it as late as possible
     return Ordered.LOWEST_PRECEDENCE;
   }
 

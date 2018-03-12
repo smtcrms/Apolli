@@ -32,12 +32,10 @@ public class ApolloAnnotationProcessor extends ApolloProcessor {
 
     ReflectionUtils.makeAccessible(field);
     ReflectionUtils.setField(field, bean, config);
-
   }
 
   @Override
   protected void processMethod(final Object bean, String beanName, final Method method) {
-
     ApolloConfigChangeListener annotation = AnnotationUtils
         .findAnnotation(method, ApolloConfigChangeListener.class);
     if (annotation == null) {
@@ -53,17 +51,17 @@ public class ApolloAnnotationProcessor extends ApolloProcessor {
 
     ReflectionUtils.makeAccessible(method);
     String[] namespaces = annotation.value();
+    ConfigChangeListener configChangeListener = new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        ReflectionUtils.invokeMethod(method, bean, changeEvent);
+      }
+    };
+
     for (String namespace : namespaces) {
       Config config = ConfigService.getConfig(namespace);
 
-      config.addChangeListener(new ConfigChangeListener() {
-        @Override
-        public void onChange(ConfigChangeEvent changeEvent) {
-          ReflectionUtils.invokeMethod(method, bean, changeEvent);
-        }
-      });
-
+      config.addChangeListener(configChangeListener);
     }
   }
-
 }

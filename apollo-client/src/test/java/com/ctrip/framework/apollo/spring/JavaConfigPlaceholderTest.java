@@ -8,10 +8,11 @@ import static org.mockito.Mockito.when;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.core.ConfigConsts;
-import com.ctrip.framework.apollo.spring.annotation.ApolloJSONValue;
+import com.ctrip.framework.apollo.spring.annotation.ApolloJsonValue;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import java.util.List;
 import org.junit.Test;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -284,15 +285,14 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
     assertEquals(someValue, bean.getNestedProperty());
   }
 
-
   @Test
-  public void testJsonDeserialization() {
+  public void testApolloJsonValue() {
     String someJson = "[{\"a\":\"astring\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
     String otherJson = "[{\"a\":\"otherString\", \"b\":10},{\"a\":\"astring2\", \"b\":20}]";
 
     Config config = mock(Config.class);
-    when(config.getProperty(eq(JSON_PROPERTY), anyString())).thenReturn(String.valueOf(someJson));
-    when(config.getProperty(eq(OTHER_JSON_PROPERTY), anyString())).thenReturn(String.valueOf(otherJson));
+    when(config.getProperty(eq(JSON_PROPERTY), anyString())).thenReturn(someJson);
+    when(config.getProperty(eq(OTHER_JSON_PROPERTY), anyString())).thenReturn(otherJson);
     when(config.getProperty(eq("a"), anyString())).thenReturn(JSON_PROPERTY);
     mockConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
 
@@ -301,13 +301,37 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
 
     TestJsonPropertyBean testJsonPropertyBean = context.getBean(TestJsonPropertyBean.class);
     assertEquals(2, testJsonPropertyBean.getJsonBeanList().size());
-    assertEquals("astring", testJsonPropertyBean.getJsonBeanList().get(0).a);
-    assertEquals("astring", testJsonPropertyBean.getEmbeddedJsonBeanList().get(0).a);
-    assertEquals("otherString", testJsonPropertyBean.getOtherJsonBeanList().get(0).a);
-
+    assertEquals("astring", testJsonPropertyBean.getJsonBeanList().get(0).getA());
+    assertEquals(10, testJsonPropertyBean.getJsonBeanList().get(0).getB());
+    assertEquals("astring2", testJsonPropertyBean.getJsonBeanList().get(1).getA());
+    assertEquals(20, testJsonPropertyBean.getJsonBeanList().get(1).getB());
+    assertEquals(testJsonPropertyBean.getJsonBeanList(), testJsonPropertyBean.getEmbeddedJsonBeanList());
+    assertEquals("otherString", testJsonPropertyBean.getOtherJsonBeanList().get(0).getA());
+    assertEquals(10, testJsonPropertyBean.getOtherJsonBeanList().get(0).getB());
+    assertEquals("astring2", testJsonPropertyBean.getOtherJsonBeanList().get(1).getA());
+    assertEquals(20, testJsonPropertyBean.getOtherJsonBeanList().get(1).getB());
   }
 
+  @Test(expected = BeanCreationException.class)
+  public void testApolloJsonValueWithInvalidJson() throws Exception {
+    String someInvalidJson = "someInvalidJson";
 
+    Config config = mock(Config.class);
+    when(config.getProperty(eq(JSON_PROPERTY), anyString())).thenReturn(someInvalidJson);
+    when(config.getProperty(eq(OTHER_JSON_PROPERTY), anyString())).thenReturn(someInvalidJson);
+    when(config.getProperty(eq("a"), anyString())).thenReturn(JSON_PROPERTY);
+    mockConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
+
+    new AnnotationConfigApplicationContext(AppConfig8.class).getBean(TestJsonPropertyBean.class);
+  }
+
+  @Test(expected = BeanCreationException.class)
+  public void testApolloJsonValueWithNoPropertyValue() throws Exception {
+    Config config = mock(Config.class);
+    mockConfig(ConfigConsts.NAMESPACE_APPLICATION, config);
+
+    new AnnotationConfigApplicationContext(AppConfig8.class);
+  }
 
   private void check(int expectedTimeout, int expectedBatch, Class<?>... annotatedClasses) {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(annotatedClasses);
@@ -395,11 +419,10 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
   static class AppConfig8 {
 
     @Bean
-    TestJsonPropertyBean testJavaConfigBean4() {
+    TestJsonPropertyBean testJavaConfigBean() {
       return new TestJsonPropertyBean();
     }
   }
-
 
   @Component
   static class TestJavaConfigBean {
@@ -476,12 +499,12 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
 
   static class TestJsonPropertyBean {
 
-    @ApolloJSONValue("${jsonProperty}")
+    @ApolloJsonValue("${jsonProperty}")
     private List<JsonBean> jsonBeanList;
 
     private List<JsonBean> otherJsonBeanList;
 
-    @ApolloJSONValue("${${a}}")
+    @ApolloJsonValue("${${a}}")
     private List<JsonBean> embeddedJsonBeanList;
 
 
@@ -489,9 +512,8 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
       return jsonBeanList;
     }
 
-    @ApolloJSONValue("${otherJsonProperty}")
-    public void setOtherJsonBeanList(
-        List<JsonBean> otherJsonBeanList) {
+    @ApolloJsonValue("${otherJsonProperty}")
+    public void setOtherJsonBeanList(List<JsonBean> otherJsonBeanList) {
       this.otherJsonBeanList = otherJsonBeanList;
     }
 
@@ -510,7 +532,7 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
     private String a;
     private int b;
 
-    public String getA() {
+    String getA() {
       return a;
     }
 
@@ -518,12 +540,36 @@ public class JavaConfigPlaceholderTest extends AbstractSpringIntegrationTest {
       this.a = a;
     }
 
-    public int getB() {
+    int getB() {
       return b;
     }
 
     public void setB(int b) {
       this.b = b;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+
+      JsonBean jsonBean = (JsonBean) o;
+
+      if (b != jsonBean.b) {
+        return false;
+      }
+      return a != null ? a.equals(jsonBean.a) : jsonBean.a == null;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = a != null ? a.hashCode() : 0;
+      result = 31 * result + b;
+      return result;
     }
   }
 }
