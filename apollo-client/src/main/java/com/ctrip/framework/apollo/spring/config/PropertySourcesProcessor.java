@@ -1,5 +1,8 @@
 package com.ctrip.framework.apollo.spring.config;
 
+import com.ctrip.framework.apollo.build.ApolloInjector;
+import com.ctrip.framework.apollo.spring.property.AutoUpdateConfigChangeListener;
+import com.ctrip.framework.apollo.util.ConfigUtil;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -7,6 +10,8 @@ import com.google.common.collect.Multimap;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -32,7 +37,11 @@ import java.util.Iterator;
  */
 public class PropertySourcesProcessor implements BeanFactoryPostProcessor, EnvironmentAware, PriorityOrdered {
   private static final Multimap<Integer, String> NAMESPACE_NAMES = LinkedHashMultimap.create();
+  private static final AtomicBoolean INITIALIZED = new AtomicBoolean(false);
 
+  private final ConfigPropertySourceFactory configPropertySourceFactory = ApolloInjector
+      .getInstance(ConfigPropertySourceFactory.class);
+  private final ConfigUtil configUtil = ApolloInjector.getInstance(ConfigUtil.class);
   private ConfigurableEnvironment environment;
 
   public static boolean addNamespaces(Collection<String> namespaces, int order) {
@@ -41,10 +50,14 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
 
   @Override
   public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    initializePropertySources();
+    if (INITIALIZED.compareAndSet(false, true)) {
+      initializePropertySources();
+
+      initializeAutoUpdatePropertiesFeature(beanFactory);
+    }
   }
 
-  protected void initializePropertySources() {
+  private void initializePropertySources() {
     if (environment.getPropertySources().contains(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME)) {
       //already initialized
       return;
@@ -60,7 +73,7 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
       for (String namespace : NAMESPACE_NAMES.get(order)) {
         Config config = ConfigService.getConfig(namespace);
 
-        composite.addPropertySource(new ConfigPropertySource(namespace, config));
+        composite.addPropertySource(configPropertySourceFactory.getConfigPropertySource(namespace, config));
       }
     }
 
@@ -74,6 +87,20 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
     }
   }
 
+  private void initializeAutoUpdatePropertiesFeature(ConfigurableListableBeanFactory beanFactory) {
+    if (!configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) {
+      return;
+    }
+
+    AutoUpdateConfigChangeListener autoUpdateConfigChangeListener = new AutoUpdateConfigChangeListener(
+        environment, beanFactory);
+
+    List<ConfigPropertySource> configPropertySources = configPropertySourceFactory.getAllConfigPropertySources();
+    for (ConfigPropertySource configPropertySource : configPropertySources) {
+      configPropertySource.addChangeListener(autoUpdateConfigChangeListener);
+    }
+  }
+
   @Override
   public void setEnvironment(Environment environment) {
     //it is safe enough to cast as all known environment is derived from ConfigurableEnvironment
@@ -83,6 +110,7 @@ public class PropertySourcesProcessor implements BeanFactoryPostProcessor, Envir
   //only for test
   private static void reset() {
     NAMESPACE_NAMES.clear();
+    INITIALIZED.set(false);
   }
 
   @Override
