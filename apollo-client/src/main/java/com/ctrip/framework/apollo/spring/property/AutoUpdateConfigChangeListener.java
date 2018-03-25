@@ -92,7 +92,7 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
       springValue.update(value);
 
       logger.debug("Auto update apollo changed value successfully, new value: {}, {}", value,
-          springValue.toString());
+          springValue);
     } catch (Throwable ex) {
       logger.error("Auto update apollo changed value failed, {}", springValue.toString(), ex);
     }
