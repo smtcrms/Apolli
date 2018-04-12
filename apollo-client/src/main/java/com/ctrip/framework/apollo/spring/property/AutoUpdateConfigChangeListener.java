@@ -25,7 +25,7 @@ import org.springframework.util.CollectionUtils;
  * Create by zhangzheng on 2018/3/6
  */
 public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
-  private static final Logger logger = LoggerFactory.getLogger(SpringValueProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(AutoUpdateConfigChangeListener.class);
 
   private final boolean typeConverterHasConvertIfNecessaryWithFieldParameter;
   private final Environment environment;
@@ -92,7 +92,7 @@ public class AutoUpdateConfigChangeListener implements ConfigChangeListener{
       Object value = resolvePropertyValue(springValue);
       springValue.update(value);
 
-      logger.debug("Auto update apollo changed value successfully, new value: {}, {}", value,
+      logger.info("Auto update apollo changed value successfully, new value: {}, {}", value,
           springValue);
     } catch (Throwable ex) {
       logger.error("Auto update apollo changed value failed, {}", springValue.toString(), ex);
