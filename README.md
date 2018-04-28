@@ -160,3 +160,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![石投金融](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/shitoujinrong.png) 
 ![土巴兔](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/tubatu.png) 
 ![平安银行](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/payh_logo.png) 
+![新新贷](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/xinxindai.png) 
