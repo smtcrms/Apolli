@@ -168,3 +168,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![乐赚金服](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/hairongyi.png) 
 ![开心汽车](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/kxqc.png) 
 ![乐赚金服](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/ppcredit.png) 
+![普元信息](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/primeton.png) 
