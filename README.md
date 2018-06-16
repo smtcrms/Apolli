@@ -172,3 +172,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![普元信息](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/primeton.png) 
 ![医帮管家](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/hoskeeper.png) 
 ![付啦信用卡管家](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/fula.png) 
+![悠哉网](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/uzai.png) 
+![梧桐诚选](https://github.com/ctripcorp/apollo/blob/master/doc/images/known-users/91wutong.png) 
