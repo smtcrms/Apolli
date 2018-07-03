@@ -179,3 +179,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![信用飞](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/xinyongfei.png) 
 ![丁香园](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/dxy.png) 
 ![国槐科技](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/ghtech.png) 
+![亲宝宝](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/qbb.png) 
