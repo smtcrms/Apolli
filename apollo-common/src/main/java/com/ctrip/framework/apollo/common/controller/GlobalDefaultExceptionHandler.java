@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import static org.slf4j.event.Level.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -50,7 +51,7 @@ public class GlobalDefaultExceptionHandler {
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class, HttpMediaTypeException.class})
   public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request,
                                                         ServletException ex) {
-    return handleError(request, BAD_REQUEST, ex, Level.WARN);
+    return handleError(request, BAD_REQUEST, ex, WARN);
   }
 
   @ExceptionHandler(HttpStatusCodeException.class)
@@ -68,13 +69,12 @@ public class GlobalDefaultExceptionHandler {
   //处理自定义Exception
   @ExceptionHandler({AbstractApolloHttpException.class})
   public ResponseEntity<Map<String, Object>> badRequest(HttpServletRequest request, AbstractApolloHttpException ex) {
-    return handleError(request, ex.getHttpStatus(), ex, Level.ERROR);
+    return handleError(request, ex.getHttpStatus(), ex);
   }
 
-  
   private ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request,
                                                           HttpStatus status, Throwable ex) {
-    return handleError(request, status, ex, Level.ERROR);
+    return handleError(request, status, ex, ERROR);
   }
 
   private ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request,
@@ -112,24 +112,24 @@ public class GlobalDefaultExceptionHandler {
 
   //打印日志, 其中logLevel为日志级别: ERROR/WARN/DEBUG/INFO/TRACE
   private void printLog(String message, Throwable ex, Level logLevel) {
-    switch (logLevel.toString()) {
-      case "ERROR":
+    switch (logLevel) {
+      case ERROR:
         logger.error(message, ex);
         break;
-      case "WARN":
+      case WARN:
         logger.warn(message, ex);
         break;
-      case "DEBUG":
+      case DEBUG:
         logger.debug(message, ex);
         break;
-      case "INFO":
+      case INFO:
         logger.info(message, ex);
         break;
-      case "TRACE":
+      case TRACE:
         logger.trace(message, ex);
         break;
     }
-    
+
     Tracer.logError(ex);
   }
 
