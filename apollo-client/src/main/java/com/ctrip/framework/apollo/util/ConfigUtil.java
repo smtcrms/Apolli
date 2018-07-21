@@ -35,7 +35,6 @@ public class ConfigUtil {
   private TimeUnit configCacheExpireTimeUnit = TimeUnit.MINUTES;//1 minute
   private long longPollingInitialDelayInMills = 2000;//2 seconds
   private boolean autoUpdateInjectedSpringProperties = true;
-  private String localCacheDir = this.getDefaultLocalCacheDir();
 
   public ConfigUtil() {
     initRefreshInterval();
@@ -46,7 +45,6 @@ public class ConfigUtil {
     initMaxConfigCacheSize();
     initLongPollingInitialDelayInMills();
     initAutoUpdateInjectedSpringProperties();
-    initLocalCacheDir();
   }
 
   /**
@@ -208,25 +206,26 @@ public class ConfigUtil {
     return onErrorRetryIntervalTimeUnit;
   }
 
-  private String getDefaultLocalCacheDir() {
-    String cacheRoot = isOSWindows() ? "C:\\opt\\data\\%s" : "/opt/data/%s";
+  public String getDefaultLocalCacheDir() {
+    String cacheRoot = getCustomizedCacheRoot();
+
+    if (!Strings.isNullOrEmpty(cacheRoot)) {
+      return cacheRoot + File.separator + getAppId();
+    }
+
+    cacheRoot = isOSWindows() ? "C:\\opt\\data\\%s" : "/opt/data/%s";
     return String.format(cacheRoot, getAppId());
   }
 
-  private void initLocalCacheDir() {
+  private String getCustomizedCacheRoot() {
     // 1. Get from System Property
-    String cacheRoot = System.getProperty("apollo.localCacheDir");
+    String cacheRoot = System.getProperty("apollo.cacheDir");
     if (Strings.isNullOrEmpty(cacheRoot)) {
-      // 2. Get from app.properties
-      cacheRoot = Foundation.app().getProperty("apollo.localCacheDir", null);
+      // 2. Get from server.properties
+      cacheRoot = Foundation.server().getProperty("apollo.cacheDir", null);
     }
-    if (!Strings.isNullOrEmpty(cacheRoot)) {
-      this.localCacheDir = String.format(cacheRoot + File.separator + "%s", getAppId());
-    }
-  }
 
-  public String getLocalCacheDir() {
-    return this.localCacheDir;
+    return cacheRoot;
   }
 
   public boolean isInLocalMode() {

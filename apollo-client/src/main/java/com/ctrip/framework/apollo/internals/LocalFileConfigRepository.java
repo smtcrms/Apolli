@@ -65,7 +65,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
 
   private File findLocalCacheDir() {
     try {
-      String defaultCacheDir = m_configUtil.getLocalCacheDir();
+      String defaultCacheDir = m_configUtil.getDefaultLocalCacheDir();
       Path path = Paths.get(defaultCacheDir);
       if (!Files.exists(path)) {
         Files.createDirectories(path);

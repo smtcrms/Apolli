@@ -178,7 +178,7 @@ public abstract class BaseIntegrationTest{
     }
 
     @Override
-    public String getLocalCacheDir() {
+    public String getDefaultLocalCacheDir() {
       return ClassLoaderUtil.getClassPath();
     }
 
