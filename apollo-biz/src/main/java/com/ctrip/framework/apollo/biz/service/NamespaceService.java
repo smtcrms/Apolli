@@ -59,8 +59,6 @@ public class NamespaceService {
   @Autowired
   private ReleaseHistoryService releaseHistoryService;
   @Autowired
-  private GrayReleaseRuleService grayReleaseRuleService;
-  @Autowired
   private NamespaceLockService namespaceLockService;
   @Autowired
   private InstanceService instanceService;
@@ -177,7 +175,7 @@ public class NamespaceService {
   }
 
   public List<Namespace> findByAppIdAndNamespaceName(String appId, String namespaceName) {
-    return namespaceRepository.findByAppIdAndNamespaceName(appId, namespaceName);
+    return namespaceRepository.findByAppIdAndNamespaceNameOrderByIdAsc(appId, namespaceName);
   }
 
   public Namespace findChildNamespace(String appId, String parentClusterName, String namespaceName) {
@@ -266,17 +264,14 @@ public class NamespaceService {
     commitService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
 
     releaseService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
-    grayReleaseRuleService.batchDelete(appId, clusterName, namespace.getNamespaceName(), operator);
 
-    if (!isChildNamespace(namespace)) {
-      //delete child namespace
-      Namespace childNamespace = findChildNamespace(namespace);
-      if (childNamespace != null) {
-        namespaceBranchService.deleteBranch(appId, clusterName, namespaceName,
-            childNamespace.getClusterName(), NamespaceBranchStatus.DELETED, operator);
-        //delete child namespace's releases. Notice: delete child namespace will not delete child namespace's releases
-        releaseService.batchDelete(appId, childNamespace.getClusterName(), namespaceName, operator);
-      }
+    //delete child namespace
+    Namespace childNamespace = findChildNamespace(namespace);
+    if (childNamespace != null) {
+      namespaceBranchService.deleteBranch(appId, clusterName, namespaceName,
+                                          childNamespace.getClusterName(), NamespaceBranchStatus.DELETED, operator);
+      //delete child namespace's releases. Notice: delete child namespace will not delete child namespace's releases
+      releaseService.batchDelete(appId, childNamespace.getClusterName(), namespaceName, operator);
     }
 
     releaseHistoryService.batchDelete(appId, clusterName, namespaceName, operator);
@@ -397,4 +392,6 @@ public class NamespaceService {
 
     return false;
   }
+
+
 }

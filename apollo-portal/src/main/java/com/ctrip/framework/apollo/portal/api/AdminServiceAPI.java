@@ -132,6 +132,10 @@ public class AdminServiceAPI {
       return count == null ? 0 : count;
     }
 
+    public void deleteAppNamespace(Env env, String appId, String namespaceName, String operator) {
+      restTemplate.delete(env, "/apps/{appId}/appnamespaces/{namespaceName}?operator={operator}", appId, namespaceName,
+          operator);
+    }
   }
 
   @Service

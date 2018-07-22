@@ -138,6 +138,15 @@ public class ClusterService {
   }
 
   public List<Cluster> findClusters(String appId) {
-    return clusterRepository.findByAppId(appId);
+    List<Cluster> clusters = clusterRepository.findByAppId(appId);
+
+    if (clusters == null) {
+      return Collections.emptyList();
+    }
+
+    // to make sure parent cluster is ahead of branch cluster
+    Collections.sort(clusters);
+
+    return clusters;
   }
 }

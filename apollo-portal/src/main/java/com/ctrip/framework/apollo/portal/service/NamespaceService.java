@@ -238,8 +238,9 @@ public class NamespaceService {
     String format;
     boolean isPublic;
     if (appNamespace == null) {
+      //dirty data
       format = ConfigFileFormat.Properties.getValue();
-      isPublic = false;
+      isPublic = true; // set to true, because public namespace allowed to delete by user
     } else {
       format = appNamespace.getFormat();
       isPublic = appNamespace.isPublic();

@@ -22,6 +22,10 @@ public interface RoleRepository extends PagingAndSortingRepository<Role, Long> {
       + "OR r.roleName like CONCAT('ReleaseNamespace+', ?1, '+%'))")
   List<Long> findRoleIdsByAppId(String appId);
 
+  @Query("SELECT r.id from Role r where (r.roleName = CONCAT('ModifyNamespace+', ?1, '+', ?2) "
+      + "OR r.roleName = CONCAT('ReleaseNamespace+', ?1, '+', ?2))")
+  List<Long> findRoleIdsByAppIdAndNamespace(String appId, String namespaceName);
+
   @Modifying
   @Query("UPDATE Role SET IsDeleted=1, DataChange_LastModifiedBy = ?2 WHERE Id in ?1")
   Integer batchDelete(List<Long> roleIds, String operator);
