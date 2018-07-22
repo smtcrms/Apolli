@@ -137,4 +137,7 @@ public class ClusterService {
     return clusterRepository.findByParentClusterId(parentCluster.getId());
   }
 
+  public List<Cluster> findClusters(String appId) {
+    return clusterRepository.findByAppId(appId);
+  }
 }

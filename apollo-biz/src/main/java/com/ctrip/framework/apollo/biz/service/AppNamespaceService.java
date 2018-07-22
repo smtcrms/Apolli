@@ -137,4 +137,9 @@ public class AppNamespaceService {
       namespaceService.save(namespace);
     }
   }
+
+  @Transactional
+  public void batchDelete(String appId, String operator) {
+    appNamespaceRepository.batchDeleteByAppId(appId, operator);
+  }
 }

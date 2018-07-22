@@ -118,4 +118,7 @@ public class AppNamespaceService {
     return createdAppNamespace;
   }
 
+  public void batchDeleteByAppId(String appId, String operator) {
+    appNamespaceRepository.batchDeleteByAppId(appId, operator);
+  }
 }
