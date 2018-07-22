@@ -2,7 +2,6 @@ package com.ctrip.framework.apollo.biz.service;
 
 import com.ctrip.framework.apollo.biz.entity.Cluster;
 import com.ctrip.framework.apollo.common.entity.App;
-import com.ctrip.framework.apollo.common.exception.NotFoundException;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 
 import org.slf4j.Logger;

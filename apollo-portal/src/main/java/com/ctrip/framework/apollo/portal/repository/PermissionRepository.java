@@ -28,6 +28,9 @@ public interface PermissionRepository extends PagingAndSortingRepository<Permiss
   @Query("SELECT p.id from Permission p where p.targetId = ?1 or p.targetId like CONCAT(?1, '+%'))")
   List<Long> findPermissionIdsByAppId(String appId);
 
+  @Query("SELECT p.id from Permission p where p.targetId = CONCAT(?1, '+', ?2)")
+  List<Long> findPermissionIdsByAppIdAndNamespace(String appId, String namespaceName);
+
   @Modifying
   @Query("UPDATE Permission SET IsDeleted=1, DataChange_LastModifiedBy = ?2 WHERE Id in ?1")
   Integer batchDelete(List<Long> permissionIds, String operator);

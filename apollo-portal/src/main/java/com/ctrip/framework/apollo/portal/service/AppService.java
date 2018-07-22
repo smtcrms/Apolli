@@ -151,7 +151,7 @@ public class AppService {
     }
     String operator = userInfoHolder.getUser().getUserId();
 
-    //this operator is passed to com.ctrip.framework.apollo.portal.listener.AppInfoChangedListener.onAppDelete
+    //this operator is passed to com.ctrip.framework.apollo.portal.listener.DeletionListener.onAppDeletionEvent
     managedApp.setDataChangeLastModifiedBy(operator);
 
     //删除portal数据库中的app

@@ -1,5 +1,6 @@
 package com.ctrip.framework.apollo.portal.controller;
 
+import com.ctrip.framework.apollo.portal.listener.AppNamespaceDeletionEvent;
 import com.google.common.collect.Sets;
 
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
@@ -128,6 +129,17 @@ public class NamespaceController {
                                               @PathVariable String clusterName, @PathVariable String namespaceName) {
 
     namespaceService.deleteNamespace(appId, Env.valueOf(env), clusterName, namespaceName);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
+  @RequestMapping(value = "/apps/{appId}/appnamespaces/{namespaceName:.+}", method = RequestMethod.DELETE)
+  public ResponseEntity<Void> deleteAppNamespace(@PathVariable String appId, @PathVariable String namespaceName) {
+
+    AppNamespace appNamespace = appNamespaceService.deleteAppNamespace(appId, namespaceName);
+
+    publisher.publishEvent(new AppNamespaceDeletionEvent(appNamespace));
 
     return ResponseEntity.ok().build();
   }

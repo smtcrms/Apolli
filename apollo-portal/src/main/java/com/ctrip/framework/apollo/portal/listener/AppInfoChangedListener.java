@@ -40,21 +40,4 @@ public class AppInfoChangedListener {
       }
     }
   }
-
-  @EventListener
-  public void onAppDelete(AppDeletionEvent event) {
-    AppDTO appDTO = BeanUtils.transfrom(AppDTO.class, event.getApp());
-    String appId = appDTO.getAppId();
-    String operator = appDTO.getDataChangeLastModifiedBy();
-
-    List<Env> envs = portalSettings.getActiveEnvs();
-    for (Env env : envs) {
-      try {
-        appAPI.deleteApp(env, appId, operator);
-      } catch (Throwable e) {
-        logger.error("Delete app failed. Env = {}, AppId = {}", env, appId, e);
-        Tracer.logError(String.format("Delete app failed. Env = %s, AppId = %s", env, appId), e);
-      }
-    }
-  }
 }
