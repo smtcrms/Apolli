@@ -27,9 +27,6 @@ public class SimpleApolloConfigDemo {
     ConfigChangeListener changeListener = new ConfigChangeListener() {
       @Override
       public void onChange(ConfigChangeEvent changeEvent) {
-        if (!changeEvent.isChanged("someKey")) {
-          return;
-        }
         logger.info("Changes for namespace {}", changeEvent.getNamespace());
         for (String key : changeEvent.changedKeys()) {
           ConfigChange change = changeEvent.getChange(key);
