@@ -8,7 +8,6 @@ public class AppDeletionEvent extends ApplicationEvent {
 
   public AppDeletionEvent(Object source) {
     super(source);
-
   }
 
   public App getApp() {

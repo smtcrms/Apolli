@@ -108,9 +108,7 @@ public class FavoriteService {
     }
   }
 
-  public void deleteApp(String appId, String operator) {
-    if (favoriteRepository.countByAppId(appId) > 0) {
-      favoriteRepository.batchDeleteByDeleteApp(appId, operator);
-    }
+  public void batchDeleteByAppId(String appId, String operator) {
+    favoriteRepository.batchDeleteByAppId(appId, operator);
   }
 }

@@ -1,5 +1,7 @@
 package com.ctrip.framework.apollo.portal.spi.defaultimpl;
 
+import com.ctrip.framework.apollo.common.entity.BaseEntity;
+import com.ctrip.framework.apollo.openapi.repository.ConsumerRoleRepository;
 import com.ctrip.framework.apollo.portal.component.config.PortalConfig;
 import com.ctrip.framework.apollo.portal.entity.bo.UserInfo;
 import com.ctrip.framework.apollo.portal.entity.po.Permission;
@@ -16,6 +18,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +40,8 @@ public class DefaultRolePermissionService implements RolePermissionService {
     private PermissionRepository permissionRepository;
     @Autowired
     private PortalConfig portalConfig;
-
+    @Autowired
+    private ConsumerRoleRepository consumerRoleRepository;
 
     /**
      * Create role with permissions, note that role name should be unique
@@ -223,7 +228,27 @@ public class DefaultRolePermissionService implements RolePermissionService {
     @Transactional
     @Override
     public void deleteRolePermissionsByAppId(String appId, String operator) {
-        permissionRepository.batchDeleteByDeleteApp(appId, operator);
-        roleRepository.batchDeleteByDeleteApp(appId, operator);
+        List<Long> permissionIds = permissionRepository.findPermissionIdsByAppId(appId);
+
+        if (!permissionIds.isEmpty()) {
+            // 1. delete Permission
+            permissionRepository.batchDelete(permissionIds, operator);
+
+            // 2. delete Role Permission
+            rolePermissionRepository.batchDeleteByPermissionIds(permissionIds, operator);
+        }
+
+        List<Long> roleIds = roleRepository.findRoleIdsByAppId(appId);
+
+        if (!roleIds.isEmpty()) {
+            // 3. delete Role
+            roleRepository.batchDelete(roleIds, operator);
+
+            // 4. delete User Role
+            userRoleRepository.batchDeleteByRoleIds(roleIds, operator);
+
+            // 5. delete Consumer Role
+            consumerRoleRepository.batchDeleteByRoleIds(roleIds, operator);
+        }
     }
 }

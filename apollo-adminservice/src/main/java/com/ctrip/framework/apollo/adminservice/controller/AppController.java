@@ -6,7 +6,6 @@ import com.ctrip.framework.apollo.common.dto.AppDTO;
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
-import com.ctrip.framework.apollo.common.exception.ServiceException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
 import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
@@ -55,7 +54,7 @@ public class AppController {
     if (entity == null) {
       throw new NotFoundException("app not found for appId " + appId);
     }
-    appService.delete(entity.getId(), operator);
+    adminService.deleteApp(entity, operator);
   }
 
   @RequestMapping(value = "/apps/{appId:.+}", method = RequestMethod.PUT)
@@ -91,22 +90,5 @@ public class AppController {
   @RequestMapping(value = "/apps/{appId}/unique", method = RequestMethod.GET)
   public boolean isAppIdUnique(@PathVariable("appId") String appId) {
     return appService.isAppIdUnique(appId);
-  }
-
-  @RequestMapping(value = "/apps", method = RequestMethod.DELETE)
-  public void deleteApp(@RequestParam("appId") String appId,
-                        @RequestParam("operator") String operator) {
-    App app = appService.findOne(appId);
-    if (Objects.isNull(app)) {
-      throw new NotFoundException("app not found for appId " + appId);
-    }
-
-    try {
-      adminService.deleteApp(appId, operator);
-    } catch (Exception e) {
-      String exc = String
-              .format("user:%s deleting app：%s,failure:%s", operator, app, e.getMessage());
-      throw new ServiceException(exc);
-    }
   }
 }

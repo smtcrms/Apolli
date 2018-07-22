@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Collection;
 import java.util.List;
+import org.springframework.data.repository.query.Param;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -24,12 +25,10 @@ public interface PermissionRepository extends PagingAndSortingRepository<Permiss
   List<Permission> findByPermissionTypeInAndTargetId(Collection<String> permissionTypes,
                                                      String targetId);
 
-  /**
-   * delete Permission when delete app.
-   */
+  @Query("SELECT p.id from Permission p where p.targetId = ?1 or p.targetId like CONCAT(?1, '+%'))")
+  List<Long> findPermissionIdsByAppId(String appId);
+
   @Modifying
-  @Query("UPDATE Permission SET IsDeleted=1," +
-      "TargetId=CONCAT('DELETED_',TargetId,'_',CURRENT_TIMESTAMP)," +
-      "DataChange_LastModifiedBy = ?2 WHERE TargetId LIKE ?1 OR TargetId LIKE CONCAT(?1,'+%')")
-  Integer batchDeleteByDeleteApp(String appId, String operator);
+  @Query("UPDATE Permission SET IsDeleted=1, DataChange_LastModifiedBy = ?2 WHERE Id in ?1")
+  Integer batchDelete(List<Long> permissionIds, String operator);
 }

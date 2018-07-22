@@ -467,10 +467,4 @@ public class ReleaseService {
     return releaseRepository.batchDelete(appId, clusterName, namespaceName, operator);
   }
 
-  @Transactional
-  public void deleteApp(String appId, String operator) {
-    if (releaseRepository.countByAppId(appId) > 0) {
-      releaseRepository.batchDeleteByDeleteApp(appId, operator);
-    }
-  }
 }

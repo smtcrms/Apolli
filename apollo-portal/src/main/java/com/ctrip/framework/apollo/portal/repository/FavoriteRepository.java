@@ -21,7 +21,5 @@ public interface FavoriteRepository extends PagingAndSortingRepository<Favorite,
 
   @Modifying
   @Query("UPDATE Favorite SET IsDeleted=1,DataChange_LastModifiedBy = ?2 WHERE AppId=?1")
-  int batchDeleteByDeleteApp(String appId, String operator);
-
-  int countByAppId(String appId);
+  int batchDeleteByAppId(String appId, String operator);
 }

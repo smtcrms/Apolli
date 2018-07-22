@@ -137,13 +137,6 @@ public class ClusterService {
     return clusterRepository.findByParentClusterId(parentCluster.getId());
   }
 
-  @Transactional
-  public void deleteApp(String appId, String operator) {
-    if (clusterRepository.countByAppId(appId) > 0) {
-      clusterRepository.batchDeleteByDeleteApp(appId, operator);
-    }
-  }
-
   public List<Cluster> findClusters(String appId) {
     return clusterRepository.findByAppId(appId);
   }

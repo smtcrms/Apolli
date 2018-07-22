@@ -35,10 +35,4 @@ public interface ReleaseRepository extends PagingAndSortingRepository<Release, L
 
   // For release history conversion program, need to delete after conversion it done
   List<Release> findByAppIdAndClusterNameAndNamespaceNameOrderByIdAsc(String appId, String clusterName, String namespaceName);
-
-  @Modifying
-  @Query("UPDATE Release SET IsDeleted=1,DataChange_LastModifiedBy = ?2 WHERE AppId=?1")
-  int batchDeleteByDeleteApp(String oldAppId, String operator);
-
-  int countByAppId(String appId);
 }

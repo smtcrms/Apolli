@@ -24,8 +24,6 @@ public class AppInfoChangedListener {
   private AdminServiceAPI.AppAPI appAPI;
   @Autowired
   private PortalSettings portalSettings;
-  @Autowired
-  private UserInfoHolder userInfoHolder;
 
   @EventListener
   public void onAppInfoChange(AppInfoChangedEvent event) {
@@ -47,7 +45,7 @@ public class AppInfoChangedListener {
   public void onAppDelete(AppDeletionEvent event) {
     AppDTO appDTO = BeanUtils.transfrom(AppDTO.class, event.getApp());
     String appId = appDTO.getAppId();
-    String operator = userInfoHolder.getUser().getName();
+    String operator = appDTO.getDataChangeLastModifiedBy();
 
     List<Env> envs = portalSettings.getActiveEnvs();
     for (Env env : envs) {

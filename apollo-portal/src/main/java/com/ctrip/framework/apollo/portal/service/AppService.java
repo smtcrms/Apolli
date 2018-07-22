@@ -144,22 +144,28 @@ public class AppService {
   }
 
   @Transactional
-  public void deleteAppInLocal(String appId) {
+  public App deleteAppInLocal(String appId) {
     App managedApp = appRepository.findByAppId(appId);
     if (managedApp == null) {
       throw new BadRequestException(String.format("App not exists. AppId = %s", appId));
     }
     String operator = userInfoHolder.getUser().getUserId();
+
+    //this operator is passed to com.ctrip.framework.apollo.portal.listener.AppInfoChangedListener.onAppDelete
+    managedApp.setDataChangeLastModifiedBy(operator);
+
     //删除portal数据库中的app
     appRepository.deleteApp(appId, operator);
 
     //删除portal数据库中的appNamespace
-    appNamespaceService.deleteApp(appId, operator);
+    appNamespaceService.batchDeleteByAppId(appId, operator);
 
     //删除portal数据库中的收藏表
-    favoriteService.deleteApp(appId, operator);
+    favoriteService.batchDeleteByAppId(appId, operator);
 
-    //删除portal数据库中Perimission、Role相关数据
+    //删除portal数据库中Permission、Role相关数据
     rolePermissionService.deleteRolePermissionsByAppId(appId, operator);
+
+    return managedApp;
   }
 }

@@ -142,14 +142,12 @@ public class AppController {
   }
 
 
+  @PreAuthorize(value = "@permissionValidator.isSuperAdmin()")
   @RequestMapping(value = "/{appId:.+}", method = RequestMethod.DELETE)
   public void deleteApp(@PathVariable String appId) {
-
-    App app = appService.load(appId);
+    App app = appService.deleteAppInLocal(appId);
 
     publisher.publishEvent(new AppDeletionEvent(app));
-
-    appService.deleteAppInLocal(appId);
   }
 
   @RequestMapping(value = "/{appId}/miss_envs", method = RequestMethod.GET)
