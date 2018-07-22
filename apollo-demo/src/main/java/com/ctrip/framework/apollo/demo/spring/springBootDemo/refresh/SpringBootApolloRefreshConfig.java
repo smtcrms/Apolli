@@ -29,7 +29,6 @@ public class SpringBootApolloRefreshConfig {
   public void onChange(ConfigChangeEvent changeEvent) {
     boolean redisCacheKeysChanged = false;
     for (String changedKey : changeEvent.changedKeys()) {
-      if (changeEvent.isChanged("someKey"))
       if (changedKey.startsWith("redis.cache")) {
         redisCacheKeysChanged = true;
         break;
