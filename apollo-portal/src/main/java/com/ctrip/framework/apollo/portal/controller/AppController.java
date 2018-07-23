@@ -1,6 +1,9 @@
 package com.ctrip.framework.apollo.portal.controller;
 
 
+import com.ctrip.framework.apollo.core.ConfigConsts;
+import com.ctrip.framework.apollo.portal.service.RoleInitializationService;
+
 import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
@@ -53,6 +56,8 @@ public class AppController {
   private ApplicationEventPublisher publisher;
   @Autowired
   private RolePermissionService rolePermissionService;
+  @Autowired
+  private RoleInitializationService roleInitializationService;
 
   @RequestMapping(value = "", method = RequestMethod.GET)
   public List<App> findApps(@RequestParam(value = "appIds", required = false) String appIds) {
@@ -131,6 +136,8 @@ public class AppController {
     }
 
     appService.createAppInRemote(Env.valueOf(env), app);
+
+    roleInitializationService.initNamespaceSpecificEnvRoles(app.getAppId(), ConfigConsts.NAMESPACE_APPLICATION, env, userInfoHolder.getUser().getUserId());
 
     return ResponseEntity.ok().build();
   }
