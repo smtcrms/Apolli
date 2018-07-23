@@ -177,8 +177,8 @@ public class ConsumerServiceTest extends AbstractUnitTest {
     doReturn(consumerId).when(consumerService).getConsumerIdByToken(token);
 
     String testNamespace = "namespace";
-    String modifyRoleName = RoleUtils.buildModifyNamespaceRoleName(testAppId, testNamespace, null);
-    String releaseRoleName = RoleUtils.buildReleaseNamespaceRoleName(testAppId, testNamespace, null);
+    String modifyRoleName = RoleUtils.buildModifyNamespaceRoleName(testAppId, testNamespace);
+    String releaseRoleName = RoleUtils.buildReleaseNamespaceRoleName(testAppId, testNamespace);
     String envModifyRoleName = RoleUtils.buildModifyNamespaceRoleName(testAppId, testNamespace, Env.DEV.toString());
     String envReleaseRoleName = RoleUtils.buildReleaseNamespaceRoleName(testAppId, testNamespace, Env.DEV.toString());
     long modifyRoleId = 1;
@@ -208,7 +208,7 @@ public class ConsumerServiceTest extends AbstractUnitTest {
     doReturn(namespaceReleaseConsumerRole).when(consumerService).createConsumerRole(consumerId, releaseRoleId, testOwner);
     doReturn(namespaceEnvReleaseConsumerRole).when(consumerService).createConsumerRole(consumerId, envReleaseRoleId, testOwner);
 
-    consumerService.assignNamespaceRoleToConsumer(token, testAppId, testNamespace, null);
+    consumerService.assignNamespaceRoleToConsumer(token, testAppId, testNamespace);
     consumerService.assignNamespaceRoleToConsumer(token, testAppId, testNamespace, Env.DEV.toString());
 
     verify(consumerRoleRepository).save(namespaceModifyConsumerRole);

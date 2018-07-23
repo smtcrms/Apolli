@@ -6,7 +6,6 @@ import com.ctrip.framework.apollo.portal.constant.PermissionType;
 import com.ctrip.framework.apollo.portal.service.RolePermissionService;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.portal.util.RoleUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,24 +19,42 @@ public class PermissionValidator {
   @Autowired
   private PortalConfig portalConfig;
 
-  public boolean hasModifyNamespacePermission(String appId, String namespaceName, String env) {
+  public boolean hasModifyNamespacePermission(String appId, String namespaceName) {
     return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
         PermissionType.MODIFY_NAMESPACE,
-        RoleUtils.buildNamespaceTargetId(appId, namespaceName, env));
+        RoleUtils.buildNamespaceTargetId(appId, namespaceName));
+  }
+
+  public boolean hasModifyNamespacePermission(String appId, String namespaceName, String env) {
+    return hasModifyNamespacePermission(appId, namespaceName) ||
+        rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
+            PermissionType.MODIFY_NAMESPACE, RoleUtils.buildNamespaceTargetId(appId, namespaceName, env));
+  }
+
+  public boolean hasReleaseNamespacePermission(String appId, String namespaceName) {
+    return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
+        PermissionType.RELEASE_NAMESPACE,
+        RoleUtils.buildNamespaceTargetId(appId, namespaceName));
   }
 
   public boolean hasReleaseNamespacePermission(String appId, String namespaceName, String env) {
-    return rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
-        PermissionType.RELEASE_NAMESPACE,
-        RoleUtils.buildNamespaceTargetId(appId, namespaceName, env));
+    return hasReleaseNamespacePermission(appId, namespaceName) ||
+        rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(),
+        PermissionType.RELEASE_NAMESPACE, RoleUtils.buildNamespaceTargetId(appId, namespaceName, env));
   }
 
   public boolean hasDeleteNamespacePermission(String appId) {
     return hasAssignRolePermission(appId) || isSuperAdmin();
   }
 
+  public boolean hasOperateNamespacePermission(String appId, String namespaceName) {
+    return hasModifyNamespacePermission(appId, namespaceName) || hasReleaseNamespacePermission(appId, namespaceName);
+  }
+
   public boolean hasOperateNamespacePermission(String appId, String namespaceName, String env) {
-    return hasModifyNamespacePermission(appId, namespaceName, env) || hasReleaseNamespacePermission(appId, namespaceName, env);
+    return hasOperateNamespacePermission(appId, namespaceName) ||
+        hasModifyNamespacePermission(appId, namespaceName, env) ||
+        hasReleaseNamespacePermission(appId, namespaceName, env);
   }
 
   public boolean hasAssignRolePermission(String appId) {
@@ -76,9 +93,5 @@ public class PermissionValidator {
 
   public boolean isSuperAdmin() {
     return rolePermissionService.isSuperAdmin(userInfoHolder.getUser().getUserId());
-  }
-
-  public boolean alwaysTrue() {
-    return true;
   }
 }

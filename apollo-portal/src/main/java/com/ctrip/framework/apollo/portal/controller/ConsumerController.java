@@ -9,6 +9,8 @@ import com.ctrip.framework.apollo.openapi.entity.ConsumerRole;
 import com.ctrip.framework.apollo.openapi.entity.ConsumerToken;
 import com.ctrip.framework.apollo.openapi.service.ConsumerService;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -81,12 +83,17 @@ public class ConsumerController {
         throw new BadRequestException("Params(NamespaceName) can not be empty.");
       }
       if (null != envs){
-        String[] envList = envs.split(",");
+        String[] envArray = envs.split(",");
+        List<String> envList = Lists.newArrayList();
         // validate env parameter
-        for (String env : envList) {
-          if (null != env && !"".equals(env) && null == EnvUtils.transformEnv(env)) {
+        for (String env : envArray) {
+          if (Strings.isNullOrEmpty(env)) {
+            continue;
+          }
+          if (null == EnvUtils.transformEnv(env)) {
             throw new BadRequestException(String.format("env: %s is illegal", env));
           }
+          envList.add(env);
         }
 
         List<ConsumerRole> consumeRoles = new ArrayList<>();
@@ -96,7 +103,7 @@ public class ConsumerController {
         return consumeRoles;
       }
 
-      return consumerService.assignNamespaceRoleToConsumer(token, appId, namespaceName, null);
+      return consumerService.assignNamespaceRoleToConsumer(token, appId, namespaceName);
     }
   }
 

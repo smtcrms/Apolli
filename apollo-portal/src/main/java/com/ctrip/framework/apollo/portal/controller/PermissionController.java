@@ -67,7 +67,7 @@ public class PermissionController {
 
     permissionCondition.setHasPermission(
         rolePermissionService.userHasPermission(userInfoHolder.getUser().getUserId(), permissionType,
-            RoleUtils.buildNamespaceTargetId(appId, namespaceName, null)));
+            RoleUtils.buildNamespaceTargetId(appId, namespaceName)));
 
     return ResponseEntity.ok().body(permissionCondition);
   }
@@ -168,11 +168,11 @@ public class PermissionController {
     assignedUsers.setAppId(appId);
 
     Set<UserInfo> releaseNamespaceUsers =
-        rolePermissionService.queryUsersWithRole(RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName, null));
+        rolePermissionService.queryUsersWithRole(RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName));
     assignedUsers.setReleaseRoleUsers(releaseNamespaceUsers);
 
     Set<UserInfo> modifyNamespaceUsers =
-        rolePermissionService.queryUsersWithRole(RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName, null));
+        rolePermissionService.queryUsersWithRole(RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName));
     assignedUsers.setModifyRoleUsers(modifyNamespaceUsers);
 
     return assignedUsers;
@@ -188,7 +188,7 @@ public class PermissionController {
     if (!RoleType.isValidRoleType(roleType)) {
       throw new BadRequestException("role type is illegal");
     }
-    Set<String> assignedUser = rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType, null),
+    Set<String> assignedUser = rolePermissionService.assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType),
         Sets.newHashSet(user), userInfoHolder.getUser().getUserId());
     if (CollectionUtils.isEmpty(assignedUser)) {
       throw new BadRequestException(user + "已授权");
@@ -206,7 +206,7 @@ public class PermissionController {
     if (!RoleType.isValidRoleType(roleType)) {
       throw new BadRequestException("role type is illegal");
     }
-    rolePermissionService.removeRoleFromUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType, null),
+    rolePermissionService.removeRoleFromUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, roleType),
         Sets.newHashSet(user), userInfoHolder.getUser().getUserId());
     return ResponseEntity.ok().build();
   }

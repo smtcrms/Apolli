@@ -58,10 +58,10 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
 
     //assign modify、release namespace role to user
     rolePermissionService.assignRoleToUsers(
-        RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.MODIFY_NAMESPACE, null),
+        RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.MODIFY_NAMESPACE),
         Sets.newHashSet(operator), operator);
     rolePermissionService.assignRoleToUsers(
-        RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.RELEASE_NAMESPACE, null),
+        RoleUtils.buildNamespaceRoleName(appId, ConfigConsts.NAMESPACE_APPLICATION, RoleType.RELEASE_NAMESPACE),
         Sets.newHashSet(operator), operator);
 
   }
@@ -69,13 +69,13 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
   @Transactional
   public void initNamespaceRoles(String appId, String namespaceName, String operator) {
 
-    String modifyNamespaceRoleName = RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName, null);
+    String modifyNamespaceRoleName = RoleUtils.buildModifyNamespaceRoleName(appId, namespaceName);
     if (rolePermissionService.findRoleByRoleName(modifyNamespaceRoleName) == null) {
       createNamespaceRole(appId, namespaceName, PermissionType.MODIFY_NAMESPACE,
           modifyNamespaceRoleName, operator);
     }
 
-    String releaseNamespaceRoleName = RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName, null);
+    String releaseNamespaceRoleName = RoleUtils.buildReleaseNamespaceRoleName(appId, namespaceName);
     if (rolePermissionService.findRoleByRoleName(releaseNamespaceRoleName) == null) {
       createNamespaceRole(appId, namespaceName, PermissionType.RELEASE_NAMESPACE,
           releaseNamespaceRoleName, operator);
@@ -143,7 +143,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
                                    String roleName, String operator) {
 
     Permission permission =
-        createPermission(RoleUtils.buildNamespaceTargetId(appId, namespaceName, null), permissionType, operator);
+        createPermission(RoleUtils.buildNamespaceTargetId(appId, namespaceName), permissionType, operator);
     Permission createdPermission = rolePermissionService.createPermission(permission);
 
     Role role = createRole(roleName, operator);

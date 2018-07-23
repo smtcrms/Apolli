@@ -112,6 +112,10 @@ public class ConsumerService {
     return consumerRepository.findOne(consumerId);
   }
 
+  public List<ConsumerRole> assignNamespaceRoleToConsumer(String token, String appId, String namespaceName) {
+    return assignNamespaceRoleToConsumer(token, appId, namespaceName, null);
+  }
+
   @Transactional
   public List<ConsumerRole> assignNamespaceRoleToConsumer(String token, String appId, String namespaceName, String env) {
     Long consumerId = getConsumerIdByToken(token);

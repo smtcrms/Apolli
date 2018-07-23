@@ -211,13 +211,13 @@ public abstract class ConfigPublishEmailBuilder {
   private List<String> recipients(String appId, String namespaceName, String env) {
     Set<UserInfo> modifyRoleUsers =
             rolePermissionService
-                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE, null));
+                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE));
     Set<UserInfo> envModifyRoleUsers =
         rolePermissionService
             .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE, env));
     Set<UserInfo> releaseRoleUsers =
             rolePermissionService
-                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE, null));
+                    .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE));
     Set<UserInfo> envReleaseRoleUsers =
         rolePermissionService
             .queryUsersWithRole(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE, env));

@@ -35,13 +35,13 @@
             <div class="row">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">修改权<br><small>(可以修改配置，不选择环境则对所有环境授权)</small></label>
+                        <label class="col-sm-2 control-label">修改权<br><small>(可以修改配置)</small></label>
                         <div class="col-sm-8">
                             <form class="form-inline" ng-submit="assignRoleToUser('ModifyNamespace')">
                                 <div class="form-group">
                                     <apollouserselector apollo-id="modifyRoleWidgetId"></apollouserselector>
                                     <select class="form-control input-sm" ng-model="modifyRoleSelectedEnv">
-                                        <option value="">可选环境</option>
+                                        <option value="">所有环境</option>
                                         <option ng-repeat="env in envs" ng-value="env">{{env}}</option>
                                     </select>
                                 </div>
@@ -49,7 +49,7 @@
                             </form>
                             <!-- Split button -->
                             <div class="item-container">
-                                <h5>ALL</h5>
+                                <h5>所有环境</h5>
                                 <div class="btn-group item-info" ng-repeat="user in rolesAssignedUsers.modifyRoleUsers">
                                     <button type="button" class="btn btn-default" ng-bind="user.userId"></button>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -77,14 +77,14 @@
                 <div class="row" style="margin-top: 10px;">
                     <div class="form-horizontal">
                         <div class="col-sm-2 text-right">
-                            <label class="control-label">发布权<br><small>(可以发布配置，不选择环境则对所有环境授权)</small></label>
+                            <label class="control-label">发布权<br><small>(可以发布配置)</small></label>
                         </div>
                         <div class="col-sm-8">
                             <form class="form-inline" ng-submit="assignRoleToUser('ReleaseNamespace')">
                                 <div class="form-group">
                                     <apollouserselector apollo-id="releaseRoleWidgetId"></apollouserselector>
                                     <select class="form-control input-sm" ng-model="releaseRoleSelectedEnv">
-                                        <option value="">可选环境</option>
+                                        <option value="">所有环境</option>
                                         <option ng-repeat="env in envs" ng-value="env">{{env}}</option>
                                     </select>
                                 </div>
@@ -92,7 +92,7 @@
                             </form>
                             <!-- Split button -->
                             <div class="item-container">
-                                <h5>ALL</h5>
+                                <h5>所有环境</h5>
                                 <div class="btn-group item-info" ng-repeat="user in rolesAssignedUsers.releaseRoleUsers">
                                     <button type="button" class="btn btn-default" ng-bind="user.userId"></button>
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"

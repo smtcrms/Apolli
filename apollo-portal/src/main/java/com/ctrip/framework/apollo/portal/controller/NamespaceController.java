@@ -208,10 +208,10 @@ public class NamespaceController {
     String operator = userInfoHolder.getUser().getUserId();
 
     rolePermissionService
-        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE, null),
+        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.MODIFY_NAMESPACE),
                            Sets.newHashSet(operator), operator);
     rolePermissionService
-        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE, null),
+        .assignRoleToUsers(RoleUtils.buildNamespaceRoleName(appId, namespaceName, RoleType.RELEASE_NAMESPACE),
                            Sets.newHashSet(operator), operator);
   }
 }
