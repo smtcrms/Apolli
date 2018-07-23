@@ -185,3 +185,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![欧飞](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/ofpay.png) 
 ![迷说](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/mishuo.png) 
 ![一下科技](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/yixia.png) 
+![DaoCloud](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/daocloud.png) 
