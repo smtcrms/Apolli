@@ -190,3 +190,6 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![迷说](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/mishuo.png) 
 ![一下科技](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/yixia.png) 
 ![DaoCloud](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/daocloud.png) 
+![汽摩交易所](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/cnvex.png) 
+![好未来教育集团](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/100tal.png) 
+![猎户星空](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/ainirobot.png) 
