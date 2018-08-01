@@ -379,29 +379,6 @@
 					</executions>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.17</version>
-					<dependencies>
-						<dependency>
-							<groupId>com.puppycrawl.tools</groupId>
-							<artifactId>checkstyle</artifactId>
-							<version>6.18</version>
-						</dependency>
-						<dependency>
-							<groupId>com.ctrip.framework.apollo</groupId>
-							<artifactId>apollo-buildtools</artifactId>
-							<version>${project.version}</version>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<configLocation>google_checks.xml</configLocation>
-						<headerLocation>LICENSE-2.0.txt</headerLocation>
-						<failOnViolation>false</failOnViolation>
-						<consoleOutput>true</consoleOutput>
-					</configuration>
-				</plugin>
-				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
 					<version>3.0.3</version>
@@ -461,10 +438,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -531,7 +504,6 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>application-github.properties</include>
-					<include>apollo-env.properties</include>
 				</includes>
 			</resource>
 			<resource>
@@ -539,7 +511,6 @@
 				<filtering>false</filtering>
 				<excludes>
 					<exclude>application-github.properties</exclude>
-					<exclude>apollo-env.properties</exclude>
 				</excludes>
 			</resource>
 		</resources>
