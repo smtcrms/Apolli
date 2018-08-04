@@ -197,3 +197,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![银江股份](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/enjoyor.png) 
 ![途虎养车](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/tuhu.png) 
 ![河姆渡](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/homedo.png) 
+![新网银行](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/xwbank.png) 
