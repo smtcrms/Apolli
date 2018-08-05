@@ -162,11 +162,19 @@ public interface Config {
   public long getDurationProperty(String key, long defaultValue);
 
   /**
-   * Add change listener to this config instance.
+   * Add change listener to this config instance, will be notified when any key is changed in this namespace.
    *
    * @param listener the config change listener
    */
   public void addChangeListener(ConfigChangeListener listener);
+
+  /**
+   * Add change listener to this config instance, will only be notified when any of the interested keys is changed in this namespace.
+   *
+   * @param listener the config change listener
+   * @param interestedKeys the keys interested by the listener
+   */
+  public void addChangeListener(ConfigChangeListener listener, Set<String> interestedKeys);
 
   /**
    * Return a set of the property names

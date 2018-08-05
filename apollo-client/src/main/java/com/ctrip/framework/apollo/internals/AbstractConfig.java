@@ -40,10 +40,11 @@ import com.google.common.collect.Sets;
 public abstract class AbstractConfig implements Config {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
-  private static ExecutorService m_executorService;
+  private static final ExecutorService m_executorService;
 
-  private List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
-  private ConfigUtil m_configUtil;
+  private final List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
+  private final Map<ConfigChangeListener, Set<String>> m_interestedKeys = Maps.newConcurrentMap();
+  private final ConfigUtil m_configUtil;
   private volatile Cache<String, Integer> m_integerCache;
   private volatile Cache<String, Long> m_longCache;
   private volatile Cache<String, Short> m_shortCache;
@@ -53,9 +54,9 @@ public abstract class AbstractConfig implements Config {
   private volatile Cache<String, Boolean> m_booleanCache;
   private volatile Cache<String, Date> m_dateCache;
   private volatile Cache<String, Long> m_durationCache;
-  private Map<String, Cache<String, String[]>> m_arrayCache;
-  private List<Cache> allCaches;
-  private AtomicLong m_configVersion; //indicate config version
+  private final Map<String, Cache<String, String[]>> m_arrayCache;
+  private final List<Cache> allCaches;
+  private final AtomicLong m_configVersion; //indicate config version
 
   static {
     m_executorService = Executors.newCachedThreadPool(ApolloThreadFactory
@@ -71,8 +72,16 @@ public abstract class AbstractConfig implements Config {
 
   @Override
   public void addChangeListener(ConfigChangeListener listener) {
+    addChangeListener(listener, null);
+  }
+
+  @Override
+  public void addChangeListener(ConfigChangeListener listener, Set<String> interestedKeys) {
     if (!m_listeners.contains(listener)) {
       m_listeners.add(listener);
+      if (interestedKeys != null && !interestedKeys.isEmpty()) {
+        m_interestedKeys.put(listener, Sets.newHashSet(interestedKeys));
+      }
     }
   }
 
@@ -395,6 +404,10 @@ public abstract class AbstractConfig implements Config {
 
   protected void fireConfigChange(final ConfigChangeEvent changeEvent) {
     for (final ConfigChangeListener listener : m_listeners) {
+      // check whether the listener is interested in this change event
+      if (!isConfigChangeListenerInterested(listener, changeEvent)) {
+        continue;
+      }
       m_executorService.submit(new Runnable() {
         @Override
         public void run() {
@@ -413,6 +426,22 @@ public abstract class AbstractConfig implements Config {
         }
       });
     }
+  }
+
+  private boolean isConfigChangeListenerInterested(ConfigChangeListener configChangeListener, ConfigChangeEvent configChangeEvent) {
+    Set<String> interestedKeys = m_interestedKeys.get(configChangeListener);
+
+    if (interestedKeys == null || interestedKeys.isEmpty()) {
+      return true; // no interested keys means interested in all keys
+    }
+
+    for (String interestedKey : interestedKeys) {
+      if (configChangeEvent.isChanged(interestedKey)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   List<ConfigChange> calcPropertyChanges(String namespace, Properties previous,
