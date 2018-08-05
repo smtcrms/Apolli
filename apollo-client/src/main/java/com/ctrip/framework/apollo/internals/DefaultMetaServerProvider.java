@@ -39,7 +39,7 @@ public class DefaultMetaServerProvider implements MetaServerProvider {
       logger.warn("Could not find meta server address, because it is not available in neither (1) JVM system property 'apollo.meta', (2) OS env variable 'APOLLO_META' (3) property 'apollo.meta' from server.properties nor (4) property 'apollo.meta' from app.properties");
     } else {
       metaAddress = metaAddress.trim();
-      logger.warn("Located meta services from apollo.meta configuration: {}!", metaAddress);
+      logger.info("Located meta services from apollo.meta configuration: {}!", metaAddress);
     }
 
     return metaAddress;
