@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.org/ctripcorp/apollo.svg?branch=master)](https://travis-ci.org/ctripcorp/apollo)
 [![GitHub release](https://img.shields.io/github/release/ctripcorp/apollo.svg)](https://github.com/ctripcorp/apollo/releases)
-[![Maven Central Repo](https://img.shields.io/maven-central/v/com.ctrip.framework.apollo/apollo.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.ctrip.framework.apollo%22%20AND%20a%3A%22apollo-client%22)
+[![Maven Central Repo](https://img.shields.io/maven-central/v/com.ctrip.framework.apollo/apollo.svg)](https://mvnrepository.com/artifact/com.ctrip.framework.apollo/apollo-client)
 [![Coverage Status](https://coveralls.io/repos/github/ctripcorp/apollo/badge.svg?branch=master)](https://coveralls.io/github/ctripcorp/apollo?branch=master)
 <a href="https://scan.coverity.com/projects/ctripcorp-apollo">
   <img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/8244.svg"/>
