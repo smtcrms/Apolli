@@ -251,7 +251,7 @@ public class AuthConfiguration {
       http.authorizeRequests().antMatchers("/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**").permitAll()
       .antMatchers("/**").hasAnyRole(USER_ROLE);
       http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
-      http.logout().invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
+      http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
       http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
     }
 
