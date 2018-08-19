@@ -18,16 +18,25 @@ import com.ctrip.framework.apollo.portal.spi.ldap.LdapUserService;
 import com.ctrip.framework.apollo.portal.spi.springsecurity.SpringSecurityUserInfoHolder;
 import com.ctrip.framework.apollo.portal.spi.springsecurity.SpringSecurityUserService;
 import com.google.common.collect.Maps;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.Map;
+import javax.servlet.Filter;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.ldap.core.ContextSource;
+import org.springframework.ldap.core.LdapOperations;
+import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -38,10 +47,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-
-import javax.servlet.Filter;
-import java.util.EventListener;
-import java.util.Map;
 
 
 @Configuration
@@ -262,10 +267,12 @@ public class AuthConfiguration {
     protected void configure(HttpSecurity http) throws Exception {
       http.csrf().disable();
       http.headers().frameOptions().sameOrigin();
-      http.authorizeRequests().antMatchers("/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**").permitAll()
-      .antMatchers("/**").hasAnyRole(USER_ROLE);
+      http.authorizeRequests()
+          .antMatchers("/openapi/**", "/vendor/**", "/styles/**", "/scripts/**", "/views/**", "/img/**").permitAll()
+          .antMatchers("/**").hasAnyRole(USER_ROLE);
       http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and().httpBasic();
-      http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true).logoutSuccessUrl("/signin?#/logout");
+      http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true)
+          .logoutSuccessUrl("/signin?#/logout");
       http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
     }
 
@@ -276,7 +283,12 @@ public class AuthConfiguration {
    */
   @Configuration
   @Profile("ldap")
+  @EnableConfigurationProperties(LdapProperties.class)
   static class SpringSecurityLDAPAuthAutoConfiguration {
+    @Autowired
+    private LdapProperties properties;
+    @Autowired
+    private Environment environment;
 
     @Bean
     @ConditionalOnMissingBean(SsoHeartbeatHandler.class)
@@ -302,6 +314,26 @@ public class AuthConfiguration {
       return new LdapUserService();
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ContextSource ldapContextSource() {
+      LdapContextSource source = new LdapContextSource();
+      source.setUserDn(this.properties.getUsername());
+      source.setPassword(this.properties.getPassword());
+      source.setAnonymousReadOnly(this.properties.getAnonymousReadOnly());
+      source.setBase(this.properties.getBase());
+      source.setUrls(this.properties.determineUrls(this.environment));
+      source.setBaseEnvironmentProperties(
+          Collections.unmodifiableMap(this.properties.getBaseEnvironment()));
+      return source;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(LdapOperations.class)
+    public LdapTemplate ldapTemplate(ContextSource contextSource) {
+      return new LdapTemplate(contextSource);
+    }
+
   }
 
   @Order(99)
@@ -309,7 +341,6 @@ public class AuthConfiguration {
   @Configuration
   @EnableWebSecurity
   @EnableGlobalMethodSecurity(prePostEnabled = true)
-  @AutoConfigureAfter(LdapAutoConfiguration.class)
   static class SpringSecurityLDAPConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -327,7 +358,7 @@ public class AuthConfiguration {
           .antMatchers("/**").authenticated();
       http.formLogin().loginPage("/signin").permitAll().failureUrl("/signin?#/error").and()
           .httpBasic();
-      http.logout().invalidateHttpSession(true).clearAuthentication(true)
+      http.logout().logoutUrl("/user/logout").invalidateHttpSession(true).clearAuthentication(true)
           .logoutSuccessUrl("/signin?#/logout");
       http.exceptionHandling()
           .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/signin"));
@@ -376,7 +407,7 @@ public class AuthConfiguration {
     }
   }
 
-  @ConditionalOnMissingProfile("auth")
+  @ConditionalOnMissingProfile({"auth", "ldap"})
   @Configuration
   @EnableWebSecurity
   @EnableGlobalMethodSecurity(prePostEnabled = true)
