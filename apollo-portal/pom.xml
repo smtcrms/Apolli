@@ -15,6 +15,10 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-ldap</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-common</artifactId>
 		</dependency>
