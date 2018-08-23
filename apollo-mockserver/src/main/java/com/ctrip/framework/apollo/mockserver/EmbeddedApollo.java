@@ -1,8 +1,10 @@
 package com.ctrip.framework.apollo.mockserver;
 
+import com.ctrip.framework.apollo.core.MetaDomainConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.core.dto.ApolloConfigNotification;
 import com.ctrip.framework.apollo.core.dto.ServiceDTO;
+import com.ctrip.framework.apollo.core.spi.MetaServerProvider;
 import com.ctrip.framework.apollo.core.utils.ResourceUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -71,8 +73,8 @@ public class EmbeddedApollo extends ExternalResource {
     //指定apollo的metaserver地址为localhost
     int port = server.getPort();
     this.listenningUrl = "http://localhost:"+port;
-    System.setProperty("apollo.env","mock");
-    System.setProperty("mock_meta",listenningUrl);
+
+    MockedMetaServerProvider.setAddress(listenningUrl);
 
     System.setProperty("apollo.longPollingInitialDelayInMills","1");
 
