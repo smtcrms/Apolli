@@ -103,6 +103,7 @@
 		<module>apollo-portal</module>
 		<module>apollo-assembly</module>
 		<module>apollo-demo</module>
+		<module>apollo-mockserver</module>
 	</modules>
 
 	<dependencyManagement>
