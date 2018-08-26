@@ -1,12 +1,12 @@
 package com.ctrip.framework.apollo.mockserver;
 
+import static org.junit.Assert.assertEquals;
+
 import com.ctrip.framework.apollo.enums.PropertyChangeType;
-import com.ctrip.framework.apollo.mockserver.SpringIntegrationTest.TestConfiguration;
+import com.ctrip.framework.apollo.mockserver.ApolloMockServerSpringIntegrationTest.TestConfiguration;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
-import static org.junit.Assert.*;
-
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -23,21 +23,23 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Create by zhangzheng on 8/16/18
- * Email:zhangzheng@youzan.com
+ * Create by zhangzheng on 8/16/18 Email:zhangzheng@youzan.com
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestConfiguration.class)
-public class SpringIntegrationTest {
-  @Autowired
-  TestBean testBean;
+public class ApolloMockServerSpringIntegrationTest {
+
+  private static final String otherNamespace = "otherNamespace";
 
   @ClassRule
   public static EmbeddedApollo embeddedApollo = new EmbeddedApollo();
 
+  @Autowired
+  private TestBean testBean;
+
   @Test
   @DirtiesContext
-  public void testPropertyInject(){
+  public void testPropertyInject() {
     assertEquals("value1", testBean.key1);
     assertEquals("value2", testBean.key2);
   }
@@ -45,8 +47,7 @@ public class SpringIntegrationTest {
   @Test
   @DirtiesContext
   public void testListenerTriggeredByAdd() throws InterruptedException, ExecutionException, TimeoutException {
-    String otherNamespace = "othernamespace";
-    embeddedApollo.addOrModifyPropery(otherNamespace,"someKey","someValue");
+    embeddedApollo.addOrModifyProperty(otherNamespace, "someKey", "someValue");
     ConfigChangeEvent changeEvent = testBean.futureData.get(5000, TimeUnit.MILLISECONDS);
     assertEquals(otherNamespace, changeEvent.getNamespace());
     assertEquals("someValue", changeEvent.getChange("someKey").getNewValue());
@@ -56,42 +57,34 @@ public class SpringIntegrationTest {
   @DirtiesContext
   public void testListenerTriggeredByDel()
       throws InterruptedException, ExecutionException, TimeoutException {
-    String otherNamespace = "othernamespace";
-    embeddedApollo.delete(otherNamespace, "key1");
+    embeddedApollo.deleteProperty(otherNamespace, "key1");
     ConfigChangeEvent changeEvent = testBean.futureData.get(5000, TimeUnit.MILLISECONDS);
     assertEquals(otherNamespace, changeEvent.getNamespace());
     assertEquals(PropertyChangeType.DELETED, changeEvent.getChange("key1").getChangeType());
   }
 
-
-
-
-
-
-
-
-  @EnableApolloConfig("application")
+  @EnableApolloConfig
   @Configuration
-  static class TestConfiguration{
+  static class TestConfiguration {
+
     @Bean
-    public TestBean testBean(){
+    public TestBean testBean() {
       return new TestBean();
     }
   }
 
-  static class TestBean{
+  private static class TestBean {
+
     @Value("${key1:default}")
-    String key1;
+    private String key1;
     @Value("${key2:default}")
-    String key2;
+    private String key2;
 
-    SettableFuture<ConfigChangeEvent> futureData = SettableFuture.create();
+    private SettableFuture<ConfigChangeEvent> futureData = SettableFuture.create();
 
-    @ApolloConfigChangeListener("othernamespace")
+    @ApolloConfigChangeListener(otherNamespace)
     private void onChange(ConfigChangeEvent changeEvent) {
       futureData.set(changeEvent);
     }
   }
-
-
 }
