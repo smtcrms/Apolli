@@ -207,3 +207,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![铂涛旅行](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/plateno.png) 
 ![乐心](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/lifesense.png) 
 ![亿投传媒](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/reachmedia.png) 
+![股先生](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/guxiansheng.png) 
+![财学堂](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/caixuetang.png) 
