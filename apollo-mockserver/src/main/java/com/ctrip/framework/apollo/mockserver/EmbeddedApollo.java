@@ -37,8 +37,6 @@ public class EmbeddedApollo extends ExternalResource {
   private static final Type notificationType = new TypeToken<List<ApolloConfigNotification>>() {
   }.getType();
 
-  private static Method PROPERTY_SOURCES_PROCESSOR_CLEAR;
-  private static Method SPRING_VALUE_DEFINITION_PROCESS_CLEAR;
   private static Method CONFIG_SERVICE_LOCATOR_CLEAR;
   private static ConfigServiceLocator CONFIG_SERVICE_LOCATOR;
 
@@ -51,10 +49,6 @@ public class EmbeddedApollo extends ExternalResource {
   static {
     try {
       System.setProperty("apollo.longPollingInitialDelayInMills", "0");
-      PROPERTY_SOURCES_PROCESSOR_CLEAR = PropertySourcesProcessor.class.getDeclaredMethod("reset");
-      PROPERTY_SOURCES_PROCESSOR_CLEAR.setAccessible(true);
-      SPRING_VALUE_DEFINITION_PROCESS_CLEAR = SpringValueDefinitionProcessor.class.getDeclaredMethod("reset");
-      SPRING_VALUE_DEFINITION_PROCESS_CLEAR.setAccessible(true);
       CONFIG_SERVICE_LOCATOR = ApolloInjector.getInstance(ConfigServiceLocator.class);
       CONFIG_SERVICE_LOCATOR_CLEAR = ConfigServiceLocator.class.getDeclaredMethod("initConfigServices");
       CONFIG_SERVICE_LOCATOR_CLEAR.setAccessible(true);
@@ -105,9 +99,6 @@ public class EmbeddedApollo extends ExternalResource {
 
   private void clear() throws Exception {
     resetOverriddenProperties();
-    // clear Apollo states
-    PROPERTY_SOURCES_PROCESSOR_CLEAR.invoke(null);
-    SPRING_VALUE_DEFINITION_PROCESS_CLEAR.invoke(null);
   }
 
   private void mockConfigServiceUrl(String url) throws Exception {
