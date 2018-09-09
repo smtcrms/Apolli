@@ -3,6 +3,7 @@ package com.ctrip.framework.apollo.internals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -703,6 +704,62 @@ public class DefaultConfigTest {
     assertEquals(someChangeEvent, changeEvent);
     assertEquals(someChangeEvent, interestedInSomeKeyFuture.get(500, TimeUnit.MILLISECONDS));
     assertFalse(interestedInSomeKeyNotChangedFuture.isDone());
+  }
+
+  @Test
+  public void testRemoveChangeListener() throws Exception {
+    String someNamespace = "someNamespace";
+    final ConfigChangeEvent someConfigChangEvent = mock(ConfigChangeEvent.class);
+    ConfigChangeEvent anotherConfigChangEvent = mock(ConfigChangeEvent.class);
+
+    final SettableFuture<ConfigChangeEvent> someListenerFuture1 = SettableFuture.create();
+    final SettableFuture<ConfigChangeEvent> someListenerFuture2 = SettableFuture.create();
+    ConfigChangeListener someListener = new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        if (someConfigChangEvent == changeEvent) {
+          someListenerFuture1.set(changeEvent);
+        } else {
+          someListenerFuture2.set(changeEvent);
+        }
+      }
+    };
+
+    final SettableFuture<ConfigChangeEvent> anotherListenerFuture1 = SettableFuture.create();
+    final SettableFuture<ConfigChangeEvent> anotherListenerFuture2 = SettableFuture.create();
+    ConfigChangeListener anotherListener = new ConfigChangeListener() {
+      @Override
+      public void onChange(ConfigChangeEvent changeEvent) {
+        if (someConfigChangEvent == changeEvent) {
+          anotherListenerFuture1.set(changeEvent);
+        } else {
+          anotherListenerFuture2.set(changeEvent);
+        }
+      }
+    };
+
+    ConfigChangeListener yetAnotherListener = mock(ConfigChangeListener.class);
+
+    DefaultConfig config = new DefaultConfig(someNamespace, mock(ConfigRepository.class));
+
+    config.addChangeListener(someListener);
+    config.addChangeListener(anotherListener);
+
+    config.fireConfigChange(someConfigChangEvent);
+
+    assertEquals(someConfigChangEvent, someListenerFuture1.get(500, TimeUnit.MILLISECONDS));
+    assertEquals(someConfigChangEvent, anotherListenerFuture1.get(500, TimeUnit.MILLISECONDS));
+
+    assertFalse(config.removeChangeListener(yetAnotherListener));
+    assertTrue(config.removeChangeListener(someListener));
+
+    config.fireConfigChange(anotherConfigChangEvent);
+
+    assertEquals(anotherConfigChangEvent, anotherListenerFuture2.get(500, TimeUnit.MILLISECONDS));
+
+    TimeUnit.MILLISECONDS.sleep(100);
+
+    assertFalse(someListenerFuture2.isDone());
   }
 
   @Test

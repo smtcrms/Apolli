@@ -179,6 +179,14 @@ public interface Config {
   public void addChangeListener(ConfigChangeListener listener, Set<String> interestedKeys);
 
   /**
+   * Remove the change listener
+   *
+   * @param listener the specific config change listener to remove
+   * @return true if the specific config change listener is found and removed
+   */
+  public boolean removeChangeListener(ConfigChangeListener listener);
+
+  /**
    * Return a set of the property names
    *
    * @return the property names
