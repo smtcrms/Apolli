@@ -106,7 +106,18 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
   * [开源配置中心Apollo的设计与实现](http://www.infoq.com/cn/articles/open-source-configuration-center-apollo)
 
 # Support
-![tech-support-qq](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq.png)
+<table>
+  <thead>
+    <th>Apollo配置中心技术支持②群<br />群号：904287263</th>
+    <th>Apollo配置中心技术支持①群<br />群号：375526581（已满）</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-2.png" alt="tech-support-qq-2"></td>
+      <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-1.png" alt="tech-support-qq-1"></td>
+    </tr>
+  </tbody>
+</table>
 
 # Contribution
   * Source Code: https://github.com/ctripcorp/apollo
