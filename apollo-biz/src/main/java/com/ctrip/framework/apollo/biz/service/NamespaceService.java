@@ -67,7 +67,7 @@ public class NamespaceService {
 
 
   public Namespace findOne(Long namespaceId) {
-    return namespaceRepository.findOne(namespaceId);
+    return namespaceRepository.findById(namespaceId).orElse(null);
   }
 
   public Namespace findOne(String appId, String clusterName, String namespaceName) {

@@ -99,7 +99,7 @@ declare -i max_counter=48 # 48*5=240s
 declare -i total_time=0
 
 printf "Waiting for server startup"
-until [[ (( counter -ge max_counter )) || "$(curl -X GET --silent --connect-timeout 1 --max-time 2 --head $SERVER_URL | grep "Coyote")" != "" ]];
+until [[ (( counter -ge max_counter )) || "$(curl -X GET --silent --connect-timeout 1 --max-time 2 --head $SERVER_URL | grep "HTTP")" != "" ]];
 do
     printf "."
     counter+=1
