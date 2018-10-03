@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.portal.controller;
 
 import com.ctrip.framework.apollo.common.dto.AppNamespaceDTO;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.portal.component.PermissionValidator;
 import com.ctrip.framework.apollo.portal.listener.AppNamespaceDeletionEvent;
 import com.google.common.collect.Sets;
 
@@ -62,6 +63,8 @@ public class NamespaceController {
   private RolePermissionService rolePermissionService;
   @Autowired
   private PortalConfig portalConfig;
+  @Autowired
+  private PermissionValidator permissionValidator;
 
 
   @RequestMapping(value = "/appnamespaces/public", method = RequestMethod.GET)
@@ -73,14 +76,28 @@ public class NamespaceController {
   public List<NamespaceBO> findNamespaces(@PathVariable String appId, @PathVariable String env,
                                           @PathVariable String clusterName) {
 
-    return namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
+    List<NamespaceBO> namespaceBOs = namespaceService.findNamespaceBOs(appId, Env.valueOf(env), clusterName);
+
+    for (NamespaceBO namespaceBO : namespaceBOs) {
+      if (permissionValidator.shouldHideConfigToCurrentUser(appId, env, namespaceBO.getBaseInfo().getNamespaceName())) {
+        namespaceBO.hideItems();
+      }
+    }
+
+    return namespaceBOs;
   }
 
   @RequestMapping(value = "/apps/{appId}/envs/{env}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.GET)
   public NamespaceBO findNamespace(@PathVariable String appId, @PathVariable String env,
                                    @PathVariable String clusterName, @PathVariable String namespaceName) {
 
-    return namespaceService.loadNamespaceBO(appId, Env.valueOf(env), clusterName, namespaceName);
+    NamespaceBO namespaceBO = namespaceService.loadNamespaceBO(appId, Env.valueOf(env), clusterName, namespaceName);
+
+    if (namespaceBO != null && permissionValidator.shouldHideConfigToCurrentUser(appId, env, namespaceName)) {
+      namespaceBO.hideItems();
+    }
+
+    return namespaceBO;
   }
 
   @RequestMapping(value = "/envs/{env}/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace",
