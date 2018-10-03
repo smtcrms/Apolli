@@ -60,7 +60,7 @@ public class DefaultRolePermissionService implements RolePermissionService {
                         rolePermission.setDataChangeLastModifiedBy(createdRole.getDataChangeLastModifiedBy());
                         return rolePermission;
                     });
-            rolePermissionRepository.save(rolePermissions);
+            rolePermissionRepository.saveAll(rolePermissions);
         }
 
         return createdRole;
@@ -93,7 +93,7 @@ public class DefaultRolePermissionService implements RolePermissionService {
             return userRole;
         });
 
-        userRoleRepository.save(toCreate);
+        userRoleRepository.saveAll(toCreate);
         return toAssignUserIds;
     }
 
@@ -114,7 +114,7 @@ public class DefaultRolePermissionService implements RolePermissionService {
             userRole.setDataChangeLastModifiedBy(operatorUserId);
         }
 
-        userRoleRepository.save(existedUserRoles);
+        userRoleRepository.saveAll(existedUserRoles);
     }
 
     /**
@@ -218,7 +218,7 @@ public class DefaultRolePermissionService implements RolePermissionService {
                     targetId);
         }
 
-        Iterable<Permission> results = permissionRepository.save(permissions);
+        Iterable<Permission> results = permissionRepository.saveAll(permissions);
         return FluentIterable.from(results).toSet();
     }
 

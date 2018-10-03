@@ -4,7 +4,9 @@ spring:
   profiles:
     active: ${apollo_profile}
   resources:
-    cache-period: 3600
+    cache:
+      cachecontrol:
+        max-age: 3600
 
 server:
   port: 8080
@@ -13,12 +15,7 @@ logging:
   path: /opt/logs/100003173
   file: ${logging.path}/apollo-portal.log
 
-endpoints:
-  health:
-    sensitive: false
 management:
-  security:
-    enabled: false
   health:
     status:
       order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP 

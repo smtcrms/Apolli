@@ -64,7 +64,7 @@ public class ReleaseService {
   private ItemSetService itemSetService;
 
   public Release findOne(long releaseId) {
-    return releaseRepository.findOne(releaseId);
+    return releaseRepository.findById(releaseId).orElse(null);
   }
 
 
@@ -73,7 +73,7 @@ public class ReleaseService {
   }
 
   public List<Release> findByReleaseIds(Set<Long> releaseIds) {
-    Iterable<Release> releases = releaseRepository.findAll(releaseIds);
+    Iterable<Release> releases = releaseRepository.findAllById(releaseIds);
     if (releases == null) {
       return Collections.emptyList();
     }
@@ -397,7 +397,7 @@ public class ReleaseService {
     String clusterName = release.getClusterName();
     String namespaceName = release.getNamespaceName();
 
-    PageRequest page = new PageRequest(0, 2);
+    PageRequest page = PageRequest.of(0, 2);
     List<Release> twoLatestActiveReleases = findActiveReleases(appId, clusterName, namespaceName, page);
     if (twoLatestActiveReleases == null || twoLatestActiveReleases.size() < 2) {
       throw new BadRequestException(String.format(
