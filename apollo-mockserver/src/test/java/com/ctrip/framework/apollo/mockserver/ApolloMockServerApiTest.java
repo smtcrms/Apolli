@@ -14,7 +14,7 @@ import org.junit.Test;
 
 public class ApolloMockServerApiTest {
 
-  private static final String otherNamespace = "otherNamespace";
+  private static final String anotherNamespace = "anotherNamespace";
 
   @ClassRule
   public static EmbeddedApollo embeddedApollo = new EmbeddedApollo();
@@ -31,7 +31,7 @@ public class ApolloMockServerApiTest {
   public void testUpdateProperties() throws Exception {
     String someNewValue = "someNewValue";
 
-    Config otherConfig = ConfigService.getConfig(otherNamespace);
+    Config otherConfig = ConfigService.getConfig(anotherNamespace);
 
     final SettableFuture<ConfigChangeEvent> future = SettableFuture.create();
 
@@ -45,7 +45,7 @@ public class ApolloMockServerApiTest {
     assertEquals("otherValue1", otherConfig.getProperty("key1", null));
     assertEquals("otherValue2", otherConfig.getProperty("key2", null));
 
-    embeddedApollo.addOrModifyProperty(otherNamespace, "key1", someNewValue);
+    embeddedApollo.addOrModifyProperty(anotherNamespace, "key1", someNewValue);
 
     ConfigChangeEvent changeEvent = future.get(5, TimeUnit.SECONDS);
 
