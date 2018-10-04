@@ -9,7 +9,6 @@ ctrip:
   
 server:
   port: 8080
-  
+
 logging:
-  path: /opt/logs/100003171
-  file: ${logging.path}/apollo-configservice.log
+  file: /opt/logs/100003171/apollo-configservice.log

@@ -12,8 +12,7 @@ server:
   port: 8080
   
 logging:
-  path: /opt/logs/100003173
-  file: ${logging.path}/apollo-portal.log
+  file: /opt/logs/100003173/apollo-portal.log
 
 management:
   health:
