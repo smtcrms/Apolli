@@ -108,26 +108,14 @@ public class OpenApiBeanUtils {
   }
 
   public static OpenGrayReleaseRuleDTO transformFromGrayReleaseRuleDTO(GrayReleaseRuleDTO grayReleaseRuleDTO){
-    OpenGrayReleaseRuleDTO openGrayReleaseRuleDTO = new OpenGrayReleaseRuleDTO();
-    openGrayReleaseRuleDTO.setAppId(grayReleaseRuleDTO.getAppId());
-    openGrayReleaseRuleDTO.setBranchName(grayReleaseRuleDTO.getBranchName());
-    openGrayReleaseRuleDTO.setClusterName(grayReleaseRuleDTO.getClusterName());
-    openGrayReleaseRuleDTO.setNamespaceName(grayReleaseRuleDTO.getNamespaceName());
+    Preconditions.checkArgument(grayReleaseRuleDTO != null);
 
-    Set<GrayReleaseRuleItemDTO> grayReleaseRuleItemDTOSet = grayReleaseRuleDTO.getRuleItems();
-    Set<OpenGrayReleaseRuleItemDTO> ruleItems = new HashSet<>();
-    grayReleaseRuleItemDTOSet.forEach(grayReleaseRuleItemDTO -> {
-      OpenGrayReleaseRuleItemDTO item = new OpenGrayReleaseRuleItemDTO();
-      item.setClientAppId(grayReleaseRuleItemDTO.getClientAppId());
-      item.setClientIpList(grayReleaseRuleItemDTO.getClientIpList());
-      ruleItems.add(item);
-    });
-    openGrayReleaseRuleDTO.setRuleItems(ruleItems);
-
-    return openGrayReleaseRuleDTO;
+    return BeanUtils.transfrom(OpenGrayReleaseRuleDTO.class, grayReleaseRuleDTO);
   }
 
   public static GrayReleaseRuleDTO transformToGrayReleaseRuleDTO(OpenGrayReleaseRuleDTO openGrayReleaseRuleDTO){
+    Preconditions.checkArgument(openGrayReleaseRuleDTO != null);
+
     String appId = openGrayReleaseRuleDTO.getAppId();
     String branchName = openGrayReleaseRuleDTO.getBranchName();
     String clusterName = openGrayReleaseRuleDTO.getClusterName();

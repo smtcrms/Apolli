@@ -6,8 +6,11 @@ package com.ctrip.framework.apollo.openapi.v1.controller;
 
 import com.ctrip.framework.apollo.common.dto.GrayReleaseRuleDTO;
 import com.ctrip.framework.apollo.common.dto.NamespaceDTO;
+import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
+import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.enums.Env;
+import com.ctrip.framework.apollo.core.utils.StringUtils;
 import com.ctrip.framework.apollo.openapi.auth.ConsumerPermissionValidator;
 import com.ctrip.framework.apollo.openapi.dto.OpenGrayReleaseRuleDTO;
 import com.ctrip.framework.apollo.openapi.dto.OpenNamespaceDTO;
@@ -16,6 +19,7 @@ import com.ctrip.framework.apollo.portal.component.PermissionValidator;
 import com.ctrip.framework.apollo.portal.entity.bo.NamespaceBO;
 import com.ctrip.framework.apollo.portal.service.NamespaceBranchService;
 import com.ctrip.framework.apollo.portal.service.ReleaseService;
+import com.ctrip.framework.apollo.portal.spi.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +37,8 @@ public class NamespaceBranchController {
     private ReleaseService releaseService;
     @Autowired
     private NamespaceBranchService namespaceBranchService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/branches", method = RequestMethod.GET)
     public OpenNamespaceDTO findBranch(@PathVariable String appId,
@@ -54,6 +60,12 @@ public class NamespaceBranchController {
                                          @PathVariable String namespaceName,
                                          @RequestParam("operator") String operator,
                                          HttpServletRequest request) {
+        RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(operator),"operator can not be empty");
+
+        if (userService.findByUserId(operator) == null) {
+            throw new BadRequestException("operator " + operator + " not exists");
+        }
+
         NamespaceDTO namespaceDTO = namespaceBranchService.createBranch(appId, Env.valueOf(env.toUpperCase()), clusterName, namespaceName, operator);
         if (namespaceDTO == null) {
             return null;
@@ -70,6 +82,12 @@ public class NamespaceBranchController {
                              @PathVariable String branchName,
                              @RequestParam("operator") String operator,
                              HttpServletRequest request) {
+        RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(operator),"operator can not be empty");
+
+        if (userService.findByUserId(operator) == null) {
+            throw new BadRequestException("operator " + operator + " not exists");
+        }
+
         boolean canDelete = consumerPermissionValidator.hasReleaseNamespacePermission(request, appId, namespaceName, env) ||
             (consumerPermissionValidator.hasModifyNamespacePermission(request, appId, namespaceName, env) &&
                 releaseService.loadLatestRelease(appId, Env.valueOf(env), branchName, namespaceName) == null);
@@ -103,6 +121,17 @@ public class NamespaceBranchController {
                                   @PathVariable String branchName, @RequestBody OpenGrayReleaseRuleDTO rules,
                                   @RequestParam("operator") String operator,
                                   HttpServletRequest request) {
+        RequestPrecondition.checkArguments(!StringUtils.isContainEmpty(operator),"operator can not be empty");
+
+        if (userService.findByUserId(operator) == null) {
+            throw new BadRequestException("operator " + operator + " not exists");
+        }
+
+        rules.setAppId(appId);
+        rules.setClusterName(clusterName);
+        rules.setNamespaceName(namespaceName);
+        rules.setBranchName(branchName);
+
         GrayReleaseRuleDTO grayReleaseRuleDTO = OpenApiBeanUtils.transformToGrayReleaseRuleDTO(rules);
         namespaceBranchService
                 .updateBranchGrayRules(appId, Env.valueOf(env.toUpperCase()), clusterName, namespaceName, branchName, grayReleaseRuleDTO, operator);
