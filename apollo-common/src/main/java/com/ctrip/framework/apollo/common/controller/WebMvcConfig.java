@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -36,5 +37,22 @@ public class WebMvcConfig implements WebMvcConfigurer, WebServerFactoryCustomize
     MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
     mappings.add("html", "text/html;charset=utf-8");
     factory.setMimeMappings(mappings );
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    // 10 days
+    addCacheControl(registry, "img", 864000);
+    addCacheControl(registry, "vendor", 864000);
+    // 1 day
+    addCacheControl(registry, "scripts", 86400);
+    addCacheControl(registry, "styles", 86400);
+    addCacheControl(registry, "views", 86400);
+  }
+
+  private void addCacheControl(ResourceHandlerRegistry registry, String folder, int cachePeriod) {
+    registry.addResourceHandler(String.format("/%s/**", folder))
+        .addResourceLocations(String.format("classpath:/static/%s/", folder))
+        .setCachePeriod(cachePeriod);
   }
 }
