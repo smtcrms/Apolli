@@ -43,11 +43,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
+import org.springframework.security.ldap.authentication.BindAuthenticator;
+import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
+import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
+import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-
 
 @Configuration
 public class AuthConfiguration {
@@ -128,9 +130,7 @@ public class AuthConfiguration {
       casValidationFilter.setOrder(3);
 
       return casValidationFilter;
-
     }
-
 
     @Bean
     public FilterRegistrationBean assertionHolder() {
@@ -168,7 +168,6 @@ public class AuthConfiguration {
       } catch (Exception e) {
         throw new RuntimeException("instance filter fail", e);
       }
-
     }
 
     private EventListener listener(String className) {
@@ -191,9 +190,7 @@ public class AuthConfiguration {
     public SsoHeartbeatHandler ctripSsoHeartbeatHandler() {
       return new CtripSsoHeartbeatHandler();
     }
-
   }
-
 
   /**
    * spring.profiles.active = auth
@@ -287,8 +284,10 @@ public class AuthConfiguration {
   @Profile("ldap")
   @EnableConfigurationProperties(LdapProperties.class)
   static class SpringSecurityLDAPAuthAutoConfiguration {
+
     @Autowired
     private LdapProperties properties;
+
     @Autowired
     private Environment environment;
 
@@ -333,9 +332,10 @@ public class AuthConfiguration {
     @Bean
     @ConditionalOnMissingBean(LdapOperations.class)
     public LdapTemplate ldapTemplate(ContextSource contextSource) {
-      return new LdapTemplate(contextSource);
+      LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
+      ldapTemplate.setIgnorePartialResultException(true);
+      return ldapTemplate;
     }
-
   }
 
   @Order(99)
@@ -349,6 +349,27 @@ public class AuthConfiguration {
     private LdapProperties ldapProperties;
     @Autowired
     private LdapContextSource ldapContextSource;
+
+    @Bean
+    public FilterBasedLdapUserSearch userSearch() {
+      FilterBasedLdapUserSearch filterBasedLdapUserSearch = new FilterBasedLdapUserSearch("",
+          ldapProperties.getSearchFilter(), ldapContextSource);
+      filterBasedLdapUserSearch.setSearchSubtree(true);
+      return filterBasedLdapUserSearch;
+    }
+
+    @Bean
+    public LdapAuthenticationProvider ldapAuthProvider() {
+      BindAuthenticator bindAuthenticator = new BindAuthenticator(ldapContextSource);
+      bindAuthenticator.setUserSearch(userSearch());
+      DefaultLdapAuthoritiesPopulator defaultAuthAutoConfiguration = new DefaultLdapAuthoritiesPopulator(
+          ldapContextSource, null);
+      defaultAuthAutoConfiguration.setIgnorePartialResultException(true);
+      defaultAuthAutoConfiguration.setSearchSubtree(true);
+      LdapAuthenticationProvider ldapAuthenticationProvider = new LdapAuthenticationProvider(
+          bindAuthenticator, defaultAuthAutoConfiguration);
+      return ldapAuthenticationProvider;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -367,12 +388,7 @@ public class AuthConfiguration {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-      auth.ldapAuthentication()
-          .userDnPatterns(ldapProperties.getUserDnPatterns())
-          .contextSource(ldapContextSource)
-          .passwordCompare()
-          .passwordEncoder(new LdapShaPasswordEncoder())
-          .passwordAttribute("userPassword");
+      auth.authenticationProvider(ldapAuthProvider());
     }
   }
 
