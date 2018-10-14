@@ -32,6 +32,6 @@ We provide template files [intellij-java-google-style.xml](https://github.com/ct
     2. Create a new branch and merge these commits into one
 
         * `git checkout -b <some-branch-name> <remote>/master`
-        * `git merge --squash master`
+        * `git merge --squash <current-feature-branch>`
 
 * When writing a commit message please follow these conventions: if you are fixing an existing issue, please add Fixes #XXX at the end of the commit message (where XXX is the issue number).
