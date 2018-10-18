@@ -32,7 +32,7 @@ public class LdapUserService implements UserService {
   private String userDisplayNameAttrName;
   @Value("${ldap.mapping.email}")
   private String emailAttrName;
-  @Value("#{'${ldap.filter.memberOf}'.split('\\|')}")
+  @Value("#{'${ldap.filter.memberOf:}'.split('\\|')}")
   private String[] memberOf;
 
   @Autowired
