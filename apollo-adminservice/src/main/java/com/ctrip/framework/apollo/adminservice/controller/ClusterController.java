@@ -60,7 +60,7 @@ public class ClusterController {
     }
 
     if(ConfigConsts.CLUSTER_NAME_DEFAULT.equals(entity.getName())){
-      throw new BadRequestException("default cluster can not be delete.");
+      throw new BadRequestException("can not delete default cluster!");
     }
 
     clusterService.delete(entity.getId(), operator);
