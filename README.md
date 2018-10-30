@@ -229,3 +229,5 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![小影](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/xiaoying.png) 
 ![彩贝壳](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/caibeike.png) 
 ![YEELIGHT](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/yeelight.png) 
+![积目](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/itsgmu.png) 
+![极致医疗](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/acmedcare.png) 
