@@ -236,3 +236,4 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![久柏易游](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/900etrip.png) 
 ![小麦铺](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/24xiaomai.png) 
 ![搜款网](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/vvic.png) 
+![米庄理财](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/mizlicai.png) 
