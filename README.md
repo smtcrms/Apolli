@@ -25,6 +25,10 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
 
 本地快速部署请参见[Quick Start](https://github.com/ctripcorp/apollo/wiki/Quick-Start)
 
+演示环境（Demo）:
+- [106.12.25.204:8070](http://106.12.25.204:8070/)
+- 账号/密码:apollo/admin
+
 # Screenshots
 ![配置界面](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/apollo-home-screenshot.png)
 
