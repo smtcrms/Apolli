@@ -21,7 +21,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             showNoModifyPermissionDialog: '=',
             preCreateBranch: '=',
             preDeleteBranch: '=',
-            showMergeAndPublishGrayTips: '='
+            showMergeAndPublishGrayTips: '=',
+            showBody: "=?"
         },
         link: function (scope) {
 
@@ -89,8 +90,9 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                 namespace.displayControl = {
                     currentOperateBranch: 'master',
                     showSearchInput: false,
-                    show: true
+                    show: scope.showBody
                 };
+                scope.showNamespaceBody = namespace.showNamespaceBody ? true : scope.showBody;
                 namespace.viewItems = namespace.items;
                 namespace.isPropertiesFormat = namespace.format == 'properties';
                 namespace.isTextEditing = false;
@@ -380,10 +382,8 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             function switchBranch(branchName) {
                 if (branchName != 'master') {
-                    scope.namespace.branch.displayControl.show = true;
                     initRules(scope.namespace.branch);
-                } else {
-                    scope.namespace.displayControl.show = true;
+                    scope.showNamespaceBody = true;
                 }
                 scope.namespace.displayControl.currentOperateBranch = branchName;
 
