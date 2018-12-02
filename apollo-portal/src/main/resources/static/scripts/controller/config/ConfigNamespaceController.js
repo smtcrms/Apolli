@@ -128,9 +128,10 @@ function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigSer
 
                 $scope.namespaces.forEach(function (namespace, index) {
                     if (namespace.baseInfo.namespaceName == result.baseInfo.namespaceName) {
+                        result.showNamespaceBody = true;
+                        result.initialized = true;
+                        result.show = namespace.show;
                         $scope.namespaces[index] = result;
-                        $scope.namespaces[index].showNamespaceBody = true;
-                        $scope.namespaces[index].initialized = true;
                     }
                 });
 

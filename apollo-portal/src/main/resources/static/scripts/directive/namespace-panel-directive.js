@@ -44,7 +44,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
 
             var operate_branch_storage_key = 'OperateBranch';
 
-            scope.init = init;
+            scope.refreshNamespace = refreshNamespace;
             scope.switchView = switchView;
             scope.toggleItemSearchInput = toggleItemSearchInput;
             scope.searchItems = searchItems;
@@ -80,7 +80,7 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
             preInit(scope.namespace);
 
             if (!scope.lazyLoad || scope.namespace.initialized) {
-                init(false);
+                init();
             }
 
             function preInit(namespace) {
@@ -93,13 +93,15 @@ function directive($window, toastr, AppUtil, EventManager, PermissionService, Na
                             .replace(".yaml", "");
             }
 
-            function init(forceShowBody) {
+            function init() {
                 initNamespace(scope.namespace);
                 initOther();
                 scope.namespace.initialized = true;
-                if (forceShowBody) {
-                    scope.showNamespaceBody = true;
-                }
+            }
+
+            function refreshNamespace() {
+                EventManager.emit(EventManager.EventType.REFRESH_NAMESPACE,
+                                  {namespace: scope.namespace});
             }
 
             function initNamespace(namespace, viewType) {
