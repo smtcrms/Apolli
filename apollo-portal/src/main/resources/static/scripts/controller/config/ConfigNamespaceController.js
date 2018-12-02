@@ -130,6 +130,7 @@ function controller($rootScope, $scope, toastr, AppUtil, EventManager, ConfigSer
                     if (namespace.baseInfo.namespaceName == result.baseInfo.namespaceName) {
                         $scope.namespaces[index] = result;
                         $scope.namespaces[index].showNamespaceBody = true;
+                        $scope.namespaces[index].initialized = true;
                     }
                 });
 
