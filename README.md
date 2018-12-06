@@ -244,3 +244,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![搜款网](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/vvic.png) 
 ![米庄理财](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/mizlicai.png) 
 ![贝吉塔网络科技](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/bjt.png) 
+
+# Awards
+
+<img src="https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/awards/oschina-2018-award.jpg" width="240px" alt="2018 年度最受欢迎中国开源软件">
