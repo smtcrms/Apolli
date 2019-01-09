@@ -250,6 +250,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![聚贸](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/jumore.png) 
 ![广联达bimface](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/bimface.png) 
 ![环球易购](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/globalgrow.png) 
+![浙江执御](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/jollychic.png) 
 
 # Awards
 
