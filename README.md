@@ -253,6 +253,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![广联达bimface](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/bimface.png) 
 ![环球易购](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/globalgrow.png) 
 ![浙江执御](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/jollychic.png) 
+![二维火](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/2dfire.jpg) 
 
 # Awards
 
