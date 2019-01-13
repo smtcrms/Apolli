@@ -7,7 +7,6 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.exception.NotFoundException;
 import com.ctrip.framework.apollo.common.utils.BeanUtils;
-import com.ctrip.framework.apollo.common.utils.InputValidator;
 import com.ctrip.framework.apollo.core.utils.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,10 +34,7 @@ public class AppController {
   }
 
   @PostMapping("/apps")
-  public AppDTO create(@RequestBody AppDTO dto) {
-    if (!InputValidator.isValidClusterNamespace(dto.getAppId())) {
-      throw new BadRequestException(String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
-    }
+  public AppDTO create(@Valid @RequestBody AppDTO dto) {
     App entity = BeanUtils.transform(App.class, dto);
     App managedEntity = appService.findOne(entity.getAppId());
     if (managedEntity != null) {
@@ -46,8 +43,7 @@ public class AppController {
 
     entity = adminService.createNewApp(entity);
 
-    dto = BeanUtils.transform(AppDTO.class, entity);
-    return dto;
+    return BeanUtils.transform(AppDTO.class, entity);
   }
 
   @DeleteMapping("/apps/{appId:.+}")

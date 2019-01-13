@@ -5,8 +5,6 @@ import com.ctrip.framework.apollo.common.entity.App;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.common.http.MultiResponseEntity;
 import com.ctrip.framework.apollo.common.http.RichResponseEntity;
-import com.ctrip.framework.apollo.common.utils.InputValidator;
-import com.ctrip.framework.apollo.common.utils.RequestPrecondition;
 import com.ctrip.framework.apollo.core.ConfigConsts;
 import com.ctrip.framework.apollo.core.enums.Env;
 import com.ctrip.framework.apollo.portal.component.PortalSettings;
@@ -40,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -99,7 +98,7 @@ public class AppController {
   }
 
   @PostMapping
-  public App create(@RequestBody AppModel appModel) {
+  public App create(@Valid @RequestBody AppModel appModel) {
 
     App app = transformToApp(appModel);
 
@@ -119,7 +118,7 @@ public class AppController {
 
   @PreAuthorize(value = "@permissionValidator.isAppAdmin(#appId)")
   @PutMapping("/{appId:.+}")
-  public void update(@PathVariable String appId, @RequestBody AppModel appModel) {
+  public void update(@PathVariable String appId, @Valid @RequestBody AppModel appModel) {
     if (!Objects.equals(appId, appModel.getAppId())) {
       throw new BadRequestException("The App Id of path variable and request body is different");
     }
@@ -149,15 +148,7 @@ public class AppController {
   }
 
   @PostMapping(value = "/envs/{env}", consumes = {"application/json"})
-  public ResponseEntity<Void> create(@PathVariable String env, @RequestBody App app) {
-
-    RequestPrecondition.checkArgumentsNotEmpty(app.getName(), app.getAppId(), app.getOwnerEmail(),
-        app.getOwnerName(),
-        app.getOrgId(), app.getOrgName());
-    if (!InputValidator.isValidClusterNamespace(app.getAppId())) {
-      throw new BadRequestException(InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE);
-    }
-
+  public ResponseEntity<Void> create(@PathVariable String env, @Valid @RequestBody App app) {
     appService.createAppInRemote(Env.valueOf(env), app);
 
     roleInitializationService.initNamespaceSpecificEnvRoles(app.getAppId(), ConfigConsts.NAMESPACE_APPLICATION, env, userInfoHolder.getUser().getUserId());
@@ -210,13 +201,6 @@ public class AppController {
     String ownerName = appModel.getOwnerName();
     String orgId = appModel.getOrgId();
     String orgName = appModel.getOrgName();
-
-    RequestPrecondition.checkArgumentsNotEmpty(appId, appName, ownerName, orgId, orgName);
-
-    if (!InputValidator.isValidClusterNamespace(appModel.getAppId())) {
-      throw new BadRequestException(
-          String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
-    }
 
     return App.builder()
         .appId(appId)
