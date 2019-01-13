@@ -53,8 +53,8 @@ public class ItemController {
                                 @RequestBody OpenItemDTO item, HttpServletRequest request) {
 
     RequestPrecondition.checkArguments(
-        !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item.getDataChangeCreatedBy()),
-        "key, value and dataChangeCreatedBy should not be null or empty");
+        !StringUtils.isContainEmpty(item.getKey(), item.getDataChangeCreatedBy()),
+        "key and dataChangeCreatedBy should not be null or empty");
 
     if (userService.findByUserId(item.getDataChangeCreatedBy()) == null) {
       throw new BadRequestException("User " + item.getDataChangeCreatedBy() + " doesn't exist!");
@@ -84,8 +84,8 @@ public class ItemController {
     RequestPrecondition.checkArguments(item != null, "item payload can not be empty");
 
     RequestPrecondition.checkArguments(
-        !StringUtils.isContainEmpty(item.getKey(), item.getValue(), item.getDataChangeLastModifiedBy()),
-        "key, value and dataChangeLastModifiedBy can not be empty");
+        !StringUtils.isContainEmpty(item.getKey(), item.getDataChangeLastModifiedBy()),
+        "key and dataChangeLastModifiedBy can not be empty");
 
     RequestPrecondition.checkArguments(item.getKey().equals(key), "Key in path and payload is not consistent");
 
