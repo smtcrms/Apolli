@@ -9,7 +9,6 @@ import com.ctrip.framework.apollo.openapi.dto.OpenItemDTO;
 import com.ctrip.framework.apollo.openapi.util.OpenApiBeanUtils;
 import com.ctrip.framework.apollo.portal.service.ItemService;
 import com.ctrip.framework.apollo.portal.spi.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,10 +29,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/openapi/v1/envs/{env}")
 public class ItemController {
 
-  @Autowired
-  private ItemService itemService;
-  @Autowired
-  private UserService userService;
+  private final ItemService itemService;
+  private final UserService userService;
+
+  public ItemController(final ItemService itemService, final UserService userService) {
+    this.itemService = itemService;
+    this.userService = userService;
+  }
 
   @GetMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key:.+}")
   public OpenItemDTO getItem(@PathVariable String appId, @PathVariable String env, @PathVariable String clusterName,
