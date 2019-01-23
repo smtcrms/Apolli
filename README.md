@@ -107,6 +107,7 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
 
 # Publication
   * [开源配置中心Apollo的设计与实现](http://www.infoq.com/cn/articles/open-source-configuration-center-apollo)
+  * [配置中心，让微服务更『智能』](https://mp.weixin.qq.com/s/iDmYJre_ULEIxuliu1EbIQ)
 
 # Support
 <table>
