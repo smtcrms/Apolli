@@ -260,6 +260,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![橙红科技](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/oraro.png) 
 ![龙腾出行](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/dragonpass.png) 
 ![荔枝](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/lizhi.fm.png) 
+![汇通达](https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/known-users/htd.png) 
 
 # Awards
 
