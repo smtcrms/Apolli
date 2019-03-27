@@ -276,6 +276,10 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![申通](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/sto.png) 
 ![金和网络](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/jinhe.png) 
 ![二三四五](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/2345.png) 
+![恒天财富](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/chtwm.jpg) 
+![沐雪微信](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/uweixin.png) 
+![温州医科大学附属眼视光医院](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/wzeye.png) 
+![联通支付](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/10010pay.png) 
 
 # Awards
 
