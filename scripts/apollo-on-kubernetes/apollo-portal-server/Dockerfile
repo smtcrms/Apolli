@@ -18,13 +18,6 @@ ADD . /apollo-portal-server/
 
 ENV APOLLO_PORTAL_SERVICE_NAME="service-apollo-portal-server.sre"
 
-
-ENV DEV_META_SERVICE_NAME="service-apollo-config-server-dev.sre"
-ENV TEST_ALPHA_META_SERVICE_NAME="service-apollo-config-server-test-alpha.sre"
-ENV TEST_BETA_META_SERVICE_NAME="service-apollo-config-server-test-beta.sre"
-ENV PROD_META_SERVICE_NAME="service-apollo-config-server-prod.sre"
-
 EXPOSE 8070
-
 
 CMD ["/apollo-portal-server/scripts/startup-kubernetes.sh"]

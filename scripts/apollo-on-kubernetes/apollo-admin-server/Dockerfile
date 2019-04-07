@@ -18,7 +18,6 @@ ADD . /apollo-admin-server/
 
 ENV APOLLO_ADMIN_SERVICE_NAME="service-apollo-admin-server.sre"
 
-
 EXPOSE 8090
 
 CMD ["/apollo-admin-server/scripts/startup-kubernetes.sh"]
