@@ -283,6 +283,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![杉数科技](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/shanshu.png) 
 ![分利宝](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/fenlibao.png) 
 ![核桃编程](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/hetao101.png) 
+![小红书](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/xiaohongshu.png) 
 
 # Awards
 
