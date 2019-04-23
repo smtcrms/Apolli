@@ -288,6 +288,8 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![跨越速运](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/ky-express.png) 
 ![OYO](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/oyohotels.png) 
 ![叮咚买菜](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/100-me.png) 
+![智道网联](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/zhidaohulian.jpg) 
+![雪球](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/xueqiu.jpg) 
 
 # Awards
 
