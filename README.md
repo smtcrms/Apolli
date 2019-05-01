@@ -292,6 +292,8 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![雪球](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/xueqiu.jpg) 
 ![车通云](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/autocloudpro.png) 
 ![哒哒英语](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/dadaabc.png) 
+![小E微店](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/xedaojia.jpg) 
+![达令家](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/daling.png) 
 
 # Awards
 
