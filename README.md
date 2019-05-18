@@ -122,7 +122,7 @@ Java客户端不依赖任何框架，能够运行于所有Java运行时环境，
   </thead>
   <tbody>
     <tr>
-       <td><img src="./doc/images/tech-support-qq-4.png" alt="tech-support-qq-4"></td>
+      <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-4.png" alt="tech-support-qq-4"></td>
       <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-3.png" alt="tech-support-qq-3"></td>
       <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-2.png" alt="tech-support-qq-2"></td>
       <td><img src="https://raw.githubusercontent.com/ctripcorp/apollo/master/doc/images/tech-support-qq-1.png" alt="tech-support-qq-1"></td>
@@ -299,6 +299,7 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![人力窝](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/renliwo.png) 
 ![嘉美在线](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/mocire.jpg) 
 ![极易付](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/uepay.png) 
+![智慧开源](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/wdom.png) 
 
 # Awards
 
