@@ -302,6 +302,8 @@ The project is licensed under the [Apache 2 license](https://github.com/ctripcor
 ![智慧开源](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/wdom.png) 
 ![车仕库](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/cheshiku.png) 
 ![太美医疗科技](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/taimeitech.png) 
+![亿联百汇](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/yilianbaihui.png) 
+![舟谱数据](https://raw.githubusercontent.com/ctripcorp/apollo-community/master/images/known-users/zhoupu123.png) 
 
 # Awards
 
